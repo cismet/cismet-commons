@@ -13,6 +13,7 @@ import org.openide.util.WeakSet;
  */
 public final class BlacklistClassloading {
 
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(BlacklistClassloading.class);
     private static final Set<String> blacklist = new WeakSet<String>();
 
     private BlacklistClassloading() {
@@ -32,6 +33,9 @@ public final class BlacklistClassloading {
                 return Class.forName(classname);
             } catch (ClassNotFoundException ex) {
                 blacklist.add(classNameWithLoaderBuiler.toString());
+                if (log.isDebugEnabled()) {
+                    log.debug("Could not load class " + classname + "! Added classname to blacklist", ex);
+                }
             }
         }
         return null;
