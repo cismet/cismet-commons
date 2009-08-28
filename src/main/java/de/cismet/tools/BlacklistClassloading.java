@@ -43,8 +43,9 @@ public final class BlacklistClassloading {
                     log.debug("Did not load Class " + classname + " as it is on the blacklist!");
                 }
             }
+        } else {
+            log.debug("Classname to load was null!");
         }
-        log.debug("Classname to load was null!");
         return null;
     }
 }
