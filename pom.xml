@@ -37,11 +37,16 @@
             <version>8.2-507.jdbc4</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
             <version>0.7</version>
             <scope>compile</scope>
+        </dependency>-->
+         <dependency>
+            <groupId>de.cismet.todo</groupId>
+            <artifactId>jdom</artifactId>
+            <version>unknown</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
