@@ -1,48 +1,38 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <groupId>de.cismet.maven</groupId>
-        <artifactId>cismetParent</artifactId>
+        <groupId>de.cismet.cids</groupId>
+        <artifactId>cids-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <groupId>de.cismet.commons</groupId>
-    <artifactId>cismetCommons</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>cismet-commons</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>cismetCommons</name>
+    <packaging>jar</packaging>
+
+    <name>cismet Commons</name>
+    <description>!!! description pending !!!</description>
+
     <dependencies>
-        <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit4</artifactId>
-            <version>2.4.3</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.11</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
             <version>1.8</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>8.2-507.jdbc4</version>
-            <scope>compile</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>0.7</version>
-            <scope>compile</scope>
-        </dependency>-->
          <dependency>
             <groupId>de.cismet.todo</groupId>
             <artifactId>jdom</artifactId>
@@ -57,19 +47,20 @@
             <groupId>org.swinglabs</groupId>
             <artifactId>swingx</artifactId>
             <version>0.9.7</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge</groupId>
             <artifactId>blowfishj</artifactId>
             <version>2.14</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.postgis</groupId>
             <artifactId>postgis</artifactId>
             <version>1.1.7</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>cismetCommons</finalName>
+    </build>
 </project>
