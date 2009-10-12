@@ -33,6 +33,7 @@
  */
 package de.cismet.tools.configuration;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
@@ -57,7 +58,7 @@ public class ConfigurationManager {
     private String folder = ".cismet";
     private String home;
     private String fs;
-    private Element rootObject = null;
+//    private Element rootObject = null;
     private Element serverRootObject = null;
 
     /** Creates a new instance of ConfigurationManager */
@@ -101,13 +102,14 @@ public class ConfigurationManager {
 
     public void configure(Configurable singleConfig) {
         configure(singleConfig, home + fs + folder + fs + fileName);
-    }        
+    }
 
     public void configure(Configurable singleConfig, String path) {
+        Element rootObject = null;
         try {
             SAXBuilder builder = new SAXBuilder(false);
             Document doc = builder.build(new File(path));
-            rootObject = null;
+
             rootObject = doc.getRootElement();
         } catch (Throwable e) {
             log.warn("Fehler beim Lesen der Einstellungen (User.Home) (" + singleConfig + ") wenn null dann alle", e);
@@ -122,7 +124,7 @@ public class ConfigurationManager {
         }
 
 
-        serverRootObject = getRootObjectFromClassPath();
+        Element serverRootObject = getRootObjectFromClassPath();
 
         if (rootObject == null) {
             log.fatal("Fehler beim Konfigurationsmanagement. Von einem fehlerfreien Start kann nicht ausgegangen werden.");
@@ -135,7 +137,7 @@ public class ConfigurationManager {
 
 
         log.info("ConfigurationDocument: " + serializer.outputString(rootObject.getDocument()));
-        pureConfigure(singleConfig);
+        pureConfigure(singleConfig, rootObject, serverRootObject);
     }
 
     public void configureFromClasspath() {
@@ -143,8 +145,13 @@ public class ConfigurationManager {
     }
 
     public void configureFromClasspath(Configurable singleConfig) {
-        rootObject = getRootObjectFromClassPath();
-        pureConfigure(singleConfig);
+        Element rootObject = getRootObjectFromClassPath();
+        pureConfigure(singleConfig, rootObject, getRootObjectFromClassPath());
+    }
+
+    public void configureFromClasspath(String url, Configurable singleConfig) throws Exception {
+        Element rootObject = getObjectFromClassPath(url);
+        pureConfigure(singleConfig, rootObject, getRootObjectFromClassPath());
     }
 
     //document
@@ -153,42 +160,38 @@ public class ConfigurationManager {
             SAXBuilder builder = new SAXBuilder(false);
             Document doc = builder.build(getClass().getResourceAsStream(classPathFolder + defaultFileName));
             Element configuration = doc.getRootElement().getChild("Configuration");
-            setFolder(configuration.getChildText("LocalFolder"));            
+            setFolder(configuration.getChildText("LocalFolder"));
         } catch (Exception ex) {
-            log.error("Fehler beim initialisieren des Configuration Managers mit File",ex);
+            log.error("Fehler beim initialisieren des Configuration Managers mit File", ex);
         }
     }
 
     private Element getRootObjectFromClassPath() {
-        log.info("Lesen der Einstellungen (InputStream vom ClassPath)");
-        SAXBuilder builder = new SAXBuilder(false);
-        try {
-            log.debug("getRootObjectFromClassPath():classPathFolder+defaultFileName=" + classPathFolder + defaultFileName);
-            Document doc = builder.build(getClass().getResourceAsStream(classPathFolder + defaultFileName));
-            return doc.getRootElement();
-        } catch (Throwable e) {
-            log.warn("in getRootObjectFromClassPath: Fehler beim Lesen der Einstellungen (InputStream vom ClassPath) probiere es jetzt mit dem FallbackFilename: " + classPathFolder + fallBackFileName, e);
+        if (serverRootObject != null) {
+            log.info("Lesen der Einstellungen (InputStream vom ClassPath)");
             try {
-                InputStream is = getClass().getResourceAsStream(classPathFolder + fallBackFileName);
-                Document doc = builder.build(is);
-                return doc.getRootElement();
-            } catch (Throwable t) {
-                log.error("Fehler beim Lesen der Einstellungen (FallBackFilename)", t);
+                log.debug("getRootObjectFromClassPath():classPathFolder+defaultFileName=" + classPathFolder + defaultFileName);
+                serverRootObject = getObjectFromClassPath(classPathFolder + defaultFileName);
+            } catch (Throwable e) {
+                log.warn("in getRootObjectFromClassPath: Fehler beim Lesen der Einstellungen (InputStream vom ClassPath) probiere es jetzt mit dem FallbackFilename: " + classPathFolder + fallBackFileName, e);
+                try {
+                    serverRootObject = getObjectFromClassPath(classPathFolder + fallBackFileName);
+                } catch (Throwable t) {
+                    log.error("Fehler beim Lesen der Einstellungen (FallBackFilename)", t);
+                    serverRootObject = null;
+                }
             }
-// Wenn in Netbeansumgebung eingesetzt            
-//            log.warn("in getRootObjectFromClassPath: Fehler beim Lesen der Einstellungen (InputStream vom ClassPath)", e);
-//            try {
-//                InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(classPathFolder + defaultFileName);
-//                Document doc = builder.build(is);
-//                return doc.getRootElement();
-//            } catch (Throwable t) {
-//                log.error("Fehler beim Lesen der Einstellungen (InputStream vom ClassPath mit NB Classloader", t);
-//            }
-            return null;
         }
+        return serverRootObject;
     }
 
-    private void pureConfigure(Configurable singleConfig) {
+    private Element getObjectFromClassPath(String classPathUrl) throws Exception {
+        SAXBuilder builder = new SAXBuilder(false);
+        Document doc = builder.build(getClass().getResourceAsStream(classPathUrl));
+        return doc.getRootElement();
+    }
+
+    private void pureConfigure(Configurable singleConfig, Element rootObject, Element serverRootObject) {
         if (singleConfig == null) {
             for (Configurable elem : configurables) {
                 try {
@@ -212,8 +215,8 @@ public class ConfigurationManager {
         new File(home + fs + folder).mkdirs();
         writeConfiguration(home + fs + folder + fs + fileName);
     }
-    
-    public String getLocalAbsoluteConfigurationFolder(){
+
+    public String getLocalAbsoluteConfigurationFolder() {
         return home + fs + folder + fs;
     }
 
