@@ -167,7 +167,7 @@ public class ConfigurationManager {
     }
 
     private Element getRootObjectFromClassPath() {
-        if (serverRootObject != null) {
+        if (serverRootObject == null) {
             log.info("Lesen der Einstellungen (InputStream vom ClassPath)");
             try {
                 log.debug("getRootObjectFromClassPath():classPathFolder+defaultFileName=" + classPathFolder + defaultFileName);
