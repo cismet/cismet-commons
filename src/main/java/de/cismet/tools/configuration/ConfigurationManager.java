@@ -51,11 +51,11 @@ public class ConfigurationManager {
 
     private final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
     Vector<Configurable> configurables = new Vector<Configurable>();
-    private String fileName = "configuration.xml";
-    private String fallBackFileName = "configuration.xml";
+    private String fileName = "configuration.xml";  // NOI18N
+    private String fallBackFileName = "configuration.xml";  // NOI18N
     private String defaultFileName = fallBackFileName;
-    private String classPathFolder = "/";
-    private String folder = ".cismet";
+    private String classPathFolder = "/";  // NOI18N
+    private String folder = ".cismet";  // NOI18N
     private String home;
     private String fs;
 //    private Element rootObject = null;
@@ -63,9 +63,10 @@ public class ConfigurationManager {
 
     /** Creates a new instance of ConfigurationManager */
     public ConfigurationManager() {
-        log.debug("Create ConfigurationManager.");
-        home = System.getProperty("user.home");
-        fs = System.getProperty("file.separator");
+        if(log.isDebugEnabled())
+            log.debug("Create ConfigurationManager.");  // NOI18N
+        home = System.getProperty("user.home");  // NOI18N
+        fs = System.getProperty("file.separator");  // NOI18N
     }
 
     public void addConfigurable(Configurable configurable) {
@@ -112,10 +113,11 @@ public class ConfigurationManager {
 
             rootObject = doc.getRootElement();
         } catch (Throwable e) {
-            log.warn("Fehler beim Lesen der Einstellungen (User.Home) (" + singleConfig + ") wenn null dann alle", e);
-            System.out.println("Fehler beim Lesen der Einstellungen (User.Home)");
+            log.warn("Error while reading configuration (User.Home) (" + singleConfig + ") if null then all are", e);  // NOI18N
+            System.out.println("Fehler beim Lesen der Einstellungen (User.Home)");  // NOI18N
             e.printStackTrace();
-            log.info("rootObject:" + rootObject);
+            if(log.isInfoEnabled())
+                log.info("rootObject:" + rootObject);  // NOI18N
         }
         if (rootObject == null) {
             //Keins da. Deshalb das vordefinierte laden
@@ -127,16 +129,18 @@ public class ConfigurationManager {
         Element serverRootObject = getRootObjectFromClassPath();
 
         if (rootObject == null) {
-            log.fatal("Fehler beim Konfigurationsmanagement. Von einem fehlerfreien Start kann nicht ausgegangen werden.");
+            log.fatal("Fehler beim Konfigurationsmanagement. Von einem fehlerfreien Start kann nicht ausgegangen werden.");  // NOI18N
         }
 
         XMLOutputter serializer = new XMLOutputter();
-        serializer.setEncoding("ISO-8859-1");
-        log.debug("ENCODING:" + serializer.toString());
-        serializer.setIndent("\t");
+        serializer.setEncoding("ISO-8859-1");  // NOI18N
+        if(log.isDebugEnabled())
+            log.debug("ENCODING:" + serializer.toString());  // NOI18N
+        serializer.setIndent("\t");  // NOI18N
 
 
-        log.info("ConfigurationDocument: " + serializer.outputString(rootObject.getDocument()));
+        if(log.isInfoEnabled())
+            log.info("ConfigurationDocument: " + serializer.outputString(rootObject.getDocument()));  // NOI18N
         pureConfigure(singleConfig, rootObject, serverRootObject);
     }
 
@@ -159,25 +163,27 @@ public class ConfigurationManager {
         try {
             SAXBuilder builder = new SAXBuilder(false);
             Document doc = builder.build(getClass().getResourceAsStream(classPathFolder + defaultFileName));
-            Element configuration = doc.getRootElement().getChild("Configuration");
-            setFolder(configuration.getChildText("LocalFolder"));
+            Element configuration = doc.getRootElement().getChild("Configuration");  // NOI18N
+            setFolder(configuration.getChildText("LocalFolder"));  // NOI18N
         } catch (Exception ex) {
-            log.error("Fehler beim initialisieren des Configuration Managers mit File", ex);
+            log.error("Fehler beim initialisieren des Configuration Managers mit File", ex);  // NOI18N
         }
     }
 
     private Element getRootObjectFromClassPath() {
         if (serverRootObject == null) {
-            log.info("Lesen der Einstellungen (InputStream vom ClassPath)");
+            if(log.isInfoEnabled())
+                log.info("Lesen der Einstellungen (InputStream vom ClassPath)");  // NOI18N
             try {
-                log.debug("getRootObjectFromClassPath():classPathFolder+defaultFileName=" + classPathFolder + defaultFileName);
+                if(log.isDebugEnabled())
+                    log.debug("getRootObjectFromClassPath():classPathFolder+defaultFileName=" + classPathFolder + defaultFileName);  // NOI18N
                 serverRootObject = getObjectFromClassPath(classPathFolder + defaultFileName);
             } catch (Throwable e) {
-                log.warn("in getRootObjectFromClassPath: Fehler beim Lesen der Einstellungen (InputStream vom ClassPath) probiere es jetzt mit dem FallbackFilename: " + classPathFolder + fallBackFileName, e);
+                log.warn("in getRootObjectFromClassPath: Fehler beim Lesen der Einstellungen (InputStream vom ClassPath) probiere es jetzt mit dem FallbackFilename: " + classPathFolder + fallBackFileName, e);  // NOI18N
                 try {
                     serverRootObject = getObjectFromClassPath(classPathFolder + fallBackFileName);
                 } catch (Throwable t) {
-                    log.error("Fehler beim Lesen der Einstellungen (FallBackFilename)", t);
+                    log.error("Fehler beim Lesen der Einstellungen (FallBackFilename)", t);  // NOI18N
                     serverRootObject = null;
                 }
             }
@@ -197,12 +203,12 @@ public class ConfigurationManager {
                 try {
                     elem.masterConfigure(serverRootObject);
                 } catch (Throwable serverT) {
-                    log.warn("Fehler bei elem.masterConfigure(serverRootObject)", serverT);
+                    log.warn("Error in elem.masterConfigure(serverRootObject)", serverT);  // NOI18N
                 }
                 try {
                     elem.configure(rootObject);
                 } catch (Throwable clientT) {
-                    log.warn("Fehler bei elem.configure(rootObject)", clientT);
+                    log.warn("Error in elem.configure(rootObject)", clientT);  // NOI18N
                 }
             }
         } else {
@@ -222,31 +228,34 @@ public class ConfigurationManager {
 
     public void writeConfiguration(String path) {
         try {
-            log.debug("try to write configuration of this configurables:" + configurables);
-            Element root = new Element("cismetConfigurationManager");
+            if(log.isDebugEnabled())
+                log.debug("try to write configuration of this configurables:" + configurables);  // NOI18N
+            Element root = new Element("cismetConfigurationManager");  // NOI18N
 
             for (Configurable elem : configurables) {
                 try {
                     Element e = elem.getConfiguration();
 
-                    log.debug("Schreibe Element: " + e);
+                    if(log.isDebugEnabled())
+                        log.debug("Writing Element: " + e);  // NOI18N
                     if (e != null) {
                         root.addContent(e);
                     }
                 } catch (Exception t) {
-                    log.warn("Fehler beim Schreiben der eines Konfigurationsteils.", t);
+                    log.warn("Fehler beim Schreiben der eines Konfigurationsteils.", t);  // NOI18N
                 }
             }
             Document doc = new Document(root);
-            XMLOutputter serializer = new XMLOutputter("\t", true, "ISO-8859-1");
-            log.debug("ENCODING:" + serializer.toString());
+            XMLOutputter serializer = new XMLOutputter("\t", true, "ISO-8859-1");  // NOI18N
+            if(log.isDebugEnabled())
+                log.debug("ENCODING:" + serializer.toString());  // NOI18N
             serializer.setTrimAllWhite(true);
             File file = new File(path);
             FileWriter writer = new FileWriter(file);
             serializer.output(doc, writer);
             writer.flush();
         } catch (Throwable tt) {
-            log.error("Fehler beim Schreiben der Konfiguration.", tt);
+            log.error("Error while writing configuration.", tt);  // NOI18N
         }
     }
 
