@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 public class PostGisGeometryFactory {
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("de.cismet.cismap.commons.jtsgeometryfactories.PostGisGeometryFactory");
+    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("de.cismet.cismap.commons.jtsgeometryfactories.PostGisGeometryFactory");   // NOI18N
 
     /** Creates a new instance of PostgisGeometryFactory */
     public PostGisGeometryFactory() {
@@ -25,14 +25,15 @@ public class PostGisGeometryFactory {
             return null;
         } else {
             //DEFAULT
-            return "SRID=-1;" + g.toText();
+            return "SRID=-1;" + g.toText();  // NOI18N
             //SHEN return "SRID=26918;" + g.toText();
         }
     }
 
     public static Geometry createJtsGeometry(org.postgis.Geometry geom) {
         if (geom instanceof org.postgis.LinearRing) {
-            log.debug("org.postgis.LinearRing2JtsGeometry");
+            if(log.isDebugEnabled())
+                log.debug("org.postgis.LinearRing2JtsGeometry");  // NOI18N
             org.postgis.LinearRing lr = (org.postgis.LinearRing) geom;
             int numberOfPoints = lr.numPoints();
             if (numberOfPoints > 0) {
@@ -45,7 +46,8 @@ public class PostGisGeometryFactory {
                 return null;
             }
         } else if (geom instanceof org.postgis.Polygon) {
-            log.debug("org.postgis.Polygon2JtsGeometry");
+            if(log.isDebugEnabled())
+                log.debug("org.postgis.Polygon2JtsGeometry");  // NOI18N
             org.postgis.Polygon p = (org.postgis.Polygon) geom;
             int ringcount = p.numRings();
             if (ringcount > 0) {
@@ -62,7 +64,8 @@ public class PostGisGeometryFactory {
             }
         } // Multipolygon (liefert Polygon zur\u00FCck wenn nur ein Polygon enthalten)
         else if (geom instanceof org.postgis.MultiPolygon) {
-            log.debug("org.postgis.MultiPolygon2JtsGeometry");
+            if(log.isDebugEnabled())
+                log.debug("org.postgis.MultiPolygon2JtsGeometry");  // NOI18N
             org.postgis.MultiPolygon mp = (org.postgis.MultiPolygon) geom;
             int numPoly = mp.numPolygons();
             if (numPoly > 0) {
@@ -119,17 +122,17 @@ public class PostGisGeometryFactory {
                         if (type == null) {
                             type = localType;
                         } else if (!type.equals(localType)) {
-                            type = "DIFFERENTTYPES";
+                            type = "DIFFERENTTYPES";  // NOI18N
                         }
                     }
                     try {
-                        if (type.equals("Polygon")) {
+                        if (type.equals("Polygon")) {  // NOI18N
                             Polygon[] pa=(Polygon[])Arrays.copyOf(gArr,gArr.length, new Polygon[0].getClass());
                             return new MultiPolygon((Polygon[]) pa, new GeometryFactory());
-                        } else if (type.equals("LineString")) {
+                        } else if (type.equals("LineString")) {  // NOI18N
                             LineString[] lsa=(LineString[])Arrays.copyOf(gArr,gArr.length, new LineString[0].getClass());
                             return new MultiLineString( lsa, new GeometryFactory());
-                        } else if (type.equals("LineString")) {
+                        } else if (type.equals("LineString")) {  // NOI18N
                             Point[] pa=(Point[])Arrays.copyOf(gArr,gArr.length, new Point[0].getClass());
                             return new MultiPoint( pa, new GeometryFactory());
                         } else {
