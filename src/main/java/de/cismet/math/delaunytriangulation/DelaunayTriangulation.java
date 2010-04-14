@@ -66,7 +66,7 @@ public class DelaunayTriangulation extends Triangulation<Pnt> {
         Set<Simplex<Pnt>> visited = new HashSet<Simplex<Pnt>>();
         while (triangle != null) {
             if (visited.contains(triangle)) { // This should never happen
-                System.out.println("Warning: Caught in a locate loop");
+                System.out.println("Warning: Caught in a locate loop");  // NOI18N
                 break;
             }
             visited.add(triangle);
@@ -76,12 +76,12 @@ public class DelaunayTriangulation extends Triangulation<Pnt> {
             triangle = this.neighborOpposite(corner, triangle);
         }
         // No luck; try brute force
-        System.out.println("Warning: Checking all triangles for " + point);
+        System.out.println("Warning: Checking all triangles for " + point);  // NOI18N
         for (Simplex<Pnt> tri: this) {
             if (point.isOutside(tri.toArray(new Pnt[0])) == null) return tri;
         }
         // No such triangle
-        System.out.println("Warning: No triangle holds " + point);
+        System.out.println("Warning: No triangle holds " + point);  // NOI18N
         return null;
     }
     
@@ -97,14 +97,14 @@ public class DelaunayTriangulation extends Triangulation<Pnt> {
         Queue<Simplex<Pnt>> waitingQ = new LinkedList<Simplex<Pnt>>();
         
         // Locate containing triangle
-        if (debug) System.out.println("Locate");
+        if (debug) System.out.println("Locate");  // NOI18N
         Simplex<Pnt> triangle = locate(site);
         
         // Give up if no containing triangle or if site is already in DT
         if (triangle == null || triangle.contains(site)) return newTriangles;
         
         // Find Delaunay cavity (those triangles with site in their circumcircles)
-        if (debug) System.out.println("Cavity");
+        if (debug) System.out.println("Cavity");  // NOI18N
         waitingQ.add(triangle);
         while (!waitingQ.isEmpty()) {
             triangle = waitingQ.remove();
@@ -117,13 +117,13 @@ public class DelaunayTriangulation extends Triangulation<Pnt> {
             }
         }
         // Create the new triangles
-        if (debug) System.out.println("Create");
+        if (debug) System.out.println("Create");  // NOI18N
         for (Set<Pnt> facet: Simplex.boundary(oldTriangles)) {
             facet.add(site);
             newTriangles.add(new Simplex<Pnt>(facet));
         }
         // Replace old triangles with new triangles
-        if (debug) System.out.println("Update");
+        if (debug) System.out.println("Update");  // NOI18N
         this.update(oldTriangles, newTriangles);
         
         // Update mostRecent triangle
@@ -136,13 +136,13 @@ public class DelaunayTriangulation extends Triangulation<Pnt> {
      */
     public static void main (String[] args) {
         Simplex<Pnt> tri = new Simplex<Pnt>(new Pnt(-10,10), new Pnt(10,10), new Pnt(0,-10));
-        System.out.println("Triangle created: " + tri);
+        System.out.println("Triangle created: " + tri);  // NOI18N
         DelaunayTriangulation dt = new DelaunayTriangulation(tri);
-        System.out.println("DelaunayTriangulation created: " + dt);
+        System.out.println("DelaunayTriangulation created: " + dt);  // NOI18N
         dt.delaunayPlace(new Pnt(0,0));
         dt.delaunayPlace(new Pnt(1,0));
         dt.delaunayPlace(new Pnt(0,1));
-        System.out.println("After adding 3 points, the DelaunayTriangulation is a " + dt);
+        System.out.println("After adding 3 points, the DelaunayTriangulation is a " + dt);  // NOI18N
         dt.printStuff();
     }
 }

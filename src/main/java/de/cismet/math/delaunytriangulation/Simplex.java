@@ -54,7 +54,7 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
         this.idNumber = idGenerator++;
         Set<V> noDups = new HashSet<V>(this);
         if (noDups.size() != this.vertices.size())
-            throw new IllegalArgumentException("Duplicate vertices in Simplex");
+            throw new IllegalArgumentException("Duplicate vertices in Simplex");  // NOI18N
     }
     
     /**
@@ -71,8 +71,8 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
      * @return the String representation of this Simplex
      */
     public String toString () {
-        if (!moreInfo) return "Simplex" + idNumber;
-        return "Simplex" + idNumber + super.toString();
+        if (!moreInfo) return "Simplex" + idNumber;  // NOI18N
+        return "Simplex" + idNumber + super.toString();  // NOI18N
     }
     
     /**

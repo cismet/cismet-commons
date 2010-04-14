@@ -43,7 +43,7 @@ public class DelaunayAp extends javax.swing.JApplet implements Runnable {
      */
     public void init () {
         try {SwingUtilities.invokeAndWait(this);}
-        catch (Exception e) {System.err.println("Initialization failure");}
+        catch (Exception e) {System.err.println("Initialization failure");}  // NOI18N
     }
     
     /**
@@ -55,12 +55,12 @@ public class DelaunayAp extends javax.swing.JApplet implements Runnable {
         setLayout(new BorderLayout());
         
         // Build the button controls
-        JRadioButton voronoiButton = new JRadioButton("Voronoi Diagram");
-        voronoiButton.setActionCommand("voronoi");
-        JRadioButton delaunayButton = new JRadioButton("Delaunay Triangulation");
-        delaunayButton.setActionCommand("delaunay");
-        JButton clearButton = new JButton("Clear");
-        clearButton.setActionCommand("clear");
+        JRadioButton voronoiButton = new JRadioButton("Voronoi Diagram");  // NOI18N
+        voronoiButton.setActionCommand("voronoi");  // NOI18N
+        JRadioButton delaunayButton = new JRadioButton("Delaunay Triangulation");  // NOI18N
+        delaunayButton.setActionCommand("delaunay");  // NOI18N
+        JButton clearButton = new JButton("Clear");  // NOI18N
+        clearButton.setActionCommand("clear");  // NOI18N
         ButtonGroup group = new ButtonGroup();
         group.add(voronoiButton);
         group.add(delaunayButton);
@@ -68,27 +68,27 @@ public class DelaunayAp extends javax.swing.JApplet implements Runnable {
         buttonPanel.add(voronoiButton);
         buttonPanel.add(delaunayButton);
         buttonPanel.add(clearButton);
-        this.add(buttonPanel, "North");
+        this.add(buttonPanel, "North");  // NOI18N
         
         // Build the mouse-entry switches
-        JLabel circleLabel = new JLabel("Show Empty Circles");
-        circleLabel.setName("circles");
-        JLabel delaunayLabel = new JLabel("Show Delaunay Edges");
-        delaunayLabel.setName("delaunay");
-        JLabel voronoiLabel = new JLabel("Show Voronoi Edges");
-        voronoiLabel.setName("voronoi");
+        JLabel circleLabel = new JLabel("Show Empty Circles");  // NOI18N
+        circleLabel.setName("circles");  // NOI18N
+        JLabel delaunayLabel = new JLabel("Show Delaunay Edges");  // NOI18N
+        delaunayLabel.setName("delaunay");  // NOI18N
+        JLabel voronoiLabel = new JLabel("Show Voronoi Edges");  // NOI18N
+        voronoiLabel.setName("voronoi");  // NOI18N
         JPanel switchPanel = new JPanel();
         switchPanel.add(circleLabel);
-        switchPanel.add(new Label("     "));
+        switchPanel.add(new Label("     "));  // NOI18N
         switchPanel.add(delaunayLabel);
-        switchPanel.add(new Label("     "));
+        switchPanel.add(new Label("     "));  // NOI18N
         switchPanel.add(voronoiLabel);
-        this.add(switchPanel, "South");
+        this.add(switchPanel, "South");  // NOI18N
         
         // Build the graphics panel
         DelaunayPanel graphicsPanel = new DelaunayPanel();
         graphicsPanel.setBackground(Color.gray);
-        this.add(graphicsPanel, "Center");
+        this.add(graphicsPanel, "Center");  // NOI18N
         
         // Register the listeners
         voronoiButton.addActionListener(graphicsPanel);
@@ -111,12 +111,12 @@ public class DelaunayAp extends javax.swing.JApplet implements Runnable {
         applet.init();                         // Perform applet initialization
         JFrame dWindow = new JFrame();         // Create window
         dWindow.setSize(700, 500);             // Set window size
-        dWindow.setTitle("Voronoi/Delaunay Window");   
+        dWindow.setTitle("Voronoi/Delaunay Window");     // NOI18N
                                                // Set window title
         dWindow.setLayout(new BorderLayout()); // Specify layout manager
         dWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                                                // Specify closing behavior
-        dWindow.add(applet, "Center");         // Place applet into window
+        dWindow.add(applet, "Center");    // NOI18N       // Place applet into window
         dWindow.setVisible(true);              // Show the window
     }
 }
@@ -160,9 +160,9 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
     public void actionPerformed (ActionEvent e) {
         String command = e.getActionCommand();
         if (debug) System.out.println(command);
-        if (command.equals("voronoi")) isVoronoi = true;
-        else if (command.equals("delaunay")) isVoronoi = false;
-        else if (command.equals("clear")) 
+        if (command.equals("voronoi")) isVoronoi = true;  // NOI18N
+        else if (command.equals("delaunay")) isVoronoi = false;  // NOI18N
+        else if (command.equals("clear"))   // NOI18N
             dt = new DelaunayTriangulation(initialTriangle);
         repaint();
     }
@@ -174,7 +174,7 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
     public void mousePressed (MouseEvent e) {
         if (e.getComponent() != this) return;
         Pnt point = new Pnt(e.getX(), e.getY());
-        if (debug) System.out.println("Click " + point);
+        if (debug) System.out.println("Click " + point);  // NOI18N
         dt.delaunayPlace(point);
         repaint();
     }
@@ -186,10 +186,10 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
     public void mouseEntered (MouseEvent e) {
         if (e.getComponent() == this) return;
         String name = e.getComponent().getName();
-        if (debug) System.out.println("Entering " + name);
-        showCircles = (name == "circles");
-        showDelaunay = (name == "delaunay");
-        showVoronoi = (name == "voronoi");
+        if (debug) System.out.println("Entering " + name);  // NOI18N
+        showCircles = (name == "circles");  // NOI18N
+        showDelaunay = (name == "delaunay");  // NOI18N
+        showVoronoi = (name == "voronoi");  // NOI18N
         repaint();
     }
     
@@ -199,7 +199,7 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
      */
     public void mouseExited (MouseEvent e) {
         if (e.getComponent() == this) return;
-        if (debug) System.out.println("Exiting");
+        if (debug) System.out.println("Exiting");  // NOI18N
         showCircles = false;
         showDelaunay = false;
         showVoronoi = false;
