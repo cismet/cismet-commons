@@ -32,10 +32,10 @@ public class StaticDebuggingTools {
     public static boolean checkHomeForFile(String filename){
         try {
             //Merke dir den Pfad zum Homeverzeichnis
-            String home = System.getProperty("user.home");
+            String home = System.getProperty("user.home");  // NOI18N
 //            System.out.println(home);
             //Merke dir das Trennzeichen zwischen Pfad und Dateinamen
-            String fileSep = System.getProperty("file.separator");
+            String fileSep = System.getProperty("file.separator");  // NOI18N
 //            System.out.println(fileSep);
             
             File f = new File(home+fileSep+filename);

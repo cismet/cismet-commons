@@ -41,14 +41,14 @@ package de.cismet.tools;
 public class StaticDecimalTools {
     
     public static String round(double d)   {
-        return round("0.00",d);
+        return round("0.00",d);  // NOI18N
     }
     public static String round(String pattern,double d)   {
         double dd=((double)(Math.round(d*100)))/100;
         java.text.DecimalFormat myFormatter = new java.text.DecimalFormat(pattern);
         java.text.DecimalFormatSymbols symbols = new java.text.DecimalFormatSymbols();
-        symbols.setDecimalSeparator('.');
-        symbols.setGroupingSeparator('.');
+        symbols.setDecimalSeparator('.');  // NOI18N
+        symbols.setGroupingSeparator('.');  // NOI18N
         myFormatter.setDecimalFormatSymbols(symbols);
         return myFormatter.format(d);
     }

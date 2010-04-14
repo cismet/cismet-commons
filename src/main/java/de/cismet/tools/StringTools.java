@@ -21,7 +21,7 @@ public final class StringTools {
         if(string==null)
             return string;
         
-        String clean = "";
+        String clean = "";  // NOI18N
         
         char[] chars = string.toCharArray();
         

@@ -30,9 +30,9 @@ public class TextFromFile
             int bytesRead = stream.read(data,0,(int) inFile.length());
             
             if (bytesRead == -1) // error occured during readingprocess
-                throw new Exception("read fehlgeschlagen");
+                throw new Exception("read failed");  // NOI18N
             else if (bytesRead != (int) inFile.length())
-                throw new Exception("Information wahrscheinlich Fehlerhaft");
+                throw new Exception("Information probably faulty");  // NOI18N
             
             stream.close();
         }
@@ -65,7 +65,7 @@ public class TextFromFile
         
         String txt = getText();
         
-        StringTokenizer split = new StringTokenizer(txt,",");
+        StringTokenizer split = new StringTokenizer(txt,",");  // NOI18N
         
         while(split.hasMoreTokens())
         {

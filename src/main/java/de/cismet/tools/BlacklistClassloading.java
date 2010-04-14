@@ -35,16 +35,16 @@ public final class BlacklistClassloading {
                 } catch (ClassNotFoundException ex) {
                     blacklist.add(classNameWithLoaderBuiler.toString());
                     if (log.isDebugEnabled()) {
-                        log.debug("Could not load class " + classNameWithLoaderBuiler + "! Added classname to blacklist", ex);
+                        log.debug("Could not load class " + classNameWithLoaderBuiler + "! Added classname to blacklist", ex);  // NOI18N
                     }
                 }
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("Did not load Class " + classname + " as it is on the blacklist!");
+                    log.debug("Did not load Class " + classname + " as it is on the blacklist!");  // NOI18N
                 }
             }
         } else {
-            log.debug("Classname to load was null!");
+            log.debug("Classname to load was null!");  // NOI18N
         }
         return null;
     }

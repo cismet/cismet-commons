@@ -125,7 +125,7 @@ class IteratorEnumeration
 
     public IteratorEnumeration(Iterator i) {
         if (i == null) {
-            throw new IllegalArgumentException("Iterator is null");
+            throw new IllegalArgumentException("Iterator is null");  // NOI18N
         }
         iterator = i;
     }
