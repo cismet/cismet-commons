@@ -118,11 +118,11 @@ public class LongVector extends java.util.Vector<java.lang.Integer> implements j
         try
         {
             for(i=0;i<size();i++)
-                System.out.println(i +"  "+ get(i)+ "\n");
+                System.out.println(i +"  "+ get(i)+ "\n");  // NOI18N
         }
         catch (Exception e)
         {
-            logger.error("Error at "+ i,e);
+            logger.error("Error at "+ i,e);  // NOI18N
             
             
         }//end catch
@@ -133,7 +133,7 @@ public class LongVector extends java.util.Vector<java.lang.Integer> implements j
     
     public String forSqlStatement()
     {
-        String sql = new String("(");
+        String sql = new String("(");  // NOI18N
         int i =0;
         
         try
@@ -147,9 +147,9 @@ public class LongVector extends java.util.Vector<java.lang.Integer> implements j
                 if(i==0)
                     sql+=get(i);
                 else
-                    sql += ","+get(i);
+                    sql += ","+get(i);  // NOI18N
             }
-            sql+= ")";
+            sql+= ")";  // NOI18N
             
             
         }
@@ -157,8 +157,8 @@ public class LongVector extends java.util.Vector<java.lang.Integer> implements j
         catch (Exception e)
         {
             
-            logger.error("Error at "+ i,e);
-            sql = new String("()");
+            logger.error("Error at "+ i,e);  // NOI18N
+            sql = new String("()");  // NOI18N
         }
         return sql;
     }
