@@ -1,7 +1,7 @@
 package Sirius.util.collections;
 
 import java.util.*;
-import java.util.Vector;
+import java.util.Vector; 
 
 
 
