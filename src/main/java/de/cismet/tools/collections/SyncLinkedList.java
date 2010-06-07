@@ -10,9 +10,8 @@ import java.util.*;
 /**
  *
  * @author  schlob
+ * @deprecated use {@link java.util.Collections#synchronizedList(java.util.List)} instead
  */
-
-
 public class SyncLinkedList extends LinkedList
 {
     public synchronized boolean add(Object o)
