@@ -25,17 +25,18 @@ public final class BlacklistClassloading {
      * @param canonical classname to load
      * @return the class to load or null if class is not found.
      */
-    public static final Class<?> forName(final String classname) {
+    public static Class<?> forName(final String classname) {
         if (classname != null) {
-            final StringBuilder classNameWithLoaderBuiler = new StringBuilder(classname);
-            classNameWithLoaderBuiler.append(Thread.currentThread().getContextClassLoader());
-            if (!blacklist.contains(classNameWithLoaderBuiler.toString())) {
+            final StringBuilder classNameWithLoaderBuilder = new StringBuilder(classname);
+            classNameWithLoaderBuilder.append("@").append(Thread.currentThread().getContextClassLoader());
+            String classIdentity = classNameWithLoaderBuilder.toString();
+            if (!blacklist.contains(classIdentity)) {
                 try {
                     return Class.forName(classname);
                 } catch (ClassNotFoundException ex) {
-                    blacklist.add(classNameWithLoaderBuiler.toString());
+                    blacklist.add(classIdentity);
                     if (log.isDebugEnabled()) {
-                        log.debug("Could not load class " + classNameWithLoaderBuiler + "! Added classname to blacklist", ex);
+                        log.debug("Could not load class " + classIdentity + "! Added classname to blacklist", ex);
                     }
                 }
             } else {
