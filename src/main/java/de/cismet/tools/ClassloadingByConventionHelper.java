@@ -34,9 +34,7 @@ public class ClassloadingByConventionHelper {
     public static Class<?> loadClassFromCandidates(List<String> candidateClassNames) {
         for (String candidateClassName : candidateClassNames) {
             Class<?> result = BlacklistClassloading.forName(candidateClassName);
-            log.fatal("try: " + candidateClassName);
             if (result != null) {
-                log.fatal("returning for: " + candidateClassName);
                 return result;
             }
         }
