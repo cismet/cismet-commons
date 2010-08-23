@@ -14,7 +14,7 @@ public class StringMapsString extends java.util.Hashtable
 		super.put(descriptor,aString);
 
 		if(!containsKey(descriptor))
-		throw new Exception("Einf\u00FCgen des Schl\u00FCssels nicht geklappt :"+descriptor);
+		throw new Exception("Could not insert key :"+descriptor);  // NOI18N
 	}// end add
 
 //---------------------------------------------------------
@@ -43,10 +43,10 @@ public class StringMapsString extends java.util.Hashtable
 			   if (candidate instanceof String)
 			   return ((String) candidate);
 
-			throw new java.lang.NullPointerException("Entry is not a String :" + descriptor);
+			throw new java.lang.NullPointerException("Entry is not a String :" + descriptor);  // NOI18N
 			}// endif
 
-	throw new java.lang.NullPointerException("No entry :"+ descriptor);
+	throw new java.lang.NullPointerException("No entry :"+ descriptor);  // NOI18N
 	}
 
 	/////// containsIntKey/////////////////////////////////

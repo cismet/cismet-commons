@@ -29,10 +29,10 @@ public class StringMapsInt extends java.util.Hashtable
 	   if (candidate instanceof Integer)
 	   return ((Integer) candidate).intValue();
 
-	throw new java.lang.NullPointerException("Entry is not a Integer :" + descriptor);
+	throw new java.lang.NullPointerException("Entry is not a Integer :" + descriptor);  // NOI18N
 	}// endif
 
-	throw new java.lang.NullPointerException("No entry :"+ descriptor); // to be changed in further versions when exception concept is accomplished
+	throw new java.lang.NullPointerException("No entry :"+ descriptor);   // NOI18N // to be changed in further versions when exception concept is accomplished
 	}
 
 	/////// containsIntKey/////////////////////////////////

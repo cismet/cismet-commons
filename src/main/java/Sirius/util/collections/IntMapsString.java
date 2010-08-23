@@ -30,10 +30,10 @@ public class IntMapsString extends java.util.Hashtable
 			   if (candidate instanceof java.lang.String)
 			   return ((String) candidate);
 
-			throw new java.lang.NullPointerException("Entry is not a String :" + id);
+			throw new java.lang.NullPointerException("Entry is not a String :" + id);  // NOI18N
 			}// endif
 
-		throw new java.lang.NullPointerException("No entry :"+ id); // to be changed in further versions when exception concept is accomplished
+		throw new java.lang.NullPointerException("No entry :"+ id);   // NOI18N // to be changed in further versions when exception concept is accomplished
 		}
 
 		/////// containsIntKey/////////////////////////////////

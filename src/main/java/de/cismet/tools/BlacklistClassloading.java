@@ -41,11 +41,11 @@ public final class BlacklistClassloading {
                 }
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("Did not load Class " + classname + " as it is on the blacklist!");
+                    log.debug("Did not load Class " + classname + " as it is on the blacklist!");  // NOI18N
                 }
             }
         } else {
-            log.debug("Classname to load was null!");
+            log.debug("Classname to load was null!");  // NOI18N
         }
         return null;
     }

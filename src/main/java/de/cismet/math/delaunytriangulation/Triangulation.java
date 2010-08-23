@@ -54,7 +54,7 @@ public class Triangulation<V> implements Iterable<Simplex<V>> {
      * @return a String representing the Triangulation
      */
     public String toString () {
-        return "Triangulation (with " + neighbors.size() + " elements)";
+        return "Triangulation (with " + neighbors.size() + " elements)";  // NOI18N
     }
     
     /**
@@ -88,13 +88,13 @@ public class Triangulation<V> implements Iterable<Simplex<V>> {
      */
     public void printStuff () {
         boolean remember = Simplex.moreInfo;
-        System.out.println("Neighbor data for " + this);
+        System.out.println("Neighbor data for " + this);  // NOI18N
         for (Simplex<V> simplex: neighbors.keySet()) {
             Simplex.moreInfo = true;
-            System.out.print("    " + simplex + ":");
+            System.out.print("    " + simplex + ":");  // NOI18N
             Simplex.moreInfo = false;
             for (Simplex neighbor: neighbors.get(simplex))
-                System.out.print(" " + neighbor);
+                System.out.print(" " + neighbor);  // NOI18N
             System.out.println();
         }
         Simplex.moreInfo = remember;
@@ -111,7 +111,7 @@ public class Triangulation<V> implements Iterable<Simplex<V>> {
      */
     public Simplex<V> neighborOpposite (Object vertex, Simplex<V> simplex) {
         if (!simplex.contains(vertex))
-            throw new IllegalArgumentException("Bad vertex; not in simplex");
+            throw new IllegalArgumentException("Bad vertex; not in simplex");  // NOI18N
         SimplexLoop: for (Simplex<V> s: neighbors.get(simplex)) {
             for (V v: simplex) {
                 if (v.equals(vertex)) continue;

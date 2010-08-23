@@ -22,10 +22,10 @@ public class ConnectionInfo {
     }
     
     public ConnectionInfo(Element element) {//throws NullPointerException{
-        driver=element.getChild("driverClass").getTextTrim();;
-        url=element.getChild("dbUrl").getTextTrim();
-        user=element.getChild("user").getTextTrim();
-        pass=element.getChild("pass").getTextTrim();
+        driver=element.getChild("driverClass").getTextTrim();   // NOI18N
+        url=element.getChild("dbUrl").getTextTrim();  // NOI18N
+        user=element.getChild("user").getTextTrim();  // NOI18N
+        pass=element.getChild("pass").getTextTrim();  // NOI18N
     }
 
     /**
@@ -99,15 +99,15 @@ public class ConnectionInfo {
     
     
     public Element getElement() {
-        Element e=new Element("dbConnectionInfo");
-        e.addContent(new Element("driverClass").addContent( driver));
-        e.addContent(new Element("dbUrl").addContent(url));
-        e.addContent(new Element("user").addContent( user));
-        if (!pass.trim().startsWith("crypt::")) {
-            e.addContent(new Element("pass").addContent( PasswordEncrypter.encryptString(pass)));
+        Element e=new Element("dbConnectionInfo");  // NOI18N
+        e.addContent(new Element("driverClass").addContent( driver));  // NOI18N
+        e.addContent(new Element("dbUrl").addContent(url));  // NOI18N
+        e.addContent(new Element("user").addContent( user));  // NOI18N
+        if (!pass.trim().startsWith("crypt::")) {  // NOI18N
+            e.addContent(new Element("pass").addContent( PasswordEncrypter.encryptString(pass)));  // NOI18N
         }
         else {
-            e.addContent(new Element("pass").addContent( pass));
+            e.addContent(new Element("pass").addContent( pass));  // NOI18N
         }
         return e;
     }

@@ -14,7 +14,7 @@ public class Sorter {
         for(int i = 1;i < array.length;i++) {
             if(array[i-1].compareTo(array[i])> 0) // >
             {
-                System.out.println("fehler bei i"+i);
+                System.out.println("fehler bei i"+i);  // NOI18N
                 return false;
                 
             }

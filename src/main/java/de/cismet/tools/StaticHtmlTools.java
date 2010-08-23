@@ -49,13 +49,13 @@ public class StaticHtmlTools {
         char nine=9;
         char ten=10;
         char thirteen=13;
-        hrefEndChars = " " + zero + nine + ten + thirteen;
-        hrefStartPos =  newString.indexOf("http://");
+        hrefEndChars = " " + zero + nine + ten + thirteen;  // NOI18N
+        hrefStartPos =  newString.indexOf("http://");  // NOI18N
         
         
         while (hrefStartPos > 0) {
-            int startPos = newString.indexOf( "<",hrefStartPos);
-            int endPos = newString.indexOf(">",hrefStartPos);
+            int startPos = newString.indexOf( "<",hrefStartPos);  // NOI18N
+            int endPos = newString.indexOf(">",hrefStartPos);  // NOI18N
 //
             if ((endPos == -1) || ((endPos > startPos) && (startPos > 0))) {
                 
@@ -77,22 +77,22 @@ public class StaticHtmlTools {
 //			'** educated guesses based on common URL and sentence structure)
                 
                 while (hrefEndPos > hrefStartPos) {
-                    if (".,?!&:-()[]<>{}'\"".indexOf(newString.charAt(hrefEndPos-1))==-1) {
+                    if (".,?!&:-()[]<>{}'\"".indexOf(newString.charAt(hrefEndPos-1))==-1) {  // NOI18N
                         break;
                     }
                     hrefEndPos--;
                 }
                 
                 hrefString=newString.substring(hrefStartPos, hrefEndPos);
-                newString=newString.substring(0,hrefStartPos ) + "<a href=\"" + hrefString + "\">" + hrefString +"</a>" + newString.substring(hrefStartPos + hrefString.length());
+                newString=newString.substring(0,hrefStartPos ) + "<a href=\"" + hrefString + "\">" + hrefString +"</a>" + newString.substring(hrefStartPos + hrefString.length());  // NOI18N
                 
-                hrefEndPos += ("<a href='"+hrefString+"'></a>").length();
+                hrefEndPos += ("<a href='"+hrefString+"'></a>").length();  // NOI18N
             } else if ((endPos < startPos)&& (endPos>0)) {
 //		Elseif (endPos < startPos) And (endPos > 0) Then
 //			'** if we're inside a tag, assume it's an <a href> tag, and skip
 //			'** to the closing </a> tag (so we don't accidentally double-link
 //			'** something like <a href="http://blah">http://blah</a>)
-                hrefEndPos = newString.indexOf("</a>",endPos)+5;
+                hrefEndPos = newString.indexOf("</a>",endPos)+5;  // NOI18N
 //			hrefEndPos = Instr(endPos, newString, "</a>", 5)
                 if (hrefEndPos == 4) {
                     hrefEndPos = newString.length();
@@ -101,7 +101,7 @@ public class StaticHtmlTools {
                 hrefEndPos = endPos;
             }
             
-            hrefStartPos = newString.indexOf("http://",hrefEndPos);
+            hrefStartPos = newString.indexOf("http://",hrefEndPos);  // NOI18N
         }
         
         return newString;
@@ -112,23 +112,23 @@ public class StaticHtmlTools {
         // String used for searching, comparison and indexing
         String textUpperCase = text.toUpperCase();
         
-        int indexHead = textUpperCase.indexOf("<META ");
-        int indexMeta = textUpperCase.indexOf("<META ");
-        int indexBody = textUpperCase.indexOf("<BODY ");
+        int indexHead = textUpperCase.indexOf("<META ");  // NOI18N
+        int indexMeta = textUpperCase.indexOf("<META ");  // NOI18N
+        int indexBody = textUpperCase.indexOf("<BODY ");  // NOI18N
         
         // Not found or meta not inside the head nothing to strip...
         if (indexMeta == -1 || indexMeta > indexHead && indexMeta < indexBody)
             return text;
         
         // Find end of meta tag text.
-        int indexHeadEnd = textUpperCase.indexOf(">", indexMeta);
+        int indexHeadEnd = textUpperCase.indexOf(">", indexMeta);  // NOI18N
         
         // Strip meta tag text
         return text.substring(0, indexMeta-1) + text.substring(indexHeadEnd+1);
     }
     
     public static void main(String[] args) {
-        String test="<head>test http://www.google.de?quiery <a href=\"http://www.wer.de/\">wer</a></head>";
+        String test="<head>test http://www.google.de?quiery <a href=\"http://www.wer.de/\">wer</a></head>";  // NOI18N
         System.out.println(convertHTTPReferences(test));
     }
     
@@ -153,7 +153,7 @@ public class StaticHtmlTools {
             // word breaking
             if (lastWasBlankChar) {
                 lastWasBlankChar = false;
-                sb.append("&nbsp;");
+                sb.append("&nbsp;");  // NOI18N
                 }
             else {
                 lastWasBlankChar = true;
@@ -164,18 +164,18 @@ public class StaticHtmlTools {
             lastWasBlankChar = false;
             //
             // HTML Special Chars
-            if (c == '"')
-                sb.append("&quot;");
-            else if (c == '&')
-                sb.append("&amp;");
-            else if (c == '<')
-                sb.append("&lt;");
-            else if (c == '>')
-                sb.append("&gt;");
-            else if (c == '\n')
+            if (c == '"')  // NOI18N
+                sb.append("&quot;");  // NOI18N
+            else if (c == '&')  // NOI18N
+                sb.append("&amp;");  // NOI18N
+            else if (c == '<')  // NOI18N
+                sb.append("&lt;");  // NOI18N
+            else if (c == '>')  // NOI18N
+                sb.append("&gt;");  // NOI18N
+            else if (c == '\n')  // NOI18N
                 // Handle Newline
                 //sb.append("&lt;/br&gt;");
-                sb.append("\n");
+                sb.append("\n");  // NOI18N
             else {
                 int ci = 0xffff & c;
                 if (ci < 160 )
@@ -183,9 +183,9 @@ public class StaticHtmlTools {
                     sb.append(c);
                 else {
                     // Not 7 Bit use the unicode system
-                    sb.append("&#");
+                    sb.append("&#");  // NOI18N
                     sb.append(new Integer(ci).toString());
-                    sb.append(';');
+                    sb.append(';');  // NOI18N
                     }
                 }
             }
