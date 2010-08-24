@@ -4,8 +4,8 @@
  */
 package de.cismet.tools;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -14,7 +14,7 @@ import java.util.Set;
 public final class BlacklistClassloading {
 
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(BlacklistClassloading.class);
-    private static final Set<String> blacklist = new HashSet<String>();
+    private static final Map<String, Object> blacklist = new HashMap<String, Object>();
 
     private BlacklistClassloading() {
         throw new AssertionError();
@@ -30,11 +30,11 @@ public final class BlacklistClassloading {
             final StringBuilder classNameWithLoaderBuilder = new StringBuilder(classname);
             classNameWithLoaderBuilder.append("@").append(Thread.currentThread().getContextClassLoader());
             String classIdentity = classNameWithLoaderBuilder.toString();
-            if (!blacklist.contains(classIdentity)) {
+            if (!blacklist.containsKey(classIdentity)) {
                 try {
                     return Class.forName(classname);
                 } catch (ClassNotFoundException ex) {
-                    blacklist.add(classIdentity);
+                    blacklist.put(classIdentity, null);
                     if (log.isDebugEnabled()) {
                         log.debug("Could not load class " + classIdentity + "! Added classname to blacklist", ex);
                     }
