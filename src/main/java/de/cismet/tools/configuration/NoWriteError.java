@@ -38,5 +38,6 @@ package de.cismet.tools.configuration;
  *
  * @author thorsten.hell@cismet.de
  */
-public class NoWriteError extends Throwable{
+// TODO: unnecessary class, another appropriate exception could be thrown
+public class NoWriteError extends Exception{
 }

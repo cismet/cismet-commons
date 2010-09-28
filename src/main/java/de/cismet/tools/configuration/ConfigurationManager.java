@@ -1,301 +1,861 @@
-/*
- * ConfigurationManager.java
- * Copyright (C) 2005 by:
- *
- *----------------------------
- * cismet GmbH
- * Goebenstrasse 40
- * 66117 Saarbruecken
- * http://www.cismet.de
- *----------------------------
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- *----------------------------
- * Author:
- * thorsten.hell@cismet.de
- *----------------------------
- *
- * Created on 3. M\u00E4rz 2006, 14:14
- *
- */
+/***************************************************
+*
+* cismet GmbH, Saarbruecken, Germany
+*
+*              ... and it just works.
+*
+****************************************************/
 package de.cismet.tools.configuration;
 
-import java.awt.EventQueue;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.util.Vector;
+import org.apache.log4j.Logger;
+
+import org.jdom.Attribute;
+import org.jdom.Content;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+import org.openide.util.Lookup;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringReader;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
+ * DOCUMENT ME!
  *
- * @author thorsten.hell@cismet.de
+ * @author   thorsten.hell@cismet.de
+ * @version  $Revision$, $Date$
  */
 public class ConfigurationManager {
 
-    private final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
-    Vector<Configurable> configurables = new Vector<Configurable>();
-    private String fileName = "configuration.xml";  // NOI18N
-    private String fallBackFileName = "configuration.xml";  // NOI18N
-    private String defaultFileName = fallBackFileName;
-    private String classPathFolder = "/";  // NOI18N
-    private String folder = ".cismet";  // NOI18N
+    //~ Static fields/initializers ---------------------------------------------
+
+    private static final transient Logger LOG = Logger.getLogger(ConfigurationManager.class);
+
+    private static final String SUBSTITUTION_ATTR = "substitutionAttribute"; // NOI18N
+
+    //~ Instance fields --------------------------------------------------------
+
+    private final List<Configurable> configurables;
+    private String fileName;
+    private String fallBackFileName;
+    private String defaultFileName;
+    private String classPathFolder;
+    private String folder;
     private String home;
     private String fs;
-//    private Element rootObject = null;
-    private Element serverRootObject = null;
+    private Element serverRootObject;
 
-    /** Creates a new instance of ConfigurationManager */
+    //~ Constructors -----------------------------------------------------------
+
+    /**
+     * Creates a new instance of ConfigurationManager.
+     */
     public ConfigurationManager() {
-        if(log.isDebugEnabled())
-            log.debug("Create ConfigurationManager.");  // NOI18N
-        home = System.getProperty("user.home");  // NOI18N
-        fs = System.getProperty("file.separator");  // NOI18N
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Create ConfigurationManager."); // NOI18N
+        }
+        home = System.getProperty("user.home");        // NOI18N
+        fs = System.getProperty("file.separator");     // NOI18N
+        fileName = "configuration.xml";
+        fallBackFileName = fileName;
+        defaultFileName = fileName;
+        classPathFolder = "/";
+        folder = ".cismet";
+        configurables = new ArrayList<Configurable>();
     }
 
-    public void addConfigurable(Configurable configurable) {
+    //~ Methods ----------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  configurable  DOCUMENT ME!
+     */
+    public void addConfigurable(final Configurable configurable) {
         configurables.add(configurable);
     }
 
-    public void removeConfigurable(Configurable configurable) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  configurable  DOCUMENT ME!
+     */
+    public void removeConfigurable(final Configurable configurable) {
         configurables.remove(configurable);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public String getFileName() {
         return fileName;
     }
 
-    public void setFileName(String fileName) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  fileName  DOCUMENT ME!
+     */
+    public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public String getFolder() {
         return folder;
     }
 
-    public void setFolder(String folder) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  folder  DOCUMENT ME!
+     */
+    public void setFolder(final String folder) {
         this.folder = folder;
     }
 
+    /**
+     * DOCUMENT ME!
+     */
     public void configure() {
-        configure((Configurable) null);
+        configure((Configurable)null);
     }
 
-    public void configure(String path) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  path  DOCUMENT ME!
+     */
+    public void configure(final String path) {
         configure(null, path);
     }
 
-    public void configure(Configurable singleConfig) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  singleConfig  DOCUMENT ME!
+     */
+    public void configure(final Configurable singleConfig) {
         configure(singleConfig, home + fs + folder + fs + fileName);
     }
 
-    public void configure(Configurable singleConfig, String path) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  singleConfig  DOCUMENT ME!
+     * @param  path          DOCUMENT ME!
+     */
+    public void configure(final Configurable singleConfig, final String path) {
         Element rootObject = null;
         try {
-            SAXBuilder builder = new SAXBuilder(false);
-            Document doc = builder.build(new File(path));
+            final SAXBuilder builder = new SAXBuilder(false);
+            final Document doc = builder.build(new File(path));
 
             rootObject = doc.getRootElement();
-        } catch (Throwable e) {
-            log.warn("Error while reading configuration (User.Home) (" + singleConfig + ") if null then all are", e);  // NOI18N
-            System.out.println("Fehler beim Lesen der Einstellungen (User.Home)");  // NOI18N
-            e.printStackTrace();
-            if(log.isInfoEnabled())
-                log.info("rootObject:" + rootObject);  // NOI18N
+        } catch (final Exception e) {
+            final String message = "Error while reading configuration (User.Home) (" + singleConfig // NOI18N
+                        + ") if null then all are";                                                 // NOI18N
+            LOG.warn(message, e);
         }
+
         if (rootObject == null) {
-            //Keins da. Deshalb das vordefinierte laden
+            // load predefined
             rootObject = getRootObjectFromClassPath();
-
         }
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("rootObject:" + rootObject); // NOI18N
+        }
 
-        Element serverRootObject = getRootObjectFromClassPath();
+        final Element srvRootObj = getRootObjectFromClassPath();
 
         if (rootObject == null) {
-            log.fatal("Fehler beim Konfigurationsmanagement. Von einem fehlerfreien Start kann nicht ausgegangen werden.");  // NOI18N
+            // TODO: why resuming configuration?
+            LOG.error("Error in configuration management. A clean start cannot be guaranteed"); // NOI18N
         }
 
-        XMLOutputter serializer = new XMLOutputter();
-        serializer.setEncoding("ISO-8859-1");  // NOI18N
-        if(log.isDebugEnabled())
-            log.debug("ENCODING:" + serializer.toString());  // NOI18N
-        serializer.setIndent("\t");  // NOI18N
+        final Format format = Format.getPrettyFormat();
+        // TODO: WHY NOT USING UTF-8
+        format.setEncoding("ISO-8859-1"); // NOI18N
+        final XMLOutputter serializer = new XMLOutputter(format);
 
-
-        if(log.isInfoEnabled())
-            log.info("ConfigurationDocument: " + serializer.outputString(rootObject.getDocument()));  // NOI18N
-        pureConfigure(singleConfig, rootObject, serverRootObject);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("ConfigurationDocument: " + serializer.outputString(rootObject.getDocument())); // NOI18N
+        }
+        pureConfigure(singleConfig, rootObject, srvRootObj);
     }
 
+    /**
+     * DOCUMENT ME!
+     */
     public void configureFromClasspath() {
         configureFromClasspath(null);
     }
 
-    public void configureFromClasspath(Configurable singleConfig) {
-        Element rootObject = getRootObjectFromClassPath();
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  singleConfig  DOCUMENT ME!
+     */
+    public void configureFromClasspath(final Configurable singleConfig) {
+        final Element rootObject = getRootObjectFromClassPath();
         pureConfigure(singleConfig, rootObject, getRootObjectFromClassPath());
     }
 
-    public void configureFromClasspath(String url, Configurable singleConfig) throws Exception {
-        Element rootObject = getObjectFromClassPath(url);
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   url           DOCUMENT ME!
+     * @param   singleConfig  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    public void configureFromClasspath(final String url, final Configurable singleConfig) throws Exception {
+        final Element rootObject = getObjectFromClassPath(url);
         pureConfigure(singleConfig, rootObject, getRootObjectFromClassPath());
     }
 
-    //document
+    /**
+     * DOCUMENT ME!
+     */
     public void initialiseLocalConfigurationClasspath() {
         try {
-            SAXBuilder builder = new SAXBuilder(false);
-            Document doc = builder.build(getClass().getResourceAsStream(classPathFolder + defaultFileName));
-            Element configuration = doc.getRootElement().getChild("Configuration");  // NOI18N
-            setFolder(configuration.getChildText("LocalFolder"));  // NOI18N
-        } catch (Exception ex) {
-            log.error("Fehler beim initialisieren des Configuration Managers mit File", ex);  // NOI18N
+            final SAXBuilder builder = new SAXBuilder(false);
+            final Document doc = builder.build(getClass().getResourceAsStream(classPathFolder + defaultFileName));
+            final Element configuration = doc.getRootElement().getChild("Configuration");                         // NOI18N
+            setFolder(configuration.getChildText("LocalFolder"));                                                 // NOI18N
+        } catch (final Exception ex) {
+            LOG.error("error during initialisation of configuration manager using file: " + defaultFileName, ex); // NOI18N
         }
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     private Element getRootObjectFromClassPath() {
         if (serverRootObject == null) {
-            if(log.isInfoEnabled())
-                log.info("Lesen der Einstellungen (InputStream vom ClassPath)");  // NOI18N
+            if (LOG.isInfoEnabled()) {
+                LOG.info("reading settings (InputStream from ClassPath)");                                // NOI18N
+            }
             try {
-                if(log.isDebugEnabled())
-                    log.debug("getRootObjectFromClassPath():classPathFolder+defaultFileName=" + classPathFolder + defaultFileName);  // NOI18N
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("getRootObjectFromClassPath():classPathFolder+defaultFileName="
+                                + classPathFolder                                                         // NOI18N
+                                + defaultFileName);
+                }
                 serverRootObject = getObjectFromClassPath(classPathFolder + defaultFileName);
-            } catch (Throwable e) {
-                log.warn("in getRootObjectFromClassPath: Fehler beim Lesen der Einstellungen (InputStream vom ClassPath) probiere es jetzt mit dem FallbackFilename: " + classPathFolder + fallBackFileName, e);  // NOI18N
+            } catch (final Exception e) {
+                LOG.warn(
+                    "in getRootObjectFromClassPath: error reading settings (InputStream from ClassPath) " // NOI18N
+                            + "trying fallback filename: "                                                // NOI18N
+                            + classPathFolder
+                            + fallBackFileName,
+                    e);
                 try {
                     serverRootObject = getObjectFromClassPath(classPathFolder + fallBackFileName);
-                } catch (Throwable t) {
-                    log.error("Fehler beim Lesen der Einstellungen (FallBackFilename)", t);  // NOI18N
+                } catch (final Exception t) {
+                    LOG.error("error reading settings (FallBackFilename)", t);                            // NOI18N
                     serverRootObject = null;
                 }
             }
         }
+
         return serverRootObject;
     }
 
-    private Element getObjectFromClassPath(String classPathUrl) throws Exception {
-        SAXBuilder builder = new SAXBuilder(false);
-        Document doc = builder.build(getClass().getResourceAsStream(classPathUrl));
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   classPathUrl  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  JDOMException  DOCUMENT ME!
+     * @throws  IOException    DOCUMENT ME!
+     */
+    private Element getObjectFromClassPath(final String classPathUrl) throws JDOMException, IOException {
+        final SAXBuilder builder = new SAXBuilder(false);
+        final Document doc = builder.build(getClass().getResourceAsStream(classPathUrl));
+
         return doc.getRootElement();
     }
 
-    private void pureConfigure(Configurable singleConfig, Element rootObject, Element serverRootObject) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  singleConfig      DOCUMENT ME!
+     * @param  rootObject        DOCUMENT ME!
+     * @param  serverRootObject  DOCUMENT ME!
+     */
+    private void pureConfigure(final Configurable singleConfig,
+            final Element rootObject,
+            final Element serverRootObject) {
+        final Element serverObject = preprocessElement(serverRootObject);
         if (singleConfig == null) {
-            for (Configurable elem : configurables) {
+            for (final Configurable elem : configurables) {
                 try {
-                    elem.masterConfigure(serverRootObject);
-                } catch (Throwable serverT) {
-                    log.warn("Error in elem.masterConfigure(serverRootObject)", serverT);  // NOI18N
+                    elem.masterConfigure(serverObject);
+                } catch (final Exception serverT) {
+                    LOG.warn("Error in elem.masterConfigure(serverRootObject)", serverT); // NOI18N
                 }
                 try {
                     elem.configure(rootObject);
-                } catch (Throwable clientT) {
-                    log.warn("Error in elem.configure(rootObject)", clientT);  // NOI18N
+                } catch (final Exception clientT) {
+                    LOG.warn("Error in elem.configure(rootObject)", clientT);             // NOI18N
                 }
             }
         } else {
-            singleConfig.masterConfigure(serverRootObject);
+            singleConfig.masterConfigure(serverObject);
             singleConfig.configure(rootObject);
         }
     }
 
-    public void writeConfiguration() {
-        new File(home + fs + folder).mkdirs();
-        writeConfiguration(home + fs + folder + fs + fileName);
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   e  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IllegalStateException  DOCUMENT ME!
+     */
+    private Element preprocessElement(final Element e) {
+        final ConfigAttrProvider attrProvider = Lookup.getDefault().lookup(ConfigAttrProvider.class);
+        if (attrProvider == null) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("no ConfigAttrProvider found in lookup, skipping preprocessing"); // NOI18N
+            }
+
+            return e;
+        }
+
+        final Set<Element> resolved = resolveElement(e, new EntryResolver(attrProvider));
+
+        if (resolved.size() != 1) {
+            throw new IllegalStateException(
+                "during resolve the given element was duplicated. This is illegal. Check your configuration"); // NOI18N
+        }
+
+        return resolved.iterator().next();
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   e         DOCUMENT ME!
+     * @param   resolver  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private Set<Element> resolveElement(final Element e, final AttrResolver resolver) {
+        Set<Element> toResolve = new LinkedHashSet<Element>();
+        toResolve.add(e);
+
+        if (resolver == null) {
+            // end of processing
+            return toResolve;
+        }
+
+        if (hasSubstitutionAttr(e)) {
+            // retrieve the substitution value ...
+            final String value = resolver.getAttr();
+            if (value != null) {
+                // ... try to create elements from the substitution value ...
+                final Set<Element> created = createElements(value);
+                if (created != null) {
+                    // ... and set the substitution elements to be resolved
+                    toResolve = created;
+                }
+            }
+
+            final Set<Element> resolved = new LinkedHashSet<Element>();
+            for (final Element element : toResolve) {
+                // resolve the elements to resolve against the attr resolver
+                resolved.addAll(resolveElement(element, getAttrResolver(resolver, getSubstitutionAttr(e))));
+            }
+
+            return resolved;
+        } else {
+            for (int i = 0; i < e.getContentSize(); ++i) {
+                final Content content = e.getContent(i);
+                if (content instanceof Element) {
+                    final Element child = (Element)content;
+                    final Set<Element> newChildren = resolveElement(child, resolver);
+
+                    if ((newChildren.size() == 1) && newChildren.iterator().next().equals(child)) {
+                        // if the child does not change during resolve we remove the element if it is considered 'void'
+                        removeVoid(child);
+                    } else {
+                        // we replace the child with the new children
+                        e.setContent(i, newChildren);
+                        // skip the already resolved elements
+                        i += newChildren.size();
+                    }
+                }
+            }
+        }
+
+        return toResolve;
+    }
+
+    /**
+     * Checks whether the given {@link Element} has a substitution attribute.
+     *
+     * @param   e  the {@link Element} to be checked for a substitution attribute
+     *
+     * @return  true if the {@link Element} has a substitution attribute, false otherwise
+     *
+     * @see     ConfigurationManager#SUBSTITUTION_ATTR
+     */
+    public boolean hasSubstitutionAttr(final Element e) {
+        final String key = getSubstitutionAttr(e);
+
+        return (key != null) && !key.isEmpty();
+    }
+
+    /**
+     * Returns the value of the substitution attribute of the given {@link Element}.
+     *
+     * @param   e  the {@link Element} containing the substitution attribute
+     *
+     * @return  the value of the substitution attribute of the given {@link Element}
+     *
+     * @see     ConfigurationManager#SUBSTITUTION_ATTR
+     */
+    public String getSubstitutionAttr(final Element e) {
+        return e.getAttributeValue(SUBSTITUTION_ATTR);
+    }
+
+    /**
+     * Creates a {@link Set<Element>} from the given xml snippet. This implementation assumes that there is a single
+     * root {@link Element} whose only purpose is to wrap the {@link Element}s to be created. In other words this
+     * implementation will return the child {@link Element}s of the {@link Document}'s root {@link Element}. The
+     * returned {@link Element}s are detached from their root so they can be inserted into another {@link Document}.
+     *
+     * @param   xmlSnippet  the xml {@link String} the consisting of a single root {@link Element} and the desired child
+     *                      {@link Element}s
+     *
+     * @return  the detached children of the root {@link Element} of the given xml snippet
+     */
+    public Set<Element> createElements(final String xmlSnippet) {
+        final SAXBuilder builder = new SAXBuilder(false);
+        final StringReader reader = new StringReader(xmlSnippet);
+        try {
+            final Element root = builder.build(new StringReader(xmlSnippet)).detachRootElement();
+            final List children = root.getChildren();
+            final Set<Element> elements = new LinkedHashSet<Element>(children.size());
+            for (final Object o : children) {
+                elements.add((Element)o);
+            }
+
+            // to be done in seperate loop to avoid concurrent modification
+            for (final Element e : elements) {
+                e.detach();
+            }
+
+            return elements;
+        } catch (final Exception ex) {
+            LOG.warn("cannot create elements from xml snipped: " + xmlSnippet, ex); // NOI18N
+        } finally {
+            reader.close();
+        }
+
+        return null;
+    }
+
+    /**
+     * Removes an {@link Element} from its parent if the {@link Element} does not have any children or any attributes
+     * except the substitution attribute.
+     *
+     * @param  child  the child that is a candidate for removal
+     */
+    public void removeVoid(final Element child) {
+        final List attributes = child.getAttributes();
+        if (attributes.size() == 1) {
+            final Attribute attribute = (Attribute)attributes.get(0);
+            if (SUBSTITUTION_ATTR.equals(attribute.getName()) && child.getChildren().isEmpty()) {
+                child.getParent().removeContent(child);
+            }
+        }
+    }
+
+    /**
+     * Returns a new {@link AttrResolver} based on the given {@link AttrResolver} and the given key. The creation of the
+     * {@link AttrResolver}s is done in a specific way:
+     *
+     * <ul>
+     *   <li>{@link EntryResolver}, <code>key</code> --&gt; {@link UserAttrResolver} using <code>key</code></li>
+     *   <li>{@link UserAttrResolver}, <code>key</code> --&gt; {@link GroupAttrResolver} using <code>
+     *     resolver.key</code></li>
+     *   <li>{@link GroupAttrResolver}, <code>key</code> --&gt; {@link DomainAttrResolver} using <code>
+     *     resolver.key</code></li>
+     *   <li>{@link DomainAttrResolver}, <code>key</code> --&gt; <code>null</code></li>
+     * </ul>
+     *
+     * <p>Any other {@link AttrResolver} implementation will result in a return value of <code>null</code>.</p>
+     *
+     * @param   resolver  resolver that is basis for the decision which {@link AttrResolver} to return
+     * @param   key       the key the {@link AttrResolver} shall return the value for
+     *
+     * @return  a new {@link AttrResolver}
+     */
+    private AttrResolver getAttrResolver(final AttrResolver resolver, final String key) {
+        if (resolver instanceof DefaultAttrResolver) {
+            final DefaultAttrResolver defaultResolver = (DefaultAttrResolver)resolver;
+            if (defaultResolver instanceof KeyAttrResolver) {
+                final KeyAttrResolver keyResolver = (KeyAttrResolver)defaultResolver;
+                if (keyResolver instanceof UserAttrResolver) {
+                    return new GroupAttrResolver(keyResolver.key, keyResolver.provider);
+                } else if (keyResolver instanceof GroupAttrResolver) {
+                    return new DomainAttrResolver(keyResolver.key, keyResolver.provider);
+                }
+            } else if (defaultResolver instanceof EntryResolver) {
+                return new UserAttrResolver(key, defaultResolver.provider);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    public void writeConfiguration() {
+        new File(getLocalAbsoluteConfigurationFolder()).mkdirs();
+        writeConfiguration(getLocalAbsoluteConfigurationFolder() + fileName);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public String getLocalAbsoluteConfigurationFolder() {
         return home + fs + folder + fs;
     }
 
-    public void writeConfiguration(String path) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  path  DOCUMENT ME!
+     */
+    public void writeConfiguration(final String path) {
         try {
-            if(log.isDebugEnabled())
-                log.debug("try to write configuration of this configurables:" + configurables);  // NOI18N
-            Element root = new Element("cismetConfigurationManager");  // NOI18N
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("try to write configuration of this configurables:" + configurables); // NOI18N
+            }
+            final Element root = new Element("cismetConfigurationManager");                     // NOI18N
 
-            for (Configurable elem : configurables) {
+            for (final Configurable elem : configurables) {
                 try {
-                    Element e = elem.getConfiguration();
+                    final Element e = elem.getConfiguration();
 
-                    if(log.isDebugEnabled())
-                        log.debug("Writing Element: " + e);  // NOI18N
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Writing Element: " + e);         // NOI18N
+                    }
                     if (e != null) {
                         root.addContent(e);
                     }
-                } catch (Exception t) {
-                    log.warn("Fehler beim Schreiben der eines Konfigurationsteils.", t);  // NOI18N
+                } catch (final Exception t) {
+                    LOG.warn("error while writing config part", t); // NOI18N
                 }
             }
-            Document doc = new Document(root);
-            XMLOutputter serializer = new XMLOutputter("\t", true, "ISO-8859-1");  // NOI18N
-            if(log.isDebugEnabled())
-                log.debug("ENCODING:" + serializer.toString());  // NOI18N
-            serializer.setTrimAllWhite(true);
-            File file = new File(path);
-            FileWriter writer = new FileWriter(file);
+            final Document doc = new Document(root);
+            final Format format = Format.getPrettyFormat();
+            format.setEncoding("ISO-8859-1");                       // NOI18N
+            // TODO: why not using UTF-8
+            final XMLOutputter serializer = new XMLOutputter(format);
+            final File file = new File(path);
+            final FileWriter writer = new FileWriter(file);
             serializer.output(doc, writer);
             writer.flush();
-        } catch (Throwable tt) {
-            log.error("Error while writing configuration.", tt);  // NOI18N
+        } catch (final Exception tt) {
+            LOG.error("Error while writing configuration.", tt); // NOI18N
         }
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public String getDefaultFileName() {
         return defaultFileName;
     }
 
-    public void setDefaultFileName(String defaultFileName) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  defaultFileName  DOCUMENT ME!
+     */
+    public void setDefaultFileName(final String defaultFileName) {
         this.defaultFileName = defaultFileName;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public String getClassPathFolder() {
         return classPathFolder;
     }
 
-    public void setClassPathFolder(String classPathFolder) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  classPathFolder  DOCUMENT ME!
+     */
+    public void setClassPathFolder(final String classPathFolder) {
         this.classPathFolder = classPathFolder;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public String getHome() {
         return home;
     }
 
-    public void setHome(String home) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  home  DOCUMENT ME!
+     */
+    public void setHome(final String home) {
         this.home = home;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public String getFileSeperator() {
         return fs;
     }
 
-    public void setFileSeperator(String fs) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  fs  DOCUMENT ME!
+     */
+    public void setFileSeperator(final String fs) {
         this.fs = fs;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public String getFallBackFileName() {
         return fallBackFileName;
     }
 
-    public void setFallBackFileName(String fallBackFileName) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  fallBackFileName  DOCUMENT ME!
+     */
+    public void setFallBackFileName(final String fallBackFileName) {
         this.fallBackFileName = fallBackFileName;
+    }
+
+    //~ Inner Interfaces -------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private static interface AttrResolver {
+
+        //~ Methods ------------------------------------------------------------
+
+        /**
+         * DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
+        String getAttr();
+    }
+
+    //~ Inner Classes ----------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private abstract static class DefaultAttrResolver implements AttrResolver {
+
+        //~ Instance fields ----------------------------------------------------
+
+        protected final transient ConfigAttrProvider provider;
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new DefaultAttrResolver object.
+         *
+         * @param  provider  DOCUMENT ME!
+         */
+        public DefaultAttrResolver(final ConfigAttrProvider provider) {
+            this.provider = provider;
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private abstract static class KeyAttrResolver extends DefaultAttrResolver {
+
+        //~ Instance fields ----------------------------------------------------
+
+        protected final transient String key;
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new KeyAttrResolver object.
+         *
+         * @param  key       DOCUMENT ME!
+         * @param  provider  DOCUMENT ME!
+         */
+        public KeyAttrResolver(final String key, final ConfigAttrProvider provider) {
+            super(provider);
+            this.key = key;
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private static final class EntryResolver extends DefaultAttrResolver {
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new EntryResolver object.
+         *
+         * @param  provider  DOCUMENT ME!
+         */
+        public EntryResolver(final ConfigAttrProvider provider) {
+            super(provider);
+        }
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public String getAttr() {
+            return null;
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private static final class UserAttrResolver extends KeyAttrResolver {
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new UserAttrResolver object.
+         *
+         * @param  key       DOCUMENT ME!
+         * @param  provider  DOCUMENT ME!
+         */
+        public UserAttrResolver(final String key, final ConfigAttrProvider provider) {
+            super(key, provider);
+        }
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public String getAttr() {
+            return provider.getUserConfigAttr(key);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private static final class GroupAttrResolver extends KeyAttrResolver {
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new GroupAttrResolver object.
+         *
+         * @param  key       DOCUMENT ME!
+         * @param  provider  DOCUMENT ME!
+         */
+        public GroupAttrResolver(final String key, final ConfigAttrProvider provider) {
+            super(key, provider);
+        }
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public String getAttr() {
+            return provider.getGroupConfigAttr(key);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private static final class DomainAttrResolver extends KeyAttrResolver {
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new DomainAttrResolver object.
+         *
+         * @param  key       DOCUMENT ME!
+         * @param  provider  DOCUMENT ME!
+         */
+        public DomainAttrResolver(final String key, final ConfigAttrProvider provider) {
+            super(key, provider);
+        }
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public String getAttr() {
+            return provider.getDomainConfigAttr(key);
+        }
     }
 }

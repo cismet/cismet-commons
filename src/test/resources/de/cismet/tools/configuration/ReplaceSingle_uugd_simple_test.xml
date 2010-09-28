@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : lagisProperties.xml
+    Created on : 12. August 2005, 11:02
+    Author     : Sebastian Puhl
+    Description:
+        Purpose of the document follows.
+-->
+
+<lagis>
+    <permissions>
+        <permission>
+            <readWrite>false</readWrite>
+            <userGroup>Lagerbuch</userGroup>
+            <userDomain>VERDIS</userDomain>
+        </permission>
+        <permission substitutionAttribute="perm"/>
+    </permissions>
+</lagis>
