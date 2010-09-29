@@ -28,9 +28,12 @@ import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
+import java.io.StringReader;
+
 import java.lang.reflect.Method;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -402,6 +405,51 @@ public class ConfigurationManagerTest implements Lookup.Provider {
      * @throws  Exception  DOCUMENT ME!
      */
     @Test
+    public void testResolveNamespace() throws Exception {
+        final ConfigurationManager manager = new ConfigurationManager();
+        String nsTestParent = "<root xmlns:ns1=\"abc\"><ns1:el1><ns1:el2></ns1:el2></ns1:el1></root>";
+        final SAXBuilder builder = new SAXBuilder(false);
+        StringReader reader = new StringReader(nsTestParent);
+        Element root = builder.build(reader).detachRootElement();
+        reader.close();
+        Element parent = (Element)((Element)root.getChildren().get(0)).getChildren().get(0);
+
+        final String nsTestChildren = "<root xmlns:ns1=\""
+                    + ConfigurationManager.DUMMY_NS_ATTR_VALUE
+                    + "\" xmlns:ns2=\""
+                    + ConfigurationManager.DUMMY_NS_ATTR_VALUE
+                    + "\"><ns1:el1/><ns2:el2/></root>";
+        final Set<Element> children = manager.createElements(nsTestChildren);
+        manager.resolveNamespace(parent, children);
+
+        final String el1Result = "<ns1:el1 xmlns:ns1=\"abc\"/>";
+        String el2Result = " <ns2:el2 xmlns:ns2=\"http://www.cismet.de/config/dummyNamespace\"/>";
+
+        Iterator<Element> it = children.iterator();
+        xmltestcase.assertXMLEqual(el1Result, out.outputString(it.next()));
+        xmltestcase.assertXMLEqual(el2Result, out.outputString(it.next()));
+
+        nsTestParent = "<root xmlns:ns1=\"abc\" xmlns:ns2=\"cba\"><ns1:el1><ns1:el2></ns1:el2></ns1:el1></root>";
+        reader = new StringReader(nsTestParent);
+        root = builder.build(reader).detachRootElement();
+        reader.close();
+        parent = (Element)((Element)root.getChildren().get(0)).getChildren().get(0);
+
+        manager.resolveNamespace(parent, children);
+
+        el2Result = " <ns2:el2 xmlns:ns2=\"cba\"/>";
+
+        it = children.iterator();
+        xmltestcase.assertXMLEqual(el1Result, out.outputString(it.next()));
+        xmltestcase.assertXMLEqual(el2Result, out.outputString(it.next()));
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    @Test
     public void testProcessElement_NoReplacement() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
 
@@ -663,7 +711,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
                     + "</root>");
         groupConfig.put(
             "prop",
-            "<root xmlns:wfs=\"http://www.opengis.net/wfs\">"
+            "<root xmlns:wfs=\"http://www.cismet.de/config/dummyNamespace\">"
                     + "<wfs:PropertyName>app:the_testgroup1</wfs:PropertyName>"
                     + "<wfs:PropertyName>app:the_testgroup2</wfs:PropertyName>"
                     + "<wfs:PropertyName substitutionAttribute=\"prop\">app:the_testgroup3</wfs:PropertyName></root>");
@@ -690,7 +738,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
                     + "</emailConfiguration></root>");
         domainConfig.put(
             "prop",
-            "<root xmlns:wfs=\"http://www.opengis.net/wfs\">"
+            "<root xmlns:wfs=\"http://www.cismet.de/config/dummyNamespace\">"
                     + "<wfs:PropertyName>app:the_testdomain1</wfs:PropertyName>"
                     + "<wfs:PropertyName>app:the_testdomain2</wfs:PropertyName>"
                     + "<wfs:PropertyName>app:the_testdomain3</wfs:PropertyName>"

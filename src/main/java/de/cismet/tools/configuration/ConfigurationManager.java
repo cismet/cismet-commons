@@ -14,6 +14,7 @@ import org.jdom.Content;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -42,7 +43,8 @@ public class ConfigurationManager {
 
     private static final transient Logger LOG = Logger.getLogger(ConfigurationManager.class);
 
-    private static final String SUBSTITUTION_ATTR = "substitutionAttribute"; // NOI18N
+    public static final String SUBSTITUTION_ATTR = "substitutionAttribute"; // NOI18N
+    public static final String DUMMY_NS_ATTR_VALUE = "http://www.cismet.de/config/dummyNamespace";
 
     //~ Instance fields --------------------------------------------------------
 
@@ -405,6 +407,7 @@ public class ConfigurationManager {
                         // if the child does not change during resolve we remove the element if it is considered 'void'
                         removeVoid(child);
                     } else {
+                        resolveNamespace(e, newChildren);
                         // we replace the child with the new children
                         e.setContent(i, newChildren);
                         // skip the already resolved elements
@@ -415,6 +418,47 @@ public class ConfigurationManager {
         }
 
         return toResolve;
+    }
+
+    /**
+     * Iterates through all the given children and tries to resolve every children's DUMMY{@link Namespace} against the
+     * given parent. The implementation traverses upwards beginning with the given parent {@link Element} and uses the
+     * value of the first occurrence of the child's DUMMY{@link Namespace} prefix as a new {@link Namespace} for the
+     * child.
+     *
+     * @param  parent       the {@link Element} used for resolving the {@link Namespace}s
+     * @param  newChildren  the candidate {@link Element}s probably being resolved
+     *
+     * @see    ConfigurationManager#DUMMY_NS_ATTR_VALUE
+     */
+    public void resolveNamespace(final Element parent, final Set<Element> newChildren) {
+        for (final Element child : newChildren) {
+            if (DUMMY_NS_ATTR_VALUE.equals(child.getNamespaceURI())) {
+                Element current = parent;
+                boolean found = false;
+
+                while ((current != null) && !found) {
+                    final List addNamespaces = current.getAdditionalNamespaces();
+                    final List<Namespace> namespaces = new ArrayList<Namespace>(addNamespaces.size() + 1);
+                    namespaces.add(current.getNamespace());
+                    namespaces.addAll(addNamespaces);
+
+                    for (final Namespace ns : namespaces) {
+                        if (ns.getPrefix().equals(child.getNamespacePrefix())) {
+                            child.setNamespace(ns);
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    current = current.getParentElement();
+                }
+
+                if (!found) {
+                    LOG.warn("could not resolve dummy namespace for attribute: " + child);
+                }
+            }
+        }
     }
 
     /**
@@ -460,7 +504,7 @@ public class ConfigurationManager {
         final SAXBuilder builder = new SAXBuilder(false);
         final StringReader reader = new StringReader(xmlSnippet);
         try {
-            final Element root = builder.build(new StringReader(xmlSnippet)).detachRootElement();
+            final Element root = builder.build(reader).detachRootElement();
             final List children = root.getChildren();
             final Set<Element> elements = new LinkedHashSet<Element>(children.size());
             for (final Object o : children) {
