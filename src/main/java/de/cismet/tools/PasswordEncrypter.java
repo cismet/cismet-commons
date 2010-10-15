@@ -31,8 +31,8 @@
  * Created on 12. August 2005, 11:28
  *
  */
-
 package de.cismet.tools;
+
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.sourceforge.blowfishj.BlowfishEasy;
@@ -42,14 +42,16 @@ import net.sourceforge.blowfishj.BlowfishEasy;
  * @author  thorsten.hell@cismet.de
  */
 public class PasswordEncrypter extends javax.swing.JFrame {
-    private static final char[] MASTER_PASS="fourtytwo".toCharArray();  // NOI18N
-    public static String CRYPT_PREFIX="crypt::";  // NOI18N
+
+    private static final char[] MASTER_PASS = "fourtytwo".toCharArray();  // NOI18N
+    public static String CRYPT_PREFIX = "crypt::";  // NOI18N
+    private final static transient org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PasswordEncrypter.class);
     /** Creates new form PasswordEncrypter */
     public PasswordEncrypter() {
         initComponents();
         getRootPane().setDefaultButton(cmdGo);
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -174,30 +176,30 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }//GEN-LAST:event_pwfPassword1FocusGained
 
     private void cmdGoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGoActionPerformed
-        String p1=new String(pwfPassword1.getPassword());
-        String p2=new String(pwfPassword2.getPassword());        
+        String p1 = new String(pwfPassword1.getPassword());
+        String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
             txtCode.setText(encryptString(p1));
             //System.out.println(decryptString(txtCode.getText()));
-        }
-        else {
+        } else {
             JOptionPane.showMessageDialog(this,
-                    org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.message"),  // NOI18N
-                    org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.title"),  // NOI18N
+                    org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.message"), // NOI18N
+                    org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.title"), // NOI18N
                     JOptionPane.ERROR_MESSAGE);
             pwfPassword1.setText("");  // NOI18N
             pwfPassword2.setText("");  // NOI18N
         }
     }//GEN-LAST:event_cmdGoActionPerformed
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
+
             public void run() {
                 try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()) ;
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -205,25 +207,27 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             }
         });
     }
-    
-    
-    public static String decryptString(String code){
-        if (code!=null&&code.startsWith(CRYPT_PREFIX)) {
-            BlowfishEasy  blowfish=new BlowfishEasy(MASTER_PASS);
-            code=code.substring(CRYPT_PREFIX.length(), code.length());
+
+    public static String decryptString(String code) {
+        if (code != null && code.startsWith(CRYPT_PREFIX)) {
+            BlowfishEasy blowfish = new BlowfishEasy(MASTER_PASS);
+            code = code.substring(CRYPT_PREFIX.length(), code.length());
             return blowfish.decryptString(code);
-        }
-        else {
+        } else {
             return code;
         }
     }
-    
-    public static String encryptString(String pwd){
-        BlowfishEasy  blowfish=new BlowfishEasy(MASTER_PASS);
-        String code = CRYPT_PREFIX+blowfish.encryptString(pwd);        
-        return code;        
+
+    public static String encryptString(String pwd) {
+        BlowfishEasy blowfish = new BlowfishEasy(MASTER_PASS);
+        try {
+            String code = CRYPT_PREFIX + blowfish.encryptString(pwd);
+            return code;
+        } catch (Exception e) {
+            log.warn("Error during encryption of STRING. Attention will use plain STRING instead.",e);
+            return pwd;
+        }
     }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cmdGo;
     private javax.swing.JLabel jLabel1;
@@ -234,5 +238,4 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     private javax.swing.JPasswordField pwfPassword2;
     private javax.swing.JTextArea txtCode;
     // End of variables declaration//GEN-END:variables
-    
 }
