@@ -1,9 +1,15 @@
+/***************************************************
+*
+* cismet GmbH, Saarbruecken, Germany
+*
+*              ... and it just works.
+*
+****************************************************/
 /*
  * NumberStringComparator.java
  *
  * Created on 12. Januar 2005, 11:31
  */
-
 package de.cismet.tools;
 
 /**
@@ -29,72 +35,72 @@ package de.cismet.tools;
  * BBB<br>
  * BBC<br>
  * ...<br>
- * @author hell
+ *
+ * @author   hell
+ * @version  $Revision$, $Date$
  */
-public class NumberStringComparator implements java.util.Comparator{
-    private boolean numbersFirst=true;
-    
-    /** Creates a new instance of NumberStringComparator */
+public class NumberStringComparator implements java.util.Comparator {
+
+    //~ Instance fields --------------------------------------------------------
+
+    private boolean numbersFirst = true;
+
+    //~ Constructors -----------------------------------------------------------
+
+    /**
+     * Creates a new instance of NumberStringComparator.
+     */
     public NumberStringComparator() {
     }
-    
+
+    //~ Methods ----------------------------------------------------------------
+
     /**
-     * Vergleichsfunktion
-     * @param o1 erstes Objekt
-     * @param o2 zweites Objekt
-     * @return Vergleichsergebniss
+     * Vergleichsfunktion.
+     *
+     * @param   o1  erstes Objekt
+     * @param   o2  zweites Objekt
+     *
+     * @return  Vergleichsergebniss
      */
-    public int compare(Object o1, Object o2) {
-        String s1=o1.toString();
-        String s2=o2.toString();
-        Double d1=null;
-        Double d2=null;
+    @Override
+    public int compare(final Object o1, final Object o2) {
+        final String s1 = o1.toString();
+        final String s2 = o2.toString();
+        Double d1 = null;
+        Double d2 = null;
         try {
-            d1=new Double(s1.trim());
+            d1 = new Double(s1.trim());
+        } catch (Exception e) {
         }
-        catch (Exception e) {
-            
-        }
-        
+
         try {
-            d2=new Double(s2.trim());
+            d2 = new Double(s2.trim());
+        } catch (Exception e) {
         }
-        catch (Exception e) {
-            
-        }
-        
-        if (d1==null&&d2==null) {
-            if (s1.length()>s2.length()) {
+
+        if ((d1 == null) && (d2 == null)) {
+            if (s1.length() > s2.length()) {
                 return 1;
-            }
-            else if (s1.length()<s2.length()) {
+            } else if (s1.length() < s2.length()) {
                 return -1;
-            }
-            else {
+            } else {
                 return s1.compareTo(s2);
             }
-        }
-        else if (d1==null&&d2!=null){
+        } else if ((d1 == null) && (d2 != null)) {
             if (numbersFirst) {
                 return 1;
-            }
-            else {
+            } else {
                 return -1;
             }
-        }
-        else if (d1!=null&&d2==null){
+        } else if ((d1 != null) && (d2 == null)) {
             if (numbersFirst) {
                 return -1;
-            }
-            else {
+            } else {
                 return 1;
             }
-        }
-        else /*if (d1!=null&&d2!=null)*/{
+        } else /*if (d1!=null&&d2!=null)*/ {
             return d1.compareTo(d2);
         }
-        
     }
-
-    
 }

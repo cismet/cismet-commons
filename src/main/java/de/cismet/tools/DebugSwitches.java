@@ -1,32 +1,51 @@
+/***************************************************
+*
+* cismet GmbH, Saarbruecken, Germany
+*
+*              ... and it just works.
+*
+****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.cismet.tools;
 
 /**
+ * DOCUMENT ME!
  *
- * @author thorsten
+ * @author   thorsten
+ * @version  $Revision$, $Date$
  */
 public class DebugSwitches {
+
+    //~ Static fields/initializers ---------------------------------------------
+
+    private static DebugSwitches instance = null;
+
+    //~ Instance fields --------------------------------------------------------
+
     private final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
-    private static DebugSwitches instance=null;
 
+    //~ Constructors -----------------------------------------------------------
 
-    
-
-    private DebugSwitches(){
-
+    /**
+     * Creates a new DebugSwitches object.
+     */
+    private DebugSwitches() {
     }
 
-    public static DebugSwitches getInstance(){
-        if (instance==null){
-            instance=new DebugSwitches();
+    //~ Methods ----------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static DebugSwitches getInstance() {
+        if (instance == null) {
+            instance = new DebugSwitches();
         }
         return instance;
     }
-
-
-
 }

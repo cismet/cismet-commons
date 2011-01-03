@@ -1,50 +1,55 @@
+/***************************************************
+*
+* cismet GmbH, Saarbruecken, Germany
+*
+*              ... and it just works.
+*
+****************************************************/
 /*
  * SyncLinkedList.java
  *
  * Created on 25. Mai 2004, 12:58
  */
-
 package Sirius.util.collections;
 
 import java.util.*;
 /**
+ * DOCUMENT ME!
  *
- * @author  schlob
+ * @author   schlob
+ * @version  $Revision$, $Date$
  */
 
+public class SyncLinkedList extends LinkedList {
 
-public class SyncLinkedList extends LinkedList
-{
-    public synchronized boolean add(Object o)
-    {
-        if(!contains(o))
+    //~ Methods ----------------------------------------------------------------
+
+    @Override
+    public synchronized boolean add(final Object o) {
+        if (!contains(o)) {
             return super.add(o);
-        else
+        } else {
             return true;
+        }
     }
-    
-    public synchronized boolean isEmpty()
-    {
+
+    @Override
+    public synchronized boolean isEmpty() {
         return super.isEmpty();
     }
-    
-    public synchronized boolean addAll(Collection c)
-    {
+
+    @Override
+    public synchronized boolean addAll(final Collection c) {
         return super.addAll(c);
     }
-    
-    public synchronized Object removeFirst()
-    {
+
+    @Override
+    public synchronized Object removeFirst() {
         return super.removeFirst();
     }
-    
-    public synchronized boolean remove(java.lang.Object o)
-    {
+
+    @Override
+    public synchronized boolean remove(final java.lang.Object o) {
         return super.remove(o);
     }
-    
-    
 }
-
-
-

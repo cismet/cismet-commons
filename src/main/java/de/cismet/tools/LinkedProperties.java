@@ -1,3 +1,10 @@
+/***************************************************
+*
+* cismet GmbH, Saarbruecken, Germany
+*
+*              ... and it just works.
+*
+****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -13,20 +20,26 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
+ * DOCUMENT ME!
  *
- * @author thorsten
+ * @author   thorsten
+ * @version  $Revision$, $Date$
  */
 public class LinkedProperties extends Properties {
 
+    //~ Instance fields --------------------------------------------------------
+
     private final LinkedHashMap map = new LinkedHashMap();
 
+    //~ Methods ----------------------------------------------------------------
+
     @Override
-    public synchronized Object put(Object key, Object value) {
+    public synchronized Object put(final Object key, final Object value) {
         return map.put(key, value);
     }
 
     @Override
-    public synchronized Object get(Object key) {
+    public synchronized Object get(final Object key) {
         return map.get(key);
     }
 
@@ -41,17 +54,17 @@ public class LinkedProperties extends Properties {
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(final Object value) {
         return map.containsValue(value);
     }
 
     @Override
-    public synchronized boolean contains(Object value) {
+    public synchronized boolean contains(final Object value) {
         return containsValue(value);
     }
 
     @Override
-    public synchronized boolean containsKey(Object key) {
+    public synchronized boolean containsKey(final Object key) {
         return map.containsKey(key);
     }
 
@@ -66,7 +79,7 @@ public class LinkedProperties extends Properties {
     }
 
     @Override
-    public synchronized boolean equals(Object o) {
+    public synchronized boolean equals(final Object o) {
         throw new UnsupportedOperationException();
     }
 
@@ -91,12 +104,12 @@ public class LinkedProperties extends Properties {
     }
 
     @Override
-    public synchronized void putAll(Map t) {
+    public synchronized void putAll(final Map t) {
         map.putAll(t);
     }
 
     @Override
-    public synchronized Object remove(Object key) {
+    public synchronized Object remove(final Object key) {
         return map.remove(key);
     }
 
@@ -111,31 +124,49 @@ public class LinkedProperties extends Properties {
     }
 
     @Override
-    public String getProperty(String key) {
+    public String getProperty(final String key) {
         final Object oval = get(key);
-        final String sval = (oval instanceof String) ? (String) oval : null;
+        final String sval = (oval instanceof String) ? (String)oval : null;
         return ((sval == null) && (defaults != null)) ? defaults.getProperty(key) : sval;
     }
 }
 
-class IteratorEnumeration
-        implements Enumeration {
+/**
+ * DOCUMENT ME!
+ *
+ * @version  $Revision$, $Date$
+ */
+class IteratorEnumeration implements Enumeration {
+
+    //~ Instance fields --------------------------------------------------------
 
     private Iterator iterator;
 
-    public IteratorEnumeration(Iterator i) {
+    //~ Constructors -----------------------------------------------------------
+
+    /**
+     * Creates a new IteratorEnumeration object.
+     *
+     * @param   i  DOCUMENT ME!
+     *
+     * @throws  IllegalArgumentException  DOCUMENT ME!
+     */
+    public IteratorEnumeration(final Iterator i) {
         if (i == null) {
-            throw new IllegalArgumentException("Iterator is null");  // NOI18N
+            throw new IllegalArgumentException("Iterator is null"); // NOI18N
         }
         iterator = i;
     }
 
+    //~ Methods ----------------------------------------------------------------
+
+    @Override
     public boolean hasMoreElements() {
         return iterator.hasNext();
     }
 
+    @Override
     public Object nextElement() {
         return iterator.next();
     }
 }
-

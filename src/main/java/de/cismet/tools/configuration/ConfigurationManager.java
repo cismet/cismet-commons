@@ -199,7 +199,7 @@ public class ConfigurationManager {
         final XMLOutputter serializer = new XMLOutputter(format);
 
         if (LOG.isInfoEnabled()) {
-            LOG.info("Configuration Document: " + serializer.outputString(rootObject.getDocument())); // NOI18N
+            LOG.info("Configuration Document: " + serializer.outputString(rootObject.getDocument()));        // NOI18N
             LOG.info("Server Configuration Document: " + serializer.outputString(srvRootObj.getDocument())); // NOI18N
         }
         pureConfigure(singleConfig, rootObject, srvRootObj);
@@ -351,7 +351,7 @@ public class ConfigurationManager {
             return e;
         }
 
-        if(LOG.isDebugEnabled()){
+        if (LOG.isDebugEnabled()) {
             final XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
             LOG.debug("Element before resolve: " + out.outputString(e));
         }
@@ -365,7 +365,7 @@ public class ConfigurationManager {
 
         final Element resolvedRoot = resolved.iterator().next();
 
-        if(LOG.isDebugEnabled()){
+        if (LOG.isDebugEnabled()) {
             final XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
             LOG.debug("Element after resolve: " + out.outputString(resolvedRoot));
         }

@@ -168,7 +168,7 @@ public final class TypeSafeCollections {
      * @return  DOCUMENT ME!
      */
     @SuppressWarnings("unchecked")
-    public static <T> T[] newArray(int size) {
+    public static <T> T[] newArray(final int size) {
         return (T[])new Object[size];
     }
 
@@ -260,7 +260,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> HashMap<K, V> newHashMap(int capacity) {
+    public static <K, V> HashMap<K, V> newHashMap(final int capacity) {
         return new HashMap<K, V>(capacity);
     }
 
@@ -274,7 +274,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> HashMap<K, V> newHashMap(int capacity, float loadfactor) {
+    public static <K, V> HashMap<K, V> newHashMap(final int capacity, final float loadfactor) {
         return new HashMap<K, V>(capacity, loadfactor);
     }
 
@@ -287,7 +287,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> HashMap<K, V> newHashMap(Map<? extends K, ? extends V> m) {
+    public static <K, V> HashMap<K, V> newHashMap(final Map<? extends K, ? extends V> m) {
         return new HashMap<K, V>(m);
     }
 
@@ -300,7 +300,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(Map<? extends K, ? extends V> m) {
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final Map<? extends K, ? extends V> m) {
         return new ConcurrentHashMap<K, V>(m);
     }
 
@@ -313,7 +313,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(int capacity) {
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final int capacity) {
         return new ConcurrentHashMap<K, V>(capacity);
     }
 
@@ -327,7 +327,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(int capacity, float loadfactor) {
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final int capacity, final float loadfactor) {
         return new ConcurrentHashMap<K, V>(capacity, loadfactor);
     }
 
@@ -342,10 +342,9 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(
-            int capacity,
-            float loadfactor,
-            int concurrencyLevel) {
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final int capacity,
+            final float loadfactor,
+            final int concurrencyLevel) {
         return new ConcurrentHashMap<K, V>(capacity, loadfactor, concurrencyLevel);
     }
 
@@ -358,7 +357,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> TreeMap<K, V> newTreeMap(Map<? extends K, ? extends V> m) {
+    public static <K, V> TreeMap<K, V> newTreeMap(final Map<? extends K, ? extends V> m) {
         return new TreeMap<K, V>(m);
     }
 
@@ -371,7 +370,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> TreeMap<K, V> newTreeMap(SortedMap<K, ? extends V> sm) {
+    public static <K, V> TreeMap<K, V> newTreeMap(final SortedMap<K, ? extends V> sm) {
         return new TreeMap<K, V>(sm);
     }
 
@@ -384,7 +383,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> TreeMap<K, V> newTreeMap(Comparator<? super K> comparator) {
+    public static <K, V> TreeMap<K, V> newTreeMap(final Comparator<? super K> comparator) {
         return new TreeMap<K, V>(comparator);
     }
 
@@ -396,7 +395,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> ArrayList<T> newArrayList(int capacity) {
+    public static <T> ArrayList<T> newArrayList(final int capacity) {
         return new ArrayList<T>(capacity);
     }
 
@@ -408,7 +407,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> ArrayList<T> newArrayList(Collection<? extends T> coll) {
+    public static <T> ArrayList<T> newArrayList(final Collection<? extends T> coll) {
         return new ArrayList<T>(coll);
     }
 
@@ -420,7 +419,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> LinkedList<T> newLinkedList(Collection<? extends T> coll) {
+    public static <T> LinkedList<T> newLinkedList(final Collection<? extends T> coll) {
         return new LinkedList<T>(coll);
     }
 
@@ -432,7 +431,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> HashSet<T> newHashSet(int capacity) {
+    public static <T> HashSet<T> newHashSet(final int capacity) {
         return new HashSet<T>(capacity);
     }
 
@@ -445,7 +444,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> HashSet<T> newHashSet(int capacity, float loadfactor) {
+    public static <T> HashSet<T> newHashSet(final int capacity, final float loadfactor) {
         return new HashSet<T>(capacity, loadfactor);
     }
 
@@ -457,7 +456,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> HashSet<T> newHashSet(Collection<? extends T> coll) {
+    public static <T> HashSet<T> newHashSet(final Collection<? extends T> coll) {
         return new HashSet<T>(coll);
     }
 
@@ -469,7 +468,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> TreeSet<T> newTreeSet(Collection<? extends T> coll) {
+    public static <T> TreeSet<T> newTreeSet(final Collection<? extends T> coll) {
         return new TreeSet<T>(coll);
     }
 
@@ -481,7 +480,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> TreeSet<T> newTreeSet(SortedSet<? extends T> ss) {
+    public static <T> TreeSet<T> newTreeSet(final SortedSet<? extends T> ss) {
         return new TreeSet<T>(ss);
     }
 
@@ -493,7 +492,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> TreeSet<T> newTreeSet(Comparator<? super T> comp) {
+    public static <T> TreeSet<T> newTreeSet(final Comparator<? super T> comp) {
         return new TreeSet<T>(comp);
     }
 
@@ -505,7 +504,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> Vector<T> newVector(int capacity) {
+    public static <T> Vector<T> newVector(final int capacity) {
         return new Vector<T>(capacity);
     }
 
@@ -518,7 +517,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> Vector<T> newVector(int capacity, int increment) {
+    public static <T> Vector<T> newVector(final int capacity, final int increment) {
         return new Vector<T>(capacity, increment);
     }
 
@@ -530,7 +529,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> Vector<T> newVector(Collection<? extends T> coll) {
+    public static <T> Vector<T> newVector(final Collection<? extends T> coll) {
         return new Vector<T>(coll);
     }
 
@@ -542,7 +541,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(Collection<? extends T> coll) {
+    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(final Collection<? extends T> coll) {
         return new ConcurrentSkipListSet<T>(coll);
     }
 
@@ -554,7 +553,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(SortedSet<? extends T> ss) {
+    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(final SortedSet<? extends T> ss) {
         return new ConcurrentSkipListSet<T>(ss);
     }
 
@@ -566,7 +565,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(Comparator<? super T> comp) {
+    public static <T> ConcurrentSkipListSet<T> newConcurrentSkipListSet(final Comparator<? super T> comp) {
         return new ConcurrentSkipListSet<T>(comp);
     }
 
@@ -578,7 +577,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> CopyOnWriteArrayList<T> newCopyOnWriteArrayList(Collection<? extends T> coll) {
+    public static <T> CopyOnWriteArrayList<T> newCopyOnWriteArrayList(final Collection<? extends T> coll) {
         return new CopyOnWriteArrayList<T>(coll);
     }
 
@@ -590,7 +589,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> CopyOnWriteArrayList<T> newCopyOnWriteArrayList(T[] copyIn) {
+    public static <T> CopyOnWriteArrayList<T> newCopyOnWriteArrayList(final T[] copyIn) {
         return new CopyOnWriteArrayList<T>(copyIn);
     }
 
@@ -602,7 +601,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> CopyOnWriteArraySet<T> newCopyOnWriteArraySet(Collection<? extends T> coll) {
+    public static <T> CopyOnWriteArraySet<T> newCopyOnWriteArraySet(final Collection<? extends T> coll) {
         return new CopyOnWriteArraySet<T>(coll);
     }
 
@@ -615,7 +614,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> ConcurrentSkipListMap<K, V> newConcurrentSkipListMap(Map<? extends K, ? extends V> m) {
+    public static <K, V> ConcurrentSkipListMap<K, V> newConcurrentSkipListMap(final Map<? extends K, ? extends V> m) {
         return new ConcurrentSkipListMap<K, V>(m);
     }
 
@@ -628,7 +627,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> ConcurrentSkipListMap<K, V> newConcurrentSkipListMap(SortedMap<K, ? extends V> sm) {
+    public static <K, V> ConcurrentSkipListMap<K, V> newConcurrentSkipListMap(final SortedMap<K, ? extends V> sm) {
         return new ConcurrentSkipListMap<K, V>(sm);
     }
 
@@ -641,7 +640,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> ConcurrentSkipListMap<K, V> newConcurrentSkipListMap(Comparator<? super K> comp) {
+    public static <K, V> ConcurrentSkipListMap<K, V> newConcurrentSkipListMap(final Comparator<? super K> comp) {
         return new ConcurrentSkipListMap<K, V>(comp);
     }
 
@@ -653,7 +652,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> ConcurrentLinkedQueue<T> newConcurrentLinkedQueue(Collection<? extends T> coll) {
+    public static <T> ConcurrentLinkedQueue<T> newConcurrentLinkedQueue(final Collection<? extends T> coll) {
         return new ConcurrentLinkedQueue<T>(coll);
     }
 
@@ -666,7 +665,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(int capacity) {
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final int capacity) {
         return new LinkedHashMap<K, V>(capacity);
     }
 
@@ -679,7 +678,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(Map<? extends K, ? extends V> m) {
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final Map<? extends K, ? extends V> m) {
         return new LinkedHashMap<K, V>(m);
     }
 
@@ -693,7 +692,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(int capacity, float loadfactor) {
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final int capacity, final float loadfactor) {
         return new LinkedHashMap<K, V>(capacity, loadfactor);
     }
 
@@ -708,7 +707,9 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(int capacity, float loadfactor, boolean accessOrder) {
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final int capacity,
+            final float loadfactor,
+            final boolean accessOrder) {
         return new LinkedHashMap<K, V>(capacity, loadfactor, accessOrder);
     }
 
@@ -720,7 +721,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> LinkedHashSet<T> newLinkedHashSet(Collection<? extends T> coll) {
+    public static <T> LinkedHashSet<T> newLinkedHashSet(final Collection<? extends T> coll) {
         return new LinkedHashSet<T>(coll);
     }
 
@@ -732,7 +733,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> LinkedHashSet<T> newLinkedHashSet(int capacity) {
+    public static <T> LinkedHashSet<T> newLinkedHashSet(final int capacity) {
         return new LinkedHashSet<T>(capacity);
     }
 
@@ -745,7 +746,7 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <T> LinkedHashSet<T> newLinkedHashSet(int capacity, float loadFactor) {
+    public static <T> LinkedHashSet<T> newLinkedHashSet(final int capacity, final float loadFactor) {
         return new LinkedHashSet<T>(capacity, loadFactor);
     }
 }
