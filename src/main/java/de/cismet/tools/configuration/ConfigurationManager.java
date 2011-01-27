@@ -188,11 +188,6 @@ public class ConfigurationManager {
 
         final Element srvRootObj = getRootObjectFromClassPath();
 
-        if (rootObject == null) {
-            // TODO: why resuming configuration?
-            LOG.error("Error in configuration management. A clean start cannot be guaranteed"); // NOI18N
-        }
-
         final Format format = Format.getPrettyFormat();
         // TODO: WHY NOT USING UTF-8
         format.setEncoding("ISO-8859-1"); // NOI18N
@@ -250,37 +245,44 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Loads the server root object from classpath if it is still not set (if it is <code>null</code>). If every attempt
+     * fails an IllegalStateException is thrown.
      *
-     * @return  DOCUMENT ME!
+     * @return  the root element of the server configuration, never null
+     *
+     * @throws  IllegalStateException  if the configuration cannot be loaded from any location
      */
     private Element getRootObjectFromClassPath() {
         if (serverRootObject == null) {
             if (LOG.isInfoEnabled()) {
-                LOG.info("reading settings (InputStream from ClassPath)");                                // NOI18N
+                LOG.info("reading settings (InputStream from ClassPath)");                                           // NOI18N
             }
             try {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("getRootObjectFromClassPath():classPathFolder+defaultFileName="
-                                + classPathFolder                                                         // NOI18N
+                                + classPathFolder                                                                    // NOI18N
                                 + defaultFileName);
                 }
                 serverRootObject = getObjectFromClassPath(classPathFolder + defaultFileName);
             } catch (final Exception e) {
                 LOG.warn(
-                    "in getRootObjectFromClassPath: error reading settings (InputStream from ClassPath) " // NOI18N
-                            + "trying fallback filename: "                                                // NOI18N
+                    "in getRootObjectFromClassPath: error reading settings (InputStream from ClassPath) "            // NOI18N
+                            + "trying fallback filename: "                                                           // NOI18N
                             + classPathFolder
                             + fallBackFileName,
                     e);
                 try {
                     serverRootObject = getObjectFromClassPath(classPathFolder + fallBackFileName);
                 } catch (final Exception t) {
-                    LOG.error("error reading settings (FallBackFilename)", t);                            // NOI18N
-                    serverRootObject = null;
+                    final String message =
+                        "error reading settings (FallBackFilename), check your local folder for res.jar or similar"; // NOI18N
+                    LOG.error(message, t);
+                    throw new IllegalStateException(message, t);
                 }
             }
         }
+
+        assert serverRootObject != null : "illegal state, server root object still null"; // NOI18N
 
         return serverRootObject;
     }
@@ -342,6 +344,12 @@ public class ConfigurationManager {
      * @throws  IllegalStateException  DOCUMENT ME!
      */
     private Element preprocessElement(final Element e) {
+        if (e == null) {
+            LOG.warn("cannot preprocess null element"); // NOI18N
+
+            return null;
+        }
+
         final ConfigAttrProvider attrProvider = Lookup.getDefault().lookup(ConfigAttrProvider.class);
         if (attrProvider == null) {
             if (LOG.isInfoEnabled()) {
