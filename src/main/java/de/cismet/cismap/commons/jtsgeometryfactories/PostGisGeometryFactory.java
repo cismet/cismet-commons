@@ -51,6 +51,7 @@ public class PostGisGeometryFactory {
             return null;
         } else {
             // DEFAULT
+            // The geometries of all features are in the default Crs.
             return "SRID=-1;" + g.toText(); // NOI18N
             // SHEN return "SRID=26918;" + g.toText();
         }
@@ -75,7 +76,8 @@ public class PostGisGeometryFactory {
                 for (int i = 0; i < numberOfPoints; ++i) {
                     coordArr[i] = new Coordinate(lr.getPoint(i).getX(), lr.getPoint(i).getY());
                 }
-                return new GeometryFactory().createLinearRing(coordArr);
+                return new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid())
+                            .createLinearRing(coordArr);
             } else {
                 return null;
             }
@@ -93,7 +95,10 @@ public class PostGisGeometryFactory {
                 for (int i = 1; i < ringcount; ++i) {
                     holes[i - 1] = (LinearRing)createJtsGeometry(p.getRing(i));
                 }
-                return new com.vividsolutions.jts.geom.Polygon(shell, holes, new GeometryFactory());
+                return new com.vividsolutions.jts.geom.Polygon(
+                        shell,
+                        holes,
+                        new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
             } else {
                 return null;
             }
@@ -113,18 +118,20 @@ public class PostGisGeometryFactory {
                     for (int i = 0; i < numPoly; ++i) {
                         polyArr[i] = (Polygon)createJtsGeometry(mp.getPolygon(i));
                     }
-                    return new MultiPolygon(polyArr, new GeometryFactory());
+                    return new MultiPolygon(
+                            polyArr,
+                            new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
                 }
             } else {
                 return null;
             }
         } else if (geom instanceof org.postgis.Point) {
             final org.postgis.Point p = (org.postgis.Point)geom;
-            final GeometryFactory gf = new GeometryFactory();
+            final GeometryFactory gf = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid());
             return gf.createPoint(new Coordinate(p.getX(), p.getY()));
         } else if (geom instanceof org.postgis.LineString) {
             final org.postgis.LineString ls = (org.postgis.LineString)geom;
-            final GeometryFactory gf = new GeometryFactory();
+            final GeometryFactory gf = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid());
             final Coordinate[] ca = new Coordinate[ls.numPoints()];
             for (int i = 0; i < ls.numPoints(); ++i) {
                 ca[i] = new Coordinate(ls.getPoint(i).x, ls.getPoint(i).y);
@@ -135,13 +142,17 @@ public class PostGisGeometryFactory {
             final int numLines = mls.numLines();
             if (numLines > 0) {
                 if (numLines == 1) {
-                    return createJtsGeometry(mls.getLine(0));
+                    final Geometry resGeo = createJtsGeometry(mls.getLine(0));
+                    resGeo.setSRID(geom.getSrid());
+                    return resGeo;
                 } else {
                     final LineString[] lsArr = new LineString[numLines];
                     for (int i = 0; i < numLines; ++i) {
                         lsArr[i] = (LineString)createJtsGeometry(mls.getLine(i));
                     }
-                    return new MultiLineString(lsArr, new GeometryFactory());
+                    return new MultiLineString(
+                            lsArr,
+                            new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
                 }
             }
         } else if (geom instanceof org.postgis.GeometryCollection) {
@@ -150,7 +161,9 @@ public class PostGisGeometryFactory {
             String type = null;
             if (numGeom > 0) {
                 if (numGeom == 1) {
-                    return createJtsGeometry(gc.getSubGeometry(0));
+                    final Geometry resGeo = createJtsGeometry(gc.getSubGeometry(0));
+                    resGeo.setSRID(geom.getSrid());
+                    return resGeo;
                 } else {
                     final Geometry[] gArr = new Geometry[numGeom];
                     for (int i = 0; i < numGeom; ++i) {
@@ -165,21 +178,30 @@ public class PostGisGeometryFactory {
                     try {
                         if (type.equals("Polygon")) {              // NOI18N
                             final Polygon[] pa = (Polygon[])Arrays.copyOf(gArr, gArr.length, new Polygon[0].getClass());
-                            return new MultiPolygon((Polygon[])pa, new GeometryFactory());
+                            return new MultiPolygon((Polygon[])pa,
+                                    new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
                         } else if (type.equals("LineString")) {    // NOI18N
                             final LineString[] lsa = (LineString[])Arrays.copyOf(
                                     gArr,
                                     gArr.length,
                                     new LineString[0].getClass());
-                            return new MultiLineString(lsa, new GeometryFactory());
+                            return new MultiLineString(
+                                    lsa,
+                                    new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
                         } else if (type.equals("LineString")) {    // NOI18N
                             final Point[] pa = (Point[])Arrays.copyOf(gArr, gArr.length, new Point[0].getClass());
-                            return new MultiPoint(pa, new GeometryFactory());
+                            return new MultiPoint(
+                                    pa,
+                                    new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
                         } else {
-                            return new GeometryCollection(gArr, new GeometryFactory());
+                            return new GeometryCollection(
+                                    gArr,
+                                    new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
                         }
                     } catch (Exception e) {
-                        return new GeometryCollection(gArr, new GeometryFactory());
+                        return new GeometryCollection(
+                                gArr,
+                                new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
                     }
                 }
             } else {
