@@ -52,7 +52,7 @@ public class PostGisGeometryFactory {
         } else {
             // DEFAULT
             // The geometries of all features are in the default Crs.
-            return "SRID=-1;" + g.toText(); // NOI18N
+            return "SRID=" + g.getSRID() + ";" + g.toText(); // NOI18N
             // SHEN return "SRID=26918;" + g.toText();
         }
     }
