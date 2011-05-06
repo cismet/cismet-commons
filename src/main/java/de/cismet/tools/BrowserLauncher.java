@@ -489,6 +489,30 @@ public class BrowserLauncher {
     }
 
     /**
+     * DOCUMENT ME!
+     *
+     * @param  url  DOCUMENT ME!
+     */
+    public static void openURLorFile(final String url) {
+        if (url == null) {
+            return;
+        }
+        String gotoUrl = url;
+        try {
+            de.cismet.tools.BrowserLauncher.openURL(gotoUrl);
+        } catch (Exception e2) {
+            log.warn("das 1te Mal ging schief.Fehler beim Oeffnen von:" + gotoUrl + "\nLetzter Versuch", e2);
+            try {
+                gotoUrl = gotoUrl.replaceAll("\\\\", "/");
+                gotoUrl = gotoUrl.replaceAll(" ", "%20");
+                de.cismet.tools.BrowserLauncher.openURL("file:///" + gotoUrl);
+            } catch (Exception e3) {
+                log.error("Auch das 2te Mal ging schief.Fehler beim Oeffnen von:file://" + gotoUrl, e3);
+            }
+        }
+    }
+
+    /**
      * Attempts to open the default web browser to the given URL.
      *
      * @param   url  The URL to open
