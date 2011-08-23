@@ -7,7 +7,10 @@
 ****************************************************/
 package de.cismet.tools.collections;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * //key=idnetifier;value=LinkedList.
  *
