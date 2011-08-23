@@ -11,7 +11,8 @@ import java.util.*;
 /**
  * //key=idnetifier;value=LinkedList.
  *
- * @version  $Revision$, $Date$
+ * @version     $Revision$, $Date$
+ * @deprecated  error-prone
  */
 public class MultiMap extends LinkedHashMap {
 
