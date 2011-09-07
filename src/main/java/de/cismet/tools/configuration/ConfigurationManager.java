@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 
+import java.nio.charset.Charset;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -46,7 +48,11 @@ public class ConfigurationManager {
 
     public static final String SUBSTITUTION_ATTR = "substitutionAttribute"; // NOI18N
     public static final String DUMMY_NS_ATTR_VALUE = "http://www.cismet.de/config/dummyNamespace";
-    private static final String XML_ENCODING = "ISO-8859-1";
+    private static String XML_ENCODING = "ISO-8859-1";
+
+    static {
+        XML_ENCODING = Charset.defaultCharset().toString();
+    }
 
     //~ Instance fields --------------------------------------------------------
 
