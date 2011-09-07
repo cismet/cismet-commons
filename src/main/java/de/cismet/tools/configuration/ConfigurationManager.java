@@ -22,8 +22,9 @@ import org.jdom.output.XMLOutputter;
 import org.openide.util.Lookup;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class ConfigurationManager {
 
     public static final String SUBSTITUTION_ATTR = "substitutionAttribute"; // NOI18N
     public static final String DUMMY_NS_ATTR_VALUE = "http://www.cismet.de/config/dummyNamespace";
+    private static final String XML_ENCODING = "ISO-8859-1";
 
     //~ Instance fields --------------------------------------------------------
 
@@ -646,11 +648,11 @@ public class ConfigurationManager {
             }
             final Document doc = new Document(root);
             final Format format = Format.getPrettyFormat();
-            format.setEncoding("ISO-8859-1");                       // NOI18N
+            format.setEncoding(XML_ENCODING);                       // NOI18N
             // TODO: why not using UTF-8
             final XMLOutputter serializer = new XMLOutputter(format);
             final File file = new File(path);
-            final FileWriter writer = new FileWriter(file);
+            final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), XML_ENCODING);
             serializer.output(doc, writer);
             writer.flush();
         } catch (final Exception tt) {
