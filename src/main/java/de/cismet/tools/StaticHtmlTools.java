@@ -7,6 +7,10 @@
 ****************************************************/
 package de.cismet.tools;
 
+import java.io.UnsupportedEncodingException;
+
+import java.net.URLEncoder;
+
 /**
  * DOCUMENT ME!
  *
@@ -125,6 +129,7 @@ public class StaticHtmlTools {
     public static void main(final String[] args) {
         final String test = "<head>test http://www.google.de?quiery <a href=\"http://www.wer.de/\">wer</a></head>"; // NOI18N
         System.out.println(convertHTTPReferences(test));
+        System.out.println(encodeURLParameter("Nr. E-lala 99 ? ab & null"));
     }
 
     /**
@@ -189,5 +194,32 @@ public class StaticHtmlTools {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   parameter  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static String encodeURLParameter(final String parameter) {
+        try {
+            if (parameter == null) {
+                return null;
+            }
+            final String encodedURL = URLEncoder.encode(parameter, "UTF-8");
+
+            if (encodedURL != null) {
+                // replace all + with %20 because the method URLEncoder.encode() replaces all spaces with '+', but
+                // the web dav client interprets %20 as a space.
+                return encodedURL.toString().replaceAll("\\+", "%20");
+            } else {
+                return "";
+            }
+        } catch (final UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return parameter;
     }
 }
