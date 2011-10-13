@@ -58,7 +58,7 @@ public final class Equals {
     }
 
     /**
-     * Tests if all given objects are <code>null.</code>
+     * Tests if all given objects are <code>null</code>.
      *
      * @param   obs  the objects
      *
@@ -67,6 +67,23 @@ public final class Equals {
     public static boolean allNull(final Object... obs) {
         for (final Object o : obs) {
             if (o != null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Test if non of the given objects is <code>null</code>.
+     *
+     * @param   obs  the objects
+     *
+     * @return  <code>true</code> if all given objects are non-null, <code>false</code> otherwise
+     */
+    public static boolean nonNull(final Object... obs) {
+        for (final Object o : obs) {
+            if (o == null) {
                 return false;
             }
         }
