@@ -43,7 +43,6 @@ import java.sql.Statement;
  *
  * @version  $Revision$, $Date$
  */
-// TODO: move to commons classes
 public class ScriptRunner {
 
     //~ Static fields/initializers ---------------------------------------------
@@ -152,25 +151,29 @@ public class ScriptRunner {
         try {
             final LineNumberReader lineReader = new LineNumberReader(reader);
             String line = null;
+            boolean quoted = false;
             while ((line = lineReader.readLine()) != null) {
                 if (command == null) {
                     command = new StringBuffer();
                 }
                 final String trimmedLine = line.trim();
-                if (trimmedLine.startsWith("--")) {
+                quoted = quoted == evenQuotes(trimmedLine);
+
+                if (!quoted && trimmedLine.startsWith("--")) {      // NOI18N
                     println(trimmedLine);
-                } else if ((trimmedLine.length() < 1)
-                            || trimmedLine.startsWith("//")) {
+                } else if (!quoted && ((trimmedLine.isEmpty())
+                                || trimmedLine.startsWith("//"))) { // NOI18N
                     // Do nothing
-                } else if ((trimmedLine.length() < 1)
-                            || trimmedLine.startsWith("--")) {
+                } else if (!quoted && ((trimmedLine.length() < 1)
+                                || trimmedLine.startsWith("--"))) { // NOI18N
                     // Do nothing
-                } else if ((!fullLineDelimiter
-                                && trimmedLine.endsWith(getDelimiter()))
-                            || (fullLineDelimiter
-                                && trimmedLine.equals(getDelimiter()))) {
-                    command.append(line.substring(0, line.lastIndexOf(getDelimiter())));
-                    command.append(" ");
+                } else if (!quoted
+                            && ((!fullLineDelimiter
+                                    && trimmedLine.endsWith(getDelimiter()))
+                                || (fullLineDelimiter
+                                    && trimmedLine.equals(getDelimiter())))) {
+                    command.append(line);
+                    command.append(" "); // NOI18N
                     final Statement statement = conn.createStatement();
 
                     println(command);
@@ -183,7 +186,7 @@ public class ScriptRunner {
                             statement.execute(command.toString());
                         } catch (SQLException e) {
                             e.fillInStackTrace();
-                            printlnError("Error executing: " + command);
+                            printlnError("Error executing: " + command); // NOI18N
                             printlnError(e);
                         }
                     }
@@ -198,13 +201,13 @@ public class ScriptRunner {
                         final int cols = md.getColumnCount();
                         for (int i = 0; i < cols; i++) {
                             final String name = md.getColumnLabel(i);
-                            print(name + "\t");
+                            print(name + "\t");      // NOI18N
                         }
                         println("");
                         while (rs.next()) {
                             for (int i = 0; i < cols; i++) {
                                 final String value = rs.getString(i);
-                                print(value + "\t");
+                                print(value + "\t"); // NOI18N
                             }
                             println("");
                         }
@@ -218,26 +221,44 @@ public class ScriptRunner {
                     }
                 } else {
                     command.append(line);
-                    command.append(" ");
+                    command.append('\n');
                 }
             }
             if (!autoCommit) {
                 conn.commit();
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             e.fillInStackTrace();
-            printlnError("Error executing: " + command);
+            printlnError("Error executing: " + command); // NOI18N
             printlnError(e);
             throw e;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.fillInStackTrace();
-            printlnError("Error executing: " + command);
+            printlnError("Error executing: " + command); // NOI18N
             printlnError(e);
             throw e;
         } finally {
             conn.rollback();
             flush();
         }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   s  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private boolean evenQuotes(final String s) {
+        int count = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if ('\'' == s.charAt(i)) {
+                count++;
+            }
+        }
+
+        return (count % 2) == 0;
     }
 
     /**
