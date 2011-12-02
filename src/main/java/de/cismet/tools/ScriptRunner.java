@@ -38,6 +38,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import java.util.ArrayList;
+
 /**
  * Tool to run database scripts.
  *
@@ -60,7 +62,6 @@ public class ScriptRunner {
     private PrintWriter errorLogWriter = new PrintWriter(System.err);
 
     private String delimiter = DEFAULT_DELIMITER;
-    private boolean fullLineDelimiter = false;
 
     //~ Constructors -----------------------------------------------------------
 
@@ -82,12 +83,10 @@ public class ScriptRunner {
     /**
      * DOCUMENT ME!
      *
-     * @param  delimiter          DOCUMENT ME!
-     * @param  fullLineDelimiter  DOCUMENT ME!
+     * @param  delimiter  DOCUMENT ME!
      */
-    public void setDelimiter(final String delimiter, final boolean fullLineDelimiter) {
+    public void setDelimiter(final String delimiter) {
         this.delimiter = delimiter;
-        this.fullLineDelimiter = fullLineDelimiter;
     }
 
     /**
@@ -147,83 +146,128 @@ public class ScriptRunner {
      * @throws  SQLException  if any SQL errors occur
      */
     private void runScript(final Connection conn, final Reader reader) throws IOException, SQLException {
-        StringBuffer command = null;
+        StringBuilder command = new StringBuilder();
+
         try {
+            final ArrayList<String> linesToBeConsidered = new ArrayList<String>();
             final LineNumberReader lineReader = new LineNumberReader(reader);
             String line = null;
+
             boolean quoted = false;
+
             while ((line = lineReader.readLine()) != null) {
-                if (command == null) {
-                    command = new StringBuffer();
+                if (!linesToBeConsidered.isEmpty()) {
+                    linesToBeConsidered.clear();
                 }
-                final String trimmedLine = line.trim();
-                quoted = quoted == evenQuotes(trimmedLine);
 
-                if (!quoted && trimmedLine.startsWith("--")) {      // NOI18N
-                    println(trimmedLine);
-                } else if (!quoted && ((trimmedLine.isEmpty())
-                                || trimmedLine.startsWith("//"))) { // NOI18N
-                    // Do nothing
-                } else if (!quoted && ((trimmedLine.length() < 1)
-                                || trimmedLine.startsWith("--"))) { // NOI18N
-                    // Do nothing
-                } else if (!quoted
-                            && ((!fullLineDelimiter
-                                    && trimmedLine.endsWith(getDelimiter()))
-                                || (fullLineDelimiter
-                                    && trimmedLine.equals(getDelimiter())))) {
-                    command.append(line);
-                    command.append(" "); // NOI18N
-                    final Statement statement = conn.createStatement();
+                line = line.trim();
 
-                    println(command);
+                // -- Prepare statements in read-in line for execution
 
-                    boolean hasResults = false;
-                    if (stopOnError) {
-                        hasResults = statement.execute(command.toString());
-                    } else {
-                        try {
-                            statement.execute(command.toString());
-                        } catch (SQLException e) {
-                            e.fillInStackTrace();
-                            printlnError("Error executing: " + command); // NOI18N
-                            printlnError(e);
+                String split;
+                final String[] splits = line.trim().split(this.delimiter);
+                for (int i = 0; i < splits.length; i++) {
+                    split = splits[i].trim();
+
+                    if (!split.isEmpty()) {
+                        if (split.startsWith("--")) {
+                            // all following splits are ignored
+                            // example: Stmt1; -- Stmt2; Stmt3\n
+                            break;
+                        } else {
+                            if (line.endsWith(this.delimiter)) {
+                                // so each stmt should have a delimiter (we have a syntax error otherwise)
+                                // e.g. "stmt1; stmt2; stmt3;"
+                                linesToBeConsidered.add(split + this.delimiter);
+                            } else {
+                                if (i == (splits.length - 1)) {
+                                    // the stmt in the last split has not semicolon (so it might be a muli-line stmt)
+                                    // e.g. "stmt1; stmt2; create table my_table ("
+                                    linesToBeConsidered.add(split);
+                                } else {
+                                    // each stmt (if it is not the last one which might be a multi-line stmt)
+                                    // should have a delimiter (we have a syntax error otherwise)
+                                    // e.g. "stmt1; stmt2; create table my_table ("
+                                    linesToBeConsidered.add(split + this.delimiter);
+                                }
+                            }
                         }
                     }
+                }
 
-                    if (autoCommit && !conn.getAutoCommit()) {
-                        conn.commit();
-                    }
+                // -- end of preparation
 
-                    final ResultSet rs = statement.getResultSet();
-                    if (hasResults && (rs != null)) {
-                        final ResultSetMetaData md = rs.getMetaData();
-                        final int cols = md.getColumnCount();
-                        for (int i = 0; i < cols; i++) {
-                            final String name = md.getColumnLabel(i);
-                            print(name + "\t");      // NOI18N
+                String cmdLine;
+                final int numLines = linesToBeConsidered.size();
+                for (int j = 0; j < numLines; j++) {
+                    cmdLine = linesToBeConsidered.get(j);
+
+                    quoted = quoted == evenQuotes(cmdLine);
+
+                    if (!quoted && cmdLine.endsWith(this.delimiter)) {
+                        command.append(cmdLine);
+                        command.append(" ");
+                        final Statement statement = conn.createStatement();
+
+                        println(command);
+
+                        boolean hasResults = false;
+                        if (stopOnError) {
+                            hasResults = statement.execute(command.toString());
+                        } else {
+                            try {
+                                statement.execute(command.toString());
+                            } catch (SQLException e) {
+                                e.fillInStackTrace();
+                                printlnError("Error executing: " + command);
+                                printlnError(e);
+                            }
                         }
-                        println("");
-                        while (rs.next()) {
-                            for (int i = 0; i < cols; i++) {
-                                final String value = rs.getString(i);
-                                print(value + "\t"); // NOI18N
+
+                        if (autoCommit && !conn.getAutoCommit()) {
+                            conn.commit();
+                        }
+
+                        final ResultSet rs = statement.getResultSet();
+                        if (hasResults && (rs != null)) {
+                            final ResultSetMetaData md = rs.getMetaData();
+                            final int cols = md.getColumnCount();
+                            String name;
+                            for (int i = 1; i <= cols; i++) {
+                                name = md.getColumnLabel(i);
+                                print(name + '\t');
                             }
                             println("");
-                        }
-                    }
 
-                    command = null;
-                    try {
-                        statement.close();
-                    } catch (Exception e) {
-                        // Ignore to workaround a bug in Jakarta DBCP
+                            String value;
+                            while (rs.next()) {
+                                for (int i = 1; i <= cols; i++) {
+                                    value = rs.getString(i);
+                                    print(value + '\t');
+                                }
+                                println("");
+                            }
+                        }
+
+                        command = new StringBuilder();
+                        try {
+                            statement.close();
+                        } catch (Exception e) {
+                            // Ignore to workaround a bug in Jakarta DBCP
+                        }
+                    } else {
+                        command.append(line);
+                        command.append('\n');
                     }
-                } else {
-                    command.append(line);
-                    command.append('\n');
                 }
             }
+
+            if (command.length() != 0) {
+                throw new SQLException("Command:\n"
+                            + command
+                            + "\nhas not been executed. Have you forgot to set a final " + this.delimiter);
+            }
+
             if (!autoCommit) {
                 conn.commit();
             }
@@ -231,20 +275,21 @@ public class ScriptRunner {
             e.fillInStackTrace();
             printlnError("Error executing: " + command); // NOI18N
             printlnError(e);
+            conn.rollback();
             throw e;
         } catch (final IOException e) {
             e.fillInStackTrace();
             printlnError("Error executing: " + command); // NOI18N
             printlnError(e);
+            conn.rollback();
             throw e;
         } finally {
-            conn.rollback();
             flush();
         }
     }
 
     /**
-     * DOCUMENT ME!
+     * DOCUMENT ME! <<<<<<< .mine =======
      *
      * @param   s  DOCUMENT ME!
      *
@@ -273,6 +318,8 @@ public class ScriptRunner {
     /**
      * DOCUMENT ME!
      *
+     * <p>>>>>>>> .r4704</p>
+     *
      * @param  o  DOCUMENT ME!
      */
     private void print(final Object o) {
@@ -289,6 +336,7 @@ public class ScriptRunner {
     private void println(final Object o) {
         if (logWriter != null) {
             logWriter.println(o);
+            logWriter.flush();
         }
     }
 
@@ -300,6 +348,7 @@ public class ScriptRunner {
     private void printlnError(final Object o) {
         if (errorLogWriter != null) {
             errorLogWriter.println(o);
+            errorLogWriter.flush();
         }
     }
 

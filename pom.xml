@@ -78,11 +78,10 @@
         <dependency>
             <groupId>de.cismet</groupId>
             <artifactId>remote-test-helper-service</artifactId>
-            <version>1.1</version>
+            <version>1.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <finalName>cismetCommons</finalName>
     </build>
