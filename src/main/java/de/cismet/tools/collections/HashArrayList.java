@@ -91,7 +91,8 @@ public class HashArrayList<E> extends ArrayList<E> {
 
     @Override
     public boolean contains(final Object o) {
-        return containsMarkerSet.contains(o);
+//        return containsMarkerSet.contains(o);
+        return super.contains(o);
     }
 
     @Override
