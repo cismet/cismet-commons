@@ -52,6 +52,9 @@ public class ConfigurationManager {
 
     static {
         XML_ENCODING = Charset.defaultCharset().toString();
+        if (XML_ENCODING.equals("MacRoman")) {
+            XML_ENCODING = "UTF-8";
+        }
     }
 
     //~ Instance fields --------------------------------------------------------
@@ -713,7 +716,7 @@ public class ConfigurationManager {
 
     /**
      * DOCUMENT ME!
-     *
+     *  
      * @param  home  DOCUMENT ME!
      */
     public void setHome(final String home) {
