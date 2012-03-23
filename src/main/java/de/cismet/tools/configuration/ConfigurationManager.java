@@ -716,7 +716,7 @@ public class ConfigurationManager {
 
     /**
      * DOCUMENT ME!
-     *  
+     *
      * @param  home  DOCUMENT ME!
      */
     public void setHome(final String home) {

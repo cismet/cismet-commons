@@ -7,6 +7,9 @@
 ****************************************************/
 package de.cismet.tools;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 /**
  * Equals helper operations.
  *
@@ -24,6 +27,124 @@ public final class Equals {
     }
 
     //~ Methods ----------------------------------------------------------------
+
+    /**
+     * Compares the bean properties of given objects. This operation is equivalent to calling
+     * {@link #beanDeepEqual(java.lang.Object, java.lang.Object, java.lang.String[])} with a <code>null String[]</code>.
+     *
+     * @param   o   DOCUMENT ME!
+     * @param   o2  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @see     #beanDeepEqual(java.lang.Object, java.lang.Object, java.lang.String[])
+     */
+    public static boolean beanDeepEqual(final Object o, final Object o2) {
+        return beanDeepEqual(o, o2, (String[])null);
+    }
+
+    /**
+     * Tests if the given objects 'o' and 'o2' are of the same type and if all bean getters of 'o' return the same
+     * values as the bean getters of 'o2'. If both objects are <code>null</code> they're also considered equal
+     * {@link #nullEqual(java.lang.Object, java.lang.Object)}. This is also true for all the bean getter return values
+     * that are checked. There is also the possibility to provide an ignore list that can contain names of getter
+     * operations that shall be ignored when checking for equality.
+     *
+     * @param   o          object one
+     * @param   o2         object two
+     * @param   ignoreOps  all operation names, that shall be ignored during the equality check, may be <code>
+     *                     null</code>
+     *
+     * @return  true, if 'o' and 'o2' deliver the same result for every bean getter
+     *
+     * @see     #nullEqual(java.lang.Object, java.lang.Object)
+     * @see     #isBeanGetter(java.lang.reflect.Method)
+     */
+    public static boolean beanDeepEqual(final Object o, final Object o2, final String... ignoreOps) {
+        if (o == o2) {
+            return true;
+        } else if (xor(o, o2)) {
+            return false;
+        } else if (o.getClass().equals(o2.getClass())) {
+            final Method[] methods = o.getClass().getMethods();
+            for (final Method m : methods) {
+                if (isBeanGetter(m) && ((ignoreOps == null) || !contains(m.getName(), ignoreOps))) {
+                    try {
+                        if (!nullEqual(m.invoke(o, (Object[])null), m.invoke(o2, (Object[])null))) {
+                            return false;
+                        }
+                    } catch (Exception ex) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Tests if the given array contains the given name.
+     *
+     * @param   name   DOCUMENT ME!
+     * @param   array  DOCUMENT ME!
+     *
+     * @return  true, if the array contains the name, false otherwise, also false if the array is <code>null</code>
+     */
+    private static boolean contains(final String name, final String... array) {
+        if (array == null) {
+            return false;
+        } else {
+            for (final String s : array) {
+                if (s.equals(name)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    /**
+     * Tests if a <code>Method</code> is a bean getter operation. A bean getter operation has different properties:<br/>
+     *
+     * <ul>
+     *   <li>public</li>
+     *   <li>parameter count is 0</li>
+     *   <li>is not native</li>
+     *   <li>is not static</li>
+     *   <li>name starts with 'get' (or 'is' for <code>boolean</code> getters)</li>
+     *   <li>there exists a field with a corresponding name</li>
+     *   <li></li>
+     * </ul>
+     *
+     * @param   m  DOCUMENT ME!
+     *
+     * @return  <code>true</code> if all the requirements listed above are met, <code>false</code> otherwise
+     */
+    // TODO: may be not the right place for this kind of method
+    public static boolean isBeanGetter(final Method m) {
+        final int modifiers = m.getModifiers();
+        final String name = m.getName();
+
+        try {
+            //J-
+            return Modifier.isPublic(modifiers)
+                    && m.getParameterTypes().length == 0
+                    && !Modifier.isNative(modifiers)
+                    && !Modifier.isStatic(modifiers)
+                    && ((name.startsWith("get")
+                            && m.getDeclaringClass().getDeclaredField(Character.toLowerCase(name.charAt(3)) + name.substring(4)) != null)
+                        || (m.getReturnType().equals(Boolean.class) || m.getReturnType().equals(boolean.class))
+                            && name.startsWith("is")
+                            && m.getDeclaringClass().getDeclaredField(Character.toLowerCase(name.charAt(2)) + name.substring(3)) != null);
+            //J+
+        } catch (final NoSuchFieldException e) {
+            return false;
+        }
+    }
 
     /**
      * Tests if both objects are equals whereas they are considered equal if they are both <code>null</code>, too.
@@ -58,13 +179,18 @@ public final class Equals {
     }
 
     /**
-     * Tests if all given objects are <code>null</code>.
+     * Tests if all given objects are <code>null</code>. If no objects are provided at all, <code>true</code> is
+     * returned, too.
      *
      * @param   obs  the objects
      *
      * @return  <code>true</code> if all given objects are null, <code>false</code> otherwise
      */
     public static boolean allNull(final Object... obs) {
+        if (obs == null) {
+            return true;
+        }
+
         for (final Object o : obs) {
             if (o != null) {
                 return false;
@@ -75,13 +201,18 @@ public final class Equals {
     }
 
     /**
-     * Test if non of the given objects is <code>null</code>.
+     * Test if non of the given objects is <code>null</code>. If no objects are provided at all, <code>false</code> is
+     * returned, too.
      *
      * @param   obs  the objects
      *
      * @return  <code>true</code> if all given objects are non-null, <code>false</code> otherwise
      */
     public static boolean nonNull(final Object... obs) {
+        if (obs == null) {
+            return false;
+        }
+
         for (final Object o : obs) {
             if (o == null) {
                 return false;

@@ -7,12 +7,12 @@
 ****************************************************/
 package de.cismet.tools;
 
-import java.util.concurrent.TimeoutException;
-
 import org.openide.util.NbBundle;
 
+import java.util.concurrent.TimeoutException;
+
 /**
- * Execute code that will be interrupted after a given time
+ * Execute code that will be interrupted after a given time.
  *
  * @author   therter
  * @version  $Revision$, $Date$
@@ -40,14 +40,15 @@ public abstract class TimeoutThread<T extends Object> implements Runnable {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Starts the code of the run method. After the given time, the execution of the 
-     * run method will be interrupted and a TimeoutException is thrown.
+     * Starts the code of the run method. After the given time, the execution of the run method will be interrupted and
+     * a TimeoutException is thrown.
      *
      * @param   timeInMillis  the time to wait in milliseconds
      *
      * @return  DOCUMENT ME
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws  Exception         DOCUMENT ME!
+     * @throws  TimeoutException  DOCUMENT ME!
      */
     public T start(final long timeInMillis) throws Exception {
         final Thread t = new Thread(this);
@@ -57,7 +58,9 @@ public abstract class TimeoutThread<T extends Object> implements Runnable {
 
         if (t.isAlive()) {
             t.interrupt();
-            throw new TimeoutException(NbBundle.getMessage(TimeoutThread.class, "TimeoutThread.start().timelimitExceeded"));
+            throw new TimeoutException(NbBundle.getMessage(
+                    TimeoutThread.class,
+                    "TimeoutThread.start().timelimitExceeded"));
         } else if (exception != null) {
             throw exception;
         } else {

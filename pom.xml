@@ -33,6 +33,7 @@
             <artifactId>jts</artifactId>
             <version>1.8</version>
         </dependency>
+        <!-- this dependency is generelly not needed and thus is at most a runtime dep -->
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
