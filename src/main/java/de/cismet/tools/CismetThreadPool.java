@@ -28,6 +28,7 @@ public final class CismetThreadPool {
 
     public static final int NUMBER_OF_PROCESSORS = Runtime.getRuntime().availableProcessors();
     private static final ExecutorService WORKER_POOL = Executors.newCachedThreadPool();
+    private static final ExecutorService SINGLE_WORKER_POOL = Executors.newSingleThreadExecutor();
 
     //~ Methods ----------------------------------------------------------------
 
@@ -39,6 +40,16 @@ public final class CismetThreadPool {
      */
     public static void execute(final Runnable command) {
         WORKER_POOL.execute(command);
+    }
+
+    /**
+     * Executes the given runnable in the applications threadpool. All threads, which will be started with this method
+     * will be run sequentially.
+     *
+     * @param  command  DOCUMENT ME!
+     */
+    public static void executeSequentially(final Runnable command) {
+        SINGLE_WORKER_POOL.execute(command);
     }
 
     /**
@@ -58,13 +69,16 @@ public final class CismetThreadPool {
      * @return  DOCUMENT ME!
      */
     public static List<Runnable> shutdownNow() {
-        return WORKER_POOL.shutdownNow();
+        final List<Runnable> list = SINGLE_WORKER_POOL.shutdownNow();
+        list.addAll(WORKER_POOL.shutdownNow());
+        return list;
     }
 
     /**
      * DOCUMENT ME!
      */
     public static void shutdown() {
+        SINGLE_WORKER_POOL.shutdown();
         WORKER_POOL.shutdown();
     }
 }
