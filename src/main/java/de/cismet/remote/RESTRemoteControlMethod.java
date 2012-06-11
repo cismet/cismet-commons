@@ -18,25 +18,16 @@ public interface RESTRemoteControlMethod {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Returns target port for this service
+     * Returns target port for this service.
      *
      * @return  port
      */
     int getPort();
-    
+
     /**
-     * Returns context path for this service
+     * Returns context path for this service.
      *
      * @return  context path
      */
     String getPath();
-
-//    /**
-//     * DOCUMENT ME!
-//     *
-//     * @param   args  DOCUMENT ME!
-//     *
-//     * @return  DOCUMENT ME!
-//     */
-//    Runnable getAction(Object... args);
 }
