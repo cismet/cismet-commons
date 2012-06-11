@@ -13,8 +13,9 @@
 package de.cismet.cismap.commons.jtsgeometryfactories;
 
 import com.vividsolutions.jts.geom.*;
-
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * DOCUMENT ME!
@@ -23,11 +24,6 @@ import java.util.Arrays;
  * @version  $Revision$, $Date$
  */
 public class PostGisGeometryFactory {
-
-    //~ Static fields/initializers ---------------------------------------------
-
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(
-            "de.cismet.cismap.commons.jtsgeometryfactories.PostGisGeometryFactory"); // NOI18N
 
     //~ Constructors -----------------------------------------------------------
 
@@ -50,10 +46,211 @@ public class PostGisGeometryFactory {
         if (g == null) {
             return null;
         } else {
-            // DEFAULT
-            // The geometries of all features are in the default Crs.
             return "SRID=" + g.getSRID() + ";" + g.toText(); // NOI18N
-            // SHEN return "SRID=26918;" + g.toText();
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   point            DOCUMENT ME!
+     * @param   geometryFactory  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static Point createJtsPoint(final org.postgis.Point point, final GeometryFactory geometryFactory) {
+        return geometryFactory.createPoint(new Coordinate(point.getX(), point.getY()));
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   lineString       DOCUMENT ME!
+     * @param   geometryFactory  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static LineString createJtsLineString(final org.postgis.LineString lineString,
+            final GeometryFactory geometryFactory) {
+        final Coordinate[] ca = new Coordinate[lineString.numPoints()];
+        for (int i = 0; i < lineString.numPoints(); ++i) {
+            ca[i] = new Coordinate(lineString.getPoint(i).x, lineString.getPoint(i).y);
+        }
+        return (LineString)geometryFactory.createLineString(ca);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   linearRing       DOCUMENT ME!
+     * @param   geometryFactory  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static LinearRing createJtsLinearRing(final org.postgis.LinearRing linearRing,
+            final GeometryFactory geometryFactory) {
+        final int numberOfPoints = linearRing.numPoints();
+        if (numberOfPoints > 0) {
+            final Collection<Coordinate> coords = new ArrayList<Coordinate>(numberOfPoints);
+            for (final org.postgis.Point point : linearRing.getPoints()) {
+                coords.add(new Coordinate(point.getX(), point.getY()));
+            }
+            return geometryFactory.createLinearRing(coords.toArray(new Coordinate[0]));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   polygon          DOCUMENT ME!
+     * @param   geometryFactory  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static Polygon createJtsPolygon(final org.postgis.Polygon polygon, final GeometryFactory geometryFactory) {
+        final int ringcount = polygon.numRings();
+        if (ringcount > 0) {
+            // erster Ring wird als Hülle verwendet
+            final LinearRing shell = (LinearRing)createJtsGeometry(polygon.getRing(0));
+
+            // der Rest sind Löcher
+            final LinearRing[] holes = new LinearRing[ringcount - 1];
+            for (int i = 1; i < ringcount; ++i) {
+                holes[i - 1] = (LinearRing)createJtsGeometry(polygon.getRing(i));
+            }
+            return new Polygon(shell, holes, geometryFactory);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   multiPoint       DOCUMENT ME!
+     * @param   geometryFactory  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static MultiPoint createJtsMultiPoint(final org.postgis.MultiPoint multiPoint,
+            final GeometryFactory geometryFactory) {
+        final int numPoints = multiPoint.numPoints();
+        if (numPoints == 0) {
+            return null;
+        } else {
+            final Collection<Point> jtsPoints = new ArrayList<Point>(numPoints);
+            for (final org.postgis.Point point : multiPoint.getPoints()) {
+                final Point jtsPoint = createJtsPoint(point, geometryFactory);
+                jtsPoints.add(jtsPoint);
+            }
+            return new MultiPoint(jtsPoints.toArray(new Point[0]), geometryFactory);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   multiLineString  DOCUMENT ME!
+     * @param   geometryFactory  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static MultiLineString createJtsMultiLineString(final org.postgis.MultiLineString multiLineString,
+            final GeometryFactory geometryFactory) {
+        final int numLines = multiLineString.numLines();
+        if (numLines == 0) {
+            return null;
+        } else {
+            final Collection<LineString> jtsLineStrings = new ArrayList<LineString>(numLines);
+            for (final org.postgis.LineString lineString : multiLineString.getLines()) {
+                final LineString jtsLinesString = createJtsLineString(lineString, geometryFactory);
+                jtsLineStrings.add(jtsLinesString);
+            }
+            return new MultiLineString(jtsLineStrings.toArray(new LineString[0]), geometryFactory);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   multiPolygon     DOCUMENT ME!
+     * @param   geometryFactory  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static MultiPolygon createJtsMultiPolygon(final org.postgis.MultiPolygon multiPolygon,
+            final GeometryFactory geometryFactory) {
+        final int numPoly = multiPolygon.numPolygons();
+        if (numPoly == 0) {
+            return null;
+        } else {
+            final Collection<Polygon> jtsPolygons = new ArrayList<Polygon>(numPoly);
+            for (final org.postgis.Polygon polygon : multiPolygon.getPolygons()) {
+                final Polygon jtsPolygon = createJtsPolygon(polygon, geometryFactory);
+                jtsPolygons.add(jtsPolygon);
+            }
+            return new MultiPolygon(jtsPolygons.toArray(new Polygon[0]), geometryFactory);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   geometryCollection  DOCUMENT ME!
+     * @param   geometryFactory     DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static GeometryCollection createJtsGeometryCollection(
+            final org.postgis.GeometryCollection geometryCollection,
+            final GeometryFactory geometryFactory) {
+        final int numGeom = geometryCollection.numGeoms();
+        if (numGeom == 0) {
+            return null;
+        } else {
+            String type = null;
+            final Collection<Geometry> jtsGeometries = new ArrayList<Geometry>(numGeom);
+            boolean isMixed = false;
+            for (final org.postgis.Geometry geometry : geometryCollection.getGeometries()) {
+                final Geometry jtsGeometry = (Geometry)createJtsGeometry(geometry);
+                jtsGeometries.add(jtsGeometry);
+                final String localType = jtsGeometry.getGeometryType();
+                if (type == null) {
+                    type = localType;
+                } else if (!type.equals(localType)) {
+                    isMixed = true;
+                }
+            }
+            final Geometry[] jtsGeometrieArray = jtsGeometries.toArray(new Geometry[0]);
+            try {
+                if (isMixed) {
+                    return new GeometryCollection(jtsGeometrieArray, geometryFactory);
+                } else if (type.equals("Polygon")) {
+                    final Polygon[] polygonArray = (Polygon[])Arrays.copyOf(
+                            jtsGeometrieArray,
+                            jtsGeometrieArray.length,
+                            new Polygon[0].getClass());
+                    return new MultiPolygon(polygonArray, geometryFactory);
+                } else if (type.equals("LineString")) {
+                    final LineString[] lineStringArray = (LineString[])Arrays.copyOf(
+                            jtsGeometrieArray,
+                            jtsGeometrieArray.length,
+                            new LineString[0].getClass());
+                    return new MultiLineString(lineStringArray, geometryFactory);
+                } else if (type.equals("Point")) {
+                    final Point[] pointArray = (Point[])Arrays.copyOf(
+                            jtsGeometrieArray,
+                            jtsGeometrieArray.length,
+                            new Point[0].getClass());
+                    return new MultiPoint(pointArray, geometryFactory);
+                } else {
+                    return new GeometryCollection(jtsGeometrieArray, geometryFactory);
+                }
+            } catch (Exception e) {
+                return new GeometryCollection(jtsGeometrieArray, geometryFactory);
+            }
         }
     }
 
@@ -65,147 +262,49 @@ public class PostGisGeometryFactory {
      * @return  DOCUMENT ME!
      */
     public static Geometry createJtsGeometry(final org.postgis.Geometry geom) {
-        if (geom instanceof org.postgis.LinearRing) {
-            if (log.isDebugEnabled()) {
-                log.debug("org.postgis.LinearRing2JtsGeometry"); // NOI18N
-            }
-            final org.postgis.LinearRing lr = (org.postgis.LinearRing)geom;
-            final int numberOfPoints = lr.numPoints();
-            if (numberOfPoints > 0) {
-                final Coordinate[] coordArr = new Coordinate[numberOfPoints];
-                for (int i = 0; i < numberOfPoints; ++i) {
-                    coordArr[i] = new Coordinate(lr.getPoint(i).getX(), lr.getPoint(i).getY());
-                }
-                return new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid())
-                            .createLinearRing(coordArr);
-            } else {
-                return null;
-            }
-        } else if (geom instanceof org.postgis.Polygon) {
-            if (log.isDebugEnabled()) {
-                log.debug("org.postgis.Polygon2JtsGeometry");    // NOI18N
-            }
-            final org.postgis.Polygon p = (org.postgis.Polygon)geom;
-            final int ringcount = p.numRings();
-            if (ringcount > 0) {
-                // erster Ring wird als H\u00FClle verwendet
-                final LinearRing shell = (LinearRing)createJtsGeometry(p.getRing(0));
-                // der Rest sind L\u00F6cher
-                final LinearRing[] holes = new LinearRing[ringcount - 1];
-                for (int i = 1; i < ringcount; ++i) {
-                    holes[i - 1] = (LinearRing)createJtsGeometry(p.getRing(i));
-                }
-                return new com.vividsolutions.jts.geom.Polygon(
-                        shell,
-                        holes,
-                        new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
-            } else {
-                return null;
-            }
-        }                                                          // Multipolygon (liefert Polygon zur\u00FCck wenn nur
-                                                                   // ein Polygon enthalten)
-        else if (geom instanceof org.postgis.MultiPolygon) {
-            if (log.isDebugEnabled()) {
-                log.debug("org.postgis.MultiPolygon2JtsGeometry"); // NOI18N
-            }
-            final org.postgis.MultiPolygon mp = (org.postgis.MultiPolygon)geom;
-            final int numPoly = mp.numPolygons();
-            if (numPoly > 0) {
-                if (numPoly == 1) {
-                    return createJtsGeometry(mp.getPolygon(0));
-                } else {
-                    final Polygon[] polyArr = new Polygon[numPoly];
-                    for (int i = 0; i < numPoly; ++i) {
-                        polyArr[i] = (Polygon)createJtsGeometry(mp.getPolygon(i));
-                    }
-                    return new MultiPolygon(
-                            polyArr,
-                            new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
-                }
-            } else {
-                return null;
-            }
-        } else if (geom instanceof org.postgis.Point) {
-            final org.postgis.Point p = (org.postgis.Point)geom;
-            final GeometryFactory gf = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid());
-            return gf.createPoint(new Coordinate(p.getX(), p.getY()));
+        final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING),
+                geom.getSrid());
+        if (geom instanceof org.postgis.Point) {
+            final org.postgis.Point point = (org.postgis.Point)geom;
+            return createJtsPoint(point, geometryFactory);
         } else if (geom instanceof org.postgis.LineString) {
-            final org.postgis.LineString ls = (org.postgis.LineString)geom;
-            final GeometryFactory gf = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid());
-            final Coordinate[] ca = new Coordinate[ls.numPoints()];
-            for (int i = 0; i < ls.numPoints(); ++i) {
-                ca[i] = new Coordinate(ls.getPoint(i).x, ls.getPoint(i).y);
+            final org.postgis.LineString lineString = (org.postgis.LineString)geom;
+            return createJtsLineString(lineString, geometryFactory);
+        } else if (geom instanceof org.postgis.LinearRing) {
+            final org.postgis.LinearRing linearRing = (org.postgis.LinearRing)geom;
+            return createJtsLinearRing(linearRing, geometryFactory);
+        } else if (geom instanceof org.postgis.Polygon) {
+            final org.postgis.Polygon polygon = (org.postgis.Polygon)geom;
+            return createJtsPolygon(polygon, geometryFactory);
+        } else if (geom instanceof org.postgis.MultiPoint) {
+            final org.postgis.MultiPoint multiPoint = (org.postgis.MultiPoint)geom;
+            if (multiPoint.numPoints() == 1) {
+                return createJtsPoint(multiPoint.getPoint(0), geometryFactory);
+            } else {
+                return createJtsMultiPoint(multiPoint, geometryFactory);
             }
-            return gf.createLineString(ca);
         } else if (geom instanceof org.postgis.MultiLineString) {
-            final org.postgis.MultiLineString mls = (org.postgis.MultiLineString)geom;
-            final int numLines = mls.numLines();
-            if (numLines > 0) {
-                if (numLines == 1) {
-                    final Geometry resGeo = createJtsGeometry(mls.getLine(0));
-                    resGeo.setSRID(geom.getSrid());
-                    return resGeo;
-                } else {
-                    final LineString[] lsArr = new LineString[numLines];
-                    for (int i = 0; i < numLines; ++i) {
-                        lsArr[i] = (LineString)createJtsGeometry(mls.getLine(i));
-                    }
-                    return new MultiLineString(
-                            lsArr,
-                            new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
-                }
+            final org.postgis.MultiLineString multiLineString = (org.postgis.MultiLineString)geom;
+            if (multiLineString.numLines() == 1) {
+                return createJtsLineString(multiLineString.getLine(0), geometryFactory);
+            } else {
+                return createJtsMultiLineString(multiLineString, geometryFactory);
+            }
+        } else if (geom instanceof org.postgis.MultiPolygon) {
+            final org.postgis.MultiPolygon multiPolygon = (org.postgis.MultiPolygon)geom;
+            if (multiPolygon.numPolygons() == 1) {
+                return createJtsPolygon(multiPolygon.getPolygon(0), geometryFactory);
+            } else {
+                return createJtsMultiPolygon(multiPolygon, geometryFactory);
             }
         } else if (geom instanceof org.postgis.GeometryCollection) {
-            final org.postgis.GeometryCollection gc = (org.postgis.GeometryCollection)geom;
-            final int numGeom = gc.numGeoms();
-            String type = null;
-            if (numGeom > 0) {
-                if (numGeom == 1) {
-                    final Geometry resGeo = createJtsGeometry(gc.getSubGeometry(0));
-                    resGeo.setSRID(geom.getSrid());
-                    return resGeo;
-                } else {
-                    final Geometry[] gArr = new Geometry[numGeom];
-                    for (int i = 0; i < numGeom; ++i) {
-                        gArr[i] = (Geometry)createJtsGeometry(gc.getSubGeometry(i));
-                        final String localType = gArr[i].getGeometryType();
-                        if (type == null) {
-                            type = localType;
-                        } else if (!type.equals(localType)) {
-                            type = "DIFFERENTTYPES";               // NOI18N
-                        }
-                    }
-                    try {
-                        if (type.equals("Polygon")) {              // NOI18N
-                            final Polygon[] pa = (Polygon[])Arrays.copyOf(gArr, gArr.length, new Polygon[0].getClass());
-                            return new MultiPolygon((Polygon[])pa,
-                                    new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
-                        } else if (type.equals("LineString")) {    // NOI18N
-                            final LineString[] lsa = (LineString[])Arrays.copyOf(
-                                    gArr,
-                                    gArr.length,
-                                    new LineString[0].getClass());
-                            return new MultiLineString(
-                                    lsa,
-                                    new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
-                        } else if (type.equals("LineString")) {    // NOI18N
-                            final Point[] pa = (Point[])Arrays.copyOf(gArr, gArr.length, new Point[0].getClass());
-                            return new MultiPoint(
-                                    pa,
-                                    new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
-                        } else {
-                            return new GeometryCollection(
-                                    gArr,
-                                    new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
-                        }
-                    } catch (Exception e) {
-                        return new GeometryCollection(
-                                gArr,
-                                new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), geom.getSrid()));
-                    }
-                }
+            final org.postgis.GeometryCollection geometryCollection = (org.postgis.GeometryCollection)geom;
+            if (geometryCollection.numGeoms() == 1) {
+                final Geometry geometry = createJtsGeometry(geometryCollection.getSubGeometry(0));
+                geometry.setSRID(geom.getSrid());
+                return geometry;
             } else {
-                return null;
+                return createJtsGeometryCollection(geometryCollection, geometryFactory);
             }
         }
         return null;
