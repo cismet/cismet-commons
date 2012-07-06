@@ -5,11 +5,9 @@
 *              ... and it just works.
 *
 ****************************************************/
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.cismet.tools;
+
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +22,7 @@ public final class BlacklistClassloading {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(BlacklistClassloading.class);
+    private static final Logger LOG = Logger.getLogger(BlacklistClassloading.class);
     private static final Map<String, Object> blacklist = new HashMap<String, Object>();
 
     //~ Constructors -----------------------------------------------------------
@@ -55,22 +53,23 @@ public final class BlacklistClassloading {
             if (!blacklist.containsKey(classIdentity)) {
                 try {
                     return Class.forName(classname);
-                } catch (ClassNotFoundException ex) {
+                } catch (final ClassNotFoundException ex) {
                     blacklist.put(classIdentity, null);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Could not load class " + classIdentity + "! Added classname to blacklist", ex);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Could not load class " + classIdentity + "! Added classname to blacklist", ex);
                     }
                 }
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("Did not load Class " + classname + " as it is on the blacklist!"); // NOI18N
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Did not load Class " + classname + " as it is on the blacklist!"); // NOI18N
                 }
             }
         } else {
-            if (log.isDebugEnabled()) {
-                log.debug("Classname to load was null!");                                         // NOI18N
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Classname to load was null!");                                         // NOI18N
             }
         }
+
         return null;
     }
 }
