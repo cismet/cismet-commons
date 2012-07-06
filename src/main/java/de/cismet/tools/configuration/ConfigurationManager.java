@@ -46,14 +46,16 @@ public class ConfigurationManager {
 
     private static final transient Logger LOG = Logger.getLogger(ConfigurationManager.class);
 
-    public static final String SUBSTITUTION_ATTR = "substitutionAttribute"; // NOI18N
-    public static final String DUMMY_NS_ATTR_VALUE = "http://www.cismet.de/config/dummyNamespace";
-    private static String XML_ENCODING = "ISO-8859-1";
+    public static final String SUBSTITUTION_ATTR = "substitutionAttribute";                        // NOI18N
+    public static final String DUMMY_NS_ATTR_VALUE = "http://www.cismet.de/config/dummyNamespace"; // NOI18N
+    private static final String XML_ENCODING;
 
     static {
-        XML_ENCODING = Charset.defaultCharset().toString();
-        if (XML_ENCODING.equals("MacRoman")) {
+        final String charset = Charset.defaultCharset().toString();
+        if ("MacRoman".equals(charset)) { // NOI18N
             XML_ENCODING = "UTF-8";
+        } else {
+            XML_ENCODING = "ISO-8859-1";
         }
     }
 
