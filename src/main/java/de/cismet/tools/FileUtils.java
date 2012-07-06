@@ -235,7 +235,7 @@ public final class FileUtils {
             fis = new FileInputStream(inFile);
             fos = new FileOutputStream(outFile);
             final byte[] buffer = new byte[1024];
-            int i = 0;
+            int i;
             while ((i = fis.read()) != -1) {
                 fos.write(buffer, 0, i);
             }
