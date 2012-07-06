@@ -289,7 +289,6 @@ public class ScriptRunner {
     }
 
     /**
-     * DOCUMENT ME! <<<<<<< .mine =======
      *
      * @param   s  DOCUMENT ME!
      *
