@@ -151,10 +151,10 @@ public class ScriptRunner {
         try {
             final ArrayList<String> linesToBeConsidered = new ArrayList<String>();
             final LineNumberReader lineReader = new LineNumberReader(reader);
-            String line = null;
-
+            
             boolean quoted = false;
-
+            
+            String line;
             while ((line = lineReader.readLine()) != null) {
                 if (!linesToBeConsidered.isEmpty()) {
                     linesToBeConsidered.clear();
