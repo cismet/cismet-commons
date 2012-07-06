@@ -5,14 +5,11 @@
 *              ... and it just works.
 *
 ****************************************************/
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.cismet.tools;
 
 import org.apache.log4j.Logger;
 
+import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
 
@@ -29,7 +26,15 @@ public class StaticXMLTools {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    private static final Logger log = org.apache.log4j.Logger.getLogger(StaticXMLTools.class);
+    private static final Logger LOG = org.apache.log4j.Logger.getLogger(StaticXMLTools.class);
+
+    //~ Constructors -----------------------------------------------------------
+
+    /**
+     * Creates a new StaticXMLTools object.
+     */
+    private StaticXMLTools() {
+    }
 
     //~ Methods ----------------------------------------------------------------
 
@@ -131,14 +136,14 @@ public class StaticXMLTools {
      *
      * @param  element  DOCUMENT ME!
      */
-    public static void logXML(final org.jdom.Element element) {
-        final org.jdom.Document doc = new org.jdom.Document();
+    public static void logXML(final Element element) {
+        final Document doc = new Document();
         // is this the right way
-        doc.setRootElement((org.jdom.Element)element.clone());
+        doc.setRootElement((Element)element.clone());
         final XMLOutputter out = new XMLOutputter();
         final String postString = out.outputString(doc);
-        if (log.isDebugEnabled()) {
-            log.debug("logXML :" + postString, new CurrentStackTrace()); // NOI18N
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("logXML :" + postString, new CurrentStackTrace()); // NOI18N
         }
     }
 }

@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2011 cismet GmbH
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package de.cismet.tools;
 
 import de.cismet.remotetesthelper.ws.rest.RemoteTestHelperClient;
@@ -25,16 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  *
- * @author bfriedrich
+ * // @author bfriedrich
  */
 public class ScriptRunnerTest {
     
@@ -50,7 +29,7 @@ public class ScriptRunnerTest {
     public ScriptRunnerTest() {
     }
 
-   @BeforeClass
+   // @BeforeClass
     public static void setUpClass() throws Exception 
     {
         final Properties p = new Properties();
@@ -70,7 +49,7 @@ public class ScriptRunnerTest {
         STMT = CON.createStatement();    
     }
 
-    @AfterClass
+    // @AfterClass
     public static void tearDownClass() throws Exception 
     {
         STMT.close();
@@ -82,27 +61,27 @@ public class ScriptRunnerTest {
         }
     }
     
-    @Before
+    // @Before
     public void setUp() 
     {
         this.runner = new ScriptRunner(CON, false, true);
     }
     
-    @Test
+    // @Test
     public void testSelect() throws Exception
     {
         final StringReader reader = new StringReader("SELECT * FROM cs_usr;");
         this.runner.runScript(reader);
     }
 
-    @Test
+    // @Test
     public void testMultiLineStmt() throws Exception
     {
         final StringReader reader = new StringReader("SELECT * \nFROM \ncs_usr;");
         this.runner.runScript(reader);
     }
     
-    @Test(expected=SQLException.class)
+    // @Test(expected=SQLException.class)
     public void testSelectWithoutSemicolon() throws Exception
     {
         final StringReader reader = new StringReader("SELECT * FROM cs_usr");
@@ -110,21 +89,21 @@ public class ScriptRunnerTest {
     }
     
     
-    @Test(expected=SQLException.class)
+    // @Test(expected=SQLException.class)
     public void testSelectWithNonExistingTable() throws Exception
     {
         final StringReader reader = new StringReader("SELECT * FROM non_existing_table;");
         this.runner.runScript(reader);
     }
     
-    @Test
+    // @Test
     public void testEmptySelect() throws Exception
     {
         final StringReader reader = new StringReader("SELECT * FROM cs_usr where login_name = 'script_runner_test';");
         this.runner.runScript(reader);
     }
     
-    @Test
+    // @Test
     public void testCreateTable() throws Exception
     {
         StringReader reader = new StringReader("CREATE TABLE sript_runner_test (key INTEGER);");
@@ -135,14 +114,14 @@ public class ScriptRunnerTest {
         this.runner.runScript(reader);
     }
     
-    @Test(expected=SQLException.class)
+    // @Test(expected=SQLException.class)
     public void testInvalidStmt() throws Exception
     {
         StringReader reader = new StringReader("CREAT TABLE sript_runner_test (key INTEGER);");
         this.runner.runScript(reader);
     }
     
-    @Test(expected=SQLException.class)
+    // @Test(expected=SQLException.class)
     public void testCommentedStmt() throws Exception
     {
         StringReader reader = new StringReader("-- CREATE TABLE sript_runner_test_xxx (key INTEGER);");
@@ -153,7 +132,7 @@ public class ScriptRunnerTest {
         this.runner.runScript(reader);
     }
     
-    @Test
+    // @Test
     public void testNoAutoCommitWithoutLineBreak() throws Exception
     {
         // no autocommit has already been set by method setUp()
@@ -181,7 +160,7 @@ public class ScriptRunnerTest {
     }
     
     
-    @Test
+    // @Test
     public void testAutoCommitWithoutLineBreak() throws Exception
     {
         this.runner = new ScriptRunner(CON, true, true);
@@ -205,7 +184,7 @@ public class ScriptRunnerTest {
     }
     
     
-    @Test
+    // @Test
     public void testNoAutoCommitWithLineBreak() throws Exception
     {
         // no autocommit has already been set by method setUp()
@@ -233,7 +212,7 @@ public class ScriptRunnerTest {
     }
     
     
-    @Test
+    // @Test
     public void testAutoCommitWithLineBreak() throws Exception
     {
         this.runner = new ScriptRunner(CON, true, true);
@@ -259,7 +238,7 @@ public class ScriptRunnerTest {
     /**
      * DOCUMENT ME!
      *
-     * @return  DOCUMENT ME!
+     * // @return  DOCUMENT ME!
      */
     private String getCurrentMethodName() {
         return new Throwable().getStackTrace()[1].getMethodName();
@@ -268,9 +247,9 @@ public class ScriptRunnerTest {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * // @throws  Exception  DOCUMENT ME!
      */
-    @Test
+    // @Test
     public void testRunScriptMultiLineQuoteWithDelim() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
 
@@ -284,7 +263,7 @@ public class ScriptRunnerTest {
 
         assertTrue("function was not properly inserted", set.next());
     }
-    @After
+    // @After
     public void tearDown() throws Exception
     {
     
