@@ -13,6 +13,7 @@
 package de.cismet.cismap.commons.jtsgeometryfactories;
 
 import com.vividsolutions.jts.geom.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
