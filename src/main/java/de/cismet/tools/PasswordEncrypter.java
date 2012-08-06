@@ -9,6 +9,17 @@ package de.cismet.tools;
 
 import net.sourceforge.blowfishj.BlowfishEasy;
 
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
+
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
@@ -18,14 +29,24 @@ import javax.swing.UIManager;
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
  */
+// FIXME: encoding, 
 public class PasswordEncrypter extends javax.swing.JFrame {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    private static final char[] MASTER_PASS = "fourtytwo".toCharArray(); // NOI18N
+    private static final transient Logger LOG = Logger.getLogger(PasswordEncrypter.class);
+
+    @Deprecated
     public static String CRYPT_PREFIX = "crypt::";                       // NOI18N
-    private static final transient org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(
-            PasswordEncrypter.class);
+    @Deprecated
+    private static final char[] MASTER_PASS = "fourtytwo".toCharArray(); // NOI18N
+    
+    private static final String PBE_ALGORITHM = "PBEWithMD5AndDES";
+    private static final char[] PE_MASTERKEY_PROP = "PasswordEncrypter.masterKey".toCharArray(); // NOI18N
+    private static final char[] PE_SALT_PROP = "PasswordEncrypter.salt".toCharArray();           // NOI18N
+    private static final int ITERATIONS = 20;
+    private static final int LF = 10;
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cmdGo;
     private javax.swing.JLabel jLabel1;
@@ -180,32 +201,35 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword2FocusGained
+    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword2FocusGained
         pwfPassword2.setSelectionStart(0);
         pwfPassword2.setSelectionEnd(pwfPassword1.getPassword().length);
-    }                                                                           //GEN-LAST:event_pwfPassword2FocusGained
+    }//GEN-LAST:event_pwfPassword2FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword1FocusGained
+    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword1FocusGained
         pwfPassword1.setSelectionStart(0);
         pwfPassword1.setSelectionEnd(pwfPassword1.getPassword().length);
-    }                                                                           //GEN-LAST:event_pwfPassword1FocusGained
+    }//GEN-LAST:event_pwfPassword1FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {                        //GEN-FIRST:event_cmdGoActionPerformed
+    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGoActionPerformed
         final String p1 = new String(pwfPassword1.getPassword());
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
-            txtCode.setText(encryptString(p1));
-            // System.out.println(decryptString(txtCode.getText()));
+            try {
+                txtCode.setText(String.valueOf(encrypt(pwfPassword1.getPassword())));
+            } catch (final PasswordEncrypterException ex) {
+                txtCode.setText("exception during encryption: " + ex);
+            }
         } else {
             JOptionPane.showMessageDialog(
                 this,
@@ -219,7 +243,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             pwfPassword1.setText("");                                                                // NOI18N
             pwfPassword2.setText("");                                                                // NOI18N
         }
-    }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
+    }//GEN-LAST:event_cmdGoActionPerformed
 
     /**
      * DOCUMENT ME!
@@ -247,8 +271,11 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      * @param   code  DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
+     *
+     * @throws  PasswordEncrypterException  DOCUMENT ME!
      */
-    public static String decryptString(String code) {
+    @Deprecated
+    public static String decryptString(String code) throws PasswordEncrypterException {
         if ((code != null) && code.startsWith(CRYPT_PREFIX)) {
             final BlowfishEasy blowfish = new BlowfishEasy(MASTER_PASS);
             code = code.substring(CRYPT_PREFIX.length(), code.length());
@@ -264,15 +291,246 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      * @param   pwd  DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
+     *
+     * @throws  PasswordEncrypterException  DOCUMENT ME!
      */
-    public static String encryptString(final String pwd) {
+    @Deprecated
+    public static String encryptString(final String pwd) throws PasswordEncrypterException {
         final BlowfishEasy blowfish = new BlowfishEasy(MASTER_PASS);
+        final String code = CRYPT_PREFIX + blowfish.encryptString(pwd);
+
+        return code;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   string  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     */
+    public static char[] encrypt(final char[] string) throws PasswordEncrypterException {
+        return applyCipher(string, Cipher.ENCRYPT_MODE);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   string  DOCUMENT ME!
+     * @param   mode    DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     */
+    private static char[] applyCipher(final char[] string, final int mode) {
+        // FIXME: non-ASCII handling
+        Cipher pbeCipher = null;
+        SecretKey pbeKey = null;
         try {
-            final String code = CRYPT_PREFIX + blowfish.encryptString(pwd);
-            return code;
-        } catch (Exception e) {
-            log.warn("Error during encryption of STRING. Attention will use plain STRING instead.", e);
-            return pwd;
+            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PBE_ALGORITHM);
+            pbeKey = keyFactory.generateSecret(new PBEKeySpec(getMasterPw()));
+            pbeCipher = Cipher.getInstance(PBE_ALGORITHM);
+            pbeCipher.init(mode, pbeKey, new PBEParameterSpec(getSalt(), ITERATIONS));
+
+            final byte[] bytes = new byte[string.length];
+            // we don't know if System.arraycopy() creates traces in memory
+            for (int i = 0; i < string.length; ++i) {
+                bytes[i] = (byte)string[i];
+            }
+
+            final byte[] res = pbeCipher.doFinal(bytes);
+
+            // wipe the tmp array
+            for (int i = 0; i < bytes.length; ++i) {
+                bytes[i] = 0;
+            }
+
+            final char[] ret = new char[res.length];
+            for (int i = 0; i < res.length; ++i) {
+                // copy and wipe
+                ret[i] = (char)res[i];
+                res[i] = 0;
+            }
+
+            return ret;
+        } catch (final Exception ex) {
+            final String message = "cannot process string: mode=" + mode; // NOI18N
+            LOG.error(message, ex);
+            throw new PasswordEncrypterException(message, ex);
+        } finally {
+            // ensure re-init for wiping the cipher, when the cipher is initialised, the key is initialised, too
+            if (pbeCipher != null) {
+                try {
+                    pbeCipher.init(mode, pbeKey, new PBEParameterSpec(getSalt(), ITERATIONS));
+                } catch (final Exception ex) {
+                    LOG.warn("cannot re-init the cipher", ex); // NOI18N
+                }
+            }
         }
+    }
+
+    /**
+     * Decrypts a given string that was created by {@link #encrypt(char[])}. The caller is responsible for wiping the
+     * given parameter and the returned result himself.
+     *
+     * @param   string  the encrypted string
+     *
+     * @return  the decrypted string in a <code>char[]</code>
+     *
+     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     */
+    public static char[] decrypt(final char[] string) throws PasswordEncrypterException {
+        // for backwards compatibility
+        final char[] cryptPrefix = CRYPT_PREFIX.toCharArray();
+        boolean compatibilityDecrypt = true;
+        if (string.length >= cryptPrefix.length) {
+            for (int i = 0; i < cryptPrefix.length; ++i) {
+                if (string[i] != cryptPrefix[i]) {
+                    compatibilityDecrypt = false;
+                    break;
+                }
+            }
+        }
+
+        if (compatibilityDecrypt) {
+            return decryptString(String.valueOf(string)).toCharArray();
+        } else if (('{' == string[0]) && ('}' == string[string.length - 1])) {
+            final char[] chars = new char[string.length - 2];
+            // we don't know if System.arraycopy() creates traces in memory
+            for (int i = 0; i < (string.length - 2); ++i) {
+                chars[i] = string[i + 1];
+            }
+
+            final char[] ret = applyCipher(chars, Cipher.DECRYPT_MODE);
+
+            for (int i = 0; i < chars.length; ++i) {
+                // wipe
+                chars[i] = 0;
+            }
+
+            return ret;
+        } else {
+            return string;
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     */
+    private static char[] getMasterPw() throws PasswordEncrypterException {
+        final InputStream peStream = PasswordEncrypter.class.getResourceAsStream("PasswordEncrypter.properties");
+
+        if (peStream == null) {
+            final String message = "PasswordEncrypter properties not present"; // NOI18N
+            LOG.error(message);
+            throw new PasswordEncrypterException(message);
+        } else {
+            // we deal with base64 only
+            final byte[] bytes = safeRead(peStream, PE_MASTERKEY_PROP);
+            final char[] chars = new char[bytes.length];
+
+            for (int i = 0; i < bytes.length; ++i) {
+                // copy and wipe
+                chars[i] = (char)bytes[i];
+                bytes[i] = 0;
+            }
+
+            return chars;
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     */
+    private static byte[] getSalt() throws PasswordEncrypterException {
+        final InputStream peStream = PasswordEncrypter.class.getResourceAsStream("PasswordEncrypter.properties");
+
+        if (peStream == null) {
+            final String message = "PasswordEncrypter properties not present"; // NOI18N
+            LOG.error(message);
+            throw new PasswordEncrypterException(message);
+        } else {
+            return safeRead(peStream, PE_SALT_PROP);
+        }
+    }
+
+    /**
+     * Reads a property as safe as possible. This operation is completely char[] based and won't put any property values
+     * into {@link String} objects. The given stream will be used as is, it won't be closed nor reset. However, if the
+     * {@link InputStream#read()} operation of this implementation will change some markers or similar they won't be
+     * reset, too.
+     *
+     * <p>IMPORTANT: Properties are supposed to be separated by a single '=' and terminated by a line feed or EOF.</p>
+     *
+     * @param   propertyStream  the stream to read from
+     * @param   property        the property to read
+     *
+     * @return  the value of the property in a <code>byte[]</code>
+     *
+     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     */
+    public static byte[] safeRead(final InputStream propertyStream, final char[] property)
+            throws PasswordEncrypterException {
+        try {
+            int c;
+            int mark = 0;
+
+            while ((c = propertyStream.read()) > 0) {
+                if ((property.length > mark) && (c == property[mark])) {
+                    mark++;
+                } else if (c == '=') {
+                    // read the property value
+                    byte[] chars = new byte[100];
+
+                    int p;
+                    int index = 0;
+                    while (((p = propertyStream.read()) > 0) && (p != LF)) {
+                        chars[index] = (byte)p;
+                        index++;
+
+                        final byte[] tmp = new byte[chars.length + 100];
+                        if (index == chars.length) {
+                            // resize and wipe
+                            for (int i = 0; i < chars.length; ++i) {
+                                tmp[i] = chars[i];
+                                chars[i] = 0;
+                            }
+
+                            chars = tmp;
+                        }
+                    }
+
+                    // resize
+                    final byte[] tmp = new byte[index];
+                    for (int i = 0; i < tmp.length; ++i) {
+                        // copy and wipe
+                        tmp[i] = chars[i];
+                        chars[i] = 0;
+                    }
+
+                    return tmp;
+                } else {
+                    // mismatching property key, reset marker
+                    mark = 0;
+                }
+            }
+        } catch (final IOException ex) {
+            final String message = "cannot read password from properties"; // NOI18N
+            LOG.error(message, ex);
+            throw new PasswordEncrypterException(message, ex);
+        }
+
+        return null;
     }
 }
