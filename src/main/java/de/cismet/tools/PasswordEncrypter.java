@@ -9,15 +9,10 @@ package de.cismet.tools;
 
 import net.sourceforge.blowfishj.BlowfishEasy;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
-
-import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -26,6 +21,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  * DOCUMENT ME!
@@ -33,7 +29,7 @@ import javax.swing.JOptionPane;
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
  */
-// FIXME: encoding, random wipe bytes
+// FIXME: encoding, 
 public class PasswordEncrypter extends javax.swing.JFrame {
 
     //~ Static fields/initializers ---------------------------------------------
@@ -44,21 +40,12 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     public static String CRYPT_PREFIX = "crypt::";                       // NOI18N
     @Deprecated
     private static final char[] MASTER_PASS = "fourtytwo".toCharArray(); // NOI18N
-
-    private static final String CIPHER = "PBEWithMD5AndDES/CBC/PKCS5Padding";
-    private static final String FACTORY = "PBEWithMD5AndDES";
+    
+    private static final String PBE_ALGORITHM = "PBEWithMD5AndDES";
     private static final char[] PE_MASTERKEY_PROP = "PasswordEncrypter.masterKey".toCharArray(); // NOI18N
     private static final char[] PE_SALT_PROP = "PasswordEncrypter.salt".toCharArray();           // NOI18N
     private static final int ITERATIONS = 20;
-    private static final byte LF = 0xA;
-    private static final byte CR = 0xD;
-    private static final byte EQ = 0x3D;
-
-    private static final byte[] DEFAULT_SALT = new byte[] { 124, 10, 10, 54, 23, 43, 72, 78 };
-
-    private static final SecureRandom RANDOM = new SecureRandom();
-
-    private static final int LINE_SPLIT = 76;
+    private static final int LF = 10;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cmdGo;
@@ -239,7 +226,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
             try {
-                txtCode.setText(encryptString(String.valueOf(pwfPassword1.getPassword())));
+                txtCode.setText(String.valueOf(encrypt(pwfPassword1.getPassword())));
             } catch (final PasswordEncrypterException ex) {
                 txtCode.setText("exception during encryption: " + ex);
             }
@@ -261,54 +248,21 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     /**
      * DOCUMENT ME!
      *
-     * @param   args  the command line arguments
-     *
-     * @throws  Exception  DOCUMENT ME!
+     * @param  args  the command line arguments
      */
-    public static void main(final String[] args) throws Exception {
-        System.out.println();
-        System.out.println("TEST toBase64");
+    public static void main(final String[] args) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
-//        final String string = "a";
-        final String string = "abcdefgh";
-//        final String string = "12345678902093woeiaösdghö43lwreahsdgöo24iwhlrasdfwesradgbrdsfv356%$3woeiaösdghö43lwreahsdgöo24iwhlrasdfwesradgbrdsfv356%3woeiaösdghö43lwreahsdgöo24iwhlrasdfwesradgbrdsfv356%";
-
-        final byte[] expResult1 = Base64.encodeBase64(string.getBytes());
-        final String expResult2 = new BASE64Encoder().encode(string.getBytes());
-        final byte[] result = PasswordEncrypter.toBase64(string.getBytes(), true);
-
-        System.out.println(new String(result));
-        System.out.println(new String(expResult1));
-        System.out.println(expResult2);
-        
-        System.out.println(new String(fromBase64(result, false)));
-
-//        final char[] out = encrypt("def".toCharArray());
-//        System.out.println(Arrays.toString(out));
-//        final char[] in = decrypt(out);
-//        System.out.println(Arrays.toString(in));
-//        final SecretKeyFactory s = SecretKeyFactory.getInstance("DESede");
-//        System.out.println(s);
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    try {
-//                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//                    } catch (final Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                    new PasswordEncrypter().setVisible(true);
-//                }
-//            });
-//        final String s = "ürpk";
-//        System.out.println(s);
-//
-//        final byte[] bytes = bytesFromCharAndWipe(s.toCharArray());
-//        Arrays.toString(bytes);
-//        final char[] chars = charFromBytesAndWipe(bytes);
-//
-//        System.out.println(String.valueOf(chars));
+                @Override
+                public void run() {
+                    try {
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    new PasswordEncrypter().setVisible(true);
+                }
+            });
     }
 
     /**
@@ -358,172 +312,53 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      * @throws  PasswordEncrypterException  DOCUMENT ME!
      */
     public static char[] encrypt(final char[] string) throws PasswordEncrypterException {
-        final char[] chars = null; // applyCipher(string, Cipher.ENCRYPT_MODE);
-        final char[] ret = new char[chars.length + 2];
-
-        ret[0] = '{';
-        for (int i = 0; i < chars.length; ++i) {
-            ret[i + 1] = chars[i];
-            chars[i] = (char)getWipe();
-        }
-        ret[ret.length - 1] = '}';
-
-        return ret;
+        return applyCipher(string, Cipher.ENCRYPT_MODE);
     }
-
-    //J-
-    private static final byte[] BASE64CODE = new byte[] {
-        // A-Z
-        0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F,
-        0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A,
-        // a-z
-        0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F,
-        0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A,
-        // 0-9
-        0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
-        // + /
-        0x2B, 0x2F
-    };
-    //J+
 
     /**
      * DOCUMENT ME!
      *
-     * @param   byteString  string DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public static byte[] toBase64(final byte[] byteString, final boolean wipeInput) {
-        final int padding = (3 - (byteString.length % 3)) % 3;
-
-        final byte[] byteStringPadded = new byte[byteString.length + padding];
-        for (int i = 0; i < byteString.length; ++i) {
-            byteStringPadded[i] = byteString[i];
-            if(wipeInput){
-                byteString[i] = getWipe();
-            }
-        }
-
-        final byte[] base64 = new byte[(byteStringPadded.length / 3) * 4];
-        int k = 0;
-        for (int i = 0; i < byteStringPadded.length; i += 3) {
-            final int j = ((byteStringPadded[i] & 0xFF) << 16)
-                        + ((byteStringPadded[i + 1] & 0xFF) << 8)
-                        + (byteStringPadded[i + 2] & 0xFF);
-
-            byteStringPadded[i] = getWipe();
-            byteStringPadded[i + 1] = getWipe();
-            byteStringPadded[i + 2] = getWipe();
-
-            base64[k++] = BASE64CODE[(j >> 18) & 0x3F];
-            base64[k++] = BASE64CODE[(j >> 12) & 0x3F];
-            base64[k++] = BASE64CODE[(j >> 6) & 0x3F];
-            base64[k++] = BASE64CODE[j & 0x3F];
-        }
-
-        // integer div to get linecount
-        final int lineCount = base64.length / LINE_SPLIT;
-        final byte[] base64Br = new byte[base64.length + (lineCount * 2)];
-        for (int i = 0, j = 0; i < base64.length; ++i, ++j) {
-            if ((i > 0) && ((i % LINE_SPLIT) == 0)) {
-                base64Br[j++] = CR;
-                base64Br[j++] = LF;
-            }
-            base64Br[j] = base64[i];
-            base64[i] = getWipe();
-        }
-        for (int i = base64Br.length - 1; i > (base64Br.length - 1 - padding); --i) {
-            base64Br[i] = EQ;
-        }
-
-        return base64Br;
-    }
-
-    public static byte[] fromBase64(final byte[] byteString, final boolean wipeInput) {
-        // at least four bytes present in encoded string
-        if(byteString.length < 4){
-            throw new IllegalArgumentException("incorrectly encoded string, too few bytes: " + byteString.length);
-        }
-        
-        final int padding;
-        if(byteString[byteString.length - 2] == EQ){
-            padding = 2;
-        } else if (byteString[byteString.length - 1] == EQ){
-            padding = 1;
-        } else {
-            padding = 0;
-        }
-
-        final int lineCount = byteString.length / (LINE_SPLIT + 2);
-        
-        final byte[] strippedBr = new byte[byteString.length - (lineCount * 2)];
-        for(int i = 0, j = 0; i < byteString.length; ++i, ++j){
-            if(i < 0 && ((i % LINE_SPLIT) == 0)){
-                if(wipeInput){
-                    byteString[i++] = getWipe();
-                    byteString[i++] = getWipe();
-                } else {
-                    i += 2;
-                }
-            } else {
-                strippedBr[j] = (byte)(byteString[i]);
-                
-                if(wipeInput){
-                    byteString[i] = getWipe();
-                }
-            }
-        }
-        
-        final byte[] decoded = new byte[(strippedBr.length / 4) * 3];
-        int k = 0;
-        for(int i = 0; i < strippedBr.length; i += 4){
-            final int j = ((strippedBr[i] & 0x3F) << 18)
-                        + ((strippedBr[i + 1] & 0x3F) << 12)
-                        + ((strippedBr[i + 2] & 0x3F) << 6)
-                        + (strippedBr[i + 3] & 0x3F);
-            
-            strippedBr[i] = getWipe();
-            strippedBr[i + 1] = getWipe();
-            strippedBr[i + 2] = getWipe();
-            strippedBr[i + 3] = getWipe();
-            
-            decoded[k++] = (byte)((j >> 16) & 0xFF);
-            if(i < strippedBr.length - 4 || (padding < 2)) {
-                decoded[k++] = (byte)((j >> 8) & 0xFF);
-            }
-            if(i < strippedBr.length - 4 || (padding < 1)) {
-                decoded[k++] = (byte)(j & 0xFF);
-            }
-        }
-        
-        return decoded;
-    }
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   bytes  string DOCUMENT ME!
-     * @param   mode   DOCUMENT ME!
+     * @param   string  DOCUMENT ME!
+     * @param   mode    DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
      *
      * @throws  PasswordEncrypterException  DOCUMENT ME!
      */
-    private static byte[] applyCipher(final byte[] bytes, final int mode) {
+    private static char[] applyCipher(final char[] string, final int mode) {
+        // FIXME: non-ASCII handling
         Cipher pbeCipher = null;
         SecretKey pbeKey = null;
         try {
-            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(FACTORY);
+            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(PBE_ALGORITHM);
             pbeKey = keyFactory.generateSecret(new PBEKeySpec(getMasterPw()));
-            pbeCipher = Cipher.getInstance(CIPHER);
+            pbeCipher = Cipher.getInstance(PBE_ALGORITHM);
             pbeCipher.init(mode, pbeKey, new PBEParameterSpec(getSalt(), ITERATIONS));
+
+            final byte[] bytes = new byte[string.length];
+            // we don't know if System.arraycopy() creates traces in memory
+            for (int i = 0; i < string.length; ++i) {
+                bytes[i] = (byte)string[i];
+            }
 
             final byte[] res = pbeCipher.doFinal(bytes);
 
-            return res;
+            // wipe the tmp array
+            for (int i = 0; i < bytes.length; ++i) {
+                bytes[i] = 0;
+            }
+
+            final char[] ret = new char[res.length];
+            for (int i = 0; i < res.length; ++i) {
+                // copy and wipe
+                ret[i] = (char)res[i];
+                res[i] = 0;
+            }
+
+            return ret;
         } catch (final Exception ex) {
             final String message = "cannot process string: mode=" + mode; // NOI18N
             LOG.error(message, ex);
-            ex.printStackTrace();
             throw new PasswordEncrypterException(message, ex);
         } finally {
             // ensure re-init for wiping the cipher, when the cipher is initialised, the key is initialised, too
@@ -563,17 +398,18 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         if (compatibilityDecrypt) {
             return decryptString(String.valueOf(string)).toCharArray();
         } else if (('{' == string[0]) && ('}' == string[string.length - 1])) {
-            // strip the curly braces
             final char[] chars = new char[string.length - 2];
             // we don't know if System.arraycopy() creates traces in memory
             for (int i = 0; i < (string.length - 2); ++i) {
                 chars[i] = string[i + 1];
             }
 
-            final char[] ret = null; // applyCipher(chars, Cipher.DECRYPT_MODE);
+            final char[] ret = applyCipher(chars, Cipher.DECRYPT_MODE);
 
-            // wipe tmp array
-            wipe(chars);
+            for (int i = 0; i < chars.length; ++i) {
+                // wipe
+                chars[i] = 0;
+            }
 
             return ret;
         } else {
@@ -596,19 +432,14 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             LOG.error(message);
             throw new PasswordEncrypterException(message);
         } else {
-            // we deal with ASCII only
+            // we deal with base64 only
             final byte[] bytes = safeRead(peStream, PE_MASTERKEY_PROP);
-            if (bytes == null) {
-                final String message = "cannot read master password from properties, not set?"; // NOI18N
-                LOG.error(message);
-                throw new PasswordEncrypterException(message);
-            }
-
-            // simple cast because of ASCII only support
             final char[] chars = new char[bytes.length];
+
             for (int i = 0; i < bytes.length; ++i) {
+                // copy and wipe
                 chars[i] = (char)bytes[i];
-                bytes[i] = getWipe();
+                bytes[i] = 0;
             }
 
             return chars;
@@ -616,7 +447,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * Always 8 bytes.
+     * DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
      *
@@ -630,175 +461,17 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             LOG.error(message);
             throw new PasswordEncrypterException(message);
         } else {
-            final byte[] salt = safeRead(peStream, PE_SALT_PROP);
-            if (salt == null) {
-                LOG.warn("salt not set, using default salt");                  // NOI18N
-
-                return DEFAULT_SALT;
-            } else if (salt.length < 8) {
-                LOG.warn("salt too short, filling up with default salt"); // NOI18N
-                final byte[] newSalt = new byte[8];
-                for (int i = 0; i < 8; ++i) {
-                    if (i < salt.length) {
-                        newSalt[i] = salt[i];
-                        salt[i] = getWipe();
-                    } else {
-                        newSalt[i] = DEFAULT_SALT[i];
-                    }
-                }
-
-                return newSalt;
-            } else if (salt.length < 8) {
-                LOG.warn("salt too long, stripping first 8 bytes"); // NOI18N
-                final byte[] newSalt = new byte[8];
-                for (int i = 0; i < salt.length; ++i) {
-                    if (i < newSalt.length) {
-                        newSalt[i] = salt[i];
-                        salt[i] = getWipe();
-                    } else {
-                        salt[i] = getWipe();
-                    }
-                }
-
-                return newSalt;
-            } else {
-                return salt;
-            }
+            return safeRead(peStream, PE_SALT_PROP);
         }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   bytes  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  IllegalArgumentException  DOCUMENT ME!
-     */
-    public static char[] charFromBytesAndWipe(final byte[] bytes) {
-        if ((bytes.length % 2) != 0) {
-            throw new IllegalArgumentException("cannot convert odd number of bytes");
-        }
-
-        final char[] chars = new char[bytes.length >> 1];
-        for (int i = 0; i < chars.length; ++i) {
-            final int p = i << 1;
-            chars[i] = (char)(((bytes[p] & 0x00FF) << 8) + (bytes[p + 1] & 0x00FF));
-            bytes[p] = getWipe();
-            bytes[p + 1] = getWipe();
-        }
-
-        return chars;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   bytes  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  IllegalArgumentException  DOCUMENT ME!
-     */
-    public static char[] charFromBytes(final byte[] bytes) {
-        if ((bytes.length % 2) != 0) {
-            throw new IllegalArgumentException("cannot convert odd number of bytes");
-        }
-
-        final char[] chars = new char[bytes.length >> 1];
-        for (int i = 0; i < chars.length; ++i) {
-            final int p = i << 1;
-            chars[i] = (char)(((bytes[p] & 0x00FF) << 8) + (bytes[p + 1] & 0x00FF));
-        }
-
-        return chars;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param  bytes  DOCUMENT ME!
-     */
-    public static void wipe(final byte[] bytes) {
-        for (int i = 0; i < bytes.length; ++i) {
-            bytes[i] = getWipe();
-        }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   chars  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public static byte[] bytesFromCharAndWipe(final char[] chars) {
-        final byte[] bytes = new byte[chars.length << 1];
-        for (int i = 0; i < chars.length; ++i) {
-            final int p = i << 1;
-            bytes[p] = (byte)((chars[i] & 0xFF00) >> 8);
-            bytes[p + 1] = (byte)(chars[i] & 0x00FF);
-
-            chars[i] = (char)getWipe();
-        }
-
-        return bytes;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   chars  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public static byte[] bytesFromChar(final char[] chars) {
-        final byte[] bytes = new byte[chars.length << 1];
-        for (int i = 0; i < chars.length; ++i) {
-            final int p = i << 1;
-            bytes[p] = (byte)((chars[i] & 0xFF00) >> 8);
-            bytes[p + 1] = (byte)(chars[i] & 0x00FF);
-        }
-
-        return bytes;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param  chars  DOCUMENT ME!
-     */
-    public static void wipe(final char[] chars) {
-        for (int i = 0; i < chars.length; ++i) {
-            chars[i] = (char)getWipe();
-        }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public static byte getWipe() {
-        RANDOM.setSeed(System.nanoTime());
-        final byte[] wipe = new byte[1];
-        RANDOM.nextBytes(wipe);
-
-        return wipe[0];
     }
 
     /**
      * Reads a property as safe as possible. This operation is completely char[] based and won't put any property values
      * into {@link String} objects. The given stream will be used as is, it won't be closed nor reset. However, if the
      * {@link InputStream#read()} operation of this implementation will change some markers or similar they won't be
-     * reset, too.<br/>
-     * <br/>
+     * reset, too.
      *
      * <p>IMPORTANT: Properties are supposed to be separated by a single '=' and terminated by a line feed or EOF.</p>
-     * <br/>
-     *
-     * <p>IMPORTANT: Only ASCII encoded properties are currently supported</p>
      *
      * @param   propertyStream  the stream to read from
      * @param   property        the property to read
@@ -809,44 +482,32 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      */
     public static byte[] safeRead(final InputStream propertyStream, final char[] property)
             throws PasswordEncrypterException {
-        // TODO: optimise parser
         try {
             int c;
             int mark = 0;
-            boolean comment = false;
-            boolean firstChar = true;
 
             while ((c = propertyStream.read()) > 0) {
-                if (firstChar && (c == '#')) {
-                    comment = true;
-                    firstChar = false;
-                } else if (c == LF) {
-                    firstChar = true;
-                    comment = false;
-                } else if (comment) {
-                    firstChar = false;
-                } else if ((property.length > mark) && (c == property[mark])) {
-                    firstChar = false;
+                if ((property.length > mark) && (c == property[mark])) {
                     mark++;
-                } else if ((c == '=') && (property.length == mark)) {
+                } else if (c == '=') {
                     // read the property value
-                    byte[] bytes = new byte[100];
+                    byte[] chars = new byte[100];
 
                     int p;
                     int index = 0;
                     while (((p = propertyStream.read()) > 0) && (p != LF)) {
-                        bytes[index] = (byte)p;
+                        chars[index] = (byte)p;
                         index++;
 
-                        final byte[] tmp = new byte[bytes.length + 100];
-                        if (index == bytes.length) {
+                        final byte[] tmp = new byte[chars.length + 100];
+                        if (index == chars.length) {
                             // resize and wipe
-                            for (int i = 0; i < bytes.length; ++i) {
-                                tmp[i] = bytes[i];
-                                bytes[i] = getWipe();
+                            for (int i = 0; i < chars.length; ++i) {
+                                tmp[i] = chars[i];
+                                chars[i] = 0;
                             }
 
-                            bytes = tmp;
+                            chars = tmp;
                         }
                     }
 
@@ -854,15 +515,14 @@ public class PasswordEncrypter extends javax.swing.JFrame {
                     final byte[] tmp = new byte[index];
                     for (int i = 0; i < tmp.length; ++i) {
                         // copy and wipe
-                        tmp[i] = bytes[i];
-                        bytes[i] = getWipe();
+                        tmp[i] = chars[i];
+                        chars[i] = 0;
                     }
 
                     return tmp;
                 } else {
                     // mismatching property key, reset marker
                     mark = 0;
-                    firstChar = false;
                 }
             }
         } catch (final IOException ex) {
