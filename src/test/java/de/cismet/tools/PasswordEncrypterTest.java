@@ -5,102 +5,141 @@
 package de.cismet.tools;
 
 import java.io.InputStream;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.*;
 import static org.junit.Assert.*;
+import sun.misc.BASE64Encoder;
 
 /**
  *
  * @author Martin Scholl
  */
 public class PasswordEncrypterTest {
-    
-    public PasswordEncrypterTest() {
-    }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of main method, of class PasswordEncrypter.
-     */
-    @Ignore
     @Test
-    public void testMain() {
-        System.out.println("main");
-        String[] args = null;
-        PasswordEncrypter.main(args);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testToBase64() {
+        System.out.println("TEST toBase64");
+        
+        String string = "abcd";
+        
+        byte[] expResult1 = Base64.encodeBase64(string.getBytes());
+        String expResult2 = new BASE64Encoder().encode(string.getBytes());
+        byte[] result = PasswordEncrypter.toBase64(string.getBytes(), true);
+        
+        System.out.println(new String(result));
+        System.out.println(new String(expResult1));
+        System.out.println(expResult2);
+        assertArrayEquals(expResult1, result);
     }
-
-    /**
-     * Test of decryptString method, of class PasswordEncrypter.
-     */
-    @Ignore
-    @Test
-    public void testDecryptString() {
-        System.out.println("decryptString");
-        String code = "";
-        String expResult = "";
-        String result = PasswordEncrypter.decryptString(code);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
+    
     /**
      * Test of encryptString method, of class PasswordEncrypter.
      */
-    @Ignore
     @Test
-    public void testEncryptString() {
-        System.out.println("encryptString");
-        String pwd = "";
-        String expResult = "";
-        String result = PasswordEncrypter.encryptString(pwd);
+    public void testEncryptDecryptString() {
+        System.out.println("TEST encryptDecryptString");
+        
+        String pwd = "abc";
+        String expResult = "abc";
+        String result = PasswordEncrypter.decryptString(PasswordEncrypter.encryptString(pwd));
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        pwd = "9320weSÜF43";
+        expResult = "9320weSÜF43";
+        result = PasswordEncrypter.decryptString(PasswordEncrypter.encryptString(pwd));
+        assertEquals(expResult, result);
+        
+        pwd = "/u24$3wer&ßdg\\2394r";
+        expResult = "/u24$3wer&ßdg\\2394r";
+        result = PasswordEncrypter.decryptString(PasswordEncrypter.encryptString(pwd));
+        assertEquals(expResult, result);
+        
+        pwd = "/u24$3wer&ßdg\\2394r";
+        expResult = "/u24$3wer&ßdg\\2394r";
+        result = PasswordEncrypter.decryptString(PasswordEncrypter.encryptString(pwd));
+        assertEquals(expResult, result);
+        
     }
 
+    @Test
+    public void testEncryptStringAssertNotEqual() {
+        System.out.println("TEST encryptString");
+        
+        String pwd = "dsaed";
+        String result1 = PasswordEncrypter.encryptString(pwd);
+        String result2 = PasswordEncrypter.encryptString(pwd);
+        assertNotSame(result1, result2);
+        
+        pwd = "-----";
+        result1 = PasswordEncrypter.encryptString(pwd);
+        result2 = PasswordEncrypter.encryptString(pwd);
+        assertNotSame(result1, result2);
+    }
+    
+    // this condition is not met
+    @Ignore
+    @Test
+    public void testEncryptStringAssertFixedLength() {
+        System.out.println("TEST encryptString");
+        
+        String pwd1 = "dsaed";
+        String pwd2 = "9032owehrd";
+        String result1 = PasswordEncrypter.encryptString(pwd1);
+        String result2 = PasswordEncrypter.encryptString(pwd2);
+        assertEquals(result1.length(), result2.length());
+        
+        pwd1 = "dd";
+        pwd2 = "ddd";
+        result1 = PasswordEncrypter.encryptString(pwd1);
+        result2 = PasswordEncrypter.encryptString(pwd2);
+        assertEquals(result1.length(), result2.length());
+    }
+
+    @Test
+    public void testDecryptString() {
+        System.out.println("TEST decryptString");
+        
+        String code = "cryptd::A34ewoajf403worehfd";
+        String expResult = code;
+        String result = PasswordEncrypter.decryptString(code);
+        assertEquals(expResult, result);
+        
+        code = "A34ewoajf403worehfd";
+        expResult = code;
+        result = PasswordEncrypter.decryptString(code);
+        assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testDecryptCompatibility() {
+        System.out.println("TEST decryptString");
+        
+        String code = "cryptd::A34ewoajf403worehfd";
+        String expResult = code;
+        String result = String.valueOf(PasswordEncrypter.decrypt(code.toCharArray()));
+        assertEquals(expResult, result);
+        
+        code = "A34ewoajf403worehfd";
+        expResult = code;
+        result = String.valueOf(PasswordEncrypter.decrypt(code.toCharArray()));
+        assertEquals(expResult, result);
+        
+        code = "crypt::88f67ebad197b40f6bf85171cee69a0e";
+        expResult = "foo";
+        result = String.valueOf(PasswordEncrypter.decrypt(code.toCharArray()));
+        assertEquals(expResult, result);
+    }
+        
     /**
      * Test of encrypt method, of class PasswordEncrypter.
      */
     @Ignore
     @Test
-    public void testEncrypt() {
+    public void testEncryptDecrypt() {
         System.out.println("encrypt");
         char[] string = null;
         char[] expResult = null;
         char[] result = PasswordEncrypter.encrypt(string);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of decrypt method, of class PasswordEncrypter.
-     */
-    @Ignore
-    @Test
-    public void testDecrypt() {
-        System.out.println("decrypt");
-        char[] string = null;
-        char[] expResult = null;
-        char[] result = PasswordEncrypter.decrypt(string);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -165,6 +204,19 @@ public class PasswordEncrypterTest {
         expResult = getBytes(" 93j ".toCharArray());
         result = PasswordEncrypter.safeRead(propertyStream, property);
         assertArrayEquals(expResult, result);
+        propertyStream.close();
+            
+        propertyStream = getClass().getResourceAsStream("PasswordEncrypterTestSafeRead1.properties");
+        property = "xxx".toCharArray();
+        expResult = new byte[0];
+        result = PasswordEncrypter.safeRead(propertyStream, property);
+        assertArrayEquals(expResult, result);
+        propertyStream.close();
+        
+        propertyStream = getClass().getResourceAsStream("PasswordEncrypterTestSafeRead1.properties");
+        property = "yyy".toCharArray();
+        result = PasswordEncrypter.safeRead(propertyStream, property);
+        assertNull(result);
         propertyStream.close();
     }
     
