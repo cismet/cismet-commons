@@ -29,7 +29,7 @@ import javax.swing.UIManager;
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
  */
-// FIXME: encoding, 
+// FIXME: encoding, random wipe bytes
 public class PasswordEncrypter extends javax.swing.JFrame {
 
     //~ Static fields/initializers ---------------------------------------------
@@ -40,7 +40,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     public static String CRYPT_PREFIX = "crypt::";                       // NOI18N
     @Deprecated
     private static final char[] MASTER_PASS = "fourtytwo".toCharArray(); // NOI18N
-    
+
     private static final String PBE_ALGORITHM = "PBEWithMD5AndDES";
     private static final char[] PE_MASTERKEY_PROP = "PasswordEncrypter.masterKey".toCharArray(); // NOI18N
     private static final char[] PE_SALT_PROP = "PasswordEncrypter.salt".toCharArray();           // NOI18N
@@ -201,27 +201,27 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword2FocusGained
+    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword2FocusGained
         pwfPassword2.setSelectionStart(0);
         pwfPassword2.setSelectionEnd(pwfPassword1.getPassword().length);
-    }//GEN-LAST:event_pwfPassword2FocusGained
+    }                                                                           //GEN-LAST:event_pwfPassword2FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword1FocusGained
+    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword1FocusGained
         pwfPassword1.setSelectionStart(0);
         pwfPassword1.setSelectionEnd(pwfPassword1.getPassword().length);
-    }//GEN-LAST:event_pwfPassword1FocusGained
+    }                                                                           //GEN-LAST:event_pwfPassword1FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGoActionPerformed
+    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {                        //GEN-FIRST:event_cmdGoActionPerformed
         final String p1 = new String(pwfPassword1.getPassword());
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
@@ -243,7 +243,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             pwfPassword1.setText("");                                                                // NOI18N
             pwfPassword2.setText("");                                                                // NOI18N
         }
-    }//GEN-LAST:event_cmdGoActionPerformed
+    }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
 
     /**
      * DOCUMENT ME!
@@ -257,7 +257,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
                 public void run() {
                     try {
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         e.printStackTrace();
                     }
                     new PasswordEncrypter().setVisible(true);
@@ -482,14 +482,26 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      */
     public static byte[] safeRead(final InputStream propertyStream, final char[] property)
             throws PasswordEncrypterException {
+        // TODO: optimise parser
         try {
             int c;
             int mark = 0;
+            boolean comment = false;
+            boolean firstChar = true;
 
             while ((c = propertyStream.read()) > 0) {
-                if ((property.length > mark) && (c == property[mark])) {
+                if (firstChar && (c == '#')) {
+                    comment = true;
+                    firstChar = false;
+                } else if (c == LF) {
+                    firstChar = true;
+                    comment = false;
+                } else if (comment) {
+                    firstChar = false;
+                } else if ((property.length > mark) && (c == property[mark])) {
+                    firstChar = false;
                     mark++;
-                } else if (c == '=') {
+                } else if ((c == '=') && (property.length == mark)) {
                     // read the property value
                     byte[] chars = new byte[100];
 
@@ -523,6 +535,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
                 } else {
                     // mismatching property key, reset marker
                     mark = 0;
+                    firstChar = false;
                 }
             }
         } catch (final IOException ex) {
