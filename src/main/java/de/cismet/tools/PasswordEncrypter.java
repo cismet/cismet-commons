@@ -9,10 +9,7 @@ package de.cismet.tools;
 
 import net.sourceforge.blowfishj.BlowfishEasy;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
-
-import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,19 +23,22 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  * DOCUMENT ME!
  *
  * @author   thorsten.hell@cismet.de
+ * @author   martin.scholl@cismet.de
  * @version  $Revision$, $Date$
  */
-// FIXME: encoding, random wipe bytes
 public class PasswordEncrypter extends javax.swing.JFrame {
 
     //~ Static fields/initializers ---------------------------------------------
 
     private static final transient Logger LOG = Logger.getLogger(PasswordEncrypter.class);
+
+    private static final byte LF = 0xA;
 
     @Deprecated
     public static String CRYPT_PREFIX = "crypt::";                       // NOI18N
@@ -47,18 +47,13 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
     private static final String CIPHER = "PBEWithMD5AndDES/CBC/PKCS5Padding";
     private static final String FACTORY = "PBEWithMD5AndDES";
-    private static final char[] PE_MASTERKEY_PROP = "PasswordEncrypter.masterKey".toCharArray(); // NOI18N
-    private static final char[] PE_SALT_PROP = "PasswordEncrypter.salt".toCharArray();           // NOI18N
     private static final int ITERATIONS = 20;
-    private static final byte LF = 0xA;
-    private static final byte CR = 0xD;
-    private static final byte EQ = 0x3D;
-
     private static final byte[] DEFAULT_SALT = new byte[] { 124, 10, 10, 54, 23, 43, 72, 78 };
 
-    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final char[] PE_MASTERKEY_PROP = "PasswordEncrypter.masterKey".toCharArray(); // NOI18N
+    private static final char[] PE_SALT_PROP = "PasswordEncrypter.salt".toCharArray();           // NOI18N
 
-    private static final int LINE_SPLIT = 76;
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cmdGo;
@@ -214,32 +209,32 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword2FocusGained
+    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword2FocusGained
         pwfPassword2.setSelectionStart(0);
         pwfPassword2.setSelectionEnd(pwfPassword1.getPassword().length);
-    }//GEN-LAST:event_pwfPassword2FocusGained
+    }                                                                           //GEN-LAST:event_pwfPassword2FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword1FocusGained
+    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword1FocusGained
         pwfPassword1.setSelectionStart(0);
         pwfPassword1.setSelectionEnd(pwfPassword1.getPassword().length);
-    }//GEN-LAST:event_pwfPassword1FocusGained
+    }                                                                           //GEN-LAST:event_pwfPassword1FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGoActionPerformed
+    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {                        //GEN-FIRST:event_cmdGoActionPerformed
         final String p1 = new String(pwfPassword1.getPassword());
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
             try {
-                txtCode.setText(encryptString(String.valueOf(pwfPassword1.getPassword())));
+                txtCode.setText(String.valueOf(encrypt(pwfPassword1.getPassword(), false)));
             } catch (final PasswordEncrypterException ex) {
                 txtCode.setText("exception during encryption: " + ex);
             }
@@ -256,7 +251,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             pwfPassword1.setText("");                                                                // NOI18N
             pwfPassword2.setText("");                                                                // NOI18N
         }
-    }//GEN-LAST:event_cmdGoActionPerformed
+    }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
 
     /**
      * DOCUMENT ME!
@@ -266,49 +261,18 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      * @throws  Exception  DOCUMENT ME!
      */
     public static void main(final String[] args) throws Exception {
-        System.out.println();
-        System.out.println("TEST toBase64");
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
-//        final String string = "a";
-        final String string = "abcdefgh";
-//        final String string = "12345678902093woeiaösdghö43lwreahsdgöo24iwhlrasdfwesradgbrdsfv356%$3woeiaösdghö43lwreahsdgöo24iwhlrasdfwesradgbrdsfv356%3woeiaösdghö43lwreahsdgöo24iwhlrasdfwesradgbrdsfv356%";
-
-        final byte[] expResult1 = Base64.encodeBase64(string.getBytes());
-        final String expResult2 = new BASE64Encoder().encode(string.getBytes());
-        final byte[] result = PasswordEncrypter.toBase64(string.getBytes(), true);
-
-        System.out.println(new String(result));
-        System.out.println(new String(expResult1));
-        System.out.println(expResult2);
-        
-        System.out.println(new String(fromBase64(result, false)));
-
-//        final char[] out = encrypt("def".toCharArray());
-//        System.out.println(Arrays.toString(out));
-//        final char[] in = decrypt(out);
-//        System.out.println(Arrays.toString(in));
-//        final SecretKeyFactory s = SecretKeyFactory.getInstance("DESede");
-//        System.out.println(s);
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    try {
-//                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//                    } catch (final Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                    new PasswordEncrypter().setVisible(true);
-//                }
-//            });
-//        final String s = "ürpk";
-//        System.out.println(s);
-//
-//        final byte[] bytes = bytesFromCharAndWipe(s.toCharArray());
-//        Arrays.toString(bytes);
-//        final char[] chars = charFromBytesAndWipe(bytes);
-//
-//        System.out.println(String.valueOf(chars));
+                @Override
+                public void run() {
+                    try {
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                    }
+                    new PasswordEncrypter().setVisible(true);
+                }
+            });
     }
 
     /**
@@ -351,14 +315,33 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     /**
      * DOCUMENT ME!
      *
-     * @param   string  DOCUMENT ME!
+     * @param   string     DOCUMENT ME!
+     * @param   wipeInput  DOCUMENT ME!
      *
-     * @return  DOCUMENT ME!
+     * @return  or <code>null</code> if the given array is <code>null</code>
      *
      * @throws  PasswordEncrypterException  DOCUMENT ME!
      */
-    public static char[] encrypt(final char[] string) throws PasswordEncrypterException {
-        final char[] chars = null; // applyCipher(string, Cipher.ENCRYPT_MODE);
+    public static char[] encrypt(final char[] string, final boolean wipeInput) throws PasswordEncrypterException {
+        if (string == null) {
+            LOG.warn("received null array, returning null"); // NOI18N
+
+            return null;
+        }
+
+        final byte[] bytes = bytesFromChars(string, wipeInput);
+
+        final byte[] enc = applyCipher(bytes, Cipher.ENCRYPT_MODE);
+
+        wipe(bytes);
+
+        final byte[] base64 = Base64.toBase64(enc, true);
+        final char[] chars = new char[base64.length];
+        for (int i = 0; i < base64.length; ++i) {
+            chars[i] = (char)base64[i];
+            base64[i] = getWipe();
+        }
+
         final char[] ret = new char[chars.length + 2];
 
         ret[0] = '{';
@@ -371,183 +354,24 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         return ret;
     }
 
-    //J-
-    private static final byte[] BASE64CODE = new byte[] {
-        // A-Z
-        0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F,
-        0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A,
-        // a-z
-        0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F,
-        0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A,
-        // 0-9
-        0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
-        // + /
-        0x2B, 0x2F
-    };
-    //J+
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   byteString  string DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public static byte[] toBase64(final byte[] byteString, final boolean wipeInput) {
-        final int padding = (3 - (byteString.length % 3)) % 3;
-
-        final byte[] byteStringPadded = new byte[byteString.length + padding];
-        for (int i = 0; i < byteString.length; ++i) {
-            byteStringPadded[i] = byteString[i];
-            if(wipeInput){
-                byteString[i] = getWipe();
-            }
-        }
-
-        final byte[] base64 = new byte[(byteStringPadded.length / 3) * 4];
-        int k = 0;
-        for (int i = 0; i < byteStringPadded.length; i += 3) {
-            final int j = ((byteStringPadded[i] & 0xFF) << 16)
-                        + ((byteStringPadded[i + 1] & 0xFF) << 8)
-                        + (byteStringPadded[i + 2] & 0xFF);
-
-            byteStringPadded[i] = getWipe();
-            byteStringPadded[i + 1] = getWipe();
-            byteStringPadded[i + 2] = getWipe();
-
-            base64[k++] = BASE64CODE[(j >> 18) & 0x3F];
-            base64[k++] = BASE64CODE[(j >> 12) & 0x3F];
-            base64[k++] = BASE64CODE[(j >> 6) & 0x3F];
-            base64[k++] = BASE64CODE[j & 0x3F];
-        }
-
-        // integer div to get linecount
-        final int lineCount = base64.length / LINE_SPLIT;
-        final byte[] base64Br = new byte[base64.length + (lineCount * 2)];
-        for (int i = 0, j = 0; i < base64.length; ++i, ++j) {
-            if ((i > 0) && ((i % LINE_SPLIT) == 0)) {
-                base64Br[j++] = CR;
-                base64Br[j++] = LF;
-            }
-            base64Br[j] = base64[i];
-            base64[i] = getWipe();
-        }
-        for (int i = base64Br.length - 1; i > (base64Br.length - 1 - padding); --i) {
-            base64Br[i] = EQ;
-        }
-
-        return base64Br;
-    }
-
-    public static byte[] fromBase64(final byte[] byteString, final boolean wipeInput) {
-        // at least four bytes present in encoded string
-        if(byteString.length < 4){
-            throw new IllegalArgumentException("incorrectly encoded string, too few bytes: " + byteString.length);
-        }
-        
-        final int padding;
-        if(byteString[byteString.length - 2] == EQ){
-            padding = 2;
-        } else if (byteString[byteString.length - 1] == EQ){
-            padding = 1;
-        } else {
-            padding = 0;
-        }
-
-        final int lineCount = byteString.length / (LINE_SPLIT + 2);
-        
-        final byte[] strippedBr = new byte[byteString.length - (lineCount * 2)];
-        for(int i = 0, j = 0; i < byteString.length; ++i, ++j){
-            if(i < 0 && ((i % LINE_SPLIT) == 0)){
-                if(wipeInput){
-                    byteString[i++] = getWipe();
-                    byteString[i++] = getWipe();
-                } else {
-                    i += 2;
-                }
-            } else {
-                strippedBr[j] = (byte)(byteString[i]);
-                
-                if(wipeInput){
-                    byteString[i] = getWipe();
-                }
-            }
-        }
-        
-        final byte[] decoded = new byte[(strippedBr.length / 4) * 3];
-        int k = 0;
-        for(int i = 0; i < strippedBr.length; i += 4){
-            final int j = ((strippedBr[i] & 0x3F) << 18)
-                        + ((strippedBr[i + 1] & 0x3F) << 12)
-                        + ((strippedBr[i + 2] & 0x3F) << 6)
-                        + (strippedBr[i + 3] & 0x3F);
-            
-            strippedBr[i] = getWipe();
-            strippedBr[i + 1] = getWipe();
-            strippedBr[i + 2] = getWipe();
-            strippedBr[i + 3] = getWipe();
-            
-            decoded[k++] = (byte)((j >> 16) & 0xFF);
-            if(i < strippedBr.length - 4 || (padding < 2)) {
-                decoded[k++] = (byte)((j >> 8) & 0xFF);
-            }
-            if(i < strippedBr.length - 4 || (padding < 1)) {
-                decoded[k++] = (byte)(j & 0xFF);
-            }
-        }
-        
-        return decoded;
-    }
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   bytes  string DOCUMENT ME!
-     * @param   mode   DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  PasswordEncrypterException  DOCUMENT ME!
-     */
-    private static byte[] applyCipher(final byte[] bytes, final int mode) {
-        Cipher pbeCipher = null;
-        SecretKey pbeKey = null;
-        try {
-            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(FACTORY);
-            pbeKey = keyFactory.generateSecret(new PBEKeySpec(getMasterPw()));
-            pbeCipher = Cipher.getInstance(CIPHER);
-            pbeCipher.init(mode, pbeKey, new PBEParameterSpec(getSalt(), ITERATIONS));
-
-            final byte[] res = pbeCipher.doFinal(bytes);
-
-            return res;
-        } catch (final Exception ex) {
-            final String message = "cannot process string: mode=" + mode; // NOI18N
-            LOG.error(message, ex);
-            ex.printStackTrace();
-            throw new PasswordEncrypterException(message, ex);
-        } finally {
-            // ensure re-init for wiping the cipher, when the cipher is initialised, the key is initialised, too
-            if (pbeCipher != null) {
-                try {
-                    pbeCipher.init(mode, pbeKey, new PBEParameterSpec(getSalt(), ITERATIONS));
-                } catch (final Exception ex) {
-                    LOG.warn("cannot re-init the cipher", ex); // NOI18N
-                }
-            }
-        }
-    }
-
     /**
      * Decrypts a given string that was created by {@link #encrypt(char[])}. The caller is responsible for wiping the
      * given parameter and the returned result himself.
      *
-     * @param   string  the encrypted string
+     * @param   string     the encrypted string
+     * @param   wipeInput  DOCUMENT ME!
      *
-     * @return  the decrypted string in a <code>char[]</code>
+     * @return  the decrypted string in a <code>char[]</code> or <code>null</code> if the given array is <code>
+     *          null</code>
      *
      * @throws  PasswordEncrypterException  DOCUMENT ME!
      */
-    public static char[] decrypt(final char[] string) throws PasswordEncrypterException {
+    public static char[] decrypt(final char[] string, final boolean wipeInput) throws PasswordEncrypterException {
+        if (string == null) {
+            LOG.warn("received null array, returning null"); // NOI18N
+
+            return null;
+        }
         // for backwards compatibility
         final char[] cryptPrefix = CRYPT_PREFIX.toCharArray();
         boolean compatibilityDecrypt = true;
@@ -564,20 +388,79 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             return decryptString(String.valueOf(string)).toCharArray();
         } else if (('{' == string[0]) && ('}' == string[string.length - 1])) {
             // strip the curly braces
-            final char[] chars = new char[string.length - 2];
-            // we don't know if System.arraycopy() creates traces in memory
+            final char[] base64 = new char[string.length - 2];
             for (int i = 0; i < (string.length - 2); ++i) {
-                chars[i] = string[i + 1];
+                base64[i] = string[i + 1];
+                if (wipeInput) {
+                    string[i] = (char)getWipe();
+                }
             }
 
-            final char[] ret = null; // applyCipher(chars, Cipher.DECRYPT_MODE);
+            if (wipeInput) {
+                string[0] = (char)getWipe();
+                string[string.length - 1] = (char)getWipe();
+            }
 
-            // wipe tmp array
-            wipe(chars);
+            final byte[] b64Bytes = new byte[base64.length];
+            for (int i = 0; i < base64.length; ++i) {
+                b64Bytes[i] = (byte)base64[i];
+                base64[i] = (char)getWipe();
+            }
+
+            final byte[] bytes = Base64.fromBase64(b64Bytes, true);
+
+            final byte[] res = applyCipher(bytes, Cipher.DECRYPT_MODE);
+
+            wipe(bytes);
+
+            final char[] ret = charsFromBytes(res, true);
 
             return ret;
         } else {
             return string;
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   bytes  string DOCUMENT ME!
+     * @param   mode   DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IllegalArgumentException    DOCUMENT ME!
+     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     */
+    private static byte[] applyCipher(final byte[] bytes, final int mode) {
+        if (bytes == null) {
+            throw new IllegalArgumentException("given bytes must not be null"); // NOI18N
+        }
+
+        Cipher pbeCipher = null;
+        SecretKey pbeKey = null;
+        try {
+            final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(FACTORY);
+            pbeKey = keyFactory.generateSecret(new PBEKeySpec(getMasterPw()));
+            pbeCipher = Cipher.getInstance(CIPHER);
+            pbeCipher.init(mode, pbeKey, new PBEParameterSpec(getSalt(), ITERATIONS));
+
+            final byte[] res = pbeCipher.doFinal(bytes);
+
+            return res;
+        } catch (final Exception ex) {
+            final String message = "cannot process string: mode=" + mode; // NOI18N
+            LOG.error(message, ex);
+            throw new PasswordEncrypterException(message, ex);
+        } finally {
+            // ensure re-init for wiping the cipher, when the cipher is initialised, the key is initialised, too
+            if (pbeCipher != null) {
+                try {
+                    pbeCipher.init(mode, pbeKey, new PBEParameterSpec(getSalt(), ITERATIONS));
+                } catch (final Exception ex) {
+                    LOG.warn("cannot re-init the cipher", ex); // NOI18N
+                }
+            }
         }
     }
 
@@ -670,13 +553,14 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     /**
      * DOCUMENT ME!
      *
-     * @param   bytes  DOCUMENT ME!
+     * @param   bytes      DOCUMENT ME!
+     * @param   wipeInput  DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
      *
      * @throws  IllegalArgumentException  DOCUMENT ME!
      */
-    public static char[] charFromBytesAndWipe(final byte[] bytes) {
+    public static char[] charsFromBytes(final byte[] bytes, final boolean wipeInput) {
         if ((bytes.length % 2) != 0) {
             throw new IllegalArgumentException("cannot convert odd number of bytes");
         }
@@ -685,31 +569,11 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         for (int i = 0; i < chars.length; ++i) {
             final int p = i << 1;
             chars[i] = (char)(((bytes[p] & 0x00FF) << 8) + (bytes[p + 1] & 0x00FF));
-            bytes[p] = getWipe();
-            bytes[p + 1] = getWipe();
-        }
 
-        return chars;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   bytes  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  IllegalArgumentException  DOCUMENT ME!
-     */
-    public static char[] charFromBytes(final byte[] bytes) {
-        if ((bytes.length % 2) != 0) {
-            throw new IllegalArgumentException("cannot convert odd number of bytes");
-        }
-
-        final char[] chars = new char[bytes.length >> 1];
-        for (int i = 0; i < chars.length; ++i) {
-            final int p = i << 1;
-            chars[i] = (char)(((bytes[p] & 0x00FF) << 8) + (bytes[p + 1] & 0x00FF));
+            if (wipeInput) {
+                bytes[p] = getWipe();
+                bytes[p + 1] = getWipe();
+            }
         }
 
         return chars;
@@ -729,36 +593,21 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     /**
      * DOCUMENT ME!
      *
-     * @param   chars  DOCUMENT ME!
+     * @param   chars      DOCUMENT ME!
+     * @param   wipeInput  DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
      */
-    public static byte[] bytesFromCharAndWipe(final char[] chars) {
+    public static byte[] bytesFromChars(final char[] chars, final boolean wipeInput) {
         final byte[] bytes = new byte[chars.length << 1];
         for (int i = 0; i < chars.length; ++i) {
             final int p = i << 1;
             bytes[p] = (byte)((chars[i] & 0xFF00) >> 8);
             bytes[p + 1] = (byte)(chars[i] & 0x00FF);
 
-            chars[i] = (char)getWipe();
-        }
-
-        return bytes;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   chars  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public static byte[] bytesFromChar(final char[] chars) {
-        final byte[] bytes = new byte[chars.length << 1];
-        for (int i = 0; i < chars.length; ++i) {
-            final int p = i << 1;
-            bytes[p] = (byte)((chars[i] & 0xFF00) >> 8);
-            bytes[p + 1] = (byte)(chars[i] & 0x00FF);
+            if (wipeInput) {
+                chars[i] = (char)getWipe();
+            }
         }
 
         return bytes;
