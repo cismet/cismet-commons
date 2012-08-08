@@ -13,7 +13,6 @@ import org.junit.Test;
 import java.io.InputStream;
 
 import static org.junit.Assert.*;
-import sun.misc.BASE64Encoder;
 
 /**
  * DOCUMENT ME!
@@ -66,10 +65,6 @@ public class PasswordEncrypterTest {
     /**
      * DOCUMENT ME!
      */
-    @Test
-    public void testDecryptString() {
-        System.out.println("TEST " + getCurrentMethodName());
-
     @Test
     public void testDecryptString() {
         System.out.println("TEST decryptString");
