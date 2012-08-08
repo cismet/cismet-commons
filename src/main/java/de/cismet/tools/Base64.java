@@ -223,23 +223,4 @@ public final class Base64 {
 
         throw new IllegalArgumentException("illegal byte64: " + b64); // NOI18N
     }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   args  DOCUMENT ME!
-     *
-     * @throws  Exception  DOCUMENT ME!
-     */
-    public static void main(final String[] args) throws Exception {
-        final String str =
-            "!§$W)rgußp43rhgoö3    4lahrsbjgöoq35eulrghfgnq3n 4wctäw-seejrgdn35le,r hö3 8-itenq5g4.et fgb, m";
-        System.out.println(new String(
-                toBase64(
-                    str.getBytes("UTF-8"),
-                    false)));
-
-        final BASE64Encoder enc = new BASE64Encoder();
-        System.out.println(enc.encode(str.getBytes("UTF-8")));
-    }
 }
