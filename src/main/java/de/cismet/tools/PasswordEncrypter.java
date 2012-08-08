@@ -234,7 +234,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
             try {
-                txtCode.setText(String.valueOf(encrypt(pwfPassword1.getPassword(), false)));
+                txtCode.setText(encryptString(String.valueOf(pwfPassword1.getPassword())));
             } catch (final PasswordEncrypterException ex) {
                 txtCode.setText("exception during encryption: " + ex);
             }
