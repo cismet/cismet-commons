@@ -11,6 +11,8 @@ import net.sourceforge.blowfishj.BlowfishEasy;
 
 import org.apache.log4j.Logger;
 
+import org.openide.util.NbBundle;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -45,8 +47,8 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     @Deprecated
     private static final char[] MASTER_PASS = "fourtytwo".toCharArray(); // NOI18N
 
-    private static final String CIPHER = "PBEWithMD5AndDES/CBC/PKCS5Padding";
-    private static final String FACTORY = "PBEWithMD5AndDES";
+    private static final String CIPHER = "PBEWithMD5AndDES/CBC/PKCS5Padding"; // NOI18N
+    private static final String FACTORY = "PBEWithMD5AndDES";                 // NOI18N
     private static final int ITERATIONS = 20;
     private static final byte[] DEFAULT_SALT = new byte[] { 124, 10, 10, 54, 23, 43, 72, 78 };
 
@@ -236,15 +238,18 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             try {
                 txtCode.setText(encryptString(String.valueOf(pwfPassword1.getPassword())));
             } catch (final PasswordEncrypterException ex) {
-                txtCode.setText("exception during encryption: " + ex);
+                txtCode.setText(NbBundle.getMessage(
+                        PasswordEncrypter.class,
+                        "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).txtCode.text.pwEncEx",  // NOI18N
+                        ex.getLocalizedMessage()));
             }
         } else {
             JOptionPane.showMessageDialog(
                 this,
-                org.openide.util.NbBundle.getMessage(
+                NbBundle.getMessage(
                     PasswordEncrypter.class,
                     "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.message"), // NOI18N
-                org.openide.util.NbBundle.getMessage(
+                NbBundle.getMessage(
                     PasswordEncrypter.class,
                     "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.title"),   // NOI18N
                 JOptionPane.ERROR_MESSAGE);
@@ -472,7 +477,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      * @throws  PasswordEncrypterException  DOCUMENT ME!
      */
     private static char[] getMasterPw() throws PasswordEncrypterException {
-        final InputStream peStream = PasswordEncrypter.class.getResourceAsStream("PasswordEncrypter.properties");
+        final InputStream peStream = PasswordEncrypter.class.getResourceAsStream("PasswordEncrypter.properties"); // NOI18N
 
         if (peStream == null) {
             final String message = "PasswordEncrypter properties not present"; // NOI18N
@@ -506,7 +511,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      * @throws  PasswordEncrypterException  DOCUMENT ME!
      */
     private static byte[] getSalt() throws PasswordEncrypterException {
-        final InputStream peStream = PasswordEncrypter.class.getResourceAsStream("PasswordEncrypter.properties");
+        final InputStream peStream = PasswordEncrypter.class.getResourceAsStream("PasswordEncrypter.properties"); // NOI18N
 
         if (peStream == null) {
             final String message = "PasswordEncrypter properties not present"; // NOI18N
@@ -562,7 +567,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      */
     public static char[] charsFromBytes(final byte[] bytes, final boolean wipeInput) {
         if ((bytes.length % 2) != 0) {
-            throw new IllegalArgumentException("cannot convert odd number of bytes");
+            throw new IllegalArgumentException("cannot convert odd number of bytes"); // NOI18N
         }
 
         final char[] chars = new char[bytes.length >> 1];
