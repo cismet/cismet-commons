@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.io.InputStream;
 
 import static org.junit.Assert.*;
+import sun.misc.BASE64Encoder;
 
 /**
  * DOCUMENT ME!
@@ -59,6 +60,7 @@ public class PasswordEncrypterTest {
         expResult = "/u24$3wer&ßdg\\2394r";
         result = PasswordEncrypter.decryptString(PasswordEncrypter.encryptString(pwd));
         assertEquals(expResult, result);
+        
     }
 
     /**
@@ -68,6 +70,10 @@ public class PasswordEncrypterTest {
     public void testDecryptString() {
         System.out.println("TEST " + getCurrentMethodName());
 
+    @Test
+    public void testDecryptString() {
+        System.out.println("TEST decryptString");
+        
         String code = "cryptd::A34ewoajf403worehfd";
         String expResult = code;
         String result = PasswordEncrypter.decryptString(code);
@@ -105,6 +111,7 @@ public class PasswordEncrypterTest {
     /**
      * Test of encrypt method, of class PasswordEncrypter.
      */
+    @Ignore
     @Test
     public void testEncryptDecryptUTF8() {
         System.out.println("TEST " + getCurrentMethodName());
