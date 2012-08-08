@@ -318,14 +318,43 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * DOCUMENT ME!
+     * Encrypts a given string using Password-based Encryption with MD5 and DES that can be decrypted using
+     * {@link #decrypt(char[], boolean)}. The caller is responsible for wiping the returned result himself. The given
+     * array can automatically be wiped by passing <code>true</code> to the <code>wipeInput</code> parameter. All
+     * temporary created data is immediately wiped, thus this implementation offers as little traces in memory as
+     * possible.<br/>
+     * <br/>
+     * <b>IMPORTANT: This operations requires the<br/>
+     * <br/>
+     * <code>PasswordEncrypter.properties</code><br/>
+     * <br/>
+     * file containing the property<br/>
+     * <br/>
+     * <code>PasswordEncrypter.masterKey</code><br/>
+     * <br/>
+     * to be located on the classpath within the package<br/>
+     * <br/>
+     * <code>de.cismet.tools</code><br/>
+     * <br/>
+     * </b> . Currently, it is also required, that the password only contains <code>ASCII</code> characters, see
+     * {@link #safeRead(java.io.InputStream, char[])}. This operation also requires <code>Salt</code> as an input.
+     * However, though it is not recommended, this implementation offers a default-Salt, if none is provided. The Salt
+     * can be provided through the <code>PasswordEncrypter.salt</code> property within the <code>
+     * PasswordEncrypter.properties</code> in the <code>de.cismet.tools</code> package. It must have a fixed length of
+     * eight byte. If it is too small, missing bytes will be filled up using the default-Salt. If it is too big, only
+     * the first eight bytes are used. Every character provided by the Salt property is interpreted as a <i>single</i>
+     * byte, see <code>safeRead(java.io.InputStream, char[])</code>.
      *
-     * @param   string     DOCUMENT ME!
-     * @param   wipeInput  DOCUMENT ME!
+     * @param   string     the string to encrypt
+     * @param   wipeInput  whether to wipe the input array or not
      *
-     * @return  or <code>null</code> if the given array is <code>null</code>
+     * @return  the base64 encoded encrypted string in a <code>char[]</code> or <code>null</code> if the given array is
+     *          <code>null</code>
      *
-     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     * @throws  PasswordEncrypterException  if an error occurs during encryption, e.g. the PasswordEncrypter.properties
+     *                                      with the masterKey cannot be found, etc.
+     *
+     * @see     #safeRead(java.io.InputStream, char[])
      */
     public static char[] encrypt(final char[] string, final boolean wipeInput) throws PasswordEncrypterException {
         if (string == null) {
@@ -361,15 +390,45 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
     /**
      * Decrypts a given string that was created by {@link #encrypt(char[])}. The caller is responsible for wiping the
-     * given parameter and the returned result himself.
+     * returned result himself. The given array can automatically be wiped by passing <code>true</code> to the <code>
+     * wipeInput</code> parameter. All temporary created data is immediately wiped, thus this implementation offers as
+     * little traces in memory as possible.<br/>
+     * <br/>
+     * NOTE: this operation can decrypt strings created by {@link #decryptString(java.lang.String)}, too, for
+     * compatibility reasons<br/>
+     * <br/>
+     * <b>IMPORTANT: This operations requires the<br/>
+     * <br/>
+     * <code>PasswordEncrypter.properties</code><br/>
+     * <br/>
+     * file containing the property<br/>
+     * <br/>
+     * <code>PasswordEncrypter.masterKey</code><br/>
+     * <br/>
+     * to be located on the classpath within the package<br/>
+     * <br/>
+     * <code>de.cismet.tools</code><br/>
+     * <br/>
+     * </b> . Currently, it is also required, that the password only contains <code>ASCII</code> characters, see
+     * {@link #safeRead(java.io.InputStream, char[])}. This operation also requires <code>Salt</code> as an input.
+     * However, though it is not recommended, this implementation offers a default-Salt, if none is provided. The Salt
+     * can be provided through the <code>PasswordEncrypter.salt</code> property within the <code>
+     * PasswordEncrypter.properties</code> in the <code>de.cismet.tools</code> package. It must have a fixed length of
+     * eight byte. If it is too small, missing bytes will be filled up using the default-Salt. If it is too big, only
+     * the first eight bytes are used. Every character provided by the Salt property is interpreted as a <i>single</i>
+     * byte, see <code>safeRead(java.io.InputStream, char[])</code>.
      *
-     * @param   string     the encrypted string
-     * @param   wipeInput  DOCUMENT ME!
+     * @param   string     the string to decript
+     * @param   wipeInput  whether to wipe the input array or not
      *
      * @return  the decrypted string in a <code>char[]</code> or <code>null</code> if the given array is <code>
-     *          null</code>
+     *          null</code> or the given string itself, if the string is not correctly formatted
      *
-     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     * @throws  PasswordEncrypterException  if an error occurs during decryption, e.g. the PasswordEncrypter.properties
+     *                                      with the masterKey cannot be found or the given array is not base64 encoded,
+     *                                      etc.
+     *
+     * @see     #safeRead(java.io.InputStream, char[])
      */
     public static char[] decrypt(final char[] string, final boolean wipeInput) throws PasswordEncrypterException {
         if (string == null) {
@@ -377,6 +436,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
             return null;
         }
+
         // for backwards compatibility
         final char[] cryptPrefix = CRYPT_PREFIX.toCharArray();
         boolean compatibilityDecrypt = true;
@@ -556,14 +616,15 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * DOCUMENT ME!
+     * Converts a <code>byte[]</code> into a <code>char[]</code> assuming byte i is the high byte and byte i + 2 is the
+     * low byte of a two byte char representation. Thus the resulting char[] is half as long as the input array.
      *
-     * @param   bytes      DOCUMENT ME!
-     * @param   wipeInput  DOCUMENT ME!
+     * @param   bytes      bytes to be converted to chars
+     * @param   wipeInput  whether to wipe the input array or not
      *
-     * @return  DOCUMENT ME!
+     * @return  an array with chars created from the given bytes
      *
-     * @throws  IllegalArgumentException  DOCUMENT ME!
+     * @throws  IllegalArgumentException  if the length of the given byte array is not even
      */
     public static char[] charsFromBytes(final byte[] bytes, final boolean wipeInput) {
         if ((bytes.length % 2) != 0) {
@@ -585,9 +646,11 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * DOCUMENT ME!
+     * Wipes a given <code>byte[]</code> using random bytes. The array will only contain a random mess afterwards.
      *
-     * @param  bytes  DOCUMENT ME!
+     * @param  bytes  the byte array to wipe
+     *
+     * @see    #getWipe()
      */
     public static void wipe(final byte[] bytes) {
         for (int i = 0; i < bytes.length; ++i) {
@@ -596,12 +659,13 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * DOCUMENT ME!
+     * Converts a <code>char[]</code> into a <code>byte[]</code> assuming byte i is the high byte and byte i + 2 is the
+     * low byte of a two byte char representation. Thus the resulting byte[] is twice the size of the input array.
      *
-     * @param   chars      DOCUMENT ME!
-     * @param   wipeInput  DOCUMENT ME!
+     * @param   chars      chars to be converted to bytes
+     * @param   wipeInput  whether to wipe the input array or not
      *
-     * @return  DOCUMENT ME!
+     * @return  an array with bytes extracted from the given chars
      */
     public static byte[] bytesFromChars(final char[] chars, final boolean wipeInput) {
         final byte[] bytes = new byte[chars.length << 1];
@@ -619,9 +683,11 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * DOCUMENT ME!
+     * Wipes a given <code>char[]</code> using random bytes. The array will only contain a random mess afterwards.
      *
-     * @param  chars  DOCUMENT ME!
+     * @param  chars  the char array to wipe
+     *
+     * @see    #getWipe()
      */
     public static void wipe(final char[] chars) {
         for (int i = 0; i < chars.length; ++i) {
@@ -630,9 +696,11 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * DOCUMENT ME!
+     * Get a random byte to wipe data.
      *
-     * @return  DOCUMENT ME!
+     * @return  a random byte
+     *
+     * @see     SecureRandom
      */
     public static byte getWipe() {
         RANDOM.setSeed(System.nanoTime());
