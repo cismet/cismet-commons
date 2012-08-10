@@ -58,6 +58,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chkLegacy;
     private javax.swing.JButton cmdGo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -96,6 +97,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         pwfPassword1 = new javax.swing.JPasswordField();
         pwfPassword2 = new javax.swing.JPasswordField();
+        chkLegacy = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.title")); // NOI18N
@@ -202,6 +204,12 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         getContentPane().add(pwfPassword2, gridBagConstraints);
 
+        chkLegacy.setText(NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.chkLegacy.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        getContentPane().add(chkLegacy, gridBagConstraints);
+
         final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((screenSize.width - 398) / 2, (screenSize.height - 183) / 2, 398, 183);
     } // </editor-fold>//GEN-END:initComponents
@@ -236,12 +244,24 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
             try {
-                txtCode.setText(encryptString(String.valueOf(pwfPassword1.getPassword())));
+                final String enc;
+                if (chkLegacy.isSelected()) {
+                    enc = encryptString(String.valueOf(pwfPassword1.getPassword()));
+                } else {
+                    enc = String.valueOf(encrypt(pwfPassword1.getPassword(), false));
+                }
+                txtCode.setText(enc);
             } catch (final PasswordEncrypterException ex) {
+                Throwable cause = ex;
+                Throwable current = ex;
+                while (current != null) {
+                    cause = current;
+                    current = current.getCause();
+                }
                 txtCode.setText(NbBundle.getMessage(
                         PasswordEncrypter.class,
                         "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).txtCode.text.pwEncEx",  // NOI18N
-                        ex.getLocalizedMessage()));
+                        cause.getLocalizedMessage()));
             }
         } else {
             JOptionPane.showMessageDialog(
