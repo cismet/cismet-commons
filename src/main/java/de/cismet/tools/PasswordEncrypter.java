@@ -12,11 +12,21 @@ import net.sourceforge.blowfishj.BlowfishEasy;
 import org.apache.log4j.Logger;
 
 import org.openide.util.NbBundle;
+import org.openide.util.WeakListeners;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FocusTraversalPolicy;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.security.SecureRandom;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -57,6 +67,10 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
+    //~ Instance fields --------------------------------------------------------
+
+    private final FocusListener codeFocusL;
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chkLegacy;
     private javax.swing.JButton cmdGo;
@@ -66,7 +80,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPasswordField pwfPassword1;
     private javax.swing.JPasswordField pwfPassword2;
-    private javax.swing.JTextArea txtCode;
+    private javax.swing.JTextArea txaCode;
     // End of variables declaration//GEN-END:variables
 
     //~ Constructors -----------------------------------------------------------
@@ -75,8 +89,12 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      * Creates new form PasswordEncrypter.
      */
     public PasswordEncrypter() {
+        this.codeFocusL = new CodeFocusListener();
+
         initComponents();
+
         getRootPane().setDefaultButton(cmdGo);
+        txaCode.addFocusListener(WeakListeners.create(FocusListener.class, codeFocusL, txaCode));
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -91,7 +109,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         cmdGo = new javax.swing.JButton();
-        txtCode = new javax.swing.JTextArea();
+        txaCode = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -101,10 +119,13 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.title")); // NOI18N
+        setFocusTraversalPolicy(new FocusTraversalOrder());
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setFont(new java.awt.Font("MS Sans Serif", 1, 12)); // NOI18N
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel1.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(
+                PasswordEncrypter.class,
+                "PasswordEncrypter.jLabel1.text"));                 // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -115,10 +136,12 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
         cmdGo.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.cmdGo.text")); // NOI18N
         cmdGo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdGoActionPerformed(evt);
-            }
-        });
+
+                @Override
+                public void actionPerformed(final java.awt.event.ActionEvent evt) {
+                    cmdGoActionPerformed(evt);
+                }
+            });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
@@ -126,9 +149,9 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         getContentPane().add(cmdGo, gridBagConstraints);
 
-        txtCode.setLineWrap(true);
-        txtCode.setRows(3);
-        txtCode.setOpaque(false);
+        txaCode.setLineWrap(true);
+        txaCode.setRows(3);
+        txaCode.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -136,9 +159,11 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
-        getContentPane().add(txtCode, gridBagConstraints);
+        getContentPane().add(txaCode, gridBagConstraints);
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel2.text")); // NOI18N
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(
+                PasswordEncrypter.class,
+                "PasswordEncrypter.jLabel2.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -146,7 +171,9 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         getContentPane().add(jLabel2, gridBagConstraints);
 
-        jLabel3.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel3.text")); // NOI18N
+        jLabel3.setText(org.openide.util.NbBundle.getMessage(
+                PasswordEncrypter.class,
+                "PasswordEncrypter.jLabel3.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -154,7 +181,9 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         getContentPane().add(jLabel3, gridBagConstraints);
 
-        jLabel4.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel4.text")); // NOI18N
+        jLabel4.setText(org.openide.util.NbBundle.getMessage(
+                PasswordEncrypter.class,
+                "PasswordEncrypter.jLabel4.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -163,10 +192,12 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         getContentPane().add(jLabel4, gridBagConstraints);
 
         pwfPassword1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                pwfPassword1FocusGained(evt);
-            }
-        });
+
+                @Override
+                public void focusGained(final java.awt.event.FocusEvent evt) {
+                    pwfPassword1FocusGained(evt);
+                }
+            });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -177,10 +208,12 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         getContentPane().add(pwfPassword1, gridBagConstraints);
 
         pwfPassword2.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                pwfPassword2FocusGained(evt);
-            }
-        });
+
+                @Override
+                public void focusGained(final java.awt.event.FocusEvent evt) {
+                    pwfPassword2FocusGained(evt);
+                }
+            });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -197,36 +230,36 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         getContentPane().add(chkLegacy, gridBagConstraints);
 
-        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-398)/2, (screenSize.height-183)/2, 398, 183);
-    }// </editor-fold>//GEN-END:initComponents
+        final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds((screenSize.width - 398) / 2, (screenSize.height - 183) / 2, 398, 183);
+    } // </editor-fold>//GEN-END:initComponents
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword2FocusGained
+    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword2FocusGained
         pwfPassword2.setSelectionStart(0);
         pwfPassword2.setSelectionEnd(pwfPassword1.getPassword().length);
-    }//GEN-LAST:event_pwfPassword2FocusGained
+    }                                                                           //GEN-LAST:event_pwfPassword2FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword1FocusGained
+    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword1FocusGained
         pwfPassword1.setSelectionStart(0);
         pwfPassword1.setSelectionEnd(pwfPassword1.getPassword().length);
-    }//GEN-LAST:event_pwfPassword1FocusGained
+    }                                                                           //GEN-LAST:event_pwfPassword1FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGoActionPerformed
+    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {                        //GEN-FIRST:event_cmdGoActionPerformed
         final String p1 = new String(pwfPassword1.getPassword());
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
@@ -237,7 +270,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
                 } else {
                     enc = String.valueOf(encrypt(pwfPassword1.getPassword(), false));
                 }
-                txtCode.setText(enc);
+                txaCode.setText(enc);
             } catch (final PasswordEncrypterException ex) {
                 Throwable cause = ex;
                 Throwable current = ex;
@@ -245,7 +278,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
                     cause = current;
                     current = current.getCause();
                 }
-                txtCode.setText(NbBundle.getMessage(
+                txaCode.setText(NbBundle.getMessage(
                         PasswordEncrypter.class,
                         "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).txtCode.text.pwEncEx",  // NOI18N
                         cause.getLocalizedMessage()));
@@ -263,7 +296,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             pwfPassword1.setText("");                                                                // NOI18N
             pwfPassword2.setText("");                                                                // NOI18N
         }
-    }//GEN-LAST:event_cmdGoActionPerformed
+    }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
 
     /**
      * DOCUMENT ME!
@@ -801,5 +834,100 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         }
 
         return null;
+    }
+
+    //~ Inner Classes ----------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private final class FocusTraversalOrder extends FocusTraversalPolicy {
+
+        //~ Instance fields ----------------------------------------------------
+
+        private final List<Component> order;
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new FocusTraversalOrder object.
+         */
+        public FocusTraversalOrder() {
+            order = new ArrayList<Component>(5);
+            order.add(pwfPassword1);
+            order.add(pwfPassword2);
+            order.add(chkLegacy);
+            order.add(cmdGo);
+            order.add(txaCode);
+        }
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public Component getComponentAfter(final Container aContainer, final Component aComponent) {
+            final int index = (order.indexOf(aComponent) + 1) % order.size();
+
+            return order.get(index);
+        }
+
+        @Override
+        public Component getComponentBefore(final Container aContainer, final Component aComponent) {
+            int index = order.indexOf(aComponent) - 1;
+            if (index < 0) {
+                index = order.size() - 1;
+            }
+
+            return order.get(index);
+        }
+
+        @Override
+        public Component getFirstComponent(final Container aContainer) {
+            return order.get(0);
+        }
+
+        @Override
+        public Component getLastComponent(final Container aContainer) {
+            return order.get(order.size() - 1);
+        }
+
+        @Override
+        public Component getDefaultComponent(final Container aContainer) {
+            return order.get(0);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private final class CodeFocusListener implements FocusListener {
+
+        //~ Instance fields ----------------------------------------------------
+
+        private int selStart;
+        private int selEnd;
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public void focusGained(final FocusEvent e) {
+            if (selStart < selEnd) {
+                txaCode.setSelectionStart(selStart);
+                txaCode.setSelectionEnd(selEnd);
+            }
+            if (txaCode.getSelectedText() == null) {
+                txaCode.selectAll();
+            }
+        }
+
+        @Override
+        public void focusLost(final FocusEvent e) {
+            // preserve selection
+            selStart = txaCode.getSelectionStart();
+            selEnd = txaCode.getSelectionEnd();
+        }
     }
 }
