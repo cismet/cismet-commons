@@ -104,9 +104,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setFont(new java.awt.Font("MS Sans Serif", 1, 12)); // NOI18N
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(
-                PasswordEncrypter.class,
-                "PasswordEncrypter.jLabel1.text"));                 // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -117,12 +115,10 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
         cmdGo.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.cmdGo.text")); // NOI18N
         cmdGo.addActionListener(new java.awt.event.ActionListener() {
-
-                @Override
-                public void actionPerformed(final java.awt.event.ActionEvent evt) {
-                    cmdGoActionPerformed(evt);
-                }
-            });
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdGoActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
@@ -142,9 +138,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         getContentPane().add(txtCode, gridBagConstraints);
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(
-                PasswordEncrypter.class,
-                "PasswordEncrypter.jLabel2.text")); // NOI18N
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel2.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -152,9 +146,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         getContentPane().add(jLabel2, gridBagConstraints);
 
-        jLabel3.setText(org.openide.util.NbBundle.getMessage(
-                PasswordEncrypter.class,
-                "PasswordEncrypter.jLabel3.text")); // NOI18N
+        jLabel3.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel3.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -162,9 +154,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         getContentPane().add(jLabel3, gridBagConstraints);
 
-        jLabel4.setText(org.openide.util.NbBundle.getMessage(
-                PasswordEncrypter.class,
-                "PasswordEncrypter.jLabel4.text")); // NOI18N
+        jLabel4.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel4.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -173,12 +163,10 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         getContentPane().add(jLabel4, gridBagConstraints);
 
         pwfPassword1.addFocusListener(new java.awt.event.FocusAdapter() {
-
-                @Override
-                public void focusGained(final java.awt.event.FocusEvent evt) {
-                    pwfPassword1FocusGained(evt);
-                }
-            });
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                pwfPassword1FocusGained(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -189,12 +177,10 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         getContentPane().add(pwfPassword1, gridBagConstraints);
 
         pwfPassword2.addFocusListener(new java.awt.event.FocusAdapter() {
-
-                @Override
-                public void focusGained(final java.awt.event.FocusEvent evt) {
-                    pwfPassword2FocusGained(evt);
-                }
-            });
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                pwfPassword2FocusGained(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -204,42 +190,43 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         getContentPane().add(pwfPassword2, gridBagConstraints);
 
+        chkLegacy.setSelected(true);
         chkLegacy.setText(NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.chkLegacy.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         getContentPane().add(chkLegacy, gridBagConstraints);
 
-        final java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width - 398) / 2, (screenSize.height - 183) / 2, 398, 183);
-    } // </editor-fold>//GEN-END:initComponents
+        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds((screenSize.width-398)/2, (screenSize.height-183)/2, 398, 183);
+    }// </editor-fold>//GEN-END:initComponents
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword2FocusGained
+    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword2FocusGained
         pwfPassword2.setSelectionStart(0);
         pwfPassword2.setSelectionEnd(pwfPassword1.getPassword().length);
-    }                                                                           //GEN-LAST:event_pwfPassword2FocusGained
+    }//GEN-LAST:event_pwfPassword2FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword1FocusGained
+    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword1FocusGained
         pwfPassword1.setSelectionStart(0);
         pwfPassword1.setSelectionEnd(pwfPassword1.getPassword().length);
-    }                                                                           //GEN-LAST:event_pwfPassword1FocusGained
+    }//GEN-LAST:event_pwfPassword1FocusGained
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {                        //GEN-FIRST:event_cmdGoActionPerformed
+    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGoActionPerformed
         final String p1 = new String(pwfPassword1.getPassword());
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
@@ -276,7 +263,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             pwfPassword1.setText("");                                                                // NOI18N
             pwfPassword2.setText("");                                                                // NOI18N
         }
-    }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
+    }//GEN-LAST:event_cmdGoActionPerformed
 
     /**
      * DOCUMENT ME!
