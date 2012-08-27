@@ -21,20 +21,45 @@ import java.util.HashMap;
  * @author   thorsten
  * @version  $Revision$, $Date$
  */
-public class CExtContext {   
-    private HashMap<String,Object> propertyBag=new HashMap<String, Object>();
+public class CExtContext {
 
-    public CExtContext(String key, Object value) {
-         propertyBag.put(key, value);
+    //~ Instance fields --------------------------------------------------------
+
+    private HashMap<String, Object> propertyBag = new HashMap<String, Object>();
+
+    //~ Constructors -----------------------------------------------------------
+
+    /**
+     * Creates a new CExtContext object.
+     *
+     * @param  key    DOCUMENT ME!
+     * @param  value  DOCUMENT ME!
+     */
+    public CExtContext(final String key, final Object value) {
+        propertyBag.put(key, value);
     }
 
-    public CExtContext addContextProperty(String key, Object value){
+    //~ Methods ----------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   key    DOCUMENT ME!
+     * @param   value  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public CExtContext addContextProperty(final String key, final Object value) {
         propertyBag.put(key, value);
         return this;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public HashMap<String, Object> getPropertyBag() {
         return propertyBag;
     }
-    
 }
