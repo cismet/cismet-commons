@@ -5,15 +5,10 @@
 *              ... and it just works.
 *
 ****************************************************/
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.cismet.ext;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * DOCUMENT ME!
@@ -23,11 +18,22 @@ import java.util.HashMap;
  */
 public class CExtContext {
 
+    //~ Static fields/initializers ---------------------------------------------
+
+    public static final String CTX_REFERENCE = "__ctx_prop_reference__"; // NOI18N
+
     //~ Instance fields --------------------------------------------------------
 
-    private HashMap<String, Object> propertyBag = new HashMap<String, Object>();
+    private final Map<String, Object> propertyBag;
 
     //~ Constructors -----------------------------------------------------------
+
+    /**
+     * Creates a new CExtContext object.
+     */
+    public CExtContext() {
+         propertyBag = new HashMap<String, Object>();
+    }
 
     /**
      * Creates a new CExtContext object.
@@ -36,6 +42,8 @@ public class CExtContext {
      * @param  value  DOCUMENT ME!
      */
     public CExtContext(final String key, final Object value) {
+        this();
+        
         propertyBag.put(key, value);
     }
 
@@ -49,9 +57,21 @@ public class CExtContext {
      *
      * @return  DOCUMENT ME!
      */
-    public CExtContext addContextProperty(final String key, final Object value) {
+    public CExtContext putProperty(final String key, final Object value) {
         propertyBag.put(key, value);
+
         return this;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   key  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object getProperty(final String key) {
+        return propertyBag.get(key);
     }
 
     /**
@@ -59,7 +79,18 @@ public class CExtContext {
      *
      * @return  DOCUMENT ME!
      */
-    public HashMap<String, Object> getPropertyBag() {
+    public Map<String, Object> getPropertyBag() {
         return propertyBag;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   key  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Object clearProperty(final String key) {
+        return propertyBag.remove(key);
     }
 }

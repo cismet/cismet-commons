@@ -5,10 +5,6 @@
 *              ... and it just works.
 *
 ****************************************************/
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.cismet.ext;
 
 import java.util.Collection;
@@ -30,7 +26,7 @@ public interface CExtProvider<T> {
      *
      * @return  DOCUMENT ME!
      */
-    Collection<T> provideExtensions(CExtContext context);
+    Collection<? extends T> provideExtensions(CExtContext context);
     /**
      * DOCUMENT ME!
      *
