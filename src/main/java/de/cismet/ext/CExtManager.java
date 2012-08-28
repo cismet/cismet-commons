@@ -7,23 +7,42 @@
 ****************************************************/
 package de.cismet.ext;
 
+import org.apache.log4j.Logger;
+
 import org.openide.util.Lookup;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * DOCUMENT ME!
+ * Global extension manager implementation that can provide extension implementations of any type. The behavior is
+ * similar to those of the global {@link Lookup}. However, this implementation provides additional facilities to collect
+ * extensions for specific situations/usages using an additional {@link CExtContext} object to express this very
+ * context. Extension providers can thus restrict the usage of their extensions to contexts in which they decided that
+ * the specific extension is reasonable. Extension users in turn can exactly specify their needs and thus can filter
+ * unsuitable extensions for their context.
  *
  * @author   thorsten
- * @version  $Revision$, $Date$
+ * @author   mscholl
+ * @version  1.0, 2012/08/28
+ * @see      CExtContext
+ * @see      CExtProvider
+ * @see      Lookup
  */
+// TODO: extract interface and put the extension manager on the global lookup. this way it is easy to provide implementations implmentations that make use of caching mechanism, etc.
+// TODO: introduce caching
+// TODO: introduce lazy loading of extensions
 public class CExtManager {
+
+    //~ Static fields/initializers ---------------------------------------------
+
+    /** LOGGER. */
+    private static final transient Logger LOG = Logger.getLogger(CExtManager.class);
 
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * Creates a new CExtManager object.
+     * Singleton.
      */
     private CExtManager() {
     }
@@ -31,62 +50,92 @@ public class CExtManager {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Returns the <code>CExtManager</code> instance (Singleton).
      *
-     * @return  DOCUMENT ME!
+     * @return  the <code>CExtManager</code> instance
+     *
+     * @since   1.0
      */
     public static CExtManager getInstance() {
         return LazyInitialiser.INSTANCE;
     }
 
     /**
-     * DOCUMENT ME!
+     * Collects all matching extension implementations of the given type for the given context. It makes use of the
+     * global {@link Lookup} and thus the ordering of the result depends on the order of the {@link CExtProvider}
+     * implementations that in turn provide implementations of the given type.
      *
-     * @param   <T>      DOCUMENT ME!
-     * @param   c        DOCUMENT ME!
-     * @param   context  DOCUMENT ME!
+     * @param   <T>      type of the requested extensions
+     * @param   c        class of the type of the requested extensions
+     * @param   context  context for which the extensions are requested for
      *
-     * @return  DOCUMENT ME!
+     * @return  an appropriate extension collection, ordered from most relevant to least relevant, never <code>
+     *          null</code>
+     *
+     * @since   1.0
      */
-    public <T> Collection<T> getExtensionFor(final Class<T> c, final CExtContext context) {
-        final ArrayList<T> extensions = new ArrayList<T>();
-        // Get All Providers
-        final Collection<? extends CExtProvider> allProviders = Lookup.getDefault().lookupAll(CExtProvider.class);
+    public <T> Collection<? extends T> getExtensions(final Class<T> c, final CExtContext context) {
+        final Collection<? extends CExtProvider> providers = Lookup.getDefault().lookupAll(CExtProvider.class);
 
-        for (final CExtProvider extProvider : allProviders) {
-            if (c.equals(extProvider.getValidClass())) {
-                extensions.addAll(extProvider.provideExtensions(context));
+        final ArrayList<T> result = new ArrayList<T>();
+        for (final CExtProvider provider : providers) {
+            // we allow subclasses, too
+            final Class<? extends T> pClass = provider.getType();
+            if (pClass == null) {
+                LOG.warn(
+                    "illegal CExtProvider implementation, CExtProvider.getType() returned null, ignoring provider: " // NOI18N
+                            + provider);
+            } else if (c.isAssignableFrom(pClass)) {
+                final Collection<? extends T> extensions = provider.provideExtensions(context);
+
+                if (extensions == null) {
+                    LOG.warn(
+                        "illegal CExtProvider implementation, CExtProvider.provideExtensions(CExtContext) returned " // NOI18N
+                                + "null, ignoring provider: "                                                        // NOI18N
+                                + provider);
+                } else {
+                    result.addAll(extensions);
+                }
             }
         }
 
-        return extensions;
+        return result;
     }
 
     /**
-     * DOCUMENT ME!
+     * Provides the first matching extension implementation of the given type for the given context. It makes use of the
+     * global {@link Lookup} and thus the first matching implementation depends on the order of the {@link CExtProvider}
+     * implementations that in turn provide implementations of the given type.
      *
-     * @param   <T>      DOCUMENT ME!
-     * @param   c        DOCUMENT ME!
-     * @param   context  DOCUMENT ME!
+     * @param   <T>      type of the requested extension
+     * @param   c        class of the type of the requested extension
+     * @param   context  context for which the extension is requested for
      *
-     * @return  DOCUMENT ME!
+     * @return  an appropriate extension implementation or <code>null</code> if there is no <code>CExtProvider</code>
+     *          that provides an extension implementation for the given type and context
      *
-     * @throws  IllegalStateException  DOCUMENT ME!
+     * @since   1.0
      */
     public <T> T getExtension(final Class<T> c, final CExtContext context) {
         final Collection<? extends CExtProvider> providers = Lookup.getDefault().lookupAll(CExtProvider.class);
 
         for (final CExtProvider provider : providers) {
-            // TODO: maybe assignable from would suit better
-            if (c.equals(provider.getValidClass())) {
+            // we allow subclasses, too
+            final Class<? extends T> pClass = provider.getType();
+            if (pClass == null) {
+                LOG.warn(
+                    "illegal CExtProvider implementation, CExtProvider.getType() returned null, ignoring provider: " // NOI18N
+                            + provider);
+            } else if (c.isAssignableFrom(pClass)) {
                 final Collection<? extends T> extensions = provider.provideExtensions(context);
-                if (extensions.size() == 1) {
+
+                if (extensions == null) {
+                    LOG.warn(
+                        "illegal CExtProvider implementation, CExtProvider.provideExtensions(CExtContext) returned " // NOI18N
+                                + "null, ignoring provider: "                                                        // NOI18N
+                                + provider);
+                } else if (extensions.size() >= 1) {
                     return extensions.iterator().next();
-                } else if (extensions.size() > 1) {
-                    // TODO: what to do? shall we omit this operation? shall the caller be responsible for choosing the
-                    // right instance? and how will he do that? is it legal to provide more than one extension for the
-                    // same context?
-                    throw new IllegalStateException();
                 }
             }
         }
@@ -97,7 +146,7 @@ public class CExtManager {
     //~ Inner Classes ----------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * LazyInitialiser {@linkplain http://en.wikipedia.org/wiki/Singleton_pattern#The_solution_of_Bill_Pugh}.
      *
      * @version  $Revision$, $Date$
      */
@@ -110,7 +159,7 @@ public class CExtManager {
         //~ Constructors -------------------------------------------------------
 
         /**
-         * Creates a new LazyInitialiser object.
+         * No instances needed.
          */
         private LazyInitialiser() {
         }
