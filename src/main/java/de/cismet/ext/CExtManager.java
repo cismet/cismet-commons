@@ -79,13 +79,7 @@ public class CExtManager {
 
         final ArrayList<T> result = new ArrayList<T>();
         for (final CExtProvider provider : providers) {
-            // we allow subclasses, too
-            final Class<? extends T> pClass = provider.getType();
-            if (pClass == null) {
-                LOG.warn(
-                    "illegal CExtProvider implementation, CExtProvider.getType() returned null, ignoring provider: " // NOI18N
-                            + provider);
-            } else if (c.isAssignableFrom(pClass)) {
+            if (provider.canProvide(c)) {
                 final Collection<? extends T> extensions = provider.provideExtensions(context);
 
                 if (extensions == null) {
@@ -120,13 +114,7 @@ public class CExtManager {
         final Collection<? extends CExtProvider> providers = Lookup.getDefault().lookupAll(CExtProvider.class);
 
         for (final CExtProvider provider : providers) {
-            // we allow subclasses, too
-            final Class<? extends T> pClass = provider.getType();
-            if (pClass == null) {
-                LOG.warn(
-                    "illegal CExtProvider implementation, CExtProvider.getType() returned null, ignoring provider: " // NOI18N
-                            + provider);
-            } else if (c.isAssignableFrom(pClass)) {
+            if (provider.canProvide(c)) {
                 final Collection<? extends T> extensions = provider.provideExtensions(context);
 
                 if (extensions == null) {
