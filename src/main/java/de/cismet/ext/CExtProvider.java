@@ -55,4 +55,16 @@ public interface CExtProvider<T> {
      * @return  the type of the provided extensions, never <code>null</code>
      */
     Class<? extends T> getType();
+
+    /**
+     * Shall return a <code>boolean</code> indicating whether this provider implementation provides extensions of this
+     * type. Basically this operation is closely related to {@link #getType()} and may probably do something like <code>
+     * c.isAssignableFrom(getType())</code>. However, this operation can also be implemented in another way to avoid
+     * loading of the extension class if the return value of this operation will be <code>false</code>.
+     *
+     * @param   c  the type which is tested if instances of it can be produced by this provider implementation
+     *
+     * @return  <code>true</code> if the provider provides instances of the given type, <code>false</code> otherwise
+     */
+    boolean canProvide(Class<?> c);
 }
