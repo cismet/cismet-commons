@@ -329,4 +329,51 @@ public final class Proxy {
 
         return null;
     }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  args  DOCUMENT ME!
+     */
+    // NOTE: use cli library if there shall be more (complex) options
+    @SuppressWarnings("CallToThreadDumpStack")
+    public static void main(final String[] args) {
+        try {
+            if (args.length == 1) {
+                final String arg = args[0];
+                if ("-c".equals(arg) || "--clear".equals(arg)) {        // NOI18N
+                    clear();
+                    System.out.println("\nProxy information cleared\n");
+                } else if ("-p".equals(arg) || "--print".equals(arg)) { // NOI18N
+                    final Proxy proxy = fromPreferences();
+
+                    if (proxy == null) {
+                        System.out.println("\nProxy information not set\n");
+                    } else {
+                        System.out.println("\n" + proxy.toString() + "\n"); // NOI18N
+                    }
+                } else {
+                    printUsage();
+                    System.exit(1);
+                }
+            } else {
+                printUsage();
+                System.exit(1);
+            }
+        } catch (final Exception e) {
+            System.err.println("\nSomething went wrong: " + e.getMessage() + "\n\n");
+            e.printStackTrace();
+            System.err.println();
+            System.exit(2);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    private static void printUsage() {
+        System.err.println("\nSupported parameters are:\n\n"       // NOI18N
+                    + "-c --clear\t\tremoves all proxy settings\n" // NOI18N
+                    + "-p --print\t\tprints out the proxy settings\n"); // NOI18N
+    }
 }
