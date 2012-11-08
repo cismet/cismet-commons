@@ -229,6 +229,21 @@ public final class Proxy {
     }
 
     /**
+     * DOCUMENT ME!
+     */
+    public static void clear() {
+        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
+
+        // won't use clear since we don't know if anybody else stored preferences for this package
+        prefs.remove(PROXY_HOST);
+        prefs.remove(PROXY_PORT);
+        prefs.remove(PROXY_USERNAME);
+        prefs.remove(PROXY_PASSWORD);
+        prefs.remove(PROXY_DOMAIN);
+        prefs.remove(PROXY_ENABLED);
+    }
+
+    /**
      * Loads a <code>Proxy</code> instance from previously stored user preferences. If there are no host and port proxy
      * information <code>null</code> will be returned. If the return value is non-null at least the host and the port is
      * initialised. Username, Password and Domain may be null.
@@ -266,13 +281,7 @@ public final class Proxy {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
 
         if ((proxy == null) || (proxy.getHost() == null) || proxy.getHost().isEmpty() || (proxy.getPort() < 1)) {
-            // won't use clear since we don't know if anybody else stored preferences for this package
-            prefs.remove(PROXY_HOST);
-            prefs.remove(PROXY_PORT);
-            prefs.remove(PROXY_USERNAME);
-            prefs.remove(PROXY_PASSWORD);
-            prefs.remove(PROXY_DOMAIN);
-            prefs.remove(PROXY_ENABLED);
+            clear();
         } else {
             prefs.put(PROXY_HOST, proxy.getHost());
             prefs.putInt(PROXY_PORT, proxy.getPort());
@@ -319,5 +328,52 @@ public final class Proxy {
         }
 
         return null;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  args  DOCUMENT ME!
+     */
+    // NOTE: use cli library if there shall be more (complex) options
+    @SuppressWarnings("CallToThreadDumpStack")
+    public static void main(final String[] args) {
+        try {
+            if (args.length == 1) {
+                final String arg = args[0];
+                if ("-c".equals(arg) || "--clear".equals(arg)) {        // NOI18N
+                    clear();
+                    System.out.println("\nProxy information cleared\n");
+                } else if ("-p".equals(arg) || "--print".equals(arg)) { // NOI18N
+                    final Proxy proxy = fromPreferences();
+
+                    if (proxy == null) {
+                        System.out.println("\nProxy information not set\n");
+                    } else {
+                        System.out.println("\n" + proxy.toString() + "\n"); // NOI18N
+                    }
+                } else {
+                    printUsage();
+                    System.exit(1);
+                }
+            } else {
+                printUsage();
+                System.exit(1);
+            }
+        } catch (final Exception e) {
+            System.err.println("\nSomething went wrong: " + e.getMessage() + "\n\n");
+            e.printStackTrace();
+            System.err.println();
+            System.exit(2);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    private static void printUsage() {
+        System.err.println("\nSupported parameters are:\n\n"       // NOI18N
+                    + "-c --clear\t\tremoves all proxy settings\n" // NOI18N
+                    + "-p --print\t\tprints out the proxy settings\n"); // NOI18N
     }
 }
