@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 
 import java.util.prefs.Preferences;
 
+import javax.swing.JOptionPane;
+
 import de.cismet.tools.PasswordEncrypter;
 
 /**
@@ -343,14 +345,14 @@ public final class Proxy {
                 final String arg = args[0];
                 if ("-c".equals(arg) || "--clear".equals(arg)) {        // NOI18N
                     clear();
-                    System.out.println("\nProxy information cleared\n");
+                    showMessage("Proxy information cleared", false);
                 } else if ("-p".equals(arg) || "--print".equals(arg)) { // NOI18N
                     final Proxy proxy = fromPreferences();
 
                     if (proxy == null) {
-                        System.out.println("\nProxy information not set\n");
+                        showMessage("Proxy information not set", false); // NOI18N
                     } else {
-                        System.out.println("\n" + proxy.toString() + "\n"); // NOI18N
+                        showMessage(proxy.toString(), false);
                     }
                 } else {
                     printUsage();
@@ -360,8 +362,11 @@ public final class Proxy {
                 printUsage();
                 System.exit(1);
             }
+
+            System.exit(0);
         } catch (final Exception e) {
-            System.err.println("\nSomething went wrong: " + e.getMessage() + "\n\n");
+            showMessage("Something went wrong: " + e.getMessage(), true); // NOI18N
+            System.err.println("\n");
             e.printStackTrace();
             System.err.println();
             System.exit(2);
@@ -370,10 +375,33 @@ public final class Proxy {
 
     /**
      * DOCUMENT ME!
+     *
+     * @param  message  DOCUMENT ME!
+     * @param  error    DOCUMENT ME!
+     */
+    private static void showMessage(final String message, final boolean error) {
+        if (System.console() == null) {
+            JOptionPane.showMessageDialog(
+                null,
+                message,
+                error ? "Error" : "Information", // NOI18N
+                error ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            if (error) {
+                System.err.println("\n" + message + "\n"); // NOI18N
+            } else {
+                System.out.println("\n" + message + "\n"); // NOI18N
+            }
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
      */
     private static void printUsage() {
-        System.err.println("\nSupported parameters are:\n\n"       // NOI18N
-                    + "-c --clear\t\tremoves all proxy settings\n" // NOI18N
-                    + "-p --print\t\tprints out the proxy settings\n"); // NOI18N
+        showMessage("Supported parameters are:\n\n"                  // NOI18N
+                    + "-c --clear\t\tremoves all proxy settings\n"   // NOI18N
+                    + "-p --print\t\tprints out the proxy settings", // NOI18N
+            true);
     }
 }
