@@ -229,6 +229,21 @@ public final class Proxy {
     }
 
     /**
+     * DOCUMENT ME!
+     */
+    public static void clear() {
+        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
+
+        // won't use clear since we don't know if anybody else stored preferences for this package
+        prefs.remove(PROXY_HOST);
+        prefs.remove(PROXY_PORT);
+        prefs.remove(PROXY_USERNAME);
+        prefs.remove(PROXY_PASSWORD);
+        prefs.remove(PROXY_DOMAIN);
+        prefs.remove(PROXY_ENABLED);
+    }
+
+    /**
      * Loads a <code>Proxy</code> instance from previously stored user preferences. If there are no host and port proxy
      * information <code>null</code> will be returned. If the return value is non-null at least the host and the port is
      * initialised. Username, Password and Domain may be null.
@@ -266,13 +281,7 @@ public final class Proxy {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
 
         if ((proxy == null) || (proxy.getHost() == null) || proxy.getHost().isEmpty() || (proxy.getPort() < 1)) {
-            // won't use clear since we don't know if anybody else stored preferences for this package
-            prefs.remove(PROXY_HOST);
-            prefs.remove(PROXY_PORT);
-            prefs.remove(PROXY_USERNAME);
-            prefs.remove(PROXY_PASSWORD);
-            prefs.remove(PROXY_DOMAIN);
-            prefs.remove(PROXY_ENABLED);
+            clear();
         } else {
             prefs.put(PROXY_HOST, proxy.getHost());
             prefs.putInt(PROXY_PORT, proxy.getPort());
