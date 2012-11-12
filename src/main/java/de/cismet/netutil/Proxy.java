@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 
 import java.util.prefs.Preferences;
 
+import javax.swing.JOptionPane;
+
 import de.cismet.tools.PasswordEncrypter;
 
 /**
@@ -229,6 +231,21 @@ public final class Proxy {
     }
 
     /**
+     * DOCUMENT ME!
+     */
+    public static void clear() {
+        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
+
+        // won't use clear since we don't know if anybody else stored preferences for this package
+        prefs.remove(PROXY_HOST);
+        prefs.remove(PROXY_PORT);
+        prefs.remove(PROXY_USERNAME);
+        prefs.remove(PROXY_PASSWORD);
+        prefs.remove(PROXY_DOMAIN);
+        prefs.remove(PROXY_ENABLED);
+    }
+
+    /**
      * Loads a <code>Proxy</code> instance from previously stored user preferences. If there are no host and port proxy
      * information <code>null</code> will be returned. If the return value is non-null at least the host and the port is
      * initialised. Username, Password and Domain may be null.
@@ -266,13 +283,7 @@ public final class Proxy {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
 
         if ((proxy == null) || (proxy.getHost() == null) || proxy.getHost().isEmpty() || (proxy.getPort() < 1)) {
-            // won't use clear since we don't know if anybody else stored preferences for this package
-            prefs.remove(PROXY_HOST);
-            prefs.remove(PROXY_PORT);
-            prefs.remove(PROXY_USERNAME);
-            prefs.remove(PROXY_PASSWORD);
-            prefs.remove(PROXY_DOMAIN);
-            prefs.remove(PROXY_ENABLED);
+            clear();
         } else {
             prefs.put(PROXY_HOST, proxy.getHost());
             prefs.putInt(PROXY_PORT, proxy.getPort());
@@ -319,5 +330,78 @@ public final class Proxy {
         }
 
         return null;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  args  DOCUMENT ME!
+     */
+    // NOTE: use cli library if there shall be more (complex) options
+    @SuppressWarnings("CallToThreadDumpStack")
+    public static void main(final String[] args) {
+        try {
+            if (args.length == 1) {
+                final String arg = args[0];
+                if ("-c".equals(arg) || "--clear".equals(arg)) {        // NOI18N
+                    clear();
+                    showMessage("Proxy information cleared", false);
+                } else if ("-p".equals(arg) || "--print".equals(arg)) { // NOI18N
+                    final Proxy proxy = fromPreferences();
+
+                    if (proxy == null) {
+                        showMessage("Proxy information not set", false); // NOI18N
+                    } else {
+                        showMessage(proxy.toString(), false);
+                    }
+                } else {
+                    printUsage();
+                    System.exit(1);
+                }
+            } else {
+                printUsage();
+                System.exit(1);
+            }
+
+            System.exit(0);
+        } catch (final Exception e) {
+            showMessage("Something went wrong: " + e.getMessage(), true); // NOI18N
+            System.err.println("\n");
+            e.printStackTrace();
+            System.err.println();
+            System.exit(2);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  message  DOCUMENT ME!
+     * @param  error    DOCUMENT ME!
+     */
+    private static void showMessage(final String message, final boolean error) {
+        if (System.console() == null) {
+            JOptionPane.showMessageDialog(
+                null,
+                message,
+                error ? "Error" : "Information", // NOI18N
+                error ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            if (error) {
+                System.err.println("\n" + message + "\n"); // NOI18N
+            } else {
+                System.out.println("\n" + message + "\n"); // NOI18N
+            }
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    private static void printUsage() {
+        showMessage("Supported parameters are:\n\n"                  // NOI18N
+                    + "-c --clear\t\tremoves all proxy settings\n"   // NOI18N
+                    + "-p --print\t\tprints out the proxy settings", // NOI18N
+            true);
     }
 }
