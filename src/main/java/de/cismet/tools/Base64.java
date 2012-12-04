@@ -7,8 +7,6 @@
 ****************************************************/
 package de.cismet.tools;
 
-import sun.misc.BASE64Encoder;
-
 /**
  * DOCUMENT ME!
  *
