@@ -69,10 +69,8 @@ public class BrowserLauncher {
      * but some operating systems require us to switch on the VM.
      */
     private static int jvm;
-
     /** The browser for the system. */
     private static Object browser;
-
     /**
      * Caches whether any classes, methods, and fields that are not part of the JDK and need to be dynamically loaded at
      * runtime loaded successfully.
@@ -80,110 +78,77 @@ public class BrowserLauncher {
      * <p>Note that if this is <code>false</code>, <code>openURL()</code> will always return an IOException.</p>
      */
     private static boolean loadedWithoutErrors;
-
     /** The com.apple.mrj.MRJFileUtils class. */
     private static Class mrjFileUtilsClass;
-
     /** The com.apple.mrj.MRJOSType class. */
     private static Class mrjOSTypeClass;
-
     /** The com.apple.MacOS.AEDesc class. */
     private static Class aeDescClass;
-
     /** The <init>(int) method of com.apple.MacOS.AETarget. */
     private static Constructor aeTargetConstructor;
-
     /** The <init>(int, int, int) method of com.apple.MacOS.AppleEvent. */
     private static Constructor appleEventConstructor;
-
     /** The <init>(String) method of com.apple.MacOS.AEDesc. */
     private static Constructor aeDescConstructor;
-
     /** The findFolder method of com.apple.mrj.MRJFileUtils. */
     private static Method findFolder;
-
     /** The getFileCreator method of com.apple.mrj.MRJFileUtils. */
     private static Method getFileCreator;
-
     /** The getFileType method of com.apple.mrj.MRJFileUtils. */
     private static Method getFileType;
-
     /** The openURL method of com.apple.mrj.MRJFileUtils. */
     private static Method openURL;
-
     /** The makeOSType method of com.apple.MacOS.OSUtils. */
     private static Method makeOSType;
-
     /** The putParameter method of com.apple.MacOS.AppleEvent. */
     private static Method putParameter;
-
     /** The sendNoReply method of com.apple.MacOS.AppleEvent. */
     private static Method sendNoReply;
-
     /** Actually an MRJOSType pointing to the System Folder on a Macintosh. */
     private static Object kSystemFolderType;
-
     /** The keyDirectObject AppleEvent parameter type. */
     private static Integer keyDirectObject;
-
     /** The kAutoGenerateReturnID AppleEvent code. */
     private static Integer kAutoGenerateReturnID;
-
     /** The kAnyTransactionID AppleEvent code. */
     private static Integer kAnyTransactionID;
-
     /** The linkage object required for JDirect 3 on Mac OS X. */
     private static Object linkage;
-
     /** The framework to reference on Mac OS X. */
     private static final String JDirect_MacOSX =
         "/System/Library/Frameworks/Carbon.framework/Frameworks/HIToolbox.framework/HIToolbox"; // NOI18N
-
     /** JVM constant for MRJ 2.0. */
     private static final int MRJ_2_0 = 0;
-
     /** JVM constant for MRJ 2.1 or later. */
     private static final int MRJ_2_1 = 1;
-
     /** JVM constant for Java on Mac OS X 10.0 (MRJ 3.0). */
     private static final int MRJ_3_0 = 3;
-
     /** JVM constant for MRJ 3.1. */
     private static final int MRJ_3_1 = 4;
-
     /** JVM constant for any Windows NT JVM. */
     private static final int WINDOWS_NT = 5;
-
     /** JVM constant for any Windows 9x JVM. */
     private static final int WINDOWS_9x = 6;
-
     /** JVM constant for any other platform. */
     private static final int OTHER = -1;
-
     /**
      * The file type of the Finder on a Macintosh. Hardcoding "Finder" would keep non-U.S. English systems from working
      * properly.
      */
     private static final String FINDER_TYPE = "FNDR"; // NOI18N
-
     /** The creator code of the Finder on a Macintosh, which is needed to send AppleEvents to the application. */
     private static final String FINDER_CREATOR = "MACS";                                                      // NOI18N
-
     /** The name for the AppleEvent type corresponding to a GetURL event. */
     private static final String GURL_EVENT = "GURL";                     // NOI18N
-
     /** The first parameter that needs to be passed into Runtime.exec() to open the default web browser on Windows. */
     private static final String FIRST_WINDOWS_PARAMETER = "/c";                                                    // NOI18N
-
     /** The second parameter for Runtime.exec() on Windows. */
     private static final String SECOND_WINDOWS_PARAMETER = "start"; // NOI18N
-
     /**
      * The third parameter for Runtime.exec() on Windows. This is a "title" parameter that the command line expects.
      * Setting this parameter allows URLs containing spaces to work.
      */
     private static final String THIRD_WINDOWS_PARAMETER = "\"\""; // NOI18N
-
     /**
      * The shell parameters for Netscape that opens a given URL in an already-open copy of Netscape on many command-line
      * systems.
@@ -191,7 +156,6 @@ public class BrowserLauncher {
     private static final String NETSCAPE_REMOTE_PARAMETER = "-remote";       // NOI18N
     private static final String NETSCAPE_OPEN_PARAMETER_START = "'openURL("; // NOI18N
     private static final String NETSCAPE_OPEN_PARAMETER_END = ")'";          // NOI18N
-
     /** The message from any exception thrown throughout the initialization process. */
     private static String errorMessage;
 
@@ -199,45 +163,52 @@ public class BrowserLauncher {
      * An initialization block that determines the operating system and loads the necessary runtime data.
      */
     static {
-        loadedWithoutErrors = true;
-        final String osName = System.getProperty("os.name");             // NOI18N
-        if (osName.startsWith("Mac OS")) {                               // NOI18N
-            final String mrjVersion = System.getProperty("mrj.version"); // NOI18N
-            final String majorMRJVersion = mrjVersion.substring(0, 3);
+        if (!Desktop.isDesktopSupported()) {
             try {
-                final double version = Double.valueOf(majorMRJVersion).doubleValue();
-                if (version == 2) {
-                    jvm = MRJ_2_0;
-                } else if ((version >= 2.1) && (version < 3)) {
-                    // Assume that all 2.x versions of MRJ work the same.  MRJ 2.1 actually
-                    // works via Runtime.exec() and 2.2 supports that but has an openURL() method
-                    // as well that we currently ignore.
-                    jvm = MRJ_2_1;
-                } else if (version == 3.0) {
-                    jvm = MRJ_3_0;
-                } else if (version >= 3.1) {
-                    // Assume that all 3.1 and later versions of MRJ work the same.
-                    jvm = MRJ_3_1;
+                loadedWithoutErrors = true;
+                final String osName = System.getProperty("os.name");             // NOI18N
+                if (osName.startsWith("Mac OS")) {                               // NOI18N
+                    final String mrjVersion = System.getProperty("mrj.version"); // NOI18N
+                    final String majorMRJVersion = mrjVersion.substring(0, 3);
+                    try {
+                        final double version = Double.valueOf(majorMRJVersion).doubleValue();
+                        if (version == 2) {
+                            jvm = MRJ_2_0;
+                        } else if ((version >= 2.1) && (version < 3)) {
+                            // Assume that all 2.x versions of MRJ work the same.  MRJ 2.1 actually
+                            // works via Runtime.exec() and 2.2 supports that but has an openURL() method
+                            // as well that we currently ignore.
+                            jvm = MRJ_2_1;
+                        } else if (version == 3.0) {
+                            jvm = MRJ_3_0;
+                        } else if (version >= 3.1) {
+                            // Assume that all 3.1 and later versions of MRJ work the same.
+                            jvm = MRJ_3_1;
+                        } else {
+                            loadedWithoutErrors = false;
+                            errorMessage = "Unsupported MRJ version: " + version; // NOI18N
+                        }
+                    } catch (NumberFormatException nfe) {
+                        loadedWithoutErrors = false;
+                        errorMessage = "Invalid MRJ version: " + mrjVersion;      // NOI18N
+                    }
+                } else if (osName.startsWith("Windows")) {                        // NOI18N
+                    if (osName.indexOf("9") != -1) {                              // NOI18N
+                        jvm = WINDOWS_9x;
+                    } else {
+                        jvm = WINDOWS_NT;
+                    }
                 } else {
-                    loadedWithoutErrors = false;
-                    errorMessage = "Unsupported MRJ version: " + version; // NOI18N
+                    jvm = OTHER;
                 }
-            } catch (NumberFormatException nfe) {
-                loadedWithoutErrors = false;
-                errorMessage = "Invalid MRJ version: " + mrjVersion;      // NOI18N
-            }
-        } else if (osName.startsWith("Windows")) {                        // NOI18N
-            if (osName.indexOf("9") != -1) {                              // NOI18N
-                jvm = WINDOWS_9x;
-            } else {
-                jvm = WINDOWS_NT;
-            }
-        } else {
-            jvm = OTHER;
-        }
 
-        if (loadedWithoutErrors) { // if we haven't hit any errors yet
-            loadedWithoutErrors = loadClasses();
+                if (loadedWithoutErrors) { // if we haven't hit any errors yet
+                    loadedWithoutErrors = loadClasses();
+                }
+            } catch (Throwable t) {
+                log.warn("Problem with BrowserLauncher", t);
+                throw new RuntimeException(t);
+            }
         }
     }
 
@@ -520,21 +491,20 @@ public class BrowserLauncher {
      * @throws  Exception    DOCUMENT ME!
      * @throws  IOException  If the web browser could not be located or does not run
      */
-
     public static void openURL(final String url) throws Exception {
         if (log.isDebugEnabled()) {
-            log.debug("BrowserLauncher.openUrl:" + url);                                                                // NOI18N
+            log.debug("BrowserLauncher.openUrl:" + url);                                // NOI18N
         }
-        if (StaticDebuggingTools.checkHomeForFile("cismetUseDesktopFeatureFromJDK6") && Desktop.isDesktopSupported()) { // NOI18N
+        if (Desktop.isDesktopSupported()) {                                             // NOI18N
             final Desktop desktop = Desktop.getDesktop();
             desktop.browse(new URI(url));
         } else {
             if (!loadedWithoutErrors) {
-                throw new IOException("Exception in finding browser: " + errorMessage);                                 // NOI18N
+                throw new IOException("Exception in finding browser: " + errorMessage); // NOI18N
             }
             Object browser = locateBrowser();
             if (browser == null) {
-                throw new IOException("Unable to locate browser: " + errorMessage);                                     // NOI18N
+                throw new IOException("Unable to locate browser: " + errorMessage);     // NOI18N
             }
 
             switch (jvm) {
@@ -661,6 +631,7 @@ public class BrowserLauncher {
      * @return  DOCUMENT ME!
      */
     private static native int ICStart(int[] instance, int signature);
+
     /**
      * DOCUMENT ME!
      *
@@ -669,6 +640,7 @@ public class BrowserLauncher {
      * @return  DOCUMENT ME!
      */
     private static native int ICStop(int[] instance);
+
     /**
      * DOCUMENT ME!
      *
