@@ -53,34 +53,36 @@ public final class FileUtils {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * checks whether the <code>File</code> is a <code>MetaFiles</code> or not
      *
-     * @param   check  DOCUMENT ME!
+     * @param   check  <code>File</code> to be tested
      *
-     * @return  DOCUMENT ME!
+     * @return  true if the tested <code>File</code> is a <code>MetaFile</code>
+     * 
+     * @see #isMetaFile(java.io.File, int)
      */
     public static boolean isMetaFile(final File check) {
         return isMetaFile(check, getMode());
     }
 
     /**
-     * DOCUMENT ME!
+     * checks whether the <code>File</code> is a <code>MetaFile</code> of the tested <code>OS</code> or not
      *
-     * @param   check  DOCUMENT ME!
-     * @param   mode   DOCUMENT ME!
+     * @param   check  <code>File</code> to be tested
+     * @param   mode   Number of <code>OS</code> to be tested
      *
-     * @return  DOCUMENT ME!
+     * @return  true if the tested <code>File</code> is a <code>MetaFile</code> of the tested <code>OS</code>
      */
     public static boolean isMetaFile(final File check, final int mode) {
         return checkMeta(check.getName(), getMetaEntries(mode));
     }
 
     /**
-     * DOCUMENT ME!
+     * get the <code>MetaEntries</code> for the <code>Meta</code>
      *
-     * @param   mode  DOCUMENT ME!
+     * @param   mode  <code>Metanumber</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  the <code>MetaEntries</code>;By default returns <code>All_Meta_Entries</code>
      */
     private static String[] getMetaEntries(final int mode) {
         switch (mode) {
@@ -116,12 +118,12 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Checks whether the <code>File</code> has the <code>Metaentries</code> or not
      *
-     * @param   filename  DOCUMENT ME!
-     * @param   meta      DOCUMENT ME!
+     * @param   filename  name of the tested <code>File</code>
+     * @param   meta      <code>Metaentries</code> to be tested
      *
-     * @return  DOCUMENT ME!
+     * @return  true if the <code>File</code> has the tested <code>Metaentries</code>;false if it's not
      */
     private static boolean checkMeta(final String filename, final String[] meta) {
         for (final String s : meta) {
@@ -133,9 +135,9 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * gets the <code>Meta</code> to the <code>MetaFile</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>Meta</code>
      */
     private static int getMode() {
         final String os = System.getProperty("os.name"); // NOI18N
@@ -151,11 +153,11 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * gets the name of the <code>File</code>
      *
-     * @param   file  DOCUMENT ME!
+     * @param   file  
      *
-     * @return  DOCUMENT ME!
+     * @return  the <code>FileName</code>
      */
     public static String getName(final File file) {
         final String nameExt = file.getName();
@@ -185,25 +187,29 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests whether the <code>File</code> only contains <code>MetaFiles</code> or not
      *
-     * @param   check  DOCUMENT ME!
+     * @param   check  <code>File</code> to be tested
      *
-     * @return  DOCUMENT ME!
+     * @return  true, if it only contains <code>MetaFiles</code>
+     * 
+     * @see {@link #containsOnlyMetaFiles(java.io.File, int)}
      */
     public static boolean containsOnlyMetaFiles(final File check) {
         return containsOnlyMetaFiles(check, getMode());
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests whether the <code>Directory</code> only contains <code>MetaFiles</code> of one <code>OS</code>
+     * 
+     * @param   check  <code>File</code> to be tested
+     * @param   mode   <code>Os</code>
      *
-     * @param   check  DOCUMENT ME!
-     * @param   mode   DOCUMENT ME!
+     * @return  true, if it only contains <code>MetaFiles</code> of the tested <code>Os</code>
      *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  IllegalArgumentException  DOCUMENT ME!
+     * @throws  IllegalArgumentException  throws <code>IllegalArgumentException</code> if the <code>File</code> isn't a <code>Directory</code>
+     * 
+     * @see {@link #isMetaFile(java.io.File, int)} 
      */
     public static boolean containsOnlyMetaFiles(final File check, final int mode) {
         if (!check.isDirectory()) {
@@ -219,11 +225,12 @@ public final class FileUtils {
         return true;
     }
     /**
-     * exception thrown and not handled to avoid logger call if it is necessary to use logger in this class return
+     * copy the <code>File<\code>
+     * Note: exception thrown and not handled to avoid logger call if it is necessary to use logger in this class return
      * boolean and handle exceptions.
      *
-     * @param   inFile   DOCUMENT ME!
-     * @param   outFile  DOCUMENT ME!
+     * @param   inFile   input <code>File</code>
+     * @param   outFile  target <code>File</code>
      *
      * @throws  FileNotFoundException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
@@ -250,14 +257,21 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Copys the <code>Directory</code>. It uses the a filtered list of <code>Files</code> contained inside the <code>Directory</code>. If there is any <code>Directory</code> the <code>Method</code> starts recursive
      *
-     * @param   srcDir     DOCUMENT ME!
-     * @param   destDir    DOCUMENT ME!
-     * @param   filter     DOCUMENT ME!
+     * @param   srcDir     Source Directory
+     * @param   destDir    Target Directory
+     * @param   filter     Filter
      * @param   recursive  DOCUMENT ME!
      *
-     * @throws  FileNotFoundException  DOCUMENT ME!
+     * @throws  FileNotFoundException  throws FileNotFoundException if:
+     * 
+     * <ul>
+     *  <li>the Source <code>File</code> or the Target <code>File</code> does not exist</li>
+     *  <li>the Source <code>File</code> is not a <code>Directory</code></li>
+     *  <li>the Target <code>File</code> is not a <code>Directory</code></li>
+     * </ul>
+     * 
      * @throws  IOException            DOCUMENT ME!
      */
     public static void copyContent(

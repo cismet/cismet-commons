@@ -39,9 +39,11 @@ public final class BlacklistClassloading {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Tests whether the class is available or not.
+     * It sends messages to the Logger, if he can't find the class identity(additional he adds the identity on the blacklist),
+     * if he already has the class on the blacklist or if the classname was <code>null</code>
      *
-     * @param   classname  canonical classname to load
+     * @param   classname  classname to load
      *
      * @return  the class to load or null if class is not found.
      */

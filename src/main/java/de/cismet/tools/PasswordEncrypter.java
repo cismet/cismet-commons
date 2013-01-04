@@ -235,31 +235,31 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     } // </editor-fold>//GEN-END:initComponents
 
     /**
-     * DOCUMENT ME!
+     * Focus Gained Password2
      *
-     * @param  evt  DOCUMENT ME!
+     * @param  evt  Event
      */
-    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword2FocusGained
+    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword2FocusGained
         pwfPassword2.setSelectionStart(0);
         pwfPassword2.setSelectionEnd(pwfPassword1.getPassword().length);
-    }                                                                           //GEN-LAST:event_pwfPassword2FocusGained
+    }//GEN-LAST:event_pwfPassword2FocusGained
 
     /**
-     * DOCUMENT ME!
+     * Focus Gained Password1
      *
-     * @param  evt  DOCUMENT ME!
+     * @param  evt  Event
      */
-    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword1FocusGained
+    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword1FocusGained
         pwfPassword1.setSelectionStart(0);
         pwfPassword1.setSelectionEnd(pwfPassword1.getPassword().length);
-    }                                                                           //GEN-LAST:event_pwfPassword1FocusGained
+    }//GEN-LAST:event_pwfPassword1FocusGained
 
     /**
-     * DOCUMENT ME!
+     * Starter
      *
-     * @param  evt  DOCUMENT ME!
+     * @param  evt  Event
      */
-    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {                        //GEN-FIRST:event_cmdGoActionPerformed
+    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGoActionPerformed
         final String p1 = new String(pwfPassword1.getPassword());
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
@@ -296,10 +296,10 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             pwfPassword1.setText("");                                                                // NOI18N
             pwfPassword2.setText("");                                                                // NOI18N
         }
-    }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
+    }//GEN-LAST:event_cmdGoActionPerformed
 
     /**
-     * DOCUMENT ME!
+     * main
      *
      * @param   args  the command line arguments
      *

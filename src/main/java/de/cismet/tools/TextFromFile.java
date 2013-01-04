@@ -66,18 +66,18 @@ public class TextFromFile {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Getter for Text. Converts <code>Byte</code> to <code>String</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  data
      */
     public String getText() {
         return new String(data);
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for Text.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>Vector</code> words
      */
     public Vector getWordVector() {
         final Vector words = new Vector(10, 10);

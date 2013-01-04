@@ -39,9 +39,9 @@ public class PropertyReader {
     /**
      * Creates a new PropertyReader object.
      *
-     * @param   filename  DOCUMENT ME!
+     * @param   filename  filename
      *
-     * @throws  IllegalArgumentException  DOCUMENT ME!
+     * @throws  IllegalArgumentException  If filename is <code>Null</code>
      */
     public PropertyReader(final String filename) {
         if ((filename == null) || (filename.length() < 1)) {
@@ -69,29 +69,29 @@ public class PropertyReader {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * get the Property.
      *
-     * @param   key  DOCUMENT ME!
+     * @param   key  key
      *
-     * @return  DOCUMENT ME!
+     * @return  the <code>Property</code> of the <code>properties</code>
      */
     public final String getProperty(final String key) {
         return properties.getProperty(key);
     }
 
     /**
-     * DOCUMENT ME!
+     * get the Filename.
      *
-     * @return  the filename
+     * @return  <code>filename</code>
      */
     public String getFilename() {
         return filename;
     }
 
     /**
-     * DOCUMENT ME!
+     * get the Internal Propeties.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>properties</code>
      */
     public Properties getInternalProperties() {
         return properties;
