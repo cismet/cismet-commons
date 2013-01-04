@@ -524,8 +524,8 @@ public class ConfigurationManager {
     }
 
     /**
-     * Creates a {@link Set<Element>} from the given xml snippet. This implementation assumes that there is a single
-     * root {@link Element} whose only purpose is to wrap the {@link Element}s to be created. In other words this
+     * Creates a {@link Set} from the given xml snippet. This implementation assumes that there is a single root
+     * {@link Element} whose only purpose is to wrap the {@link Element}s to be created. In other words this
      * implementation will return the child {@link Element}s of the {@link Document}'s root {@link Element}. The
      * returned {@link Element}s are detached from their root so they can be inserted into another {@link Document}.
      *

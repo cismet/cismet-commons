@@ -429,10 +429,10 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * Decrypts a given string that was created by {@link #encrypt(char[])}. The caller is responsible for wiping the
-     * returned result himself. The given array can automatically be wiped by passing <code>true</code> to the <code>
-     * wipeInput</code> parameter. All temporary created data is immediately wiped, thus this implementation offers as
-     * little traces in memory as possible.<br/>
+     * Decrypts a given string that was created by {@link #encrypt(char[], boolean)}. The caller is responsible for
+     * wiping the returned result himself. The given array can automatically be wiped by passing <code>true</code> to
+     * the <code>wipeInput</code> parameter. All temporary created data is immediately wiped, thus this implementation
+     * offers as little traces in memory as possible.<br/>
      * <br/>
      * NOTE: this operation can decrypt strings created by {@link #decryptString(java.lang.String)}, too, for
      * compatibility reasons<br/>
