@@ -37,11 +37,12 @@ public final class RESTRemoteControlMethodRegistry {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * caches RemoteMethods to <code>portMapping</code>
      *
-     * @param   defaultPort  DOCUMENT ME!
+     * @param   defaultPort  default port
      *
-     * @throws  IllegalStateException  DOCUMENT ME!
+     * @throws  IllegalStateException  "RESTRemoteControlMethods have already been collected. " 
+                                       + "Call RESTRemoteControlMethodRegistry.clear() to enable new gathering"
      */
     public static synchronized void gatherRemoteMethods(final int defaultPort) {
         if (!portMapping.isEmpty()) {
@@ -75,11 +76,11 @@ public final class RESTRemoteControlMethodRegistry {
     }
 
     /**
-     * DOCUMENT ME!
+     * Gets the Methods of specified Port
      *
-     * @param   port  DOCUMENT ME!
+     * @param   port  port
      *
-     * @return  DOCUMENT ME!
+     * @return  method
      */
     public static synchronized List<RESTRemoteControlMethod> getMethodsForPort(final int port) {
         final List<RESTRemoteControlMethod> methods = portMapping.get(port);
@@ -87,25 +88,25 @@ public final class RESTRemoteControlMethodRegistry {
     }
 
     /**
-     * DOCUMENT ME!
+     * Gettter for Methodports
      *
-     * @return  DOCUMENT ME!
+     * @return  Methodports
      */
     public static synchronized Set<Integer> getMethodPorts() {
         return new HashSet<Integer>(portMapping.keySet());
     }
 
     /**
-     * DOCUMENT ME!
+     * Clears the Portmapping
      */
     public static synchronized void clear() {
         portMapping.clear();
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests whether the map is empty or not
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>True</code>if this map contains no key-value mappings
      */
     public static synchronized boolean hasMethodsInformation() {
         return portMapping.isEmpty();
