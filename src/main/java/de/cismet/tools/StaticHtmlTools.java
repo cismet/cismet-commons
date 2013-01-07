@@ -12,7 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
- * DOCUMENT ME!
+ * StaticHtmlTools
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
@@ -22,11 +22,11 @@ public class StaticHtmlTools {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * converts HTTPReferences.
      *
-     * @param   newString  DOCUMENT ME!
+     * @param   newString  link
      *
-     * @return  DOCUMENT ME!
+     * @return  HTTPReference
      */
     public static String convertHTTPReferences(String newString) {
         int hrefStartPos;
@@ -95,11 +95,11 @@ public class StaticHtmlTools {
     }
 
     /**
-     * DOCUMENT ME!
+     * Strips Meta Tag.
      *
-     * @param   text  DOCUMENT ME!
+     * @param   text  <code>String</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  Meta Tag
      */
     public static String stripMetaTag(final String text) {
         // String used for searching, comparison and indexing
@@ -122,9 +122,9 @@ public class StaticHtmlTools {
     }
 
     /**
-     * DOCUMENT ME!
+     * main
      *
-     * @param  args  DOCUMENT ME!
+     * @param  args  args
      */
     public static void main(final String[] args) {
         final String test = "<head>test http://www.google.de?quiery <a href=\"http://www.wer.de/\">wer</a></head>"; // NOI18N
@@ -133,11 +133,11 @@ public class StaticHtmlTools {
     }
 
     /**
-     * DOCUMENT ME!
+     * Converts the specified <code>String</code> into a <code>HTMLString</code>.
      *
-     * @param   string  DOCUMENT ME!
+     * @param   string  <code>String</code>, which is going to get converted
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>HTMLString</code>
      */
     public static String stringToHTMLString(final String string) {
         if (string == null) {
@@ -197,11 +197,11 @@ public class StaticHtmlTools {
     }
 
     /**
-     * DOCUMENT ME!
+     * Encodes the specified <code>String</code> into UTF-8 Format.
      *
-     * @param   parameter  DOCUMENT ME!
+     * @param   parameter  <code>String</code>, which is going to be encoded
      *
-     * @return  DOCUMENT ME!
+     * @return  encoded <code>String</code>
      */
     public static String encodeURLParameter(final String parameter) {
         try {

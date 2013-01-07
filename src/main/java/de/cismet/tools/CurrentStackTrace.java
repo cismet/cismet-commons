@@ -12,7 +12,7 @@
 package de.cismet.tools;
 
 /**
- * DOCUMENT ME!
+ * CurrentStackTrace
  *
  * @author   thorsten
  * @version  $Revision$, $Date$

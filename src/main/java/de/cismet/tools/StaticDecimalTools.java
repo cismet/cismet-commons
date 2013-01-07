@@ -8,7 +8,7 @@
 package de.cismet.tools;
 
 /**
- * DOCUMENT ME!
+ * StaticDecimalTools. Rounds <code>Double</code>.
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
@@ -18,22 +18,24 @@ public class StaticDecimalTools {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Rounds Doubles to the Form "0.00"
      *
-     * @param   d  DOCUMENT ME!
+     * @param   d  <code>Double</code> which should be rounded
      *
-     * @return  DOCUMENT ME!
+     * @return  the rounded <code>Double</code>
+     * 
+     * @see #round(java.lang.String, double) 
      */
     public static String round(final double d) {
         return round("0.00", d); // NOI18N
     }
     /**
-     * DOCUMENT ME!
+     * Rounds the Doubles to a specified Form.
      *
-     * @param   pattern  DOCUMENT ME!
-     * @param   d        DOCUMENT ME!
+     * @param   pattern  Form of the rounded <code>Double</code> as <code>String</code>
+     * @param   d        <code>Double</code> which should be rounded
      *
-     * @return  DOCUMENT ME!
+     * @return  the rounded <code>Double</code>
      */
     public static String round(final String pattern, final double d) {
         final double dd = ((double)(Math.round(d * 100))) / 100;

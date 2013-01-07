@@ -8,7 +8,7 @@
 package de.cismet.tools;
 
 /**
- * DOCUMENT ME!
+ * Base64 Converter
  *
  * @author   martin.scholl@cismet.de
  * @version  $Revision$, $Date$

@@ -17,7 +17,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 /**
- * DOCUMENT ME!
+ * Static XML Tools
  *
  * @author   thorsten
  * @version  $Revision$, $Date$
@@ -39,9 +39,9 @@ public class StaticXMLTools {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Konvertiert eine Farbe zu folgendem XML-Code <Color red=X green=Y blue=Z alpha=A>.
+     * Converts a <code>Color</code> into XML-Code <Color red=X green=Y blue=Z alpha=A>.
      *
-     * @param   c  die in XML darzustellende Farbe
+     * @param   c  <code>Color</code>, which is going to be converted
      *
      * @return  JDOM-Element
      */
@@ -55,11 +55,11 @@ public class StaticXMLTools {
     }
 
     /**
-     * DOCUMENT ME!
+     * Converts the specified <code>XMLElement</code> into a <code>Color</code>
      *
-     * @param   xmlElement  DOCUMENT ME!
+     * @param   xmlElement  <code>xmlElemt</code>, which is going to be converted
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>Color</code>
      */
     public static Color convertXMLElementToColor(final Element xmlElement) {
         int red = 0;
@@ -89,9 +89,9 @@ public class StaticXMLTools {
     }
 
     /**
-     * Konvertiert eine Schrift zu folgendem XML-Code.
+     * Converts the <code>Font</code> into <code>XML-Code</code>
      *
-     * @param   f  die zu konvertierende Schrift
+     * @param   f  <code>Font</code>, which is going to be converted
      *
      * @return  JDOM-Element
      */
@@ -104,11 +104,11 @@ public class StaticXMLTools {
     }
 
     /**
-     * DOCUMENT ME!
+     * Converts <code>XMLElement</code> into <code>Font</code>
      *
-     * @param   xmlElement  DOCUMENT ME!
+     * @param   xmlElement  <code>xmlElement</code>, which is going to be converted
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>Font</code>
      */
     public static Font convertXMLElementToFont(final Element xmlElement) {
         String name = "sansserif"; // NOI18N
@@ -132,9 +132,9 @@ public class StaticXMLTools {
     }
 
     /**
-     * DOCUMENT ME!
+     * Posts the specified XML on the Logger.
      *
-     * @param  element  DOCUMENT ME!
+     * @param  element  XML, which is going to be posted
      */
     public static void logXML(final Element element) {
         final Document doc = new Document();

@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * DOCUMENT ME!
+ * Property Reader
  *
  * @author   srichter
  * @version  $Revision$, $Date$
@@ -69,7 +69,7 @@ public class PropertyReader {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * get the Property.
+     * Gets the Property.
      *
      * @param   key  key
      *
@@ -80,7 +80,7 @@ public class PropertyReader {
     }
 
     /**
-     * get the Filename.
+     * Gets the Filename.
      *
      * @return  <code>filename</code>
      */
@@ -89,7 +89,7 @@ public class PropertyReader {
     }
 
     /**
-     * get the Internal Propeties.
+     * Gets the Internal Propeties.
      *
      * @return  <code>properties</code>
      */

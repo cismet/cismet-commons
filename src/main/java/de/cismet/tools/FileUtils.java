@@ -21,7 +21,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * DOCUMENT ME!
+ * FileUtils Class
  *
  * @author   mscholl
  * @version  1.3
@@ -53,7 +53,7 @@ public final class FileUtils {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * checks whether the <code>File</code> is a <code>MetaFiles</code> or not
+     * Checks whether the <code>File</code> is a <code>MetaFiles</code> or not
      *
      * @param   check  <code>File</code> to be tested
      *
@@ -66,7 +66,7 @@ public final class FileUtils {
     }
 
     /**
-     * checks whether the <code>File</code> is a <code>MetaFile</code> of the tested <code>OS</code> or not
+     * Checks whether the <code>File</code> is a <code>MetaFile</code> of the tested <code>OS</code> or not
      *
      * @param   check  <code>File</code> to be tested
      * @param   mode   Number of <code>OS</code> to be tested
@@ -135,7 +135,7 @@ public final class FileUtils {
     }
 
     /**
-     * gets the <code>Meta</code> to the <code>MetaFile</code>
+     * Tests which OS the System is running.
      *
      * @return  <code>Meta</code>
      */
@@ -153,11 +153,11 @@ public final class FileUtils {
     }
 
     /**
-     * gets the name of the <code>File</code>
+     * Getter for the name of the <code>File</code>
      *
-     * @param   file  
+     * @param   file given File
      *
-     * @return  the <code>FileName</code>
+     * @return  <code>FileName</code>
      */
     public static String getName(final File file) {
         final String nameExt = file.getName();
@@ -170,11 +170,11 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for the Filestype
      *
-     * @param   file  DOCUMENT ME!
+     * @param   file  given file
      *
-     * @return  DOCUMENT ME!
+     * @return  Filetype as <code>String</code>
      */
     public static String getExt(final File file) {
         final String nameExt = file.getName();
@@ -200,7 +200,7 @@ public final class FileUtils {
     }
 
     /**
-     * Tests whether the <code>Directory</code> only contains <code>MetaFiles</code> of one <code>OS</code>
+     * Tests whether the <code>Directory</code> only contains <code>MetaFiles</code> of the given <code>OS</code>
      * 
      * @param   check  <code>File</code> to be tested
      * @param   mode   <code>Os</code>
@@ -209,7 +209,7 @@ public final class FileUtils {
      *
      * @throws  IllegalArgumentException  throws <code>IllegalArgumentException</code> if the <code>File</code> isn't a <code>Directory</code>
      * 
-     * @see {@link #isMetaFile(java.io.File, int)} 
+     * @see #isMetaFile(java.io.File, int) 
      */
     public static boolean containsOnlyMetaFiles(final File check, final int mode) {
         if (!check.isDirectory()) {
@@ -225,15 +225,16 @@ public final class FileUtils {
         return true;
     }
     /**
-     * copy the <code>File<\code>
+     * Copies the <code>File</code>
      * Note: exception thrown and not handled to avoid logger call if it is necessary to use logger in this class return
      * boolean and handle exceptions.
      *
      * @param   inFile   input <code>File</code>
      * @param   outFile  target <code>File</code>
      *
-     * @throws  FileNotFoundException  DOCUMENT ME!
-     * @throws  IOException            DOCUMENT ME!
+     * @throws  FileNotFoundException  <code>FileNotFoundException</code>
+     * @throws  IOException            <code>IOException</code>
+     * 
      */
     public static void copyFile(final File inFile, final File outFile) throws FileNotFoundException, IOException {
         FileInputStream fis = null;
@@ -262,17 +263,17 @@ public final class FileUtils {
      * @param   srcDir     Source Directory
      * @param   destDir    Target Directory
      * @param   filter     Filter
-     * @param   recursive  DOCUMENT ME!
+     * @param   recursive  recursive
      *
      * @throws  FileNotFoundException  throws FileNotFoundException if:
      * 
      * <ul>
-     *  <li>the Source <code>File</code> or the Target <code>File</code> does not exist</li>
      *  <li>the Source <code>File</code> is not a <code>Directory</code></li>
      *  <li>the Target <code>File</code> is not a <code>Directory</code></li>
      * </ul>
      * 
-     * @throws  IOException            DOCUMENT ME!
+     * @throws  IOException            <code>IOException</code> 
+     * 
      */
     public static void copyContent(
             final File srcDir,
@@ -305,12 +306,17 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Deletes the Content of the Given Folder.
      *
-     * @param   srcDir     DOCUMENT ME!
-     * @param   recursive  DOCUMENT ME!
+     * @param   srcDir     given <code>Directory</code>
+     * @param   recursive  recursive
      *
-     * @throws  IOException  DOCUMENT ME!
+     * @throws  IOException  <code>IOException</code>
+     * <ul>
+     * <li>source dir is not a directory</li>
+     * <li>a File couldn't be deleted</li>
+     * <li>a Folder couldn't be deleted</li>
+     * </ul>
      */
     public static void deleteContent(final File srcDir, final boolean recursive) throws IOException {
         if (!srcDir.isDirectory()) {
@@ -339,11 +345,15 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Deletes the Given Folder
      *
-     * @param   srcDir  DOCUMENT ME!
+     * @param   srcDir  given <code>Directory</code>
      *
-     * @throws  IOException  DOCUMENT ME!
+     * @throws  IOException  <code>IOException</code>
+     * <ul>
+     * <li>Source Directory is not a Directory</li>
+     * <li>Could not delete File</li>
+     * </ul>
      */
     public static void deleteDir(final File srcDir) throws IOException {
         if (!srcDir.isDirectory()) {
@@ -360,13 +370,21 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Extracts given Jar File to given Folder
      *
-     * @param   jar     DOCUMENT ME!
-     * @param   dest    DOCUMENT ME!
-     * @param   filter  DOCUMENT ME!
+     * @param   jar     Jar File
+     * @param   dest    Directory
+     * @param   filter  filter
      *
-     * @throws  IOException  DOCUMENT ME!
+     * @throws  IOException  <code>IOException</code>
+     * <ul>
+     * <li>dest dir does not exist</li>
+     * <li>jar file does not exist</li>
+     * <li>dest dir is not a directory</li>
+     * <li>cannot write to dest directory</li>
+     * <li>cannot read jar file</li>
+     * <li>culd not create dir</li>
+     * </ul>
      */
     public static void extractJar(final File jar, final File dest, final FileFilter filter) throws IOException {
         if (!dest.exists()) {
@@ -424,7 +442,7 @@ public final class FileUtils {
     //~ Inner Classes ----------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Inner Class JarFilter
      *
      * @version  $Revision$, $Date$
      */
@@ -432,6 +450,13 @@ public final class FileUtils {
 
         //~ Methods ------------------------------------------------------------
 
+        /**
+         * Tests whether the given <code>File</code> is <code>.jar File</code> or not
+         * 
+         * @param file given <code>File</code>
+         * 
+         * @return true, if the <code>File</code> is a <code>.jar File</code>
+         */
         @Override
         public boolean accept(final File file) {
             return getExt(file).equalsIgnoreCase("jar"); // NOI18N
@@ -439,7 +464,7 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Inner Class DirandJarFilter
      *
      * @version  $Revision$, $Date$
      */
@@ -447,6 +472,13 @@ public final class FileUtils {
 
         //~ Methods ------------------------------------------------------------
 
+        /**
+         * Tests whether the <code>File</code> is a <code>Directory</code> or a <code>.jar File</code>
+         * 
+         * @param file given <code>File</code>
+         * 
+         * @return true, if the <code>File</code> is a <code>.jar File</code> or a <code>Directory</code>
+         */
         @Override
         public boolean accept(final File file) {
             return file.isDirectory() || getExt(file).equalsIgnoreCase("jar"); // NOI18N
@@ -454,7 +486,7 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Inner Class DirectoryFilter
      *
      * @version  $Revision$, $Date$
      */
@@ -462,6 +494,14 @@ public final class FileUtils {
 
         //~ Methods ------------------------------------------------------------
 
+        /**
+         * Tests whether the <code>File</code> is <code>Directory</code> or not.
+         * 
+         * @param file given <code>File</code>
+         * 
+         * @return true, if the <code>File</code> is a <code>Directory</code>
+         */
+        
         @Override
         public boolean accept(final File file) {
             return file.isDirectory();
@@ -469,7 +509,7 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Inner Class FilesFilter
      *
      * @version  $Revision$, $Date$
      */
@@ -477,6 +517,14 @@ public final class FileUtils {
 
         //~ Methods ------------------------------------------------------------
 
+        /**
+         * Tests whether the <code>File</code> is <code>Directory</code> or not.
+         * 
+         * @param file given <code>File</code>
+         * 
+         * @return true, if the <code>File</code> is a <code>Directory</code>
+         */
+        
         @Override
         public boolean accept(final File file) {
             return !file.isDirectory();
@@ -484,14 +532,21 @@ public final class FileUtils {
     }
 
     /**
-     * DOCUMENT ME!
+     * Inner Class MetaInfFilter
      *
      * @version  $Revision$, $Date$
      */
     public static final class MetaInfFilter implements FileFilter {
 
         //~ Methods ------------------------------------------------------------
-
+       
+        /**
+         * Tests whether the <code>File</code> is <code>Meta File</code> or not.
+         * 
+         * @param file given <code>File</code>
+         * 
+         * @return true, if the <code>File</code> is a <code>Meta File</code>
+         */
         @Override
         public boolean accept(final File file) {
             return !file.getAbsolutePath().contains(File.separator + "META-INF"); // NOI18N

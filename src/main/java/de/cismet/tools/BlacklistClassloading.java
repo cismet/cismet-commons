@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * DOCUMENT ME!
+ * Blacklist
  *
  * @author   srichter
  * @version  $Revision$, $Date$
@@ -30,7 +30,7 @@ public final class BlacklistClassloading {
     /**
      * Creates a new BlacklistClassloading object.
      *
-     * @throws  AssertionError  DOCUMENT ME!
+     * @throws  AssertionError  Assertion failed
      */
     private BlacklistClassloading() {
         throw new AssertionError();

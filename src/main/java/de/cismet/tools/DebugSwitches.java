@@ -12,7 +12,7 @@
 package de.cismet.tools;
 
 /**
- * DOCUMENT ME!
+ * debug Switches
  *
  * @author   thorsten
  * @version  $Revision$, $Date$
@@ -38,9 +38,9 @@ public class DebugSwitches {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Getter for Instance
      *
-     * @return  DOCUMENT ME!
+     * @return  instance
      */
     public static DebugSwitches getInstance() {
         if (instance == null) {

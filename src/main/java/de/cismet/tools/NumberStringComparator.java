@@ -13,8 +13,8 @@
 package de.cismet.tools;
 
 /**
- * Comparator f\u00FCr Inhalte die Zahlen und Strings fassen k\u00F6nnen<br>
- * Es wird folgenderma\u00DFem sortiert:<br>
+ * Comperator for Objects, which can contain Numbers and Strings.<br>
+ * It will be sorted in the following form:<br>
  * 1<br>
  * 2<br>
  * 3<br>
@@ -56,12 +56,12 @@ public class NumberStringComparator implements java.util.Comparator {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Vergleichsfunktion.
+     * Compare Methode
      *
-     * @param   o1  erstes Objekt
-     * @param   o2  zweites Objekt
+     * @param   o1  Object one
+     * @param   o2  object two
      *
-     * @return  Vergleichsergebniss
+     * @return  value of the Comparation
      */
     @Override
     public int compare(final Object o1, final Object o2) {
