@@ -90,7 +90,7 @@ public class ConnectionInfo {
     /**
      * Getter for User.
      *
-     * @return  DB USer
+     * @return  DB User
      */
     public String getUser() {
         return user;

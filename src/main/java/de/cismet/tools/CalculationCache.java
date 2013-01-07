@@ -49,11 +49,11 @@ public class CalculationCache<KEY extends Object, VALUE extends Object> {
     /**
      * Calculates the value for the given key, if required and caches it.
      *
-     * @param   key  link query DOCUMENT ME!
+     * @param   key  link query
      *
-     * @return  DOCUMENT ME!
+     * @return  value
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws  Exception  if any <code>Exception</code> is in {@link #exceptionCache}
      */
     public VALUE calcValue(final KEY key) throws Exception {
         VALUE result = cache.get(key);
@@ -118,9 +118,9 @@ public class CalculationCache<KEY extends Object, VALUE extends Object> {
     }
 
     /**
-     * DOCUMENT ME!
+     * Get the time in milliseconds, the result should be cached
      *
-     * @return  the time in milliseconds, the result should be cached
+     * @return  the time in milliseconds
      */
     public long getTimeToCacheResults() {
         return timeToCacheResults;
@@ -136,10 +136,10 @@ public class CalculationCache<KEY extends Object, VALUE extends Object> {
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @return  the time in milliseconds, exceptions, which were thrown during the calculation of a value, should be
+     * get the time in milliseconds, exceptions, which were thrown during the calculation of a value, should be
      *          cached
+     *
+     * @return  the time in milliseconds
      */
     public long getTimeToCacheExceptions() {
         return timeToCacheExceptions;

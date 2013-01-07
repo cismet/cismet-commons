@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * DOCUMENT ME!
+ * Class for getting Text from File
  *
  * @version  $Revision$, $Date$
  */
@@ -26,16 +26,16 @@ public class TextFromFile {
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * /////////////////////////////////////////
+     * Creates a Default TextFromFile object.
      */
     public TextFromFile() {
         data = new byte[0];
     }
 
     /**
-     * ///////////////////////////////////////////
+     * Creates a new TextFromFile object from <code>file</code> with specified filepath
      *
-     * @param  filepath  DOCUMENT ME!
+     * @param  filepath  filepath
      */
     public TextFromFile(final String filepath) {
         try {

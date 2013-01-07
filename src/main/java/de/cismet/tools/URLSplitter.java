@@ -8,7 +8,7 @@
 package de.cismet.tools;
 
 /**
- * DOCUMENT ME!
+ * Urlsplitter
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
@@ -27,7 +27,7 @@ public class URLSplitter {
     /**
      * Creates a new URLSplitter object.
      *
-     * @param  url  DOCUMENT ME!
+     * @param  url  given url
      */
     public URLSplitter(final String url) {
         // Versuch den Protokoll Prefix zu f\u00FCllen
@@ -85,41 +85,51 @@ public class URLSplitter {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>prot_prefix</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>prot_prefix</code>
      */
     public String getProt_prefix() {
         return prot_prefix;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>server</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>server</code>
      */
     public String getServer() {
         return server;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>path</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>path</code>
      */
     public String getPath() {
         return path;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>object_name</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>object_name</code>
      */
     public String getObject_name() {
         return object_name;
     }
 
+    /**
+     * returns a <code>String</code>, which has the following form<br>
+     * Prot:   {@link #prot_prefix}<br>
+     * Server: {@link #server}<br>
+     * Path:   {@link #path}<br>
+     * Objekt: {@link #object_name}<br>
+     * 
+     * @return <code>String</code>
+     */
+    
     @Override
     public String toString() {
         return "Prot:   " + prot_prefix + "\n"   // NOI18N
@@ -129,9 +139,9 @@ public class URLSplitter {
     }
 
     /**
-     * DOCUMENT ME!
+     * main
      *
-     * @param  args  DOCUMENT ME!
+     * @param  args  args
      */
     public static void main(final String[] args) {
         System.out.println("\n" + new URLSplitter("http://www.google.de/"));                                          // NOI18N

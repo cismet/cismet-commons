@@ -24,7 +24,7 @@
 package de.cismet.tools;
 
 /**
- * Property Equals Provideer
+ * Property Equals Provider
  *
  * @author   thorsten
  * @version  $Revision$, $Date$

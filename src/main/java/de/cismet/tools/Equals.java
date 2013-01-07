@@ -35,7 +35,7 @@ public final class Equals {
      * @param   o   object one
      * @param   o2  object two
      *
-     * @return  true, if obeject one and object two deliver the same result for every bean getter
+     * @return  true, if object one and object two deliver the same result for every bean getter
      *
      * @see     #beanDeepEqual(java.lang.Object, java.lang.Object, java.lang.String[])
      */
@@ -117,7 +117,6 @@ public final class Equals {
      *   <li>is not static</li>
      *   <li>name starts with 'get' (or 'is' for <code>boolean</code> getters)</li>
      *   <li>there exists a field with a corresponding name</li>
-     *   <li></li>
      * </ul>
      *
      * @param   m  given method

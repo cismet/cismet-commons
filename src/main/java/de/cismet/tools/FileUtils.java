@@ -53,7 +53,7 @@ public final class FileUtils {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Checks whether the <code>File</code> is a <code>MetaFiles</code> or not
+     * Tests whether the specified <code>File</code> is a <code>MetaFiles</code> or not
      *
      * @param   check  <code>File</code> to be tested
      *
@@ -66,7 +66,7 @@ public final class FileUtils {
     }
 
     /**
-     * Checks whether the <code>File</code> is a <code>MetaFile</code> of the tested <code>OS</code> or not
+     * Tests whether the specified <code>File</code> is a <code>MetaFile</code> of the tested <code>OS</code> or not
      *
      * @param   check  <code>File</code> to be tested
      * @param   mode   Number of <code>OS</code> to be tested
@@ -78,7 +78,7 @@ public final class FileUtils {
     }
 
     /**
-     * get the <code>MetaEntries</code> for the <code>Meta</code>
+     * Getter for <code>MetaEntries</code> of the specified <code>Meta</code>
      *
      * @param   mode  <code>Metanumber</code>
      *
@@ -118,7 +118,7 @@ public final class FileUtils {
     }
 
     /**
-     * Checks whether the <code>File</code> has the <code>Metaentries</code> or not
+     * Tests whether the specified <code>File</code> has the specified <code>Metaentries</code> or not
      *
      * @param   filename  name of the tested <code>File</code>
      * @param   meta      <code>Metaentries</code> to be tested
@@ -153,7 +153,7 @@ public final class FileUtils {
     }
 
     /**
-     * Getter for the name of the <code>File</code>
+     * Getter for the name of the specified <code>File</code>
      *
      * @param   file given File
      *
@@ -170,7 +170,7 @@ public final class FileUtils {
     }
 
     /**
-     * Getter for the Filestype
+     * Getter for the Filestype of the specified <code>File</code>
      *
      * @param   file  given file
      *
@@ -187,7 +187,7 @@ public final class FileUtils {
     }
 
     /**
-     * Tests whether the <code>File</code> only contains <code>MetaFiles</code> or not
+     * Tests whether the specified <code>File</code> only contains <code>MetaFiles</code> of one type or not
      *
      * @param   check  <code>File</code> to be tested
      *
@@ -200,9 +200,9 @@ public final class FileUtils {
     }
 
     /**
-     * Tests whether the <code>Directory</code> only contains <code>MetaFiles</code> of the given <code>OS</code>
+     * Tests whether the specified <code>Directory</code> only contains <code>MetaFiles</code> of the specified <code>OS</code>
      * 
-     * @param   check  <code>File</code> to be tested
+     * @param   check  <code>Directory/code> to be tested
      * @param   mode   <code>Os</code>
      *
      * @return  true, if it only contains <code>MetaFiles</code> of the tested <code>Os</code>
@@ -225,7 +225,7 @@ public final class FileUtils {
         return true;
     }
     /**
-     * Copies the <code>File</code>
+     * Copies the specified <code>File</code>
      * Note: exception thrown and not handled to avoid logger call if it is necessary to use logger in this class return
      * boolean and handle exceptions.
      *
@@ -258,7 +258,7 @@ public final class FileUtils {
     }
 
     /**
-     * Copys the <code>Directory</code>. It uses the a filtered list of <code>Files</code> contained inside the <code>Directory</code>. If there is any <code>Directory</code> the <code>Method</code> starts recursive
+     * Copies the Content of the specified <code>Directory</code>. It uses {@link FilesFilter}. If it is a <code>File</code>, it copies the File and if it is a <code>Directory</code>, the methode start recursive again with the found <code>Directory</code
      *
      * @param   srcDir     Source Directory
      * @param   destDir    Target Directory
@@ -306,9 +306,9 @@ public final class FileUtils {
     }
 
     /**
-     * Deletes the Content of the Given Folder.
+     * Deletes the Content of the specified <code>Directory</code>.
      *
-     * @param   srcDir     given <code>Directory</code>
+     * @param   srcDir     <code>Directory</code>
      * @param   recursive  recursive
      *
      * @throws  IOException  <code>IOException</code>
@@ -442,7 +442,7 @@ public final class FileUtils {
     //~ Inner Classes ----------------------------------------------------------
 
     /**
-     * Inner Class JarFilter
+     * Filter for searching for .jar Files
      *
      * @version  $Revision$, $Date$
      */
@@ -464,7 +464,7 @@ public final class FileUtils {
     }
 
     /**
-     * Inner Class DirandJarFilter
+     * Filter for searching for .jar Files and Directories
      *
      * @version  $Revision$, $Date$
      */
@@ -486,7 +486,7 @@ public final class FileUtils {
     }
 
     /**
-     * Inner Class DirectoryFilter
+     * Filter for searching for Directories
      *
      * @version  $Revision$, $Date$
      */
@@ -509,7 +509,7 @@ public final class FileUtils {
     }
 
     /**
-     * Inner Class FilesFilter
+     * Filter for searching for Files
      *
      * @version  $Revision$, $Date$
      */
@@ -522,7 +522,7 @@ public final class FileUtils {
          * 
          * @param file given <code>File</code>
          * 
-         * @return true, if the <code>File</code> is a <code>Directory</code>
+         * @return true, if the <code>File</code> is Not! a <code>Directory</code>, false if it is a <code>Directory</code>
          */
         
         @Override
@@ -532,7 +532,7 @@ public final class FileUtils {
     }
 
     /**
-     * Inner Class MetaInfFilter
+     * Filter for searching for MetaFiles
      *
      * @version  $Revision$, $Date$
      */
