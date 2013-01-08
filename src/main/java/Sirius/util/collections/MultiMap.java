@@ -9,6 +9,8 @@ package Sirius.util.collections;
 
 import java.util.*;
 /**
+ * Modified {@link HashMap}, which makes it possible to map Keys to multiple Values.
+ * 
  * //key=idnetifier;value=LinkedList.
  *
  * @version  $Revision$, $Date$
@@ -24,7 +26,7 @@ public class MultiMap extends HashMap {
         this(10);
     }
     /**
-     * Creates new Multimap Object with chosen size.
+     * Creates new Multimap Object with specified size.
      *
      * @param  size  size
      */
@@ -35,17 +37,17 @@ public class MultiMap extends HashMap {
     //~ Methods ----------------------------------------------------------------
 
     /////////////////////////////////////////////////
-    
+
     /**
-     * Assosiates <code>value</code> with <code>key</code> in this <code>map</code>.
-     * Instead of replace the values for a key, are multiple values for one key possible.
-     * 
-     * @param key key
-     * @param value value
-     * 
-     * @return <code>Null</code>
+     * Assosiates <code>value</code> with <code>key</code> in this <code>map</code>. Instead of replace the previous value for a
+     * key,it is possible to have multiple values for one key possible.
+     *
+     * @param   key    key
+     * @param   value  value
+     *
+     * @return  <code>Null</code>
      */
-    
+
     @Override
     public Object put(final Object key, final Object value) {
         SyncLinkedList list = null;
@@ -70,12 +72,10 @@ public class MultiMap extends HashMap {
 
     //////////////////////////////////////////////////////////////
     /**
-     * Appends the values of the specified <code>map</code> to this <code>map</code>.
-     * Instead of replace the values for a key, are multiple values for one key possible.
-     * 
-     * 
-     * 
-     * @param t map
+     * Appends the values of the specified <code>map</code> to this <code>map</code>. Instead of replace the previous value for
+     * a key, it is possible multiple values for one key possible.
+     *
+     * @param  t  map
      */
 
     @Override
@@ -102,7 +102,7 @@ public class MultiMap extends HashMap {
     }
 
     /**
-     * removes specied <code>value</code> associeated with specified <code>key</code>
+     * Removes specified <code>value</code> associeated with specified <code>key.</code>
      *
      * @param   key    key whose mapping is to be removed
      * @param   value  mapping to be removed

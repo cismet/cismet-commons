@@ -14,7 +14,7 @@ package Sirius.util.collections;
 
 import java.util.*;
 /**
- * DOCUMENT ME!
+ * Modified {@link LinkedList} for synchronisation
  *
  * @author   schlob
  * @version  $Revision$, $Date$

@@ -7,8 +7,14 @@
 ****************************************************/
 package Sirius.util.collections;
 
+import java.util.Hashtable;
+
 /**
- * DOCUMENT ME!
+ * Modified {@link Hashtable}, which maps <code>String</code> to <code>Integer</code>.
+ * <ul>
+ * <li><code>Key</code> - <code>String</code></li>
+ * <li><code>Value</code> - <code>Integer</code></li>
+ * </ul>
  *
  * @version  $Revision$, $Date$
  */
@@ -28,6 +34,8 @@ public class StringMapsInt extends java.util.Hashtable {
      *
      * @param  initialCapacity  Capacity when Object is created
      * @param  loadFactor       buffer for capacity increase
+     * 
+     * @see Hashtable
      */
     public StringMapsInt(final int initialCapacity, final float loadFactor) {
         super(initialCapacity, loadFactor);
@@ -40,21 +48,21 @@ public class StringMapsInt extends java.util.Hashtable {
      *
      * @param  descriptor  key
      * @param  sqlID       value
-     * 
-     * @see #put(java.lang.Object, java.lang.Object) 
+     *
+     * @see    #put(java.lang.Object, java.lang.Object)
      */
     public void add(final String descriptor, final int sqlID) {
         super.put(descriptor, new Integer(sqlID));
     } // end add
 
     /**
-     * Getter for the Value as a <code>Integer</code>
+     * Getter for the Value as a <code>Integer.</code>
      *
      * @param   descriptor  descriptor
      *
      * @return  IntValue
      *
-     * @throws  Exception                       DOCUMENT ME!
+     * @throws  Exception                       
      * @throws  java.lang.NullPointerException  "Entry is not a Integer" or "No entry"
      */
     public int getIntValue(final String descriptor) throws Exception {
@@ -73,13 +81,13 @@ public class StringMapsInt extends java.util.Hashtable {
                                                                              // accomplished
     }
     /**
-     * Tests if the specified object is a key in <code>StringMapsInt</code>
+     * Tests whether the specified object is a key in <code>StringMapsInt</code> or not.
      *
-     * @param   key possible key
+     * @param   key  possible key
      *
      * @return  <code>true</code>, if the object is a key in <code>StringMapsInt</code>
-     * 
-     * @see #containsKey(java.lang.Object) 
+     *
+     * @see     #containsKey(java.lang.Object)
      */
     public boolean containsStringKey(final String key) {
         return super.containsKey(key);
