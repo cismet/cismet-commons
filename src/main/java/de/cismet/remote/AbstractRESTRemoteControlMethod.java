@@ -8,7 +8,7 @@
 package de.cismet.remote;
 
 /**
- * DOCUMENT ME!
+ * AbstractRestRemoteControlMethod Class.
  *
  * @author   Benjamin Friedrich (benjamin.friedrich@cismet.de)
  * @version  $Revision$, $Date$

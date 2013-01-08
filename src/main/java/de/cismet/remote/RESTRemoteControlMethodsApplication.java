@@ -18,7 +18,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 
 /**
- * DOCUMENT ME!
+ * RESTRemoteControlMethodsApplication.
  *
  * @author   bfriedrich
  * @version  $Revision$, $Date$

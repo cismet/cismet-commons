@@ -12,7 +12,7 @@ import org.openide.util.Lookup;
 import java.util.*;
 
 /**
- * DOCUMENT ME!
+ * RESTRemoteControlMethodRegistry Class.
  *
  * @author   bfriedrich
  * @version  $Revision$, $Date$
