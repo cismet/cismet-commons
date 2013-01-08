@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import de.cismet.tools.PasswordEncrypter;
 
 /**
- * DOCUMENT ME!
+ * Proxy Class.
  *
  * @author   spuhl
  * @author   martin.scholl@cismet.de
@@ -146,7 +146,7 @@ public final class Proxy {
     }
 
     /**
-     * return as String.
+     * Return as String.
      *
      * @return  "Proxy: " + <code>host</code> + ":" + <code>port</code> + " | username: " + <code>username</code> +" |
      *          password: " + ((<code>password</code> == <code>null</code>) ? <code>null</code> : "<invisible>") + " |

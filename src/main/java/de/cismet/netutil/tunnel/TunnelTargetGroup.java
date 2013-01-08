@@ -14,7 +14,7 @@ package de.cismet.netutil.tunnel;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * DOCUMENT ME!
+ * TunnelTargetGroup Class.
  *
  * @author   thorsten
  * @version  $Revision$, $Date$

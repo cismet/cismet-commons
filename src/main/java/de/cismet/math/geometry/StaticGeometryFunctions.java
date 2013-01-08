@@ -10,7 +10,7 @@ package de.cismet.math.geometry;
 import java.awt.geom.Point2D;
 
 /**
- * DOCUMENT ME!
+ * Geometry Functions.
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
@@ -20,14 +20,14 @@ public class StaticGeometryFunctions {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Berechnet den Lotpunkt des Triggers auf der Gerade durch lineStart und lineEnd. !!! Momentan kann der Punkt NICHT
-     * \u00FCber die Strecke hinaus verschoben werden !!!
+     * Calculates Perpendicular Point of the Trigger on the Line, which goes through lineStart and lineEnd. !Warning:
+     * Can't move the Point over the Line, yet.
      *
-     * @param   lineStart  Anfangspunkt der Gerade
-     * @param   lineEnd    Endpunkt der Gerade
-     * @param   trigger    Punkt zu dem der Lotpunkt auf der Geraden berechnet wird
+     * @param   lineStart  startPoint of the Line
+     * @param   lineEnd    endPoint of the Line
+     * @param   trigger    Point to which the Perpendicular Point will get calculated
      *
-     * @return  Punkt auf der Geraden
+     * @return  Perpendicular Point on the Line
      */
     public static Point2D createPointOnLine(final Point2D lineStart, final Point2D lineEnd, final Point2D trigger) {
         final double maxX = Math.max(lineStart.getX(), lineEnd.getX());
@@ -71,13 +71,13 @@ public class StaticGeometryFunctions {
     }
 
     /**
-     * Berechnet den Abstand eines Punktes von der Geraden durch lineStart und lineEnd.
+     * Calculates the Distance between a specified Point and a specified Line, which goes through lineStart and lineEnd.
      *
-     * @param   lineStart  Anfangspunkt der Gerade
-     * @param   lineEnd    Endpunkt der Gerade
-     * @param   trigger    Punkt dessen Abstand zur Geraden berechnet werden soll
+     * @param   lineStart  startPoint of the Line
+     * @param   lineEnd    endPoint of the Line
+     * @param   trigger    Point, whose distance to the Line should get Calculated
      *
-     * @return  Abstand vom Punkt zur Geraden
+     * @return  Distance between the Point and the Line
      */
     public static double distanceToLine(final Point2D lineStart, final Point2D lineEnd, final Point2D trigger) {
         final Point2D pointOnLine = createPointOnLine(lineStart, lineEnd, trigger);
