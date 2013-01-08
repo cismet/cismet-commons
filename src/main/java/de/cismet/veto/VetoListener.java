@@ -12,7 +12,7 @@
 package de.cismet.veto;
 
 /**
- * DOCUMENT ME!
+ * Veto Listener interface.
  *
  * @author   spuhl
  * @version  $Revision$, $Date$
@@ -22,7 +22,7 @@ public interface VetoListener {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * throws Veto Exception.
      *
      * @throws  VetoException  DOCUMENT ME!
      */
