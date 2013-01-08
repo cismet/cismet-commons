@@ -93,54 +93,54 @@ public class ConfigurationManager {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Appends specified <code>Configurable</code> to the list {@link #configurables}.
      *
-     * @param  configurable  DOCUMENT ME!
+     * @param  configurable  <code>Configurable</code>, which should get append to the List
      */
     public void addConfigurable(final Configurable configurable) {
         configurables.add(configurable);
     }
 
     /**
-     * DOCUMENT ME!
+     * Removes specified <code>Configurable</code> from the list {@link #configurables}.
      *
-     * @param  configurable  DOCUMENT ME!
+     * @param  configurable  <code>Configurable</code>, which should get removed from the List
      */
     public void removeConfigurable(final Configurable configurable) {
         configurables.remove(configurable);
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>fileName.</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  {@link #fileName}
      */
     public String getFileName() {
         return fileName;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for <code>fileName.</code>
      *
-     * @param  fileName  DOCUMENT ME!
+     * @param  fileName {@link #fileName}
      */
     public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>folder.</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  {@link #folder}
      */
     public String getFolder() {
         return folder;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for <code>folder.</code>
      *
-     * @param  folder  DOCUMENT ME!
+     * @param  folder {@link #folder}
      */
     public void setFolder(final String folder) {
         this.folder = folder;
@@ -148,6 +148,8 @@ public class ConfigurationManager {
 
     /**
      * DOCUMENT ME!
+     *
+     * @see  #configure(de.cismet.tools.configuration.Configurable)
      */
     public void configure() {
         configure((Configurable)null);
@@ -157,6 +159,8 @@ public class ConfigurationManager {
      * DOCUMENT ME!
      *
      * @param  path  DOCUMENT ME!
+     *
+     * @see    #configure(de.cismet.tools.configuration.Configurable, java.lang.String)
      */
     public void configure(final String path) {
         configure(null, path);
@@ -166,6 +170,8 @@ public class ConfigurationManager {
      * DOCUMENT ME!
      *
      * @param  singleConfig  DOCUMENT ME!
+     *
+     * @see    #configure(de.cismet.tools.configuration.Configurable, java.lang.String)
      */
     public void configure(final Configurable singleConfig) {
         configure(singleConfig, home + fs + folder + fs + fileName);
@@ -176,6 +182,8 @@ public class ConfigurationManager {
      *
      * @param  singleConfig  DOCUMENT ME!
      * @param  path          DOCUMENT ME!
+     *
+     * @see    #pureConfigure(de.cismet.tools.configuration.Configurable, org.jdom.Element, org.jdom.Element)
      */
     public void configure(final Configurable singleConfig, final String path) {
         Element rootObject = null;
@@ -215,6 +223,8 @@ public class ConfigurationManager {
 
     /**
      * DOCUMENT ME!
+     *
+     * @see  #configureFromClasspath(de.cismet.tools.configuration.Configurable)
      */
     public void configureFromClasspath() {
         configureFromClasspath(null);
@@ -224,6 +234,8 @@ public class ConfigurationManager {
      * DOCUMENT ME!
      *
      * @param  singleConfig  DOCUMENT ME!
+     *
+     * @see    #pureConfigure(de.cismet.tools.configuration.Configurable, org.jdom.Element, org.jdom.Element)
      */
     public void configureFromClasspath(final Configurable singleConfig) {
         final Element rootObject = getRootObjectFromClassPath();
@@ -237,6 +249,8 @@ public class ConfigurationManager {
      * @param   singleConfig  DOCUMENT ME!
      *
      * @throws  Exception  DOCUMENT ME!
+     *
+     * @see     #pureConfigure(de.cismet.tools.configuration.Configurable, org.jdom.Element, org.jdom.Element)
      */
     public void configureFromClasspath(final String url, final Configurable singleConfig) throws Exception {
         final Element rootObject = getObjectFromClassPath(url);
@@ -244,7 +258,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Initialises the Local Configuration Classpath.
      */
     public void initialiseLocalConfigurationClasspath() {
         try {
@@ -301,11 +315,11 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Gets the object from specified ClassPath.
      *
-     * @param   classPathUrl  DOCUMENT ME!
+     * @param   classPathUrl  Classpath as Url
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>Object</code>
      *
      * @throws  JDOMException  DOCUMENT ME!
      * @throws  IOException    DOCUMENT ME!

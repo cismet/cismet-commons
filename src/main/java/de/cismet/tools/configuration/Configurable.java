@@ -10,7 +10,7 @@ package de.cismet.tools.configuration;
 import org.jdom.Element;
 
 /**
- * DOCUMENT ME!
+ * Configurable Interface.
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$

@@ -8,7 +8,7 @@
 package de.cismet.tools.configuration;
 
 /**
- * DOCUMENT ME!
+ * ConfigAttriProvider Interface.
  *
  * @author   martin.scholl@cismet.de
  * @version  $Revision$, $Date$
