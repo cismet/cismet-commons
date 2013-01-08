@@ -47,8 +47,8 @@ public abstract class TimeoutThread<T extends Object> implements Runnable {
      *
      * @return  result
      *
-     * @throws  Exception         
-     * @throws  TimeoutException  
+     * @throws  Exception         DOCUMENT ME!
+     * @throws  TimeoutException  DOCUMENT ME!
      */
     public T start(final long timeInMillis) throws Exception {
         final Thread t = new Thread(this);

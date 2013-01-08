@@ -64,9 +64,8 @@ public final class CismetThreadPool {
     }
 
     /**
-     * Attempts to stop all actively executing tasks, halts the
-     * processing of waiting tasks, and returns a list of the tasks
-     * that were awaiting execution.
+     * Attempts to stop all actively executing tasks, halts the processing of waiting tasks, and returns a list of the
+     * tasks that were awaiting execution.
      *
      * @return  list
      */
@@ -77,8 +76,8 @@ public final class CismetThreadPool {
     }
 
     /**
-     * Initiates an orderly shutdown in which previously submitted
-     * tasks are executed, but no new tasks will be accepted.
+     * Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be
+     * accepted.
      */
     public static void shutdown() {
         SINGLE_WORKER_POOL.shutdown();

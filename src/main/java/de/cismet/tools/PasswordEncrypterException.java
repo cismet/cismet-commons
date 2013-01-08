@@ -8,7 +8,7 @@
 package de.cismet.tools;
 
 /**
- * Password Encrypter Exception
+ * Password Encrypter Exception.
  *
  * @author   martin.scholl@cismet.de
  * @version  $Revision$, $Date$

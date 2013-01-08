@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Class for getting Text from File
+ * Class for getting Text from File.
  *
  * @version  $Revision$, $Date$
  */
@@ -33,7 +33,7 @@ public class TextFromFile {
     }
 
     /**
-     * Creates a new TextFromFile object from <code>file</code> with specified filepath
+     * Creates a new TextFromFile object from <code>file</code> with specified filepath.
      *
      * @param  filepath  filepath
      */

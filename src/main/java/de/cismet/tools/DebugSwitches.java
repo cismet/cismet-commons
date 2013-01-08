@@ -12,7 +12,7 @@
 package de.cismet.tools;
 
 /**
- * debug Switches
+ * debug Switches.
  *
  * @author   thorsten
  * @version  $Revision$, $Date$
@@ -38,7 +38,7 @@ public class DebugSwitches {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Getter for Instance
+     * Getter for Instance.
      *
      * @return  instance
      */

@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Property Reader
+ * Property Reader.
  *
  * @author   srichter
  * @version  $Revision$, $Date$

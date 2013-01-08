@@ -17,7 +17,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 /**
- * Static XML Tools
+ * Static XML Tools.
  *
  * @author   thorsten
  * @version  $Revision$, $Date$
@@ -55,7 +55,7 @@ public class StaticXMLTools {
     }
 
     /**
-     * Converts the specified <code>XMLElement</code> into a <code>Color</code>
+     * Converts the specified <code>XMLElement</code> into a <code>Color.</code>
      *
      * @param   xmlElement  <code>xmlElemt</code>, which is going to be converted
      *
@@ -89,7 +89,7 @@ public class StaticXMLTools {
     }
 
     /**
-     * Converts the <code>Font</code> into <code>XML-Code</code>
+     * Converts the <code>Font</code> into <code>XML-Code.</code>
      *
      * @param   f  <code>Font</code>, which is going to be converted
      *
@@ -104,7 +104,7 @@ public class StaticXMLTools {
     }
 
     /**
-     * Converts <code>XMLElement</code> into <code>Font</code>
+     * Converts <code>XMLElement</code> into <code>Font.</code>
      *
      * @param   xmlElement  <code>xmlElement</code>, which is going to be converted
      *

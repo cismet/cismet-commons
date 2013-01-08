@@ -56,7 +56,7 @@ public class NumberStringComparator implements java.util.Comparator {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Compare Methode
+     * Compare Methode.
      *
      * @param   o1  Object one
      * @param   o2  object two

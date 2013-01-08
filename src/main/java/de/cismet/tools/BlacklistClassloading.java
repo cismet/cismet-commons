@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Blacklist
+ * Blacklist.
  *
  * @author   srichter
  * @version  $Revision$, $Date$
@@ -39,9 +39,9 @@ public final class BlacklistClassloading {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Tests whether the class is available or not.
-     * It sends messages to the Logger, if he can't find the class identity(additional he adds the identity on the blacklist),
-     * if he already has the class on the blacklist or if the classname was <code>null</code>
+     * Tests whether the class is available or not. It sends messages to the Logger, if he can't find the class
+     * identity(additional he adds the identity on the blacklist), if he already has the class on the blacklist or if
+     * the classname was <code>null</code>
      *
      * @param   classname  classname to load
      *

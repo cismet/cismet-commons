@@ -69,7 +69,7 @@ public class ScriptRunner {
      * Default constructor.
      *
      * @param  connection   <code>Connection</code>
-     * @param  autoCommit   Enables/Disables  autoCommit
+     * @param  autoCommit   Enables/Disables autoCommit
      * @param  stopOnError  Enables/Disables stopOnError
      */
     public ScriptRunner(final Connection connection, final boolean autoCommit, final boolean stopOnError) {
@@ -81,7 +81,7 @@ public class ScriptRunner {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Setter for <code>delimiter</code> property
+     * Setter for <code>delimiter</code> property.
      *
      * @param  delimiter  new vslue of the <code>delimiter</code> property
      */
@@ -307,7 +307,7 @@ public class ScriptRunner {
     }
 
     /**
-     * Gettter for delimiter
+     * Gettter for delimiter.
      *
      * @return  delimiter
      */
@@ -316,7 +316,7 @@ public class ScriptRunner {
     }
 
     /**
-     * If logWriter is Empty print the Object in System Console
+     * If logWriter is Empty print the Object in System Console.
      *
      * <p>>>>>>>> .r4704</p>
      *
@@ -353,7 +353,7 @@ public class ScriptRunner {
     }
 
     /**
-     * Flushes the Streams
+     * Flushes the Streams.
      */
     private void flush() {
         if (logWriter != null) {

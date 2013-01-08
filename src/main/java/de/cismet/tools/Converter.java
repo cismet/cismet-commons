@@ -125,7 +125,7 @@ public final class Converter {
      *
      * @return  the base64 encoded bytes
      *
-     * @see     Base64#encodeBase64(byte[])
+     * @see     org.apache.commons.codec.binary.Base64#encodeBase64(byte[])
      */
     public static byte[] toBase64(final byte[] bytes) {
         return Base64.encodeBase64(bytes);
@@ -138,7 +138,7 @@ public final class Converter {
      *
      * @return  the system encoded bytes or <code>null</code> if the given <code>byte[]</code> is <code>null</code>
      *
-     * @see     Base64#decodeBase64(byte[])
+     * @see     org.apache.commons.codec.binary.Base64#decodeBase64(byte[])
      */
     public static byte[] fromBase64(final byte[] bytes) {
         if (bytes == null) {

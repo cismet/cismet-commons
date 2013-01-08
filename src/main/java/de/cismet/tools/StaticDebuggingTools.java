@@ -18,7 +18,7 @@ package de.cismet.tools;
 import java.io.File;
 
 /**
- * StaticDebuggingTools
+ * StaticDebuggingTools.
  *
  * @author   cschmidt
  * @version  $Revision$, $Date$

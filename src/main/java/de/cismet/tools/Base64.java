@@ -8,7 +8,7 @@
 package de.cismet.tools;
 
 /**
- * Base64 Converter
+ * Base64 Converter.
  *
  * @author   martin.scholl@cismet.de
  * @version  $Revision$, $Date$

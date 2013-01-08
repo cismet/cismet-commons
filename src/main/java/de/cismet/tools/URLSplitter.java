@@ -8,7 +8,7 @@
 package de.cismet.tools;
 
 /**
- * Urlsplitter
+ * Urlsplitter.
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
@@ -85,7 +85,7 @@ public class URLSplitter {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Getter for <code>prot_prefix</code>
+     * Getter for <code>prot_prefix.</code>
      *
      * @return  <code>prot_prefix</code>
      */
@@ -94,7 +94,7 @@ public class URLSplitter {
     }
 
     /**
-     * Getter for <code>server</code>
+     * Getter for <code>server.</code>
      *
      * @return  <code>server</code>
      */
@@ -103,7 +103,7 @@ public class URLSplitter {
     }
 
     /**
-     * Getter for <code>path</code>
+     * Getter for <code>path.</code>
      *
      * @return  <code>path</code>
      */
@@ -112,7 +112,7 @@ public class URLSplitter {
     }
 
     /**
-     * Getter for <code>object_name</code>
+     * Getter for <code>object_name.</code>
      *
      * @return  <code>object_name</code>
      */
@@ -122,14 +122,14 @@ public class URLSplitter {
 
     /**
      * returns a <code>String</code>, which has the following form<br>
-     * Prot:   {@link #prot_prefix}<br>
+     * Prot: {@link #prot_prefix}<br>
      * Server: {@link #server}<br>
-     * Path:   {@link #path}<br>
+     * Path: {@link #path}<br>
      * Objekt: {@link #object_name}<br>
-     * 
-     * @return <code>String</code>
+     *
+     * @return  <code>String</code>
      */
-    
+
     @Override
     public String toString() {
         return "Prot:   " + prot_prefix + "\n"   // NOI18N
@@ -139,7 +139,7 @@ public class URLSplitter {
     }
 
     /**
-     * main
+     * main.
      *
      * @param  args  args
      */

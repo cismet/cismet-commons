@@ -23,8 +23,8 @@ public class StaticDecimalTools {
      * @param   d  <code>Double</code> which should be rounded
      *
      * @return  the rounded <code>Double</code>
-     * 
-     * @see #round(java.lang.String, double) 
+     *
+     * @see     #round(java.lang.String, double)
      */
     public static String round(final double d) {
         return round("0.00", d); // NOI18N

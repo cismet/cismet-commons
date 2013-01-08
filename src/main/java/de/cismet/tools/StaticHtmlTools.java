@@ -12,7 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
- * StaticHtmlTools
+ * StaticHtmlTools.
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
@@ -122,7 +122,7 @@ public class StaticHtmlTools {
     }
 
     /**
-     * main
+     * main.
      *
      * @param  args  args
      */

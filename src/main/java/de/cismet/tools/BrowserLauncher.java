@@ -460,8 +460,8 @@ public class BrowserLauncher {
     }
 
     /**
-     * Attempts to open the default web browser to the gieven URL.
-     * In the second attempt he tries to open the url as a file.
+     * Attempts to open the default web browser to the gieven URL. In the second attempt he tries to open the url as a
+     * file.
      *
      * @param  url  DOCUMENT ME!
      */
@@ -489,14 +489,14 @@ public class BrowserLauncher {
      *
      * @param   url  The URL to open
      *
-     * @throws  Exception    
-     * @throws  IOException  
-     * <ul>
-     * <li>If the web browser could not be located or does not run</li>
-     * <li>If it catches a <code>InvocationTargetException</code></li>
-     * <li>If it catches a <code>IllegalAccessExeption</code></li>
-     * <li>if it catches a <code>InstantiationException</code></li>
-     * 
+     * @throws  Exception    DOCUMENT ME!
+     * @throws  IOException
+     *                       <ul>
+     *                         <li>If the web browser could not be located or does not run</li>
+     *                         <li>If it catches a <code>InvocationTargetException</code></li>
+     *                         <li>If it catches a <code>IllegalAccessExeption</code></li>
+     *                         <li>if it catches a <code>InstantiationException</code></li>
+     *                       </ul>
      */
     public static void openURL(final String url) throws Exception {
         if (log.isDebugEnabled()) {

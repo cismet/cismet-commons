@@ -52,7 +52,7 @@ public class ConnectionInfo {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Returns the DriverClass
+     * Returns the DriverClass.
      *
      * @return  DriverClass
      */
@@ -61,7 +61,7 @@ public class ConnectionInfo {
     }
 
     /**
-     * Sets the DriverClass
+     * Sets the DriverClass.
      *
      * @param  driver  Driver Class
      */
@@ -70,7 +70,7 @@ public class ConnectionInfo {
     }
 
     /**
-     * Returns the DB Url
+     * Returns the DB Url.
      *
      * @return  DB Url
      */
@@ -79,7 +79,7 @@ public class ConnectionInfo {
     }
 
     /**
-     * Sets the DB Url
+     * Sets the DB Url.
      *
      * @param  url  DB Url
      */
@@ -119,7 +119,7 @@ public class ConnectionInfo {
     }
 
     /**
-     * Sets Password
+     * Sets Password.
      *
      * @param  pass  Password
      */
@@ -128,7 +128,7 @@ public class ConnectionInfo {
     }
 
     /**
-     * Getter for Element
+     * Getter for Element.
      *
      * @return  Element
      */

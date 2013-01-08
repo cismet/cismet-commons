@@ -38,7 +38,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 /**
- * Applet Password Encrypter
+ * Applet Password Encrypter.
  *
  * @author   thorsten.hell@cismet.de
  * @author   martin.scholl@cismet.de
@@ -235,31 +235,31 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     } // </editor-fold>//GEN-END:initComponents
 
     /**
-     * Focus Gained Password2
+     * Focus Gained Password2.
      *
      * @param  evt  Event
      */
-    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword2FocusGained
+    private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword2FocusGained
         pwfPassword2.setSelectionStart(0);
         pwfPassword2.setSelectionEnd(pwfPassword1.getPassword().length);
-    }//GEN-LAST:event_pwfPassword2FocusGained
+    }                                                                           //GEN-LAST:event_pwfPassword2FocusGained
 
     /**
-     * Focus Gained Password1
+     * Focus Gained Password1.
      *
      * @param  evt  Event
      */
-    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pwfPassword1FocusGained
+    private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword1FocusGained
         pwfPassword1.setSelectionStart(0);
         pwfPassword1.setSelectionEnd(pwfPassword1.getPassword().length);
-    }//GEN-LAST:event_pwfPassword1FocusGained
+    }                                                                           //GEN-LAST:event_pwfPassword1FocusGained
 
     /**
-     * Starter
+     * Starter.
      *
      * @param  evt  Event
      */
-    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGoActionPerformed
+    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {                        //GEN-FIRST:event_cmdGoActionPerformed
         final String p1 = new String(pwfPassword1.getPassword());
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
@@ -296,14 +296,14 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             pwfPassword1.setText("");                                                                // NOI18N
             pwfPassword2.setText("");                                                                // NOI18N
         }
-    }//GEN-LAST:event_cmdGoActionPerformed
+    }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
 
     /**
-     * main
+     * main.
      *
      * @param   args  the command line arguments
      *
-     * @throws  Exception
+     * @throws  Exception  DOCUMENT ME!
      */
     public static void main(final String[] args) throws Exception {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -321,7 +321,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * Decrypts <code>String</code> with BlowfishEasy
+     * Decrypts <code>String</code> with BlowfishEasy.
      *
      * @param   code  <code>String</code> that should get decrypted
      *
@@ -429,10 +429,10 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * Decrypts a given string that was created by {@link #encrypt(char[])}. The caller is responsible for wiping the
-     * returned result himself. The given array can automatically be wiped by passing <code>true</code> to the <code>
-     * wipeInput</code> parameter. All temporary created data is immediately wiped, thus this implementation offers as
-     * little traces in memory as possible.<br/>
+     * Decrypts a given string that was created by {@link #encrypt(char[], boolean)}. The caller is responsible for
+     * wiping the returned result himself. The given array can automatically be wiped by passing <code>true</code> to
+     * the <code>wipeInput</code> parameter. All temporary created data is immediately wiped, thus this implementation
+     * offers as little traces in memory as possible.<br/>
      * <br/>
      * NOTE: this operation can decrypt strings created by {@link #decryptString(java.lang.String)}, too, for
      * compatibility reasons<br/>
@@ -527,7 +527,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * Applies <code>Cipher</code>
+     * Applies <code>Cipher.</code>
      *
      * @param   bytes  string
      * @param   mode   mode
@@ -570,15 +570,15 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * Getter for Master Password
+     * Getter for Master Password.
      *
      * @return  masterpassword as <code>Char[]</code>
      *
      * @throws  PasswordEncrypterException
-     * <ul>
-     * <li>PasswordEncrypter properties not present.</li>
-     * <li>cannot read master password from properties, not set?</li>
-     * </ul>
+     *                                      <ul>
+     *                                        <li>PasswordEncrypter properties not present.</li>
+     *                                        <li>cannot read master password from properties, not set?</li>
+     *                                      </ul>
      */
     private static char[] getMasterPw() throws PasswordEncrypterException {
         final InputStream peStream = PasswordEncrypter.class.getResourceAsStream("PasswordEncrypter.properties"); // NOI18N
@@ -608,14 +608,12 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * Get Salt.Always 8 bytes.
-     * Uses Default Salt, if Salt not set.
-     * If Salt is shorter then eight bytes the rest of the Salt will filled with default Salt.
-     * If Salt is too long, returns only the first eight bytes
+     * Get Salt.Always 8 bytes. Uses Default Salt, if Salt not set. If Salt is shorter then eight bytes the rest of the
+     * Salt will filled with default Salt. If Salt is too long, returns only the first eight bytes
      *
      * @return  salt
      *
-     * @throws  PasswordEncrypterException PasswordEncrypter properties not present
+     * @throws  PasswordEncrypterException  PasswordEncrypter properties not present
      */
     private static byte[] getSalt() throws PasswordEncrypterException {
         final InputStream peStream = PasswordEncrypter.class.getResourceAsStream("PasswordEncrypter.properties"); // NOI18N
@@ -846,7 +844,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     //~ Inner Classes ----------------------------------------------------------
 
     /**
-     * FocusTraversalOrder
+     * FocusTraversalOrder.
      *
      * @version  $Revision$, $Date$
      */
@@ -873,13 +871,13 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         //~ Methods ------------------------------------------------------------
 
         /**
-         * Returns the following <code>Component</code> of the specified <code>Component</code>
-         * If the specified <code>Component</code> is the Last, Returns the First <code>Component</code>
-         * 
-         * @param aContainer <code>Container</code>
-         * @param aComponent <code>Component</code>
-         * 
-         * @return following <code>Component</code>
+         * Returns the following <code>Component</code> of the specified <code>Component</code> If the specified <code>
+         * Component</code> is the Last, Returns the First <code>Component.</code>
+         *
+         * @param   aContainer  <code>Container</code>
+         * @param   aComponent  <code>Component</code>
+         *
+         * @return  following <code>Component</code>
          */
         @Override
         public Component getComponentAfter(final Container aContainer, final Component aComponent) {
@@ -887,15 +885,15 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
             return order.get(index);
         }
-        
+
         /**
-         * Returns the previous <code>Component</code> of the specified <code>Component</code>
-         * If the specified <code>Component</code> is the First, Returns the Last <code>Component</code>
-         * 
-         * @param aContainer <code>Container</code>
-         * @param aComponent <code>Component</code>
-         * 
-         * @return previous <code>Component</code>
+         * Returns the previous <code>Component</code> of the specified <code>Component</code> If the specified <code>
+         * Component</code> is the First, Returns the Last <code>Component.</code>
+         *
+         * @param   aContainer  <code>Container</code>
+         * @param   aComponent  <code>Component</code>
+         *
+         * @return  previous <code>Component</code>
          */
         @Override
         public Component getComponentBefore(final Container aContainer, final Component aComponent) {
@@ -908,11 +906,11 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         }
 
         /**
-         * Returns the First <code>Component</code>
-         * 
-         * @param aContainer <code>Container</code>
-         * 
-         * @return <code>Component</code>
+         * Returns the First <code>Component.</code>
+         *
+         * @param   aContainer  <code>Container</code>
+         *
+         * @return  <code>Component</code>
          */
         @Override
         public Component getFirstComponent(final Container aContainer) {
@@ -920,23 +918,23 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         }
 
         /**
-         * Returns the Last <code>Component</code>
-         * 
-         * @param aContainer <code>Container</code>
-         * 
-         * @return <code>Component</code>
+         * Returns the Last <code>Component.</code>
+         *
+         * @param   aContainer  <code>Container</code>
+         *
+         * @return  <code>Component</code>
          */
         @Override
         public Component getLastComponent(final Container aContainer) {
             return order.get(order.size() - 1);
         }
 
-         /**
-         * Returns the First <code>Component</code>
-         * 
-         * @param aContainer <code>Container</code>
-         * 
-         * @return <code>Component</code>
+        /**
+         * Returns the First <code>Component.</code>
+         *
+         * @param   aContainer  <code>Container</code>
+         *
+         * @return  <code>Component</code>
          */
         @Override
         public Component getDefaultComponent(final Container aContainer) {
@@ -945,7 +943,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * Code Focus Listener
+     * Code Focus Listener.
      *
      * @version  $Revision$, $Date$
      */
@@ -959,10 +957,10 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         //~ Methods ------------------------------------------------------------
 
         /**
-         * Sets the Focus on <code>txaCode</code> from <code>selStart</code> to <code>selEnd</code>
-         * If the Selected Area is Empty, Selects all.
-         * 
-         * @param e Event
+         * Sets the Focus on <code>txaCode</code> from <code>selStart</code> to <code>selEnd</code> If the Selected Area
+         * is Empty, Selects all.
+         *
+         * @param  e  Event
          */
         @Override
         public void focusGained(final FocusEvent e) {
@@ -976,9 +974,10 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         }
 
         /**
-         * Gets the Focus on <code>txaCode</code> and saves the Start to <code>selStart</code> and the End to <code>selEnd</code>
-         * 
-         * @param e Event
+         * Gets the Focus on <code>txaCode</code> and saves the Start to <code>selStart</code> and the End to <code>
+         * selEnd.</code>
+         *
+         * @param  e  Event
          */
         @Override
         public void focusLost(final FocusEvent e) {
