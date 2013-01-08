@@ -65,9 +65,9 @@ public class RESTRemoteControlMethodsApplication extends Application {
     }
 
     /**
-     * Getter for Classes
-     * 
-     * @return class
+     * Getter for Classes.
+     *
+     * @return  class
      */
     @Override
     public synchronized Set<Class<?>> getClasses() {

@@ -37,12 +37,12 @@ public final class RESTRemoteControlMethodRegistry {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * caches RemoteMethods to <code>portMapping</code>
+     * caches RemoteMethods to <code>portMapping.</code>
      *
      * @param   defaultPort  default port
      *
-     * @throws  IllegalStateException  "RESTRemoteControlMethods have already been collected. " 
-                                       + "Call RESTRemoteControlMethodRegistry.clear() to enable new gathering"
+     * @throws  IllegalStateException  "RESTRemoteControlMethods have already been collected. " + "Call
+     *                                 RESTRemoteControlMethodRegistry.clear() to enable new gathering"
      */
     public static synchronized void gatherRemoteMethods(final int defaultPort) {
         if (!portMapping.isEmpty()) {
@@ -76,7 +76,7 @@ public final class RESTRemoteControlMethodRegistry {
     }
 
     /**
-     * Gets the Methods of specified Port
+     * Gets the Methods of specified Port.
      *
      * @param   port  port
      *
@@ -88,7 +88,7 @@ public final class RESTRemoteControlMethodRegistry {
     }
 
     /**
-     * Gettter for Methodports
+     * Gettter for Methodports.
      *
      * @return  Methodports
      */
@@ -97,14 +97,14 @@ public final class RESTRemoteControlMethodRegistry {
     }
 
     /**
-     * Clears the Portmapping
+     * Clears the Portmapping.
      */
     public static synchronized void clear() {
         portMapping.clear();
     }
 
     /**
-     * Tests whether the map is empty or not
+     * Tests whether the map is empty or not.
      *
      * @return  <code>True</code>if this map contains no key-value mappings
      */

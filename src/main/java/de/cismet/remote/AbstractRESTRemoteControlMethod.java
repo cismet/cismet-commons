@@ -28,7 +28,7 @@ public abstract class AbstractRESTRemoteControlMethod implements RESTRemoteContr
      * @param   port  port
      * @param   path  path
      *
-     * @throws  NullPointerException     "path must not be null"
+     * @throws  NullPointerException      "path must not be null"
      * @throws  IllegalArgumentException  "path must not be empty" or "path has to start with '/'"
      */
     public AbstractRESTRemoteControlMethod(final int port, final String path) {
@@ -51,9 +51,9 @@ public abstract class AbstractRESTRemoteControlMethod implements RESTRemoteContr
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Getter for Port
-     * 
-     * @return <code>port</code>
+     * Getter for Port.
+     *
+     * @return  <code>port</code>
      */
     @Override
     public int getPort() {
@@ -61,9 +61,9 @@ public abstract class AbstractRESTRemoteControlMethod implements RESTRemoteContr
     }
 
     /**
-     * Getter for Path
-     * 
-     * @return <code>path</code>
+     * Getter for Path.
+     *
+     * @return  <code>path</code>
      */
     @Override
     public String getPath() {
@@ -71,9 +71,9 @@ public abstract class AbstractRESTRemoteControlMethod implements RESTRemoteContr
     }
 
     /**
-     * return as String
-     * 
-     * @return <code>Class</code> + <code>name</code> + " path: " + <code>path</code> + " port: " + <code>port<code>
+     * return as String.
+     *
+     * @return  <code>Class</code> + <code>name</code> + " path: " + <code>path</code> + " port: " + <code>port</code>
      */
     @Override
     public String toString() {
