@@ -110,7 +110,7 @@ public final class Proxy {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Getter for <code>host</code>
+     * Getter for <code>host.</code>
      *
      * @return  <code>host</code>
      */
@@ -119,7 +119,7 @@ public final class Proxy {
     }
 
     /**
-     * Setter for host
+     * Setter for host.
      *
      * @param  host  <code>host</code>
      */
@@ -128,7 +128,7 @@ public final class Proxy {
     }
 
     /**
-     * Getter for <code>port</code>
+     * Getter for <code>port.</code>
      *
      * @return  <code>port</code>
      */
@@ -137,7 +137,7 @@ public final class Proxy {
     }
 
     /**
-     * Setter for <code>port</code>
+     * Setter for <code>port.</code>
      *
      * @param  port  <code>port</code>
      */
@@ -146,10 +146,11 @@ public final class Proxy {
     }
 
     /**
-     * return as String
-     * 
-     * @return "Proxy: " + <code>host</code> + ":" + <code>port</code> + " | username: " + <code>username</code> +
-        " | password: " + ((<code>password</code> == <code>null</code>) ? <code>null</code> : "<invisible>") + " | domain: " + <code>domain</code>
+     * return as String.
+     *
+     * @return  "Proxy: " + <code>host</code> + ":" + <code>port</code> + " | username: " + <code>username</code> +" |
+     *          password: " + ((<code>password</code> == <code>null</code>) ? <code>null</code> : "<invisible>") + " |
+     *          domain: " + <code>domain</code>
      */
     @Override
     public String toString() {
@@ -158,7 +159,7 @@ public final class Proxy {
     }
 
     /**
-     * Getter for <code>domain</code>
+     * Getter for <code>domain.</code>
      *
      * @return  <code>domain</code>
      */
@@ -167,7 +168,7 @@ public final class Proxy {
     }
 
     /**
-     * Setter for <code>domain</code>
+     * Setter for <code>domain.</code>
      *
      * @param  domain  <code>domain</code>
      */
@@ -176,7 +177,7 @@ public final class Proxy {
     }
 
     /**
-     * Getter for <code>password</code>
+     * Getter for <code>password.</code>
      *
      * @return  <code>password</code>
      */
@@ -185,7 +186,7 @@ public final class Proxy {
     }
 
     /**
-     * Setter for <code>password</code>
+     * Setter for <code>password.</code>
      *
      * @param  password  <code>password</code>
      */
@@ -194,7 +195,7 @@ public final class Proxy {
     }
 
     /**
-     * Getter for <code>username</code>
+     * Getter for <code>username.</code>
      *
      * @return  <code>username</code>
      */
@@ -203,7 +204,7 @@ public final class Proxy {
     }
 
     /**
-     * Setter for <code>username</code>
+     * Setter for <code>username.</code>
      *
      * @param  username  <code>username</code>
      */
@@ -212,7 +213,7 @@ public final class Proxy {
     }
 
     /**
-     * Tests whether <code>enabled</code> is true or false
+     * Tests whether <code>enabled</code> is true or false.
      *
      * @return  true, if it is enabled
      */
@@ -221,7 +222,7 @@ public final class Proxy {
     }
 
     /**
-     * Enables or disables
+     * Enables or disables.
      *
      * @param  enabled  <code>true</code> or <code>false</code>
      */
@@ -230,16 +231,16 @@ public final class Proxy {
     }
 
     /**
-     * Stores this proxy in the user's preferences. 
-     * 
-     * @see #toPreferences(de.cismet.netutil.Proxy) 
+     * Stores this proxy in the user's preferences.
+     *
+     * @see  #toPreferences(de.cismet.netutil.Proxy)
      */
     public void toPreferences() {
         toPreferences(this);
     }
 
     /**
-     * Clears the Proxy Object
+     * Clears the Proxy Object.
      */
     public static void clear() {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
@@ -315,8 +316,8 @@ public final class Proxy {
     }
 
     /**
-     * Loads a <code>Proxy</code> instance from System preferences. If there are no host and port proxy
-     * information <code>null</code> will be returned. If the return value is non-null at least the host and the port is
+     * Loads a <code>Proxy</code> instance from System preferences. If there are no host and port proxy information
+     * <code>null</code> will be returned. If the return value is non-null at least the host and the port is
      * initialised. Username, Password and Domain may be null.
      *
      * @return  the user's proxy settings or null if no settings present
@@ -343,7 +344,7 @@ public final class Proxy {
     }
 
     /**
-     * main
+     * main.
      *
      * @param  args  args
      */
@@ -384,8 +385,8 @@ public final class Proxy {
     }
 
     /**
-     * shows Message.
-     * If there is no System.console it writes the meassage on OptionPane.Else it writes the message on Console as Error or Output.
+     * shows Message. If there is no System.console it writes the meassage on OptionPane.Else it writes the message on
+     * Console as Error or Output.
      *
      * @param  message  the message
      * @param  error    true if it is a error message,false if not
@@ -407,7 +408,7 @@ public final class Proxy {
     }
 
     /**
-     * print usage
+     * print usage.
      */
     private static void printUsage() {
         showMessage("Supported parameters are:\n\n"                  // NOI18N
