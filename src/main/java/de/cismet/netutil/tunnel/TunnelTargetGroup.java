@@ -48,7 +48,7 @@ public class TunnelTargetGroup {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Getter for <code>targetExpressions</code>
+     * Getter for <code>targetExpressions.</code>
      *
      * @return  <code>targetExpressions</code>
      */
@@ -57,7 +57,7 @@ public class TunnelTargetGroup {
     }
 
     /**
-     * Setter for <code>targetExpressions</code>
+     * Setter for <code>targetExpressions.</code>
      *
      * @param  targetExpressions  <code>targetExpressions</code>
      */
@@ -66,7 +66,7 @@ public class TunnelTargetGroup {
     }
 
     /**
-     * Getter for <code>targetGroupkey</code>
+     * Getter for <code>targetGroupkey.</code>
      *
      * @return  <code>targetGroupkey</code>
      */
@@ -75,7 +75,7 @@ public class TunnelTargetGroup {
     }
 
     /**
-     * Setter for <code>targetGroupkey</code>
+     * Setter for <code>targetGroupkey.</code>
      *
      * @param  targetGroupkey  <code>targetGroupkey</code>
      */
@@ -84,7 +84,7 @@ public class TunnelTargetGroup {
     }
 
     /**
-     * Tests whether the <code>String</code> matches or not
+     * Tests whether the <code>String</code> matches or not.
      *
      * @param   candidate  given <code>String</code>
      *
