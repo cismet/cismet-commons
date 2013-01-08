@@ -10,8 +10,8 @@ package Sirius.util.collections;
 import java.util.*;
 /**
  * Modified {@link HashMap}, which makes it possible to map Keys to multiple Values.
- * 
- * //key=idnetifier;value=LinkedList.
+ *
+ * <p>//key=idnetifier;value=LinkedList.</p>
  *
  * @version  $Revision$, $Date$
  */
@@ -39,8 +39,8 @@ public class MultiMap extends HashMap {
     /////////////////////////////////////////////////
 
     /**
-     * Assosiates <code>value</code> with <code>key</code> in this <code>map</code>. Instead of replace the previous value for a
-     * key,it is possible to have multiple values for one key possible.
+     * Assosiates <code>value</code> with <code>key</code> in this <code>map</code>. Instead of replace the previous
+     * value for a key,it is possible to have multiple values for one key possible.
      *
      * @param   key    key
      * @param   value  value
@@ -72,8 +72,8 @@ public class MultiMap extends HashMap {
 
     //////////////////////////////////////////////////////////////
     /**
-     * Appends the values of the specified <code>map</code> to this <code>map</code>. Instead of replace the previous value for
-     * a key, it is possible multiple values for one key possible.
+     * Appends the values of the specified <code>map</code> to this <code>map</code>. Instead of replace the previous
+     * value for a key, it is possible multiple values for one key possible.
      *
      * @param  t  map
      */

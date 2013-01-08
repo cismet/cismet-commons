@@ -11,9 +11,10 @@ import java.util.Hashtable;
 
 /**
  * Modified {@link Hashtable}, which maps <code>Integer</code> to <code>String</code>.
+ *
  * <ul>
- * <li><code>Key</code> - <code>Integer</code></li>
- * <li><code>Value</code> - <code>String</code></li>
+ *   <li><code>Key</code> - <code>Integer</code></li>
+ *   <li><code>Value</code> - <code>String</code></li>
  * </ul>
  *
  * @version  $Revision$, $Date$
@@ -34,8 +35,8 @@ public class IntMapsString extends java.util.Hashtable {
      *
      * @param  initialCapacity  Capacity when Object is created
      * @param  loadFactor       buffer for capacity increase
-     * 
-     * @see Hashtable
+     *
+     * @see    Hashtable
      */
     IntMapsString(final int initialCapacity, final float loadFactor) {
         super(initialCapacity, loadFactor);

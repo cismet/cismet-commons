@@ -11,9 +11,10 @@ import java.util.Hashtable;
 
 /**
  * Modified {@link Hashtable}, which maps <code>String</code> to <code>Integer</code>.
+ *
  * <ul>
- * <li><code>Key</code> - <code>String</code></li>
- * <li><code>Value</code> - <code>Integer</code></li>
+ *   <li><code>Key</code> - <code>String</code></li>
+ *   <li><code>Value</code> - <code>Integer</code></li>
  * </ul>
  *
  * @version  $Revision$, $Date$
@@ -34,8 +35,8 @@ public class StringMapsInt extends java.util.Hashtable {
      *
      * @param  initialCapacity  Capacity when Object is created
      * @param  loadFactor       buffer for capacity increase
-     * 
-     * @see Hashtable
+     *
+     * @see    Hashtable
      */
     public StringMapsInt(final int initialCapacity, final float loadFactor) {
         super(initialCapacity, loadFactor);
@@ -62,7 +63,7 @@ public class StringMapsInt extends java.util.Hashtable {
      *
      * @return  IntValue
      *
-     * @throws  Exception                       
+     * @throws  Exception                       DOCUMENT ME!
      * @throws  java.lang.NullPointerException  "Entry is not a Integer" or "No entry"
      */
     public int getIntValue(final String descriptor) throws Exception {
