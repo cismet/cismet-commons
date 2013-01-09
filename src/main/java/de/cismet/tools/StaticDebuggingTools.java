@@ -18,7 +18,7 @@ package de.cismet.tools;
 import java.io.File;
 
 /**
- * StaticDebuggingTools.
+ * Tests whether the File exists in the User's Home Directory or not.
  *
  * @author   cschmidt
  * @version  $Revision$, $Date$

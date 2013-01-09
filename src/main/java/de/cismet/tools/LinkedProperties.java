@@ -13,6 +13,7 @@ package de.cismet.tools;
 
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * Linked Properties.
+ * Creates {@link LinkedHashMap} for Properties.
  *
  * @author   thorsten
  * @version  $Revision$, $Date$
@@ -34,14 +35,17 @@ public class LinkedProperties extends Properties {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Associates a given <code>value</code> with a given <code>key.</code>
+     * Associates a given <code>value</code> with a given <code>key</code>. Removes the previous associated <code>
+     * value</code>, if there is any.
      *
-     * @param   key    DOCUMENT ME!
-     * @param   value  DOCUMENT ME!
+     * @param   key    The key for the given value
+     * @param   value  The value for the given key
      *
-     * @return  the previous <code>value</code> associated with <code>key</code>, or <code>null</code> if there was no
+     * @return  The previous <code>value</code> associated with <code>key</code>, or <code>null</code> if there was no
      *          mapping for <code>key</code>. (A <code>null</code> return can also indicate that the map previously
      *          associated <code>null</code> with <code>key</code>.)
+     *
+     * @see     HashMap#put(java.lang.Object, java.lang.Object)
      */
 
     @Override
@@ -52,9 +56,11 @@ public class LinkedProperties extends Properties {
     /**
      * Returns the <code>value</code> for the given <code>key.</code>
      *
-     * @param   key  DOCUMENT ME!
+     * @param   key  The key, whose value is searched
      *
      * @return  the associated <code>value</code>. Returns <code>null</code>, if the is no mapping for this key.
+     *
+     * @see     HashMap#get(java.lang.Object)
      */
     @Override
     public synchronized Object get(final Object key) {
@@ -62,7 +68,9 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * Removes every <code>mapping</code> of this <code>map.</code>
+     * Clears the <code>map</code>. (Removes every <code>mapping</code> for this <code>map</code>)
+     *
+     * @see  HashMap#clear()
      */
 
     @Override
@@ -71,11 +79,11 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * DOCUMENT ME!
+     * Not Supported.
      *
-     * @return  DOCUMENT ME!
+     * @return  error
      *
-     * @throws  UnsupportedOperationException  DOCUMENT ME!
+     * @throws  UnsupportedOperationException  not supported
      */
     @Override
     public synchronized Object clone() {
@@ -83,11 +91,13 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * Tests whether there is any <code>mapping</code> with this <code>value</code> or not.
+     * Tests whether there is any <code>key</code> associated with this <code>value</code> or not.
      *
-     * @param   value  value whose presence in this map is to be tested
+     * @param   value  searched value
      *
      * @return  True, if there is a <code>key</code> with this <code>value</code>
+     *
+     * @see     HashMap#containsValue(java.lang.Object)
      */
     @Override
     public boolean containsValue(final Object value) {
@@ -95,11 +105,13 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * Tests whether there is any <code>mapping</code> with this <code>value</code> or not.
+     * Tests whether there is any <code>key</code> associated with this <code>value</code> or not.
      *
-     * @param   value  value whose presence in this map is to be tested
+     * @param   value  searched value
      *
      * @return  True, if there is a <code>key</code> with this <code>value</code>
+     *
+     * @see     HashMap#containsValue(java.lang.Object)
      */
 
     @Override
@@ -110,9 +122,11 @@ public class LinkedProperties extends Properties {
     /**
      * Tests whether the specified key is in the map or not.
      *
-     * @param   key  key whose presence in this map is to be tested
+     * @param   key  searched key
      *
-     * @return  True, if there is a <code>key</code>
+     * @return  True, if there is this <code>key</code>
+     *
+     * @see     HashMap#containsKey(java.lang.Object)
      */
 
     @Override
@@ -121,9 +135,11 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * Returns all <code>values</code>. Uses an <code>Iterator</code> over all <code>elements</code>.
+     * Returns all <code>values</code> as Enumeration. Uses an <code>Iterator</code> over all <code>elements</code>.
      *
-     * @return  every <code>value</code> in this map
+     * @return  every <code>value</code> in this map as Enumeration
+     *
+     * @see     IteratorEnumeration
      */
     @Override
     public synchronized Enumeration elements() {
@@ -134,6 +150,8 @@ public class LinkedProperties extends Properties {
      * Returns a <code>Set</code> view of the mappings contained in this map.
      *
      * @return  <code>Set</code>
+     *
+     * @see     HashMap#entrySet()
      */
     @Override
     public Set entrySet() {
@@ -141,13 +159,13 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * DOCUMENT ME!
+     * Not Supported.
      *
-     * @param   o  DOCUMENT ME!
+     * @param   o  Object
      *
-     * @return  DOCUMENT ME!
+     * @return  error
      *
-     * @throws  UnsupportedOperationException  DOCUMENT ME!
+     * @throws  UnsupportedOperationException  not supported
      */
 
     @Override
@@ -159,6 +177,8 @@ public class LinkedProperties extends Properties {
      * Tests whether there is any mapping on the map or not.
      *
      * @return  true, if there is no mapping
+     *
+     * @see     HashMap#isEmpty()
      */
     @Override
     public synchronized boolean isEmpty() {
@@ -166,9 +186,11 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * Returns all <code>keys</code>. Uses an <code>Iterator</code> over all <code>elements</code>.
+     * Returns all <code>keys</code> as Enumeration. Uses an <code>Iterator</code> over all <code>elements</code>.
      *
-     * @return  every <code>key</code> in this map
+     * @return  every <code>key</code> in this map as Enumeration.
+     *
+     * @see     IteratorEnumeration
      */
     @Override
     public synchronized Enumeration keys() {
@@ -179,6 +201,8 @@ public class LinkedProperties extends Properties {
      * Returns a <code>Set</code> view of the keys contained in this map.
      *
      * @return  <code>Set</code>
+     *
+     * @see     HashMap#keySet()
      */
     @Override
     public Set keySet() {
@@ -186,11 +210,11 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * DOCUMENT ME!
+     * not supported.
      *
-     * @return  DOCUMENT ME!
+     * @return  error
      *
-     * @throws  UnsupportedOperationException  DOCUMENT ME!
+     * @throws  UnsupportedOperationException  not supported
      */
     @Override
     public Enumeration propertyNames() {
@@ -199,10 +223,12 @@ public class LinkedProperties extends Properties {
 
     /**
      * Copies all of the <code>mappings</code> from the specified <code>map</code> to this <code>map</code>. These
-     * <code>mappings</code> will replace any <code>mappings</code> that this <code>map</code> had for any of the <code>
-     * keys</code> currently in the specified <code>map</code>
+     * <code>mappings</code> will replace any <code>mappings</code>, that this <code>map</code> had for any of the
+     * <code>keys</code> currently in the specified <code>map</code>
      *
      * @param  t  <code>map</code>
+     *
+     * @see    HashMap#putAll(java.util.Map)
      */
     @Override
     public synchronized void putAll(final Map t) {
@@ -216,6 +242,8 @@ public class LinkedProperties extends Properties {
      *
      * @return  the previous <code>value</code> associated with <code>key</code>, or <code>null</code> if there was no
      *          mapping for <code>key</code>.
+     *
+     * @see     HashMap#remove(java.lang.Object)
      */
     @Override
     public synchronized Object remove(final Object key) {
@@ -223,9 +251,11 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * Returns the number of key-value mappings in this map.
+     * Returns the amount of mappings in this map.
      *
-     * @return  the number of key-value mappings in this map
+     * @return  the amount of mappings in this map
+     *
+     * @see     HashMap#size()
      */
     @Override
     public synchronized int size() {
@@ -233,11 +263,11 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * DOCUMENT ME!
+     * not supported.
      *
-     * @return  DOCUMENT ME!
+     * @return  error
      *
-     * @throws  UnsupportedOperationException  DOCUMENT ME!
+     * @throws  UnsupportedOperationException  not supported!
      */
     @Override
     public Collection values() {
@@ -294,6 +324,8 @@ class IteratorEnumeration implements Enumeration {
      * Tests whether the <code>Iterator</code> as more Elemtents or not.
      *
      * @return  <code>True</code>, if the <code>Iterator</code> has more Elements.
+     *
+     * @see     Iterator#hasNext()
      */
     @Override
     public boolean hasMoreElements() {
@@ -304,6 +336,8 @@ class IteratorEnumeration implements Enumeration {
      * Returns the next element in the iteration.
      *
      * @return  the next element in the iteration
+     *
+     * @see     Iterator#next()
      */
     @Override
     public Object nextElement() {

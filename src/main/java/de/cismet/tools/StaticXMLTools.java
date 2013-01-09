@@ -17,7 +17,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 /**
- * Static XML Tools.
+ * Converter for Color to XML and XML to Color.
  *
  * @author   thorsten
  * @version  $Revision$, $Date$

@@ -122,7 +122,7 @@ public class StaticHtmlTools {
     }
 
     /**
-     * main.
+     * main program.
      *
      * @param  args  args
      */

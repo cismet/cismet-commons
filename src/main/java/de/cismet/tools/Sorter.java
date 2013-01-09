@@ -17,7 +17,8 @@ public class Sorter {
 
 // -----------------------------------------------------------------------------------------------
     /**
-     * Tests whether the specified <code>Array</code> is sorted or not.
+     * Tests whether the specified <code>Array</code> is sorted or not. Sorted <code>Arrays</code> are <code>
+     * Arrays</code> with only ONE Element.
      *
      * @param   array  <code>Array</code>, which is going to be tested.
      *
@@ -167,7 +168,7 @@ public class Sorter {
 //----------------------------------------------------------------------------------------------
 
     /**
-     * swaps two Elements of the specified <code>Array.</code>
+     * Swaps two Elements of the specified <code>Array.</code>
      *
      * @param  array  <code>Array</code>, which is going to get sorted
      * @param  i      Location of Element one

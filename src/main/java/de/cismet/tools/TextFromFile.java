@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Class for getting Text from File.
+ * Tool for extract Text from File.
  *
  * @version  $Revision$, $Date$
  */

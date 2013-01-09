@@ -13,7 +13,7 @@
 package de.cismet.tools;
 
 /**
- * String Tools.
+ * Tool for deleting Whitespaces in <code>Strings</code>.
  *
  * @author   schlob
  * @version  $Revision$, $Date$

@@ -321,6 +321,8 @@ public class ScriptRunner {
      * <p>>>>>>>> .r4704</p>
      *
      * @param  o  <code>Object</code> which is going to be printed
+     *
+     * @see    PrintWriter#print(java.lang.Object)
      */
     private void print(final Object o) {
         if (logWriter != null) {
@@ -332,6 +334,9 @@ public class ScriptRunner {
      * If logWriter is Empty print the Object in logWriter.Does a Line Break and flushes.
      *
      * @param  o  <code>Object</code> which is going to be printed
+     *
+     * @see    PrintWriter#println(java.lang.Object)
+     * @see    PrintWriter#flush()
      */
     private void println(final Object o) {
         if (logWriter != null) {
@@ -344,6 +349,9 @@ public class ScriptRunner {
      * If errorLogWriter is Empty print the Object in errorLogWriter.Does a Line Break and flushes.
      *
      * @param  o  <code>Object</code> which is going to be printed
+     *
+     * @see    PrintWriter#println(java.lang.Object)
+     * @see    PrintWriter#flush()
      */
     private void printlnError(final Object o) {
         if (errorLogWriter != null) {
@@ -354,6 +362,8 @@ public class ScriptRunner {
 
     /**
      * Flushes the Streams.
+     *
+     * @see  PrintWriter#flush()
      */
     private void flush() {
         if (logWriter != null) {

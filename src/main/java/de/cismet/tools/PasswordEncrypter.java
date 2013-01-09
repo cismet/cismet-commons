@@ -299,7 +299,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
 
     /**
-     * main.
+     * main program.
      *
      * @param   args  the command line arguments
      *

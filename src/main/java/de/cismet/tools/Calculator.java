@@ -8,7 +8,7 @@
 package de.cismet.tools;
 
 /**
- * Calculator.
+ * Interface Calculator.
  *
  * @author   therter
  * @version  $Revision$, $Date$

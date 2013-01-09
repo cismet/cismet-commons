@@ -120,9 +120,9 @@ public class Pnt {
     /* Pnts as vectors */
 
     /**
-     * DOCUMENT ME!
+     * Returns the Coordinate for the specified Dimension.
      *
-     * @param   i  DOCUMENT ME!
+     * @param   i  given dimension
      *
      * @return  the specified coordinate of this Pnt
      */
@@ -131,7 +131,7 @@ public class Pnt {
     }
 
     /**
-     * DOCUMENT ME!
+     * Returns the Amount of Dimensions, in which the point is.
      *
      * @return  this Pnt's dimension.
      */

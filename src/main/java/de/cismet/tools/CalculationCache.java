@@ -118,7 +118,7 @@ public class CalculationCache<KEY extends Object, VALUE extends Object> {
     }
 
     /**
-     * Get the time in milliseconds, the result should be cached.
+     * Gets the time in milliseconds, the result should be cached.
      *
      * @return  the time in milliseconds
      */
@@ -127,7 +127,7 @@ public class CalculationCache<KEY extends Object, VALUE extends Object> {
     }
 
     /**
-     * set the time in milliseconds, the result should be cached.
+     * Sets the time in milliseconds, the result should be cached.
      *
      * @param  timeToCacheResults  the timeToCacheResults to set
      */
@@ -136,7 +136,7 @@ public class CalculationCache<KEY extends Object, VALUE extends Object> {
     }
 
     /**
-     * get the time in milliseconds, exceptions, which were thrown during the calculation of a value, should be cached.
+     * Gets the time in milliseconds, exceptions, which were thrown during the calculation of a value, should be cached.
      *
      * @return  the time in milliseconds
      */
@@ -145,7 +145,7 @@ public class CalculationCache<KEY extends Object, VALUE extends Object> {
     }
 
     /**
-     * set the time in milliseconds, exceptions, which were thrown during the calculation of a value, should be cached.
+     * Sets the time in milliseconds, exceptions, which were thrown during the calculation of a value, should be cached.
      *
      * @param  timeToCacheExceptions  the timeToCacheException to set
      */

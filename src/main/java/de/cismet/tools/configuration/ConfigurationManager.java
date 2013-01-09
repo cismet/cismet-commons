@@ -686,90 +686,90 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for {@link #defaultFileName}.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>defaultFileName</code>
      */
     public String getDefaultFileName() {
         return defaultFileName;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for {@link #defaultFileName}.
      *
-     * @param  defaultFileName  DOCUMENT ME!
+     * @param  defaultFileName  <code>defaultFileName</code>
      */
     public void setDefaultFileName(final String defaultFileName) {
         this.defaultFileName = defaultFileName;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for {@link #classPathFolder}.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>classPathFolder</code>
      */
     public String getClassPathFolder() {
         return classPathFolder;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for {@link #classPathFolder}.
      *
-     * @param  classPathFolder  DOCUMENT ME!
+     * @param  classPathFolder  <code>classPathFolder</code>
      */
     public void setClassPathFolder(final String classPathFolder) {
         this.classPathFolder = classPathFolder;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for {@link #home}.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>home</code>
      */
     public String getHome() {
         return home;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for {@link #home}.
      *
-     * @param  home  DOCUMENT ME!
+     * @param  home  <code>home</code>
      */
     public void setHome(final String home) {
         this.home = home;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for {@link #fs}.
      *
-     * @return  DOCUMENT ME!
+     * @return  file separator
      */
     public String getFileSeperator() {
         return fs;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for {@link #fs}.
      *
-     * @param  fs  DOCUMENT ME!
+     * @param  fs  file seperator
      */
     public void setFileSeperator(final String fs) {
         this.fs = fs;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for {@link #fallBackFileName}.
      *
-     * @return  DOCUMENT ME!
+     * @return  fallBackFileName
      */
     public String getFallBackFileName() {
         return fallBackFileName;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for {@link #fallBackFileName}.
      *
-     * @param  fallBackFileName  DOCUMENT ME!
+     * @param  fallBackFileName  <code>fallBackFileName</code>
      */
     public void setFallBackFileName(final String fallBackFileName) {
         this.fallBackFileName = fallBackFileName;
@@ -778,7 +778,7 @@ public class ConfigurationManager {
     //~ Inner Interfaces -------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * AttrResolver Interface.
      *
      * @version  $Revision$, $Date$
      */
@@ -787,9 +787,9 @@ public class ConfigurationManager {
         //~ Methods ------------------------------------------------------------
 
         /**
-         * DOCUMENT ME!
+         * Getter for Attribute.
          *
-         * @return  DOCUMENT ME!
+         * @return  Attribute
          */
         String getAttr();
     }

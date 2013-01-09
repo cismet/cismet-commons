@@ -57,7 +57,7 @@ public final class Base64 {
      *
      * @return  the base64 encoded input array
      *
-     * @throws  IllegalArgumentException  if the given array is of length <code>null</code>
+     * @throws  IllegalArgumentException  if the given array has length <code>null</code>
      */
     public static byte[] toBase64(final byte[] byteString, final boolean wipeInput) {
         if (byteString == null) {

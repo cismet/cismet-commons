@@ -460,10 +460,10 @@ public class BrowserLauncher {
     }
 
     /**
-     * Attempts to open the default web browser to the gieven URL. In the second attempt he tries to open the url as a
+     * Attempts to open the default web browser to the given URL. In the second attempt he tries to open the url as a
      * file.
      *
-     * @param  url  DOCUMENT ME!
+     * @param  url  url
      */
     public static void openURLorFile(final String url) {
         if (url == null) {
@@ -485,7 +485,7 @@ public class BrowserLauncher {
     }
 
     /**
-     * Attempts to open the default web browser to the given URL.
+     * Attempts to open the given URL with the default web browser.
      *
      * @param   url  The URL to open
      *
@@ -631,34 +631,37 @@ public class BrowserLauncher {
 
     /**
      * Methods required for Mac OS X. The presence of native methods does not cause any problems on other platforms.
+     * //Placeholder
      *
-     * @param   instance   DOCUMENT ME!
-     * @param   signature  DOCUMENT ME!
+     * @param   instance   instance
+     * @param   signature  signature
      *
-     * @return  DOCUMENT ME!
+     * @return  int
      */
     private static native int ICStart(int[] instance, int signature);
 
     /**
-     * DOCUMENT ME!
+     * Methods required for Mac OS X. The presence of native methods does not cause any problems on other platforms.
+     * //Placeholder
      *
-     * @param   instance  DOCUMENT ME!
+     * @param   instance  instance
      *
-     * @return  DOCUMENT ME!
+     * @return  int
      */
     private static native int ICStop(int[] instance);
 
     /**
-     * DOCUMENT ME!
+     * Methods required for Mac OS X. The presence of native methods does not cause any problems on other platforms.
+     * //Placeholder
      *
-     * @param   instance        DOCUMENT ME!
-     * @param   hint            DOCUMENT ME!
-     * @param   data            DOCUMENT ME!
-     * @param   len             DOCUMENT ME!
-     * @param   selectionStart  DOCUMENT ME!
-     * @param   selectionEnd    DOCUMENT ME!
+     * @param   instance        intance
+     * @param   hint            hint
+     * @param   data            data
+     * @param   len             len
+     * @param   selectionStart  selectionStart
+     * @param   selectionEnd    selectiomEnd
      *
-     * @return  DOCUMENT ME!
+     * @return  int
      */
     private static native int ICLaunchURL(int instance,
             byte[] hint,

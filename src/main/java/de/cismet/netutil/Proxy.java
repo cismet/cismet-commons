@@ -62,7 +62,7 @@ public final class Proxy {
     }
 
     /**
-     * Creates a new Proxy object.
+     * Creates a new Proxy object with specified <code>host</code> and <code>port</code>.
      *
      * @param  host  proxyURL
      * @param  port  computerName
@@ -72,7 +72,8 @@ public final class Proxy {
     }
 
     /**
-     * Creates a new Proxy object.
+     * Creates a new Proxy object with specified <code>host</code>, <code>port</code>, <code>username</code> and <code>
+     * password</code>.
      *
      * @param  host      proxyURL
      * @param  port      computerName
@@ -84,7 +85,8 @@ public final class Proxy {
     }
 
     /**
-     * Creates a new Proxy object.
+     * Creates a new Proxy object <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code> and
+     * <code>domain</code>. Additional it can be specified whether the Proxy is enabled or not
      *
      * @param  host      proxyURL
      * @param  port      computerName
@@ -146,7 +148,7 @@ public final class Proxy {
     }
 
     /**
-     * Return as String.
+     * Return the Proxy's Attributes as <code>String.</code>
      *
      * @return  "Proxy: " + <code>host</code> + ":" + <code>port</code> + " | username: " + <code>username</code> +" |
      *          password: " + ((<code>password</code> == <code>null</code>) ? <code>null</code> : "<invisible>") + " |
@@ -344,11 +346,10 @@ public final class Proxy {
     }
 
     /**
-     * main.
+     * main program; used for testing. // NOTE: use cli library if there shall be more (complex) options
      *
      * @param  args  args
      */
-    // NOTE: use cli library if there shall be more (complex) options
     @SuppressWarnings("CallToThreadDumpStack")
     public static void main(final String[] args) {
         try {

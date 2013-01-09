@@ -8,7 +8,14 @@
 package de.cismet.tools;
 
 /**
- * Urlsplitter.
+ * Tool, that detects the following informations in a <code>String</code> url and saves them into single Strings.
+ *
+ * <ul>
+ *   <li>prot_prefix</li>
+ *   <li>server</li>
+ *   <li>path</li>
+ *   <li>object_name</li>
+ * </ul>
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
@@ -25,7 +32,8 @@ public class URLSplitter {
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * Creates a new URLSplitter object.
+     * Creates a new URLSplitter object from the url, detects the prot_prefix, server, path and object_name and saves
+     * these informations into new Strings.
      *
      * @param  url  given url
      */
@@ -139,7 +147,7 @@ public class URLSplitter {
     }
 
     /**
-     * main.
+     * main program. For testing.
      *
      * @param  args  args
      */

@@ -20,9 +20,9 @@ public interface Configurable {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * DOCUMENT ME! Always used after masterConfigure
      *
-     * @param  parent  DOCUMENT ME!
+     * @param  parent  configuration.xml
      */
     void configure(Element parent);
     /**

@@ -259,7 +259,7 @@ public final class FileUtils {
 
     /**
      * Copies the Content of the specified <code>Directory</code>. It uses {@link FilesFilter}. If it is a <code>
-     * File</code>, it copies the File and if it is a <code>Directory</code>, the methode start recursive again with the
+     * File</code>, it copies the File and if it is a <code>Directory</code>, the method start recursive again with the
      * found <code>Directory</code>
      *
      * @param   srcDir     Source Directory

@@ -40,7 +40,7 @@ public class DebugSwitches {
     /**
      * Getter for Instance.
      *
-     * @return  instance
+     * @return  {@link #instance}
      */
     public static DebugSwitches getInstance() {
         if (instance == null) {

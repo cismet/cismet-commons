@@ -18,29 +18,29 @@ public interface ConfigAttrProvider {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Getter for the UserConfig value with specified key.
      *
-     * @param   key  DOCUMENT ME!
+     * @param   key  key, which value is searched
      *
-     * @return  DOCUMENT ME!
+     * @return  value as String
      */
     String getUserConfigAttr(final String key);
 
     /**
-     * DOCUMENT ME!
+     * Getter for the GroupConfig value with specified key.
      *
-     * @param   key  DOCUMENT ME!
+     * @param   key  key, which value is searched
      *
-     * @return  DOCUMENT ME!
+     * @return  value as String
      */
     String getGroupConfigAttr(final String key);
 
     /**
-     * DOCUMENT ME!
+     * Getter for the DomainConfig value with specified key.
      *
-     * @param   key  DOCUMENT ME!
+     * @param   key  key, which value is searched
      *
-     * @return  DOCUMENT ME!
+     * @return  value as String
      */
     String getDomainConfigAttr(final String key);
 }
