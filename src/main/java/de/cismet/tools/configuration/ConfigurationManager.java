@@ -315,7 +315,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * Gets the object from specified ClassPath.
+     * Loads the object from specified ClassPath.
      *
      * @param   classPathUrl  Classpath as Url
      *
@@ -629,7 +629,10 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Writes a new Configuration File into the LocalAbsouluteConfigurationFolder.
+     *
+     * @see  #getLocalAbsoluteConfigurationFolder()
+     * @see  #writeConfiguration(java.lang.String)
      */
     public void writeConfiguration() {
         new File(getLocalAbsoluteConfigurationFolder()).mkdirs();
@@ -637,18 +640,18 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Returns the Url "~/.cismet/"
      *
-     * @return  DOCUMENT ME!
+     * @return  ~/.cismet/
      */
     public String getLocalAbsoluteConfigurationFolder() {
         return home + fs + folder + fs;
     }
 
     /**
-     * DOCUMENT ME!
+     * Writes a Configuration File in specified path.
      *
-     * @param  path  DOCUMENT ME!
+     * @param  path  path
      */
     public void writeConfiguration(final String path) {
         try {
@@ -864,6 +867,11 @@ public class ConfigurationManager {
 
         //~ Methods ------------------------------------------------------------
 
+        /**
+         * DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
         @Override
         public String getAttr() {
             return null;
@@ -891,6 +899,11 @@ public class ConfigurationManager {
 
         //~ Methods ------------------------------------------------------------
 
+        /**
+         * DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
         @Override
         public String getAttr() {
             return provider.getUserConfigAttr(key);
@@ -918,6 +931,11 @@ public class ConfigurationManager {
 
         //~ Methods ------------------------------------------------------------
 
+        /**
+         * DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
         @Override
         public String getAttr() {
             return provider.getGroupConfigAttr(key);
@@ -945,6 +963,11 @@ public class ConfigurationManager {
 
         //~ Methods ------------------------------------------------------------
 
+        /**
+         * DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
         @Override
         public String getAttr() {
             return provider.getDomainConfigAttr(key);

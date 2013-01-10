@@ -20,21 +20,21 @@ public interface Configurable {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME! Always used after masterConfigure
+     * Configures the Local .conf Always used after masterConfigure.
      *
-     * @param  parent  configuration.xml
+     * @param  parent  JDOM root
      */
     void configure(Element parent);
     /**
-     * DOCUMENT ME!
+     * Configures the Server .conf.
      *
-     * @param  parent  DOCUMENT ME!
+     * @param  parent  JDOM root
      */
     void masterConfigure(Element parent);
     /**
-     * DOCUMENT ME!
+     * Gets the JDOM Root for this Configurable.
      *
-     * @return  DOCUMENT ME!
+     * @return  xml-Configuration
      *
      * @throws  NoWriteError  DOCUMENT ME!
      */
