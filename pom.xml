@@ -161,7 +161,7 @@
                 <configuration>
                     <useStandardDocletOptions>false</useStandardDocletOptions>
                     <doclet>Doclet.ListClass</doclet>
-                    <docletPath>C:\Users\tmuesel\Gitwork\JavaDoc\dist\JavaDoc.jar</docletPath>
+                    <docletPath>C:\Users\tmuesel\Gitwork\JavaDoc Doclet Creator\dist\JavaDoc.jar</docletPath>
                     <docfilessubdirs>true</docfilessubdirs>
                     <javadocDirectory>${basedir}/src/main/javadoc</javadocDirectory>
                     <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
