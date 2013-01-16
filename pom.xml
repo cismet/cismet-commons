@@ -154,6 +154,19 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <useStandardDocletOptions>false</useStandardDocletOptions>
+                    <doclet>Doclet.ListClass</doclet>
+                    <docletPath>C:\Users\tmuesel\Gitwork\JavaDoc\dist\JavaDoc.jar</docletPath>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <javadocDirectory>${basedir}/src/main/javadoc</javadocDirectory>
+                    <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                </configuration>
+            </plugin>
         </plugins>
         <finalName>cismetCommons</finalName>
     </build>
