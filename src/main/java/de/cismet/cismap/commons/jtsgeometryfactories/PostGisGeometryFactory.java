@@ -52,7 +52,7 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * Creates new <code>JtsPoint</code> by using <code>point.</code>
+     * Creates new <code>JtsPoint</code> by using <code>point</code>.
      *
      * @param   point            <code>point</code>
      * @param   geometryFactory  <code>geometryFactory</code>
@@ -64,7 +64,7 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * Creates new <code>JtsLineString</code> by using <code>lineString.</code>
+     * Creates new <code>JtsLineString</code> by using <code>lineString</code>.
      *
      * @param   lineString       <code>lineString</code>
      * @param   geometryFactory  <code>geometryFactory</code>
@@ -81,7 +81,7 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * Creates new <code>JtsLinearRing</code> by using <code>linearRing.</code>
+     * Creates new <code>JtsLinearRing</code> by using <code>linearRing</code>.
      *
      * @param   linearRing       <code>linearRing</code>
      * @param   geometryFactory  <code>geometryFactory</code>
@@ -103,7 +103,7 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * Creates new <code>JtsPolygon</code> by using <code>polygon.</code>
+     * Creates new <code>JtsPolygon</code> by using <code>polygon</code>.
      *
      * @param   polygon          <code>polygon</code>
      * @param   geometryFactory  <code>geometryFactory</code>
@@ -130,7 +130,7 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * Creates new <code>JtsMultiPoint</code> by using <code>MultiPoint.</code>
+     * Creates new <code>JtsMultiPoint</code> by using <code>MultiPoint</code>.
      *
      * @param   multiPoint       <code>MultiPoint</code>
      * @param   geometryFactory  <code>geometryFactory</code>
@@ -155,7 +155,7 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * Creates new <code>JtsMultiLineString</code> by using <code>MultiLineString.</code>
+     * Creates new <code>JtsMultiLineString</code> by using <code>MultiLineString</code>.
      *
      * @param   multiLineString  <code>MultiLineString</code>
      * @param   geometryFactory  <code>geometryFactory</code>
@@ -180,7 +180,7 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * Creates new <code>JtsMultiPolygon</code> by using <code>MultiPolygon.</code>
+     * Creates new <code>JtsMultiPolygon</code> by using <code>MultiPolygon</code>.
      *
      * @param   multiPolygon     <code>MultiPolygon</code>!
      * @param   geometryFactory  <code>geometryFactory</code>
@@ -205,7 +205,7 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * Creates new <code>JtsGeometryCollection</code> by using <code>GeometryCollection.</code>
+     * Creates new <code>JtsGeometryCollection</code> by using <code>GeometryCollection</code>.
      *
      * @param   geometryCollection  <code>GeometryCollection</code>
      * @param   geometryFactory     <code>geometryFactory</code>
@@ -264,7 +264,7 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * Creates new <code>JtsGeometry</code> by using <code>Geometry.</code>
+     * Creates new <code>JtsGeometry</code> by using <code>Geometry</code>.
      *
      * @param   geom  <code>Geometry</code>
      *

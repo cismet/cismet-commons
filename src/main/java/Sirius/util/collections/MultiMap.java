@@ -102,7 +102,7 @@ public class MultiMap extends HashMap {
     }
 
     /**
-     * Removes specified <code>value</code> associeated with specified <code>key.</code>
+     * Removes specified <code>value</code> associeated with specified <code>key</code>.
      *
      * @param   key    key whose mapping is to be removed
      * @param   value  mapping to be removed

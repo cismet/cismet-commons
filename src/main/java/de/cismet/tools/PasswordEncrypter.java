@@ -527,7 +527,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }
 
     /**
-     * Applies <code>Cipher.</code>
+     * Applies <code>Cipher</code>.
      *
      * @param   bytes  string
      * @param   mode   mode
@@ -872,7 +872,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
         /**
          * Returns the following <code>Component</code> of the specified <code>Component</code> If the specified <code>
-         * Component</code> is the Last, Returns the First <code>Component.</code>
+         * Component</code> is the Last, Returns the First <code>Component</code>.
          *
          * @param   aContainer  <code>Container</code>
          * @param   aComponent  <code>Component</code>
@@ -888,7 +888,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
         /**
          * Returns the previous <code>Component</code> of the specified <code>Component</code> If the specified <code>
-         * Component</code> is the First, Returns the Last <code>Component.</code>
+         * Component</code> is the First, Returns the Last <code>Component</code>.
          *
          * @param   aContainer  <code>Container</code>
          * @param   aComponent  <code>Component</code>
@@ -906,7 +906,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         }
 
         /**
-         * Returns the First <code>Component.</code>
+         * Returns the First <code>Component</code>.
          *
          * @param   aContainer  <code>Container</code>
          *
@@ -918,7 +918,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         }
 
         /**
-         * Returns the Last <code>Component.</code>
+         * Returns the Last <code>Component</code>.
          *
          * @param   aContainer  <code>Container</code>
          *
@@ -930,7 +930,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         }
 
         /**
-         * Returns the First <code>Component.</code>
+         * Returns the First <code>Component</code>.
          *
          * @param   aContainer  <code>Container</code>
          *
@@ -975,7 +975,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
         /**
          * Gets the Focus on <code>txaCode</code> and saves the Start to <code>selStart</code> and the End to <code>
-         * selEnd.</code>
+         * selEnd</code>.
          *
          * @param  e  Event
          */

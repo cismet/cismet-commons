@@ -31,7 +31,7 @@ public final class StringTools {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Deletes Whitspaces in the <code>String.</code>
+     * Deletes Whitspaces in the <code>String</code>.
      *
      * @param   string  <code>String</code>, which is going to get cleaned
      *

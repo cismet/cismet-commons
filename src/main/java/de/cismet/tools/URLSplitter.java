@@ -93,7 +93,7 @@ public class URLSplitter {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Getter for <code>prot_prefix.</code>
+     * Getter for <code>prot_prefix</code>.
      *
      * @return  <code>prot_prefix</code>
      */
@@ -102,7 +102,7 @@ public class URLSplitter {
     }
 
     /**
-     * Getter for <code>server.</code>
+     * Getter for <code>server</code>.
      *
      * @return  <code>server</code>
      */
@@ -111,7 +111,7 @@ public class URLSplitter {
     }
 
     /**
-     * Getter for <code>path.</code>
+     * Getter for <code>path</code>.
      *
      * @return  <code>path</code>
      */
@@ -120,7 +120,7 @@ public class URLSplitter {
     }
 
     /**
-     * Getter for <code>object_name.</code>
+     * Getter for <code>object_name</code>.
      *
      * @return  <code>object_name</code>
      */

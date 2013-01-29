@@ -79,7 +79,7 @@ public class CExtContext {
     }
 
     /**
-     * Get the associated <code>value</code> for the specified <code>key.</code>
+     * Get the associated <code>value</code> for the specified <code>key</code>.
      *
      * @param   key  the key, whose mapping is searched
      *

@@ -112,7 +112,7 @@ public final class Proxy {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Getter for <code>host.</code>
+     * Getter for <code>host</code>.
      *
      * @return  <code>host</code>
      */
@@ -130,7 +130,7 @@ public final class Proxy {
     }
 
     /**
-     * Getter for <code>port.</code>
+     * Getter for <code>port</code>.
      *
      * @return  <code>port</code>
      */
@@ -139,7 +139,7 @@ public final class Proxy {
     }
 
     /**
-     * Setter for <code>port.</code>
+     * Setter for <code>port</code>.
      *
      * @param  port  <code>port</code>
      */
@@ -148,7 +148,7 @@ public final class Proxy {
     }
 
     /**
-     * Return the Proxy's Attributes as <code>String.</code>
+     * Return the Proxy's Attributes as <code>String</code>.
      *
      * @return  "Proxy: " + <code>host</code> + ":" + <code>port</code> + " | username: " + <code>username</code> +" |
      *          password: " + ((<code>password</code> == <code>null</code>) ? <code>null</code> : "<invisible>") + " |
@@ -161,7 +161,7 @@ public final class Proxy {
     }
 
     /**
-     * Getter for <code>domain.</code>
+     * Getter for <code>domain</code>.
      *
      * @return  <code>domain</code>
      */
@@ -170,7 +170,7 @@ public final class Proxy {
     }
 
     /**
-     * Setter for <code>domain.</code>
+     * Setter for <code>domain</code>.
      *
      * @param  domain  <code>domain</code>
      */
@@ -179,7 +179,7 @@ public final class Proxy {
     }
 
     /**
-     * Getter for <code>password.</code>
+     * Getter for <code>password</code>.
      *
      * @return  <code>password</code>
      */
@@ -188,7 +188,7 @@ public final class Proxy {
     }
 
     /**
-     * Setter for <code>password.</code>
+     * Setter for <code>password</code>.
      *
      * @param  password  <code>password</code>
      */
@@ -197,7 +197,7 @@ public final class Proxy {
     }
 
     /**
-     * Getter for <code>username.</code>
+     * Getter for <code>username</code>.
      *
      * @return  <code>username</code>
      */
@@ -206,7 +206,7 @@ public final class Proxy {
     }
 
     /**
-     * Setter for <code>username.</code>
+     * Setter for <code>username</code>.
      *
      * @param  username  <code>username</code>
      */

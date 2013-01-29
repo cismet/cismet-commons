@@ -37,7 +37,7 @@ public final class RESTRemoteControlMethodRegistry {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * caches RemoteMethods to <code>portMapping.</code>
+     * caches RemoteMethods to <code>portMapping</code>.
      *
      * @param   defaultPort  default port
      *

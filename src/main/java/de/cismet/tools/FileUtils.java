@@ -78,7 +78,7 @@ public final class FileUtils {
     }
 
     /**
-     * Getter for <code>MetaEntries</code> of the specified <code>Meta.</code>
+     * Getter for <code>MetaEntries</code> of the specified <code>Meta</code>.
      *
      * @param   mode  <code>Metanumber</code>
      *
@@ -153,7 +153,7 @@ public final class FileUtils {
     }
 
     /**
-     * Getter for the name of the specified <code>File.</code>
+     * Getter for the name of the specified <code>File</code>.
      *
      * @param   file  given File
      *
@@ -170,7 +170,7 @@ public final class FileUtils {
     }
 
     /**
-     * Getter for the Filestype of the specified <code>File.</code>
+     * Getter for the Filestype of the specified <code>File</code>.
      *
      * @param   file  given file
      *
@@ -201,7 +201,7 @@ public final class FileUtils {
 
     /**
      * Tests whether the specified <code>Directory</code> only contains <code>MetaFiles</code> of the specified <code>
-     * OS.</code>
+     * OS</code>.
      *
      * @param   check  <code>Directory</code>, which is going to get tested.
      * @param   mode   <code>Os</code>
@@ -476,7 +476,7 @@ public final class FileUtils {
         //~ Methods ------------------------------------------------------------
 
         /**
-         * Tests whether the <code>File</code> is a <code>Directory</code> or a <code>.jar File.</code>
+         * Tests whether the <code>File</code> is a <code>Directory</code> or a <code>.jar File</code>.
          *
          * @param   file  given <code>File</code>
          *

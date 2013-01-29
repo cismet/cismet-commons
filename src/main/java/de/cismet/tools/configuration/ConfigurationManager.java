@@ -111,7 +111,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * Getter for <code>fileName.</code>
+     * Getter for <code>fileName</code>.
      *
      * @return  {@link #fileName}
      */
@@ -120,7 +120,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * Setter for <code>fileName.</code>
+     * Setter for <code>fileName</code>.
      *
      * @param  fileName {@link #fileName}
      */
@@ -129,7 +129,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * Getter for <code>folder.</code>
+     * Getter for <code>folder</code>.
      *
      * @return  {@link #folder}
      */
@@ -138,7 +138,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * Setter for <code>folder.</code>
+     * Setter for <code>folder</code>.
      *
      * @param  folder {@link #folder}
      */

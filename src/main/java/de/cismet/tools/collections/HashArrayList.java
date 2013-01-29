@@ -143,7 +143,7 @@ public class HashArrayList<E> extends ArrayList<E> {
     }
 
     /**
-     * Clones the <code>HashArrayList.</code>
+     * Clones the <code>HashArrayList</code>.
      *
      * @return  the cloned <code>HashArrayList</code>
      */

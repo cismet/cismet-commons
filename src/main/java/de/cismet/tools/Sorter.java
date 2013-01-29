@@ -168,7 +168,7 @@ public class Sorter {
 //----------------------------------------------------------------------------------------------
 
     /**
-     * Swaps two Elements of the specified <code>Array.</code>
+     * Swaps two Elements of the specified <code>Array</code>.
      *
      * @param  array  <code>Array</code>, which is going to get sorted
      * @param  i      Location of Element one

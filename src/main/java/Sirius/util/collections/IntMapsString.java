@@ -57,7 +57,7 @@ public class IntMapsString extends java.util.Hashtable {
     } // end add
 
     /**
-     * Getter for the Value as a <code>String.</code>
+     * Getter for the Value as a <code>String</code>.
      *
      * @param   id  key
      *

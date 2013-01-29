@@ -54,7 +54,7 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * Returns the <code>value</code> for the given <code>key.</code>
+     * Returns the <code>value</code> for the given <code>key</code>.
      *
      * @param   key  The key, whose value is searched
      *
@@ -236,7 +236,7 @@ public class LinkedProperties extends Properties {
     }
 
     /**
-     * Removes specified <code>key.</code>
+     * Removes specified <code>key</code>.
      *
      * @param   key  <code>key</code>
      *
