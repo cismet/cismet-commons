@@ -34,11 +34,11 @@ public interface PropertyEqualsProvider {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * PropertyEqualsProvider Providers, that the Properties in the <code>Object</code> are Equal.
+     * PropertyEqualsProvider provids, that the Properties in the <code>Object</code> are Equal.
      *
      * @param   o  <code>Object</code>
      *
-     * @return  DOCUMENT ME! boolean
+     * @return  True, if the Properties are equal
      */
     boolean propertyEquals(Object o);
 }
