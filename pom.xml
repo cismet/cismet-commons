@@ -159,12 +159,9 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
-                    <useStandardDocletOptions>false</useStandardDocletOptions>
-                    <doclet>Doclet.ListClass</doclet>
-                    <docletPath>C:\Users\tmuesel\Gitwork\JavaDoc Doclet Creator\dist\JavaDoc.jar</docletPath>
-                    <docfilessubdirs>true</docfilessubdirs>
-                    <javadocDirectory>${basedir}/src/main/javadoc</javadocDirectory>
-                    <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                    <docletPath>${basedir}/cismet_Javadoc.jar</docletPath>
+                    <doclet>de.cismet.javadoc.doclets.cismetDoclet</doclet>
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
                 </configuration>
             </plugin>
         </plugins>
