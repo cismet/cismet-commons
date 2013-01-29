@@ -30,12 +30,13 @@ public final class FileUtils {
 
     //~ Static fields/initializers ---------------------------------------------
 
+    /** integer for Mac_Meta. */
     public static final int MAC_META = 1;
-
+    /** integer for Unix_Meta. */
     public static final int UNIX_META = 2;
-
+    /** integer for Windows_Meta. */
     public static final int WINDOWS_META = 3;
-
+    /** integer for ALL_Meta. */
     public static final int ALL_META = 4;
 
     private static final String[] MAC_META_ENTRIES = { ".DS_Store" }; // NOI18N

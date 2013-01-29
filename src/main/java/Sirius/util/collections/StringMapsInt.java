@@ -63,7 +63,7 @@ public class StringMapsInt extends java.util.Hashtable {
      *
      * @return  IntValue
      *
-     * @throws  Exception                       DOCUMENT ME!
+     * @throws  Exception                       throws Exeption if anything went wrong
      * @throws  java.lang.NullPointerException  "Entry is not a Integer" or "No entry"
      */
     public int getIntValue(final String descriptor) throws Exception {

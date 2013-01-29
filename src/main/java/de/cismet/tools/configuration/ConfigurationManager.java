@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * DOCUMENT ME!
+ * Configuaration Manager.
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
@@ -147,7 +147,8 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Configures all <code>Configurable</code> in <code>configuables</code>; Uses the deafault Path to the local root
+     * Object.
      *
      * @see  #configure(de.cismet.tools.configuration.Configurable)
      */
@@ -156,9 +157,10 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Configures all <code>Configurable</code> in <code>configuables</code>; Uses a specified Path to the local root
+     * Object.
      *
-     * @param  path  DOCUMENT ME!
+     * @param  path  specified path
      *
      * @see    #configure(de.cismet.tools.configuration.Configurable, java.lang.String)
      */
@@ -167,9 +169,10 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Configures the specified <code>Configurable</code>; Uses the default Path to the local root Object.
      *
-     * @param  singleConfig  DOCUMENT ME!
+     * @param  singleConfig  specified <code>Configurable</code>; if ==null: uses all <code>Configurable</code> in
+     *                       <code>configurables</code>.
      *
      * @see    #configure(de.cismet.tools.configuration.Configurable, java.lang.String)
      */
@@ -178,10 +181,11 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Configures the specified <code>Configurable</code>; Uses a specified path to the local Object.
      *
-     * @param  singleConfig  DOCUMENT ME!
-     * @param  path          DOCUMENT ME!
+     * @param  singleConfig  specified <code>Configurable</code>; if ==null: uses all <code>Configurable</code> in
+     *                       <code>configurables</code>.
+     * @param  path          specified <code>path</code> to the local root Object.
      *
      * @see    #pureConfigure(de.cismet.tools.configuration.Configurable, org.jdom.Element, org.jdom.Element)
      */
@@ -222,7 +226,8 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Configures all <code>Configurable</code> in <code>configurables</code>; Uses the Classpath to the local root
+     * Object.
      *
      * @see  #configureFromClasspath(de.cismet.tools.configuration.Configurable)
      */
@@ -231,9 +236,10 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Configures the specified <code>Configurable</code>; Uses the Classpath to the local root Object.
      *
-     * @param  singleConfig  DOCUMENT ME!
+     * @param  singleConfig  specified <code>Configurable</code>; if ==null uses all <code>Configurable</code> in <code>
+     *                       configurables</code>.
      *
      * @see    #pureConfigure(de.cismet.tools.configuration.Configurable, org.jdom.Element, org.jdom.Element)
      */
@@ -243,12 +249,13 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Configures the specified <code>Configurable</code>; Uses the Classpath to the local root Object.
      *
-     * @param   url           DOCUMENT ME!
-     * @param   singleConfig  DOCUMENT ME!
+     * @param   url           path
+     * @param   singleConfig  singleConfig specified <code>Configurable</code>; if ==null uses all <code>
+     *                        Configurable</code> in <code>configurables</code>.
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws  Exception  Throws Excpetion if anything went wrong.
      *
      * @see     #pureConfigure(de.cismet.tools.configuration.Configurable, org.jdom.Element, org.jdom.Element)
      */
@@ -321,8 +328,8 @@ public class ConfigurationManager {
      *
      * @return  <code>Object</code>
      *
-     * @throws  JDOMException  DOCUMENT ME!
-     * @throws  IOException    DOCUMENT ME!
+     * @throws  JDOMException  Error while building with JDOM
+     * @throws  IOException    <code>IOException</code>
      */
     private Element getObjectFromClassPath(final String classPathUrl) throws JDOMException, IOException {
         final SAXBuilder builder = new SAXBuilder(false);
@@ -332,11 +339,13 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Configures whether all Elements of the <code>configurables</code> if the given <code>Configurable</code> is null,
+     * or the specified <code>Configurable</code>.
      *
-     * @param  singleConfig      DOCUMENT ME!
-     * @param  rootObject        DOCUMENT ME!
-     * @param  serverRootObject  DOCUMENT ME!
+     * @param  singleConfig      if ==null all <code>Configurable <code>in <code>configurables</code> will be used, if
+     *                           !=null the specified <code>Configurable</code> will be used</code></code>
+     * @param  rootObject        local root Object
+     * @param  serverRootObject  server root Object
      */
     private void pureConfigure(final Configurable singleConfig,
             final Element rootObject,
@@ -362,13 +371,13 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Preprocesses the given Element. Resolves the Element with the <code>configAttrProvider</code>
      *
-     * @param   e  DOCUMENT ME!
+     * @param   e  Element
      *
-     * @return  DOCUMENT ME!
+     * @return  resolved Element
      *
-     * @throws  IllegalStateException  DOCUMENT ME!
+     * @throws  IllegalStateException  Error while resolving.
      */
     private Element preprocessElement(final Element e) {
         if (e == null) {
@@ -409,12 +418,12 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Resolves the given <code>Element</code> with the given <code>AttrResolver</code>.
      *
-     * @param   e         DOCUMENT ME!
-     * @param   resolver  DOCUMENT ME!
+     * @param   e         Element to be resolved
+     * @param   resolver  the AttrResolver
      *
-     * @return  DOCUMENT ME!
+     * @return  resolved Element
      */
     private Set<Element> resolveElement(final Element e, final AttrResolver resolver) {
         Set<Element> toResolve = new LinkedHashSet<Element>();
@@ -800,7 +809,7 @@ public class ConfigurationManager {
     //~ Inner Classes ----------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * AttrResolver Implementation.
      *
      * @version  $Revision$, $Date$
      */
@@ -815,7 +824,7 @@ public class ConfigurationManager {
         /**
          * Creates a new DefaultAttrResolver object.
          *
-         * @param  provider  DOCUMENT ME!
+         * @param  provider  ConfigAttrProvider
          */
         public DefaultAttrResolver(final ConfigAttrProvider provider) {
             this.provider = provider;
@@ -823,7 +832,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Extended <code>DefaultAttrResolver</code> for Keys.
      *
      * @version  $Revision$, $Date$
      */
@@ -838,8 +847,8 @@ public class ConfigurationManager {
         /**
          * Creates a new KeyAttrResolver object.
          *
-         * @param  key       DOCUMENT ME!
-         * @param  provider  DOCUMENT ME!
+         * @param  key       the given key
+         * @param  provider  the given ConfigAttrProvider
          */
         public KeyAttrResolver(final String key, final ConfigAttrProvider provider) {
             super(provider);
@@ -848,7 +857,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Extended <code>DefaultAttrResolver</code> for Entrys.
      *
      * @version  $Revision$, $Date$
      */
@@ -859,7 +868,7 @@ public class ConfigurationManager {
         /**
          * Creates a new EntryResolver object.
          *
-         * @param  provider  DOCUMENT ME!
+         * @param  provider  given ConfigAttrProvider
          */
         public EntryResolver(final ConfigAttrProvider provider) {
             super(provider);
@@ -868,9 +877,9 @@ public class ConfigurationManager {
         //~ Methods ------------------------------------------------------------
 
         /**
-         * DOCUMENT ME!
+         * No Attributes.
          *
-         * @return  DOCUMENT ME!
+         * @return  <code>null</code>
          */
         @Override
         public String getAttr() {
@@ -879,7 +888,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Extended KeyAttrResolver for Users.
      *
      * @version  $Revision$, $Date$
      */
@@ -890,8 +899,8 @@ public class ConfigurationManager {
         /**
          * Creates a new UserAttrResolver object.
          *
-         * @param  key       DOCUMENT ME!
-         * @param  provider  DOCUMENT ME!
+         * @param  key       given key
+         * @param  provider  given ConfigAttrProvider
          */
         public UserAttrResolver(final String key, final ConfigAttrProvider provider) {
             super(key, provider);
@@ -900,9 +909,9 @@ public class ConfigurationManager {
         //~ Methods ------------------------------------------------------------
 
         /**
-         * DOCUMENT ME!
+         * Getter for UserConfigAttr.
          *
-         * @return  DOCUMENT ME!
+         * @return  userConfigAttr
          */
         @Override
         public String getAttr() {
@@ -911,7 +920,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Extended KeyAttrResolver for Groups.
      *
      * @version  $Revision$, $Date$
      */
@@ -922,8 +931,8 @@ public class ConfigurationManager {
         /**
          * Creates a new GroupAttrResolver object.
          *
-         * @param  key       DOCUMENT ME!
-         * @param  provider  DOCUMENT ME!
+         * @param  key       given key
+         * @param  provider  given ConfigAttrProvider
          */
         public GroupAttrResolver(final String key, final ConfigAttrProvider provider) {
             super(key, provider);
@@ -932,9 +941,9 @@ public class ConfigurationManager {
         //~ Methods ------------------------------------------------------------
 
         /**
-         * DOCUMENT ME!
+         * Getter for GroupConfigAttr.
          *
-         * @return  DOCUMENT ME!
+         * @return  GroupConfigAttr
          */
         @Override
         public String getAttr() {
@@ -943,7 +952,7 @@ public class ConfigurationManager {
     }
 
     /**
-     * DOCUMENT ME!
+     * Extended KeyAttrResolver for Domains.
      *
      * @version  $Revision$, $Date$
      */
@@ -954,8 +963,8 @@ public class ConfigurationManager {
         /**
          * Creates a new DomainAttrResolver object.
          *
-         * @param  key       DOCUMENT ME!
-         * @param  provider  DOCUMENT ME!
+         * @param  key       given key
+         * @param  provider  given ConfigAttrProvider
          */
         public DomainAttrResolver(final String key, final ConfigAttrProvider provider) {
             super(key, provider);
@@ -964,9 +973,9 @@ public class ConfigurationManager {
         //~ Methods ------------------------------------------------------------
 
         /**
-         * DOCUMENT ME!
+         * Getter for DomainConfigAttr.
          *
-         * @return  DOCUMENT ME!
+         * @return  DomainConfigAttr
          */
         @Override
         public String getAttr() {

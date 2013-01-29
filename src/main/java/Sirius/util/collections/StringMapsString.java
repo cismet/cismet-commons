@@ -78,7 +78,7 @@ public class StringMapsString extends java.util.Hashtable {
      *
      * @return  StringValue
      *
-     * @throws  Exception                       DOCUMENT ME!
+     * @throws  Exception                       throws Exeption if anything went wrong
      * @throws  java.lang.NullPointerException  "Entry is no String" or "No Entry"
      */
     public String getStringValue(final String descriptor) throws Exception {

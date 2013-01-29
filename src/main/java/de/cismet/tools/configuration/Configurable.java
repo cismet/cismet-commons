@@ -20,13 +20,13 @@ public interface Configurable {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Configures the Local .conf Always used after masterConfigure.
+     * Configures the Local configuration.xml Always used after masterConfigure.
      *
      * @param  parent  JDOM root
      */
     void configure(Element parent);
     /**
-     * Configures the Server .conf.
+     * Configures the Server configuration.xml.
      *
      * @param  parent  JDOM root
      */
@@ -34,9 +34,9 @@ public interface Configurable {
     /**
      * Gets the JDOM Root for this Configurable.
      *
-     * @return  xml-Configuration
+     * @return  Configuration
      *
-     * @throws  NoWriteError  DOCUMENT ME!
+     * @throws  NoWriteError  throws NoWriteError if anything went wrong
      */
     Element getConfiguration() throws NoWriteError;
 }

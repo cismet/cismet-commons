@@ -489,7 +489,7 @@ public class BrowserLauncher {
      *
      * @param   url  The URL to open
      *
-     * @throws  Exception    DOCUMENT ME!
+     * @throws  Exception    throws Exeption if anything went wrong
      * @throws  IOException
      *                       <ul>
      *                         <li>If the web browser could not be located or does not run</li>

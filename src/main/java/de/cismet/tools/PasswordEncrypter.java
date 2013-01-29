@@ -303,7 +303,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      *
      * @param   args  the command line arguments
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws  Exception  throws Exeption if anything went wrong
      */
     public static void main(final String[] args) throws Exception {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -327,7 +327,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      *
      * @return  Return decrypted code or <code>null</code> if code was set to <code>null</code>
      *
-     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     * @throws  PasswordEncrypterException  throws PasswordEncrypterExeption if anything went wrong
      */
     @Deprecated
     public static String decryptString(String code) throws PasswordEncrypterException {
@@ -347,7 +347,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      *
      * @return  encrypted <code>String</code>
      *
-     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     * @throws  PasswordEncrypterException  throws PasswordEncrypterExeption if anything went wrong
      */
     @Deprecated
     public static String encryptString(final String pwd) throws PasswordEncrypterException {
@@ -772,7 +772,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      *
      * @return  the value of the property in a <code>byte[]</code>
      *
-     * @throws  PasswordEncrypterException  DOCUMENT ME!
+     * @throws  PasswordEncrypterException  throws PasswordEncrypterExeption if anything went wrong
      */
     public static byte[] safeRead(final InputStream propertyStream, final char[] property)
             throws PasswordEncrypterException {

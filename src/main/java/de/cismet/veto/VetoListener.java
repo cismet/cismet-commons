@@ -24,7 +24,7 @@ public interface VetoListener {
     /**
      * throws Veto Exception.
      *
-     * @throws  VetoException  DOCUMENT ME!
+     * @throws  VetoException  Veto Exception.
      */
     void veto() throws VetoException;
 }

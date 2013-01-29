@@ -534,7 +534,7 @@ public class Pnt {
      *
      * @return  the circumcenter (a Pnt) of simplex
      *
-     * @throws  IllegalArgumentException  DOCUMENT ME!
+     * @throws  IllegalArgumentException  Dimension does not match
      */
     public static Pnt circumcenter(final Pnt[] simplex) {
         final int dim = simplex[0].dimension();
@@ -557,7 +557,7 @@ public class Pnt {
     /**
      * Main program (used for testing).
      *
-     * @param  args  DOCUMENT ME!
+     * @param  args  Arguments
      */
     public static void main(final String[] args) {
         final Pnt p = new Pnt(1, 2, 3);
