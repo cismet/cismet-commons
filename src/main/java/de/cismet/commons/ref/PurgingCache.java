@@ -25,7 +25,7 @@ import de.cismet.tools.Calculator;
  * @author   martin.scholl@cismet.de
  * @version  $Revision$, $Date$
  */
-// NOTE: we do a separate implementation (not using the CalculationCache) as we don't want the users of this 
+// NOTE: we do a separate implementation (not using the CalculationCache) as we don't want the users of this
 // implementation to be confronted with changed behaviour
 public final class PurgingCache<K, V> {
 
@@ -100,32 +100,38 @@ public final class PurgingCache<K, V> {
      * @throws  CacheException  DOCUMENT ME!
      */
     public V get(final K key) {
-        final Lock rLock = cacheLock.readLock();
-        rLock.lock();
+        Lock lock = cacheLock.readLock();
+        lock.lock();
 
         try {
-            final Reference<V> ref = cache.get(key);
+            Reference<V> ref = cache.get(key);
 
-            V value;
-            if (ref == null) {
-                value = null;
-            } else {
-                value = ref.get();
-            }
+            V value = (ref == null) ? null : ref.get();
 
             if (value == null) {
-                try {
-                    value = initialiser.calculate(key);
-                } catch (final Exception ex) {
-                    throw new CacheException("cannot compute value for key: " + key, ex); // NOI18N
-                }
+                // lock upgrade
+                lock.unlock();
+                lock = cacheLock.writeLock();
+                lock.lock();
 
-                cache.put(key, new TimedSoftReference<V>(value, valuePurgeInterval));
+                // maybe another thread accomplished to do the initialisation in the meantime
+                ref = cache.get(key);
+                value = (ref == null) ? null : ref.get();
+
+                if (value == null) {
+                    try {
+                        value = initialiser.calculate(key);
+                    } catch (final Exception ex) {
+                        throw new CacheException("cannot compute value for key: " + key, ex); // NOI18N
+                    }
+
+                    cache.put(key, new TimedSoftReference<V>(value, valuePurgeInterval));
+                }
             }
 
             return value;
         } finally {
-            rLock.unlock();
+            lock.unlock();
         }
     }
 
