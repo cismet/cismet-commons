@@ -10,8 +10,8 @@ package de.cismet.commons.ref;
 import java.lang.ref.Reference;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
@@ -152,8 +152,10 @@ public final class PurgingCache<K, V> {
     public void setKeyPurgeInterval(final long keyPurgeInterval) {
         this.keyPurgeInterval = keyPurgeInterval;
 
-        // we don't care about the result
-        purgeTask.cancel();
+        if (purgeTask != null) {
+            // we don't care about the result
+            purgeTask.cancel();
+        }
 
         purgeTask = new TimerTask() {
 
@@ -192,11 +194,12 @@ public final class PurgingCache<K, V> {
         wLock.lock();
 
         try {
-            final Set<K> keyset = cache.keySet();
-            for (final K key : keyset) {
+            final Iterator<K> it = cache.keySet().iterator();
+            while (it.hasNext()) {
+                final K key = it.next();
                 final Reference<V> ref = cache.get(key);
                 if ((ref == null) || (ref.get() == null)) {
-                    keyset.remove(key);
+                    it.remove();
                 }
             }
         } finally {
