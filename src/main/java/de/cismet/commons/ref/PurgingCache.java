@@ -162,7 +162,9 @@ public final class PurgingCache<K, V> {
      * @see     {@link #setKeyPurgeInterval(long)}
      */
     public long getKeyPurgeInterval() {
-        return keyPurgeInterval;
+        synchronized (purgeTimer) {
+            return keyPurgeInterval;
+        }
     }
 
     /**
@@ -171,26 +173,28 @@ public final class PurgingCache<K, V> {
      * in <code>keyPurgeInterval</code> milliseconds which means that any purge action that should have taken place is
      * canceled. The value is expected to be in milliseconds. Any value below or equal to <code>0</code> is ignored.
      *
-     * @param  keyPurgeInterval  the time in milliseconds that lies between to purge actions
+     * @param  keyPurgeInterval  the time in milliseconds that lies between two purge actions
      */
     public void setKeyPurgeInterval(final long keyPurgeInterval) {
         if (keyPurgeInterval > 0) {
-            this.keyPurgeInterval = keyPurgeInterval;
+            synchronized (purgeTimer) {
+                this.keyPurgeInterval = keyPurgeInterval;
 
-            if (purgeTask != null) {
-                // we don't care about the result
-                purgeTask.cancel();
+                if (purgeTask != null) {
+                    // we don't care about the result
+                    purgeTask.cancel();
+                }
+
+                purgeTask = new TimerTask() {
+
+                        @Override
+                        public void run() {
+                            purgeCache();
+                        }
+                    };
+
+                purgeTimer.scheduleAtFixedRate(purgeTask, keyPurgeInterval, keyPurgeInterval);
             }
-
-            purgeTask = new TimerTask() {
-
-                    @Override
-                    public void run() {
-                        purgeCache();
-                    }
-                };
-
-            purgeTimer.scheduleAtFixedRate(purgeTask, keyPurgeInterval, keyPurgeInterval);
         }
     }
 
