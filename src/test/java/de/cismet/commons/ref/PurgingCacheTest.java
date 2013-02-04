@@ -259,6 +259,11 @@ public class PurgingCacheTest {
         assertEquals(1, ((HashMap)cacheField.get(pc)).size());
         Thread.currentThread().sleep(300);
         assertEquals(0, ((HashMap)cacheField.get(pc)).size());
+        
+        pc.setKeyPurgeInterval(0);
+        assertEquals(800, pc.getKeyPurgeInterval());
+        pc.setKeyPurgeInterval(-100);
+        assertEquals(800, pc.getKeyPurgeInterval());
     }
 
     /**
@@ -312,5 +317,10 @@ public class PurgingCacheTest {
         Thread.currentThread().sleep(200);
         o1 = pc.get("1");
         assertEquals(4, initCalls);
+        
+        pc.setValuePurgeInterval(0);
+        assertEquals(100, pc.getValuePurgeInterval());
+        pc.setValuePurgeInterval(-100);
+        assertEquals(100, pc.getValuePurgeInterval());
     }
 }

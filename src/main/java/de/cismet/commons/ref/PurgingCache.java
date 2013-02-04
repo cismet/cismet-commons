@@ -150,22 +150,24 @@ public final class PurgingCache<K, V> {
      * @param  keyPurgeInterval  DOCUMENT ME!
      */
     public void setKeyPurgeInterval(final long keyPurgeInterval) {
-        this.keyPurgeInterval = keyPurgeInterval;
+        if (keyPurgeInterval > 0) {
+            this.keyPurgeInterval = keyPurgeInterval;
 
-        if (purgeTask != null) {
-            // we don't care about the result
-            purgeTask.cancel();
+            if (purgeTask != null) {
+                // we don't care about the result
+                purgeTask.cancel();
+            }
+
+            purgeTask = new TimerTask() {
+
+                    @Override
+                    public void run() {
+                        purgeCache();
+                    }
+                };
+
+            purgeTimer.scheduleAtFixedRate(purgeTask, keyPurgeInterval, keyPurgeInterval);
         }
-
-        purgeTask = new TimerTask() {
-
-                @Override
-                public void run() {
-                    purgeCache();
-                }
-            };
-
-        purgeTimer.scheduleAtFixedRate(purgeTask, keyPurgeInterval, keyPurgeInterval);
     }
 
     /**
@@ -183,7 +185,9 @@ public final class PurgingCache<K, V> {
      * @param  valuePurgeInterval  DOCUMENT ME!
      */
     public void setValuePurgeInterval(final long valuePurgeInterval) {
-        this.valuePurgeInterval = valuePurgeInterval;
+        if (valuePurgeInterval > 0) {
+            this.valuePurgeInterval = valuePurgeInterval;
+        }
     }
 
     /**
