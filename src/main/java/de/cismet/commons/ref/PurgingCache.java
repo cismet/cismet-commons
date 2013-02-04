@@ -8,6 +8,7 @@
 package de.cismet.commons.ref;
 
 import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,10 +21,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import de.cismet.tools.Calculator;
 
 /**
- * DOCUMENT ME!
+ * This class provides a simple key-value cache. The cache makes use of {@link TimedSoftReference}s to store the values
+ * to keys. Thus the values expire after a certain time if they have not already been collected before. The cache allows
+ * to define a custom time interval a value will be cached at most. It additionally provides means to purge stale
+ * entries from the cache. An entry is considered stale if an existing key does not map to a value at all (most likely
+ * because it has been collected before). Purge actions take place at a fixed interval which is can also be controlled.
  *
  * @author   martin.scholl@cismet.de
- * @version  $Revision$, $Date$
+ * @version  1.0
  */
 // NOTE: we do a separate implementation (not using the CalculationCache) as we don't want the users of this
 // implementation to be confronted with changed behaviour
@@ -31,7 +36,9 @@ public final class PurgingCache<K, V> {
 
     //~ Static fields/initializers ---------------------------------------------
 
+    /** The default key purge interval of the cache, 5 minutes. */
     public static final long DEFAULT_KEY_PURGE_INTERVAL = 300000L;
+    /** The default value purge interval of the cache, 30 seconds. */
     public static final long DEFAULT_VALUE_PURGE_INTERVAL = 30000L;
 
     //~ Instance fields --------------------------------------------------------
@@ -50,30 +57,38 @@ public final class PurgingCache<K, V> {
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * Creates a new PurgingCache object.
+     * Creates a new PurgingCache object. Using this constructor is similar to using
+     * {@link #PurgingCache(de.cismet.tools.Calculator, long, long) } with {@link #DEFAULT_KEY_PURGE_INTERVAL} as <code>
+     * keyPurgeInterval</code> and {@link #DEFAULT_VALUE_PURGE_INTERVAL} as <code>valuePurgeInterval</code>.
      *
-     * @param  initialiser  DOCUMENT ME!
+     * @param  initialiser  the {@link Calculator} instance that is able to create a value for a given key
      */
     public PurgingCache(final Calculator<K, V> initialiser) {
         this(initialiser, DEFAULT_KEY_PURGE_INTERVAL, DEFAULT_VALUE_PURGE_INTERVAL);
     }
 
     /**
-     * Creates a new PurgingCache object.
+     * Creates a new PurgingCache object. Using this constructor is similar to using
+     * {@link #PurgingCache(de.cismet.tools.Calculator, long, long) } with {@link #DEFAULT_KEY_PURGE_INTERVAL} as <code>
+     * keyPurgeInterval</code>.
      *
-     * @param  initialiser       DOCUMENT ME!
-     * @param  keyPurgeInterval  DOCUMENT ME!
+     * @param  initialiser         the {@link Calculator} instance that is able to create a value for a given key
+     * @param  valuePurgeInterval  the time in milliseconds that a cached value will be cached at most
      */
-    public PurgingCache(final Calculator<K, V> initialiser, final long keyPurgeInterval) {
-        this(initialiser, keyPurgeInterval, DEFAULT_VALUE_PURGE_INTERVAL);
+    public PurgingCache(final Calculator<K, V> initialiser, final long valuePurgeInterval) {
+        this(initialiser, DEFAULT_KEY_PURGE_INTERVAL, valuePurgeInterval);
     }
 
     /**
      * Creates a new PurgingCache object.
      *
-     * @param  initialiser         DOCUMENT ME!
-     * @param  keyPurgeInterval    DOCUMENT ME!
-     * @param  valuePurgeInterval  DOCUMENT ME!
+     * @param  initialiser         the {@link Calculator} instance that is able to create a value for a given key
+     * @param  keyPurgeInterval    the time in milliseconds that lies between two purge actions
+     * @param  valuePurgeInterval  the time in milliseconds that a cached value will be cached at most
+     *
+     * @see    {@link Calculator}
+     * @see    {@link #setKeyPurgeInterval(long)}
+     * @see    {@link #setValuePurgeInterval(long)}
      */
     public PurgingCache(final Calculator<K, V> initialiser,
             final long keyPurgeInterval,
@@ -91,13 +106,17 @@ public final class PurgingCache<K, V> {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Gets the cached value for a given key. If there exists a cached value it is returned, otherwise the
+     * {@link Calculator} instance provided in the constructor is responsible for creating a new value for the given
+     * key. The maximal time a value is cached is the current value returned by {@link #getValuePurgeInterval()}.
+     * However, it is not guaranteed that the value stays that long in the cache as it makes use of
+     * {@link SoftReference}s to store the value.
      *
-     * @param   key  DOCUMENT ME!
+     * @param   key  the key to fetch a cached value for
      *
-     * @return  DOCUMENT ME!
+     * @return  the value corresponding to the key
      *
-     * @throws  CacheException  DOCUMENT ME!
+     * @throws  CacheException  if the <code>Calculator</code> raises an exception during value creation
      */
     public V get(final K key) {
         Lock lock = cacheLock.readLock();
@@ -136,18 +155,23 @@ public final class PurgingCache<K, V> {
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for the current <code>keyPurgeInterval</code>.
      *
-     * @return  DOCUMENT ME!
+     * @return  the time in milliseconds that lies between to purge actions
+     *
+     * @see     {@link #setKeyPurgeInterval(long)}
      */
     public long getKeyPurgeInterval() {
         return keyPurgeInterval;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for the <code>keyPurgeInterval</code>. Every <code>keyPurgeInterval</code> milliseconds the cache will
+     * check for stale entries and remove them. The change takes effect immediately. A new purge action will take place
+     * in <code>keyPurgeInterval</code> milliseconds which means that any purge action that should have taken place is
+     * canceled. The value is expected to be in milliseconds. Any value below or equal to <code>0</code> is ignored.
      *
-     * @param  keyPurgeInterval  DOCUMENT ME!
+     * @param  keyPurgeInterval  the time in milliseconds that lies between to purge actions
      */
     public void setKeyPurgeInterval(final long keyPurgeInterval) {
         if (keyPurgeInterval > 0) {
@@ -171,18 +195,24 @@ public final class PurgingCache<K, V> {
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for the <code>valuePurgeInterval</code> that is currently used for newly initialised values.
      *
-     * @return  DOCUMENT ME!
+     * @return  the current <code>valuePurgeInterval</code> in milliseconds
+     *
+     * @see     {@link #setValuePurgeInterval(long)}
      */
     public long getValuePurgeInterval() {
         return valuePurgeInterval;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for the <code>valuePurgeInterval</code>. The value that is set here will be used if any <b>new</b>
+     * reference to a value is created (during {@link #get(java.lang.Object)}. This implies that changing this value
+     * does <b>not</b> affect any existing (cached) references. The value is expected to be in milliseconds. Any value
+     * below or equal to <code>0</code> is ignored.
      *
-     * @param  valuePurgeInterval  DOCUMENT ME!
+     * @param  valuePurgeInterval  the time in milliseconds after that a cached value will remain referenced if it is
+     *                             not accessed at all
      */
     public void setValuePurgeInterval(final long valuePurgeInterval) {
         if (valuePurgeInterval > 0) {
@@ -191,7 +221,7 @@ public final class PurgingCache<K, V> {
     }
 
     /**
-     * DOCUMENT ME!
+     * Removes all entries that do not contain any actual value anymore.
      */
     private void purgeCache() {
         final Lock wLock = cacheLock.writeLock();
