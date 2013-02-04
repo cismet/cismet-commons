@@ -200,7 +200,7 @@ public class PurgingCacheTest {
      * @throws  IllegalStateException  DOCUMENT ME!
      */
     @Test(expected = CacheException.class)
-    public void testGetException() {
+    public void testGet_CalculateException() {
         System.out.println("TEST " + getCurrentMethodName());
 
         final PurgingCache pc = new PurgingCache(new Calculator() {
@@ -212,6 +212,21 @@ public class PurgingCacheTest {
                 }, 1000, 200);
 
         pc.get("1");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGet_NullKeyException() {
+        System.out.println("TEST " + getCurrentMethodName());
+
+        final PurgingCache pc = new PurgingCache(new Calculator() {
+
+                    @Override
+                    public String calculate(final Object input) throws Exception {
+                        throw new IllegalStateException("test");
+                    }
+                }, 1000, 200);
+
+        pc.get(null);
     }
 
     /**

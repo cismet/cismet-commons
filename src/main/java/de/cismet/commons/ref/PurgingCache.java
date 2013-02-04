@@ -110,15 +110,22 @@ public final class PurgingCache<K, V> {
      * {@link Calculator} instance provided in the constructor is responsible for creating a new value for the given
      * key. The maximal time a value is cached is the current value returned by {@link #getValuePurgeInterval()}.
      * However, it is not guaranteed that the value stays that long in the cache as it makes use of
-     * {@link SoftReference}s to store the value.
+     * {@link SoftReference}s to store the value.<br/>
+     * <br/>
+     * <b>NOTE:</b><code>null</code> keys are currently not supported.
      *
      * @param   key  the key to fetch a cached value for
      *
      * @return  the value corresponding to the key
      *
-     * @throws  CacheException  if the <code>Calculator</code> raises an exception during value creation
+     * @throws  IllegalArgumentException  if the given key is <code>null</code>
+     * @throws  CacheException            if the <code>Calculator</code> raises an exception during value creation
      */
     public V get(final K key) {
+        if (key == null) {
+            throw new IllegalArgumentException("null keys currently not supported"); // NOI18N
+        }
+
         Lock lock = cacheLock.readLock();
         lock.lock();
 
