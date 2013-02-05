@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import de.cismet.tools.PasswordEncrypter;
 
 /**
- * Proxy Class.
+ * Class that provides Proxy Usage.
  *
  * @author   spuhl
  * @author   martin.scholl@cismet.de

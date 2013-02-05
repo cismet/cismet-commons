@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * PostGisGeometryFactory.
+ * Factory for org.postgis Geometries.
  *
  * @author   hell
  * @version  $Revision$, $Date$
