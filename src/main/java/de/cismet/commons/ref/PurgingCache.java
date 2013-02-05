@@ -114,6 +114,7 @@ public final class PurgingCache<K, V> {
      * <br/>
      * <b>NOTE:</b><code>null</code> keys are currently not supported.
      *
+     * @param   <T>  DOCUMENT ME!
      * @param   key  the key to fetch a cached value for
      *
      * @return  the value corresponding to the key
@@ -121,7 +122,7 @@ public final class PurgingCache<K, V> {
      * @throws  IllegalArgumentException  if the given key is <code>null</code>
      * @throws  CacheException            if the <code>Calculator</code> raises an exception during value creation
      */
-    public V get(final K key) {
+    public <T extends K> V get(final T key) {
         if (key == null) {
             throw new IllegalArgumentException("null keys currently not supported"); // NOI18N
         }
