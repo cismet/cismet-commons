@@ -68,9 +68,9 @@ public class ScriptRunner {
     /**
      * Default constructor.
      *
-     * @param  connection   DOCUMENT ME!
-     * @param  autoCommit   DOCUMENT ME!
-     * @param  stopOnError  DOCUMENT ME!
+     * @param  connection   <code>Connection</code>
+     * @param  autoCommit   Enables/Disables autoCommit
+     * @param  stopOnError  Enables/Disables stopOnError
      */
     public ScriptRunner(final Connection connection, final boolean autoCommit, final boolean stopOnError) {
         this.connection = connection;
@@ -81,27 +81,27 @@ public class ScriptRunner {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Setter for <code>delimiter</code> property.
      *
-     * @param  delimiter  DOCUMENT ME!
+     * @param  delimiter  new vslue of the <code>delimiter</code> property
      */
     public void setDelimiter(final String delimiter) {
         this.delimiter = delimiter;
     }
 
     /**
-     * Setter for logWriter property.
+     * Setter for <code>logWriter</code> property.
      *
-     * @param  logWriter  - the new value of the logWriter property
+     * @param  logWriter  - the new value of the <code>logWriter</code> property
      */
     public void setLogWriter(final PrintWriter logWriter) {
         this.logWriter = logWriter;
     }
 
     /**
-     * Setter for errorLogWriter property.
+     * Setter for <code>errorLogWriter</code> property.
      *
-     * @param  errorLogWriter  - the new value of the errorLogWriter property
+     * @param  errorLogWriter  - the new value of the <code>errorLogWriter</code> property
      */
     public void setErrorLogWriter(final PrintWriter errorLogWriter) {
         this.errorLogWriter = errorLogWriter;
@@ -112,9 +112,9 @@ public class ScriptRunner {
      *
      * @param   reader  - the source of the script
      *
-     * @throws  IOException       DOCUMENT ME!
-     * @throws  SQLException      DOCUMENT ME!
-     * @throws  RuntimeException  DOCUMENT ME!
+     * @throws  IOException       if there is an error reading from the Reader
+     * @throws  SQLException      if any SQL errors occur
+     * @throws  RuntimeException  "Error running script. Cause: "
      */
     public void runScript(final Reader reader) throws IOException, SQLException {
         try {
@@ -289,11 +289,11 @@ public class ScriptRunner {
     }
 
     /**
-     * DOCUMENT ME!
+     * Counts the "'" in the specified <code>String</code> and tests whether the number is even or not.
      *
-     * @param   s  DOCUMENT ME!
+     * @param   s  <code>String</code> which should be tested
      *
-     * @return  DOCUMENT ME!
+     * @return  True, if the Number is even.
      */
     private boolean evenQuotes(final String s) {
         int count = 0;
@@ -307,20 +307,22 @@ public class ScriptRunner {
     }
 
     /**
-     * DOCUMENT ME!
+     * Gettter for delimiter.
      *
-     * @return  DOCUMENT ME!
+     * @return  delimiter
      */
     private String getDelimiter() {
         return delimiter;
     }
 
     /**
-     * DOCUMENT ME!
+     * If logWriter is Empty print the Object in System Console.
      *
      * <p>>>>>>>> .r4704</p>
      *
-     * @param  o  DOCUMENT ME!
+     * @param  o  <code>Object</code> which is going to be printed
+     *
+     * @see    PrintWriter#print(java.lang.Object)
      */
     private void print(final Object o) {
         if (logWriter != null) {
@@ -329,9 +331,12 @@ public class ScriptRunner {
     }
 
     /**
-     * DOCUMENT ME!
+     * If logWriter is Empty print the Object in logWriter.Does a Line Break and flushes.
      *
-     * @param  o  DOCUMENT ME!
+     * @param  o  <code>Object</code> which is going to be printed
+     *
+     * @see    PrintWriter#println(java.lang.Object)
+     * @see    PrintWriter#flush()
      */
     private void println(final Object o) {
         if (logWriter != null) {
@@ -341,9 +346,12 @@ public class ScriptRunner {
     }
 
     /**
-     * DOCUMENT ME!
+     * If errorLogWriter is Empty print the Object in errorLogWriter.Does a Line Break and flushes.
      *
-     * @param  o  DOCUMENT ME!
+     * @param  o  <code>Object</code> which is going to be printed
+     *
+     * @see    PrintWriter#println(java.lang.Object)
+     * @see    PrintWriter#flush()
      */
     private void printlnError(final Object o) {
         if (errorLogWriter != null) {
@@ -353,7 +361,9 @@ public class ScriptRunner {
     }
 
     /**
-     * DOCUMENT ME!
+     * Flushes the Streams.
+     *
+     * @see  PrintWriter#flush()
      */
     private void flush() {
         if (logWriter != null) {

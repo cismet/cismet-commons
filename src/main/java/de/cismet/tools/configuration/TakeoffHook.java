@@ -12,7 +12,7 @@
 package de.cismet.tools.configuration;
 
 /**
- * DOCUMENT ME!
+ * TakeoffHook.
  *
  * @author   thorsten
  * @version  $Revision$, $Date$

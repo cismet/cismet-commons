@@ -173,7 +173,7 @@ public class DelaunayTriangulation extends Triangulation<Pnt> {
     /**
      * Main program; used for testing.
      *
-     * @param  args  DOCUMENT ME!
+     * @param  args  Arguments
      */
     public static void main(final String[] args) {
         final Simplex<Pnt> tri = new Simplex<Pnt>(new Pnt(-10, 10), new Pnt(10, 10), new Pnt(0, -10));

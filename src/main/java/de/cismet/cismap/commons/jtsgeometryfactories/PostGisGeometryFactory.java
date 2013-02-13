@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * DOCUMENT ME!
+ * Factory for org.postgis Geometries.
  *
  * @author   hell
  * @version  $Revision$, $Date$
@@ -37,11 +37,11 @@ public class PostGisGeometryFactory {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Getter for PostCompliantDBString.
      *
-     * @param   g  DOCUMENT ME!
+     * @param   g  <code>Geometry</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>String</code> "SRID= <code>SRID</code>;Text"
      */
     public static String getPostGisCompliantDbString(final Geometry g) {
         if (g == null) {
@@ -52,24 +52,24 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates new <code>JtsPoint</code> by using <code>point</code>.
      *
-     * @param   point            DOCUMENT ME!
-     * @param   geometryFactory  DOCUMENT ME!
+     * @param   point            <code>point</code>
+     * @param   geometryFactory  <code>geometryFactory</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>point</code>
      */
     private static Point createJtsPoint(final org.postgis.Point point, final GeometryFactory geometryFactory) {
         return geometryFactory.createPoint(new Coordinate(point.getX(), point.getY()));
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates new <code>JtsLineString</code> by using <code>lineString</code>.
      *
-     * @param   lineString       DOCUMENT ME!
-     * @param   geometryFactory  DOCUMENT ME!
+     * @param   lineString       <code>lineString</code>
+     * @param   geometryFactory  <code>geometryFactory</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>LineString</code>
      */
     private static LineString createJtsLineString(final org.postgis.LineString lineString,
             final GeometryFactory geometryFactory) {
@@ -81,12 +81,12 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates new <code>JtsLinearRing</code> by using <code>linearRing</code>.
      *
-     * @param   linearRing       DOCUMENT ME!
-     * @param   geometryFactory  DOCUMENT ME!
+     * @param   linearRing       <code>linearRing</code>
+     * @param   geometryFactory  <code>geometryFactory</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>linearRing</code>
      */
     private static LinearRing createJtsLinearRing(final org.postgis.LinearRing linearRing,
             final GeometryFactory geometryFactory) {
@@ -103,12 +103,14 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates new <code>JtsPolygon</code> by using <code>polygon</code>.
      *
-     * @param   polygon          DOCUMENT ME!
-     * @param   geometryFactory  DOCUMENT ME!
+     * @param   polygon          <code>polygon</code>
+     * @param   geometryFactory  <code>geometryFactory</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>polygon</code>
+     *
+     * @see     #createJtsLinearRing(org.postgis.LinearRing, com.vividsolutions.jts.geom.GeometryFactory)
      */
     private static Polygon createJtsPolygon(final org.postgis.Polygon polygon, final GeometryFactory geometryFactory) {
         final int ringcount = polygon.numRings();
@@ -128,12 +130,14 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates new <code>JtsMultiPoint</code> by using <code>MultiPoint</code>.
      *
-     * @param   multiPoint       DOCUMENT ME!
-     * @param   geometryFactory  DOCUMENT ME!
+     * @param   multiPoint       <code>MultiPoint</code>
+     * @param   geometryFactory  <code>geometryFactory</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>MultiPoint</code>
+     *
+     * @see     #createJtsPoint(org.postgis.Point, com.vividsolutions.jts.geom.GeometryFactory)
      */
     private static MultiPoint createJtsMultiPoint(final org.postgis.MultiPoint multiPoint,
             final GeometryFactory geometryFactory) {
@@ -151,12 +155,14 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates new <code>JtsMultiLineString</code> by using <code>MultiLineString</code>.
      *
-     * @param   multiLineString  DOCUMENT ME!
-     * @param   geometryFactory  DOCUMENT ME!
+     * @param   multiLineString  <code>MultiLineString</code>
+     * @param   geometryFactory  <code>geometryFactory</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>MultiLineString</code>
+     *
+     * @see     #createJtsLineString(org.postgis.LineString, com.vividsolutions.jts.geom.GeometryFactory)
      */
     private static MultiLineString createJtsMultiLineString(final org.postgis.MultiLineString multiLineString,
             final GeometryFactory geometryFactory) {
@@ -174,12 +180,14 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates new <code>JtsMultiPolygon</code> by using <code>MultiPolygon</code>.
      *
-     * @param   multiPolygon     DOCUMENT ME!
-     * @param   geometryFactory  DOCUMENT ME!
+     * @param   multiPolygon     <code>MultiPolygon</code>!
+     * @param   geometryFactory  <code>geometryFactory</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>MultiPolygon</code>
+     *
+     * @see     #createJtsPolygon(org.postgis.Polygon, com.vividsolutions.jts.geom.GeometryFactory)
      */
     private static MultiPolygon createJtsMultiPolygon(final org.postgis.MultiPolygon multiPolygon,
             final GeometryFactory geometryFactory) {
@@ -197,12 +205,12 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates new <code>JtsGeometryCollection</code> by using <code>GeometryCollection</code>.
      *
-     * @param   geometryCollection  DOCUMENT ME!
-     * @param   geometryFactory     DOCUMENT ME!
+     * @param   geometryCollection  <code>GeometryCollection</code>
+     * @param   geometryFactory     <code>geometryFactory</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>GeometryCollection</code>
      */
     private static GeometryCollection createJtsGeometryCollection(
             final org.postgis.GeometryCollection geometryCollection,
@@ -256,11 +264,11 @@ public class PostGisGeometryFactory {
     }
 
     /**
-     * DOCUMENT ME!
+     * Creates new <code>JtsGeometry</code> by using <code>Geometry</code>.
      *
-     * @param   geom  DOCUMENT ME!
+     * @param   geom  <code>Geometry</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>Geometry</code>
      */
     public static Geometry createJtsGeometry(final org.postgis.Geometry geom) {
         final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING),

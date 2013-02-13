@@ -9,7 +9,9 @@ package Sirius.util.collections;
 
 import java.util.*;
 /**
- * //key=idnetifier;value=LinkedList.
+ * Modified {@link HashMap}, which makes it possible to map Keys to multiple Values.
+ *
+ * <p>key=idnetifier;value=LinkedList.</p>
  *
  * @version  $Revision$, $Date$
  */
@@ -18,15 +20,15 @@ public class MultiMap extends HashMap {
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * //////////////////////////////////////////////
+     * Creates new Multimap Object with size 10.
      */
     public MultiMap() {
         this(10);
     }
     /**
-     * //////////////////////////////////////////////
+     * Creates new Multimap Object with specified size.
      *
-     * @param  size  DOCUMENT ME!
+     * @param  size  size
      */
     public MultiMap(final int size) {
         super(size);
@@ -35,6 +37,16 @@ public class MultiMap extends HashMap {
     //~ Methods ----------------------------------------------------------------
 
     /////////////////////////////////////////////////
+
+    /**
+     * Assosiates <code>value</code> with <code>key</code> in this <code>map</code>. Instead of replace the previous
+     * value for a key,it is possible to have multiple values for one key possible.
+     *
+     * @param   key    key
+     * @param   value  value
+     *
+     * @return  <code>Null</code>
+     */
 
     @Override
     public Object put(final Object key, final Object value) {
@@ -59,6 +71,12 @@ public class MultiMap extends HashMap {
     } // end add
 
     //////////////////////////////////////////////////////////////
+    /**
+     * Appends the values of the specified <code>map</code> to this <code>map</code>. Instead of replace the previous
+     * value for a key, it is possible multiple values for one key possible.
+     *
+     * @param  t  map
+     */
 
     @Override
     public void putAll(final Map t) {
@@ -84,12 +102,12 @@ public class MultiMap extends HashMap {
     }
 
     /**
-     * //////////////////////////////////////////////////////
+     * Removes specified <code>value</code> associeated with specified <code>key</code>.
      *
-     * @param   key    DOCUMENT ME!
-     * @param   value  DOCUMENT ME!
+     * @param   key    key whose mapping is to be removed
+     * @param   value  mapping to be removed
      *
-     * @return  DOCUMENT ME!
+     * @return  true, if remove suceeded
      */
     public boolean remove(final Object key, final Object value) {
         SyncLinkedList list = null;
