@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Modified {@link HashMap}, which makes it possible to map Keys to multiple Values.
  *
- * <p>//key=idnetifier;value=LinkedList.</p>
+ * <p>key=idnetifier;value=LinkedList.</p>
  *
  * @version  $Revision$, $Date$
  */
