@@ -114,7 +114,7 @@ public class DelaunayAp extends javax.swing.JApplet implements Runnable {
     /**
      * Main program (used when run as application instead of applet).
      *
-     * @param  args  DOCUMENT ME!
+     * @param  args  arguments
      */
     public static void main(final String[] args) {
         final DelaunayAp applet = new DelaunayAp();  // Create applet
@@ -252,7 +252,7 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
     /**
      * MouseClick event (not used, but needed for MouseListener).
      *
-     * @param  e  DOCUMENT ME!
+     * @param  e  MouseClick Event
      */
     @Override
     public void mouseClicked(final MouseEvent e) {
@@ -261,7 +261,7 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
     /**
      * MouseRelease event (not used, but needed for MouseListener).
      *
-     * @param  e  DOCUMENT ME!
+     * @param  e  MouseRelease Event
      */
     @Override
     public void mouseReleased(final MouseEvent e) {

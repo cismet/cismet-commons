@@ -10,7 +10,7 @@ package de.cismet.tools.configuration;
 import org.jdom.Element;
 
 /**
- * DOCUMENT ME!
+ * Configurable Interface.
  *
  * @author   thorsten.hell@cismet.de
  * @version  $Revision$, $Date$
@@ -20,23 +20,23 @@ public interface Configurable {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Configures the Local configuration.xml Always used after masterConfigure.
      *
-     * @param  parent  DOCUMENT ME!
+     * @param  parent  JDOM root
      */
     void configure(Element parent);
     /**
-     * DOCUMENT ME!
+     * Configures the Server configuration.xml.
      *
-     * @param  parent  DOCUMENT ME!
+     * @param  parent  JDOM root
      */
     void masterConfigure(Element parent);
     /**
-     * DOCUMENT ME!
+     * Gets the JDOM Root for this Configurable.
      *
-     * @return  DOCUMENT ME!
+     * @return  Configuration
      *
-     * @throws  NoWriteError  DOCUMENT ME!
+     * @throws  NoWriteError  throws NoWriteError if anything went wrong
      */
     Element getConfiguration() throws NoWriteError;
 }

@@ -18,7 +18,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 
 /**
- * DOCUMENT ME!
+ * RESTRemoteControlMethodsApplication.
  *
  * @author   bfriedrich
  * @version  $Revision$, $Date$
@@ -49,9 +49,9 @@ public class RESTRemoteControlMethodsApplication extends Application {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * collects Service Classes. Collects all available classes for this port.
      *
-     * @param  portAsString  DOCUMENT ME!
+     * @param  portAsString  portasString
      */
     private void collectServiceClasses(final String portAsString) {
         if (this.clazzes.isEmpty()) {
@@ -64,6 +64,11 @@ public class RESTRemoteControlMethodsApplication extends Application {
         }
     }
 
+    /**
+     * Getter for Classes.
+     *
+     * @return  class
+     */
     @Override
     public synchronized Set<Class<?>> getClasses() {
         this.collectServiceClasses((String)rc.getProperty(PROP_PORT));

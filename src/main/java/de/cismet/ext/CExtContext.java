@@ -62,14 +62,31 @@ public class CExtContext {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * @see  HashMap#put(java.lang.Object, java.lang.Object)
+     * Appends the specified <code>key</code> with the specified mapping <code>value</code> to the <code>
+     * propertyBag</code>. If the specified <code>key</code> already has an associated <code>value</code>, this <code>
+     * value</code> would get removed by the specified <code>value</code>
+     *
+     * @param   key    the key for the given value
+     * @param   value  the value for the given key
+     *
+     * @return  the previous value associated with <code>key</code>, or <code>null</code> if there was no mapping for
+     *          the specified <code>key</code>.
+     *
+     * @see     Map#put(java.lang.Object, java.lang.Object)
      */
     public Object putProperty(final String key, final Object value) {
         return propertyBag.put(key, value);
     }
 
     /**
-     * @see  HashMap#get(java.lang.Object)
+     * Get the associated <code>value</code> for the specified <code>key</code>.
+     *
+     * @param   key  the key, whose mapping is searched
+     *
+     * @return  the <code>value</code> for the specified <code>key</code>, or <code>null</code> if there was no mapping
+     *          for the specified <code>key</code>.
+     *
+     * @see     Map#get(java.lang.Object)
      */
     public Object getProperty(final String key) {
         return propertyBag.get(key);
@@ -85,7 +102,13 @@ public class CExtContext {
     }
 
     /**
-     * @see  HashMap#remove(java.lang.Object)
+     * Removes the <code>value</code> for the specified <code>key</code> from this map.
+     *
+     * @param   key  the key, whose mapping is removed
+     *
+     * @return  the <code>value</code>, which is removed
+     *
+     * @see     Map#remove(java.lang.Object)
      */
     public Object clearProperty(final String key) {
         return propertyBag.remove(key);

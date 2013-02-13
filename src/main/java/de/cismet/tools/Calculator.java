@@ -8,7 +8,7 @@
 package de.cismet.tools;
 
 /**
- * DOCUMENT ME!
+ * Interface Calculator.
  *
  * @author   therter
  * @version  $Revision$, $Date$
@@ -18,13 +18,13 @@ public interface Calculator<INPUT extends Object, OUTPUT extends Object> {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Interface Calculator Calculates with the given <code>INPUT</code> and returns an <code>OUTPUT</code>.
      *
-     * @param   input  DOCUMENT ME!
+     * @param   input  given <code>INPUT</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  calculated <code>OUTPUT</code>
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws  Exception  throws Exeption if anything went wrong
      */
     OUTPUT calculate(INPUT input) throws Exception;
 }
