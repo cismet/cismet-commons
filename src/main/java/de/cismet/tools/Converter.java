@@ -139,7 +139,7 @@ public final class Converter {
      *
      * @return  the system encoded bytes or <code>null</code> if the given <code>byte[]</code> is <code>null</code>
      *
-     * @see     org.apache.commons.codec.binary.Base64#decodeBase64(java.lang.String)
+     * @see     org.apache.commons.codec.binary.Base64#decodeBase64(byte[])
      */
     public static byte[] fromBase64(final byte[] bytes) {
         if (bytes == null) {

@@ -44,7 +44,7 @@ public class RESTRemoteControlStarter {
      *
      * @param   defaultPort  port which is used, if -1 is specified by an implementation
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws  Exception  throws Exeption if anything went wrong
      */
     public static void initRestRemoteControlMethods(final int defaultPort) throws Exception {
         RESTRemoteControlMethodRegistry.gatherRemoteMethods(defaultPort);

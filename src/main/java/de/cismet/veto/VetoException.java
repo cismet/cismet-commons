@@ -12,7 +12,7 @@
 package de.cismet.veto;
 
 /**
- * DOCUMENT ME!
+ * Veto Exception Class.
  *
  * @author   spuhl
  * @version  $Revision$, $Date$
@@ -30,7 +30,7 @@ public class VetoException extends Exception {
     /**
      * Creates a new VetoException object.
      *
-     * @param  message  DOCUMENT ME!
+     * @param  message  the detail message
      */
     public VetoException(final String message) {
         super(message);

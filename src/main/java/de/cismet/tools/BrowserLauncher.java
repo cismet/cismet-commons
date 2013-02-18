@@ -460,9 +460,10 @@ public class BrowserLauncher {
     }
 
     /**
-     * DOCUMENT ME!
+     * Attempts to open the default web browser to the given URL. In the second attempt he tries to open the url as a
+     * file.
      *
-     * @param  url  DOCUMENT ME!
+     * @param  url  url
      */
     public static void openURLorFile(final String url) {
         if (url == null) {
@@ -484,12 +485,18 @@ public class BrowserLauncher {
     }
 
     /**
-     * Attempts to open the default web browser to the given URL.
+     * Attempts to open the given URL with the default web browser.
      *
      * @param   url  The URL to open
      *
-     * @throws  Exception    DOCUMENT ME!
-     * @throws  IOException  If the web browser could not be located or does not run
+     * @throws  Exception    throws Exeption if anything went wrong
+     * @throws  IOException
+     *                       <ul>
+     *                         <li>If the web browser could not be located or does not run</li>
+     *                         <li>If it catches a <code>InvocationTargetException</code></li>
+     *                         <li>If it catches a <code>IllegalAccessExeption</code></li>
+     *                         <li>if it catches a <code>InstantiationException</code></li>
+     *                       </ul>
      */
     public static void openURL(final String url) throws Exception {
         if (log.isDebugEnabled()) {
@@ -624,34 +631,37 @@ public class BrowserLauncher {
 
     /**
      * Methods required for Mac OS X. The presence of native methods does not cause any problems on other platforms.
+     * //Placeholder
      *
-     * @param   instance   DOCUMENT ME!
-     * @param   signature  DOCUMENT ME!
+     * @param   instance   instance
+     * @param   signature  signature
      *
-     * @return  DOCUMENT ME!
+     * @return  int
      */
     private static native int ICStart(int[] instance, int signature);
 
     /**
-     * DOCUMENT ME!
+     * Methods required for Mac OS X. The presence of native methods does not cause any problems on other platforms.
+     * //Placeholder
      *
-     * @param   instance  DOCUMENT ME!
+     * @param   instance  instance
      *
-     * @return  DOCUMENT ME!
+     * @return  int
      */
     private static native int ICStop(int[] instance);
 
     /**
-     * DOCUMENT ME!
+     * Methods required for Mac OS X. The presence of native methods does not cause any problems on other platforms.
+     * //Placeholder
      *
-     * @param   instance        DOCUMENT ME!
-     * @param   hint            DOCUMENT ME!
-     * @param   data            DOCUMENT ME!
-     * @param   len             DOCUMENT ME!
-     * @param   selectionStart  DOCUMENT ME!
-     * @param   selectionEnd    DOCUMENT ME!
+     * @param   instance        intance
+     * @param   hint            hint
+     * @param   data            data
+     * @param   len             len
+     * @param   selectionStart  selectionStart
+     * @param   selectionEnd    selectiomEnd
      *
-     * @return  DOCUMENT ME!
+     * @return  int
      */
     private static native int ICLaunchURL(int instance,
             byte[] hint,

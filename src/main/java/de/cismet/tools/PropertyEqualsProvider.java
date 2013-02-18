@@ -24,7 +24,7 @@
 package de.cismet.tools;
 
 /**
- * DOCUMENT ME!
+ * Property Equals Provider.
  *
  * @author   thorsten
  * @version  $Revision$, $Date$
@@ -34,11 +34,11 @@ public interface PropertyEqualsProvider {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * PropertyEqualsProvider provids, that the Properties in the <code>Object</code> are Equal.
      *
-     * @param   o  DOCUMENT ME!
+     * @param   o  <code>Object</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  True, if the Properties are equal
      */
     boolean propertyEquals(Object o);
 }

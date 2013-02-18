@@ -32,10 +32,10 @@ public final class Equals {
      * Compares the bean properties of given objects. This operation is equivalent to calling
      * {@link #beanDeepEqual(java.lang.Object, java.lang.Object, java.lang.String[])} with a <code>null String[]</code>.
      *
-     * @param   o   DOCUMENT ME!
-     * @param   o2  DOCUMENT ME!
+     * @param   o   object one
+     * @param   o2  object two
      *
-     * @return  DOCUMENT ME!
+     * @return  true, if object one and object two deliver the same result for every bean getter
      *
      * @see     #beanDeepEqual(java.lang.Object, java.lang.Object, java.lang.String[])
      */
@@ -88,8 +88,8 @@ public final class Equals {
     /**
      * Tests if the given array contains the given name.
      *
-     * @param   name   DOCUMENT ME!
-     * @param   array  DOCUMENT ME!
+     * @param   name   searched name
+     * @param   array  given array
      *
      * @return  true, if the array contains the name, false otherwise, also false if the array is <code>null</code>
      */
@@ -117,10 +117,9 @@ public final class Equals {
      *   <li>is not static</li>
      *   <li>name starts with 'get' (or 'is' for <code>boolean</code> getters)</li>
      *   <li>there exists a field with a corresponding name</li>
-     *   <li></li>
      * </ul>
      *
-     * @param   m  DOCUMENT ME!
+     * @param   m  given method
      *
      * @return  <code>true</code> if all the requirements listed above are met, <code>false</code> otherwise
      */

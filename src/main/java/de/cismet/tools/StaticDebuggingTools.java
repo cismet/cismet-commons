@@ -18,7 +18,7 @@ package de.cismet.tools;
 import java.io.File;
 
 /**
- * DOCUMENT ME!
+ * Tests whether the File exists in the User's Home Directory or not.
  *
  * @author   cschmidt
  * @version  $Revision$, $Date$
@@ -36,11 +36,11 @@ public class StaticDebuggingTools {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * �berpr�ft ob eine Datei mit dem �bergebenen Dateiname im Home-Verzeichnis des Users existiert.
+     * Tests whether the specified Filename exists in the User's Home Directory or not.
      *
-     * @param   filename  Name der gesuchten Datei.
+     * @param   filename  Filename of the searched File
      *
-     * @return  DOCUMENT ME!
+     * @return  True, if the Filename is contained in the Home Directory
      */
     public static boolean checkHomeForFile(final String filename) {
         try {

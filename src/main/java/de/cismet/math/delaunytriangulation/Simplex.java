@@ -141,8 +141,8 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
      * Report the boundary of a Set of Simplices. The boundary is a Set of facets where each facet is a Set of vertices
      * <V>.
      *
-     * @param   <V>         DOCUMENT ME!
-     * @param   simplexSet  DOCUMENT ME!
+     * @param   <V>         vertices (generic type V)
+     * @param   simplexSet  Set of Simplices
      *
      * @return  an Iterator for the facets that make up the boundary
      */
@@ -163,7 +163,7 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
     /* Remaining methods are those required by AbstractSet */
 
     /**
-     * DOCUMENT ME!
+     * Returns the Iterator for Simplex's vertices.
      *
      * @return  Iterator for Simplex's vertices.
      */
@@ -173,7 +173,7 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
     }
 
     /**
-     * DOCUMENT ME!
+     * Returns the size (# of vertices) of this Simplex.
      *
      * @return  the size (# of vertices) of this Simplex
      */
@@ -183,7 +183,7 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
     }
 
     /**
-     * DOCUMENT ME!
+     * Returns the hashCode of this Simplex.
      *
      * @return  the hashCode of this Simplex
      */
@@ -193,9 +193,10 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
     }
 
     /**
-     * We want to allow for different simplices that share the same vertex set.
+     * Tests, whether the Simplices are equal or not We want to allow for different simplices that share the same vertex
+     * set.
      *
-     * @param   o  DOCUMENT ME!
+     * @param   o  specified Simplix, which is compared to this Simplix
      *
      * @return  true for equal Simplices
      */

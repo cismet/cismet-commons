@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * DOCUMENT ME!
+ * Tool for extract Text from File.
  *
  * @version  $Revision$, $Date$
  */
@@ -26,16 +26,16 @@ public class TextFromFile {
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * /////////////////////////////////////////
+     * Creates a Default TextFromFile object.
      */
     public TextFromFile() {
         data = new byte[0];
     }
 
     /**
-     * ///////////////////////////////////////////
+     * Creates a new TextFromFile object from <code>file</code> with specified filepath.
      *
-     * @param  filepath  DOCUMENT ME!
+     * @param  filepath  filepath
      */
     public TextFromFile(final String filepath) {
         try {
@@ -66,18 +66,18 @@ public class TextFromFile {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Getter for Text. Converts <code>Byte</code> to <code>String</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  data
      */
     public String getText() {
         return new String(data);
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for Text.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>Vector</code> words
      */
     public Vector getWordVector() {
         final Vector words = new Vector(10, 10);

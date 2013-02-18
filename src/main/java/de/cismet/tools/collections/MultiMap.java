@@ -30,7 +30,7 @@ public class MultiMap extends LinkedHashMap {
     /**
      * //////////////////////////////////////////////
      *
-     * @param  size  DOCUMENT ME!
+     * @param  size  size
      */
     public MultiMap(final int size) {
         super(size);
@@ -89,10 +89,10 @@ public class MultiMap extends LinkedHashMap {
     /**
      * HELL.
      *
-     * @param   key    DOCUMENT ME!
-     * @param   value  DOCUMENT ME!
+     * @param   key    key for he given value
+     * @param   value  value for the given key
      *
-     * @return  DOCUMENT ME!
+     * @return  true if the specified key with the specified mapping does exist
      */
     public boolean contains(final Object key, final Object value) {
         return containsKey(key) && ((SyncLinkedList)get(key)).contains(value);

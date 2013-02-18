@@ -10,7 +10,7 @@ package de.cismet.tools;
 import java.util.Locale;
 
 /**
- * DOCUMENT ME!
+ * JnlpTools Class.
  *
  * @author   martin.scholl@cismet.de
  * @version  $Revision$, $Date$

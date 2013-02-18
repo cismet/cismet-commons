@@ -13,7 +13,7 @@
 package de.cismet.tools;
 
 /**
- * DOCUMENT ME!
+ * Tool for deleting Whitespaces in <code>Strings</code>.
  *
  * @author   schlob
  * @version  $Revision$, $Date$
@@ -31,11 +31,11 @@ public final class StringTools {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Deletes Whitspaces in the <code>String</code>.
      *
-     * @param   string  DOCUMENT ME!
+     * @param   string  <code>String</code>, which is going to get cleaned
      *
-     * @return  DOCUMENT ME!
+     * @return  cleaned <code>String</code>
      */
     public static String deleteWhitespaces(final String string) {
         if (string == null) {

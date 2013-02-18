@@ -7,8 +7,15 @@
 ****************************************************/
 package Sirius.util.collections;
 
+import java.util.Hashtable;
+
 /**
- * DOCUMENT ME!
+ * Modified {@link Hashtable}, which maps <code>Integer</code> to <code>String</code>.
+ *
+ * <ul>
+ *   <li><code>Key</code> - <code>Integer</code></li>
+ *   <li><code>Value</code> - <code>String</code></li>
+ * </ul>
  *
  * @version  $Revision$, $Date$
  */
@@ -26,8 +33,10 @@ public class IntMapsString extends java.util.Hashtable {
     /**
      * Creates a new IntMapsString object.
      *
-     * @param  initialCapacity  DOCUMENT ME!
-     * @param  loadFactor       DOCUMENT ME!
+     * @param  initialCapacity  Capacity when Object is created
+     * @param  loadFactor       buffer for capacity increase
+     *
+     * @see    Hashtable
      */
     IntMapsString(final int initialCapacity, final float loadFactor) {
         super(initialCapacity, loadFactor);
@@ -36,24 +45,27 @@ public class IntMapsString extends java.util.Hashtable {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Associates a <code>Integer</code> id(key) to a <code>String</code> astring(value).
      *
-     * @param  id       DOCUMENT ME!
-     * @param  aString  DOCUMENT ME!
+     * @param  id       key
+     * @param  aString  value
+     *
+     * @see    #put(java.lang.Object, java.lang.Object)
      */
     public void add(final int id, final String aString) {
         super.put(new Integer(id), aString);
     } // end add
 
     /**
-     * DOCUMENT ME!
+     * Getter for the Value as a <code>String</code>.
      *
-     * @param   id  DOCUMENT ME!
+     * @param   id  key
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>Stringvalue</code>
      *
-     * @throws  Exception                       DOCUMENT ME!
-     * @throws  java.lang.NullPointerException  DOCUMENT ME!
+     * @throws  Exception                       throws Exeption if anything went wrong
+     * @throws  java.lang.NullPointerException  "Entry is not a String" if key not a String or "No entry" if <code>
+     *                                          id<\code> has no entry</code>
      */
     public String getStringValue(final int id) throws Exception {
         final Integer key = new Integer(id);
@@ -72,11 +84,13 @@ public class IntMapsString extends java.util.Hashtable {
                                                                      // when exception concept is accomplished
     }
     /**
-     * ///// containsIntKey/////////////////////////////////
+     * Tests whether the specified object is a key in <code>IntMapsString</code> or not.
      *
-     * @param   key  DOCUMENT ME!
+     * @param   key  possible key
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>true</code>, if the object is a key in <code>IntMapsString</code>
+     *
+     * @see     #containsKey(java.lang.Object)
      */
     public boolean containsIntKey(final int key) {
         return super.containsKey(new Integer(key));

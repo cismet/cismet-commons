@@ -81,7 +81,7 @@ public class Triangulation<V> implements Iterable<Simplex<V>> {
     }
 
     /**
-     * True iff the simplex is in this Triangulation.
+     * True if the simplex is in this Triangulation.
      *
      * @param   simplex  the simplex to check
      *
