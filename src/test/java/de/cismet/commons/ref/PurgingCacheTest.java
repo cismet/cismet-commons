@@ -276,9 +276,26 @@ public class PurgingCacheTest {
         assertEquals(0, ((HashMap)cacheField.get(pc)).size());
         
         pc.setKeyPurgeInterval(0);
-        assertEquals(800, pc.getKeyPurgeInterval());
+        assertEquals(0, pc.getKeyPurgeInterval());
         pc.setKeyPurgeInterval(-100);
-        assertEquals(800, pc.getKeyPurgeInterval());
+        assertEquals(0, pc.getKeyPurgeInterval());
+        
+        initCalls = 0;
+        
+        pc.get(1);
+        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        Thread.currentThread().sleep(100);
+        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        Thread.currentThread().sleep(300);
+        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        Thread.currentThread().sleep(500);
+        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        
+        pc.setKeyPurgeInterval(100);
+        assertEquals(100, pc.getKeyPurgeInterval());
+        
+        Thread.currentThread().sleep(200);
+        assertEquals(0, ((HashMap)cacheField.get(pc)).size());
     }
 
     /**
@@ -334,8 +351,34 @@ public class PurgingCacheTest {
         assertEquals(4, initCalls);
         
         pc.setValuePurgeInterval(0);
-        assertEquals(100, pc.getValuePurgeInterval());
+        assertEquals(0, pc.getValuePurgeInterval());
         pc.setValuePurgeInterval(-100);
+        assertEquals(0, pc.getValuePurgeInterval());
+        
+        initCalls = 0;
+        Thread.currentThread().sleep(200);
+        
+        o1 = pc.get("1");
+        assertEquals(1, initCalls);
+        o1 = pc.get("1");
+        assertEquals(1, initCalls);
+        Thread.currentThread().sleep(200);
+        o1 = pc.get("1");
+        assertEquals(1, initCalls);
+        Thread.currentThread().sleep(800);
+        o1 = pc.get("1");
+        assertEquals(1, initCalls);
+                
+        initCalls = 0;
+        
+        pc.setValuePurgeInterval(100);
         assertEquals(100, pc.getValuePurgeInterval());
+        o1 = pc.get("2");
+        assertEquals(1, initCalls);
+        o1 = pc.get("2");
+        assertEquals(1, initCalls);
+        Thread.currentThread().sleep(200);
+        o1 = pc.get("2");
+        assertEquals(2, initCalls);
     }
 }
