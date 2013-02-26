@@ -381,4 +381,37 @@ public class PurgingCacheTest {
         o1 = pc.get("2");
         assertEquals(2, initCalls);
     }
+    
+    @Test
+    public void testClear() throws Exception {
+        System.out.println("TEST " + getCurrentMethodName());
+        
+        final PurgingCache pc = new PurgingCache(new Calculator() {
+
+                    @Override
+                    public String calculate(final Object input) throws Exception {
+                        initCalls++;
+
+                        return "value_" + input;
+                    }
+                }, 0, 0);
+        
+        initCalls = 0;
+        
+        pc.get("1");
+        pc.get("2");
+        pc.get("3");
+        pc.get("4");
+        pc.get("5");
+        
+        assertEquals(5, initCalls);
+        
+        pc.clear();
+        
+        pc.get("1");
+        pc.get("2");
+        pc.get("3");
+        
+        assertEquals(8, initCalls);
+    }
 }

@@ -252,6 +252,20 @@ public final class PurgingCache<K, V> {
     }
 
     /**
+     * Removes all entries from the cache regardless of any purge interval setting.
+     */
+    public void clear() {
+        final Lock wLock = cacheLock.writeLock();
+        wLock.lock();
+
+        try {
+            cache.clear();
+        } finally {
+            wLock.unlock();
+        }
+    }
+
+    /**
      * Removes all entries that do not contain any actual value anymore.
      */
     private void purgeCache() {
