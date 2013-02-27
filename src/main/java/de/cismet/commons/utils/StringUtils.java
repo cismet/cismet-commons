@@ -27,27 +27,17 @@ public final class StringUtils {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Deletes Whitspaces in the <code>String</code>.
+     * Deletes all white-spaces from the given string.
      *
-     * @param   string  <code>String</code>, which is going to get cleaned
+     * @param   string  the string that whose white-spaces shall be removed
      *
-     * @return  cleaned <code>String</code>
+     * @return  a string without white-spaces or <code>null</code> if the given string was null
      */
     public static String deleteWhitespaces(final String string) {
         if (string == null) {
-            return string;
+            return null;
         }
 
-        String clean = ""; // NOI18N
-
-        final char[] chars = string.toCharArray();
-
-        for (int i = 0; i < chars.length; i++) {
-            if (!Character.isWhitespace(chars[i])) {
-                clean += chars[i];
-            }
-        }
-
-        return clean;
+        return string.replaceAll("\\s", ""); // NOI18N
     }
 }
