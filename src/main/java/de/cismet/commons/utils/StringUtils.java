@@ -5,27 +5,23 @@
 *              ... and it just works.
 *
 ****************************************************/
-/*
- * StringTools.java
- *
- * Created on 4. Mai 2004, 14:05
- */
-package de.cismet.tools;
+package de.cismet.commons.utils;
 
 /**
- * Tool for deleting Whitespaces in <code>Strings</code>.
+ * Various helpers for {@link String} literals.
  *
  * @author   schlob
- * @version  $Revision$, $Date$
+ * @author   mscholl
+ * @version  1.1
  */
-public final class StringTools {
+public final class StringUtils {
 
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * Creates a new instance of StringTools.
+     * Creates a new instance of StringUtils.
      */
-    private StringTools() {
+    private StringUtils() {
     }
 
     //~ Methods ----------------------------------------------------------------
