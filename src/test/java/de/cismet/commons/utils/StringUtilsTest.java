@@ -97,4 +97,116 @@ public class StringUtilsTest
             assertFalse("should not be a keyword: " + s, StringUtils.isKeyword(s));
         }
     }
+    
+    @Test
+    public void testToPackage() {
+        String part = null;
+        String result = StringUtils.toPackage(part);
+        assertNull(result);
+        
+        part = "";
+        String expected = "";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "a";
+        expected = "a";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "-";
+        expected = "";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "9";
+        expected = "";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "abcde";
+        expected = "abcde";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "9abcde";
+        expected = "abcde";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "-abcde-";
+        expected = "abcde";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "--9abcde";
+        expected = "abcde";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "----.a.---.";
+        expected = "a";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "a.a";
+        expected = "a.a";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = ".a.a";
+        expected = "a.a";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "a.a.";
+        expected = "a.a";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = ".a.a.a.";
+        expected = "a.a.a";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "abc-def";
+        expected = "abcdef";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "abc-de_f";
+        expected = "abcde_f";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = ".ab--c._def.2-ghi.J--KLm0";
+        expected = "abc._def.ghi.JKLm0";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "a..a";
+        expected = "a.a";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "a.9--.a";
+        expected = "a.a";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "a.9--.a.9--";
+        expected = "a.a";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "my.package";
+        expected = "my.package_";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+        
+        part = "null";
+        expected = "null_";
+        result = StringUtils.toPackage(part);
+        assertEquals(expected, result);
+    }
 }
