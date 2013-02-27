@@ -85,4 +85,16 @@ public class StringUtilsTest
         result = StringUtils.deleteWhitespaces(input);
         assertEquals(expected, result);
     }
+    
+    @Test
+    public void testIsKeyword() {
+        for(final String s : StringUtils.KEYWORDS){
+            assertTrue("should be a keyword: " + s, StringUtils.isKeyword(s));
+        }
+        
+        final String[] noKeywords = {null, "", "abc", "pakkage"};
+        for(final String s : noKeywords){
+            assertFalse("should not be a keyword: " + s, StringUtils.isKeyword(s));
+        }
+    }
 }
