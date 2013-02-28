@@ -5,7 +5,7 @@
 *              ... and it just works.
 *
 ****************************************************/
-package de.cismet.tools;
+package de.cismet.commons.classloading;
 
 import org.apache.log4j.Logger;
 
