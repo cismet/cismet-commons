@@ -26,7 +26,10 @@ import java.util.jar.JarFile;
  * classpath (see {@link System#getProperty(java.lang.String)} with <code>java.class.path</code> property key).<br/>
  * <br/>
  * <b>NOTE:</b>The implementation is currently neither thread safe nor does it make use of sophisticated caching
- * mechanism.
+ * mechanism.<br/>
+ * <br/>
+ * <b>IMPORTANT: This implementation may not work as expected since java may load classes from other resources than from
+ * files (e.g. Java WebStart).</b>
  *
  * @author   martin.scholl@cismet.de
  * @version  1.0

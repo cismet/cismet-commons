@@ -45,7 +45,7 @@ public final class PurgingCache<K, V> {
 
     private final transient Timer purgeTimer;
 
-    private final transient Map<K, TimedSoftReference<V>> cache;
+    private final transient Map<K, SoftReference<V>> cache;
     private final transient ReentrantReadWriteLock cacheLock;
 
     private final transient Calculator<K, V> initialiser;
@@ -73,7 +73,8 @@ public final class PurgingCache<K, V> {
      * keyPurgeInterval</code>.
      *
      * @param  initialiser         the {@link Calculator} instance that is able to create a value for a given key
-     * @param  valuePurgeInterval  the time in milliseconds that a cached value will be cached at most
+     * @param  valuePurgeInterval  the time in milliseconds that a cached value will be cached at most or <code>0</code>
+     *                             if purging of values (after a fixed amount of time) shall be disabled
      */
     public PurgingCache(final Calculator<K, V> initialiser, final long valuePurgeInterval) {
         this(initialiser, DEFAULT_KEY_PURGE_INTERVAL, valuePurgeInterval);
@@ -83,8 +84,10 @@ public final class PurgingCache<K, V> {
      * Creates a new PurgingCache object.
      *
      * @param  initialiser         the {@link Calculator} instance that is able to create a value for a given key
-     * @param  keyPurgeInterval    the time in milliseconds that lies between two purge actions
-     * @param  valuePurgeInterval  the time in milliseconds that a cached value will be cached at most
+     * @param  keyPurgeInterval    the time in milliseconds that lies between two purge actions or <code>0</code> if
+     *                             purging of keys shall be disabled
+     * @param  valuePurgeInterval  the time in milliseconds that a cached value will be cached at most or <code>0</code>
+     *                             if purging of values (after a fixed amount of time) shall be disabled
      *
      * @see    {@link Calculator}
      * @see    {@link #setKeyPurgeInterval(long)}
@@ -95,7 +98,7 @@ public final class PurgingCache<K, V> {
             final long valuePurgeInterval) {
         this.initialiser = initialiser;
 
-        cache = new HashMap<K, TimedSoftReference<V>>();
+        cache = new HashMap<K, SoftReference<V>>();
         cacheLock = new ReentrantReadWriteLock(false);
         purgeTimer = new Timer("PurgingCache-purge-timer"); // NOI18N
 
@@ -152,7 +155,14 @@ public final class PurgingCache<K, V> {
                         throw new CacheException("cannot compute value for key: " + key, ex); // NOI18N
                     }
 
-                    cache.put(key, new TimedSoftReference<V>(value, valuePurgeInterval));
+                    final SoftReference<V> sr;
+                    if (valuePurgeInterval == 0) {
+                        sr = new SoftReference<V>(value);
+                    } else {
+                        sr = new TimedSoftReference<V>(value, valuePurgeInterval);
+                    }
+
+                    cache.put(key, sr);
                 }
             }
 
@@ -165,7 +175,8 @@ public final class PurgingCache<K, V> {
     /**
      * Getter for the current <code>keyPurgeInterval</code>.
      *
-     * @return  the time in milliseconds that lies between to purge actions
+     * @return  the time in milliseconds that lies between two purge actions or <code>0</code> if purging of keys is
+     *          currently disabled.
      *
      * @see     {@link #setKeyPurgeInterval(long)}
      */
@@ -179,19 +190,20 @@ public final class PurgingCache<K, V> {
      * Setter for the <code>keyPurgeInterval</code>. Every <code>keyPurgeInterval</code> milliseconds the cache will
      * check for stale entries and remove them. The change takes effect immediately. A new purge action will take place
      * in <code>keyPurgeInterval</code> milliseconds which means that any purge action that should have taken place is
-     * canceled. The value is expected to be in milliseconds. Any value below or equal to <code>0</code> is ignored.
+     * canceled. The value is expected to be in milliseconds. Any value below or equal to <code>0</code> will disable
+     * purging of keys.
      *
      * @param  keyPurgeInterval  the time in milliseconds that lies between two purge actions
      */
     public void setKeyPurgeInterval(final long keyPurgeInterval) {
-        if (keyPurgeInterval > 0) {
-            synchronized (purgeTimer) {
-                this.keyPurgeInterval = keyPurgeInterval;
+        synchronized (purgeTimer) {
+            if (purgeTask != null) {
+                // we don't care about the result
+                purgeTask.cancel();
+            }
 
-                if (purgeTask != null) {
-                    // we don't care about the result
-                    purgeTask.cancel();
-                }
+            if (keyPurgeInterval > 0) {
+                this.keyPurgeInterval = keyPurgeInterval;
 
                 purgeTask = new TimerTask() {
 
@@ -202,6 +214,10 @@ public final class PurgingCache<K, V> {
                     };
 
                 purgeTimer.scheduleAtFixedRate(purgeTask, keyPurgeInterval, keyPurgeInterval);
+            } else {
+                // we don't care about the old task anymore if the purge interval has been set to infinity
+                purgeTask = null;
+                this.keyPurgeInterval = 0;
             }
         }
     }
@@ -209,7 +225,8 @@ public final class PurgingCache<K, V> {
     /**
      * Getter for the <code>valuePurgeInterval</code> that is currently used for newly initialised values.
      *
-     * @return  the current <code>valuePurgeInterval</code> in milliseconds
+     * @return  the current <code>valuePurgeInterval</code> in milliseconds or <code>0</code> if purging of values is
+     *          currently disabled.
      *
      * @see     {@link #setValuePurgeInterval(long)}
      */
@@ -221,7 +238,7 @@ public final class PurgingCache<K, V> {
      * Setter for the <code>valuePurgeInterval</code>. The value that is set here will be used if any <b>new</b>
      * reference to a value is created (during {@link #get(java.lang.Object)}. This implies that changing this value
      * does <b>not</b> affect any existing (cached) references. The value is expected to be in milliseconds. Any value
-     * below or equal to <code>0</code> is ignored.
+     * below or equal to <code>0</code> will disable purging of values.
      *
      * @param  valuePurgeInterval  the time in milliseconds after that a cached value will remain referenced if it is
      *                             not accessed at all
@@ -229,6 +246,22 @@ public final class PurgingCache<K, V> {
     public void setValuePurgeInterval(final long valuePurgeInterval) {
         if (valuePurgeInterval > 0) {
             this.valuePurgeInterval = valuePurgeInterval;
+        } else {
+            this.valuePurgeInterval = 0;
+        }
+    }
+
+    /**
+     * Removes all entries from the cache regardless of any purge interval setting.
+     */
+    public void clear() {
+        final Lock wLock = cacheLock.writeLock();
+        wLock.lock();
+
+        try {
+            cache.clear();
+        } finally {
+            wLock.unlock();
         }
     }
 
