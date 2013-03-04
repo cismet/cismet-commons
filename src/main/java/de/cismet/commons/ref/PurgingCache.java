@@ -334,7 +334,7 @@ public final class PurgingCache<K, V> {
             final Iterator<K> it = cache.keySet().iterator();
             while (it.hasNext()) {
                 final K key = it.next();
-                final Reference<V> ref = cache.get(key);
+                final Reference ref = cache.get(key);
                 if ((ref == null) || (ref.get() == null)) {
                     it.remove();
                 }
