@@ -414,4 +414,83 @@ public class PurgingCacheTest {
         
         assertEquals(8, initCalls);
     }
+    
+    @Test
+    public void testValueNull() throws Exception {
+        System.out.println("TEST " + getCurrentMethodName());
+        
+        final PurgingCache pc = new PurgingCache(new Calculator() {
+
+                    @Override
+                    public String calculate(final Object input) throws Exception {
+                        initCalls++;
+
+                        return null;
+                    }
+                }, 0, 0); // false for init null values is default
+        
+        initCalls = 0;
+        
+        pc.get("1");
+        pc.get("1");
+        Thread.currentThread().sleep(100);
+        System.gc();
+        pc.get("1");
+        System.gc();
+        Thread.currentThread().sleep(200);
+        pc.get("1");
+        System.gc();
+        Thread.currentThread().sleep(300);
+        pc.get("1");
+        
+        assertEquals(5, initCalls);
+        
+        initCalls = 0;
+        
+        pc.setCacheNullValues(true);
+        pc.get("1");
+        pc.get("1");
+        Thread.currentThread().sleep(100);
+        System.gc();
+        pc.get("1");
+        System.gc();
+        Thread.currentThread().sleep(200);
+        pc.get("1");
+        System.gc();
+        Thread.currentThread().sleep(300);
+        pc.get("1");
+        
+        assertEquals(1, initCalls);
+        
+        pc.setCacheNullValues(false);
+        pc.get("1");
+        pc.get("1");
+        Thread.currentThread().sleep(100);
+        System.gc();
+        pc.get("1");
+        System.gc();
+        Thread.currentThread().sleep(200);
+        pc.get("1");
+        System.gc();
+        Thread.currentThread().sleep(300);
+        pc.get("1");
+        
+        assertEquals(1, initCalls);
+        
+        initCalls = 0;
+        
+        pc.get("2");
+        pc.get("2");
+        Thread.currentThread().sleep(100);
+        System.gc();
+        pc.get("2");
+        System.gc();
+        Thread.currentThread().sleep(200);
+        pc.get("2");
+        System.gc();
+        Thread.currentThread().sleep(300);
+        pc.get("2");
+        
+        assertEquals(5, initCalls);
+    }
 }
