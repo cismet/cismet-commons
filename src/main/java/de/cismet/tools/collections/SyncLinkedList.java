@@ -14,7 +14,7 @@ package de.cismet.tools.collections;
 
 import java.util.*;
 /**
- * DOCUMENT ME!
+ * Deprecated.
  *
  * @author      schlob
  * @version     $Revision$, $Date$

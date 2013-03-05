@@ -7,7 +7,7 @@
 ****************************************************/
 package de.cismet.tools;
 /**
- * DOCUMENT ME!
+ * Sorter Tool.
  *
  * @version  $Revision$, $Date$
  */
@@ -17,11 +17,12 @@ public class Sorter {
 
 // -----------------------------------------------------------------------------------------------
     /**
-     * ueberpruft ob das array sortiert ist.
+     * Tests whether the specified <code>Array</code> is sorted or not. Sorted <code>Arrays</code> are <code>
+     * Arrays</code> with only ONE Element.
      *
-     * @param   array  DOCUMENT ME!
+     * @param   array  <code>Array</code>, which is going to be tested.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>True</code>, if the <code>Array</code> is sorted.
      */
     private static boolean isSorted(final Comparable[] array) {
         if (array.length < 2) {
@@ -40,16 +41,24 @@ public class Sorter {
     }
 
     /**
-     * -------------------------------------------------------------------------------
+     * Sorts the specified <code>Array</code> with <code>insertionSort</code>. The Complete <code>Array</code> is
+     * searched.
      *
-     * @param  array  DOCUMENT ME!
+     * @param  array  <code>Array</code>, which is going to get sorted
+     *
+     * @see    #insertionSort(java.lang.Comparable[], int, int)
      */
     public static void insertionSort(final Comparable[] array) {
         insertionSort(array, 0, array.length - 1);
     }
 
-    /**InsertionSort*/
-
+    /**
+     * Sorts the specified <code>Array</code> with <code>insertionSort</code>. Sorts only a specified area.
+     *
+     * @param  array  <code>Array</code>, which is going to get sorted
+     * @param  left   left end of the area, which is going to get sorted
+     * @param  right  right end of the area, which is going to get sorted
+     */
     public static void insertionSort(final Comparable[] array, final int left, final int right) {
         int in;
         int out;
@@ -71,12 +80,17 @@ public class Sorter {
 //----------------------------------------------------------------------------------------------------------
 
     /**
-     * Quicksort welches bei der Unterschreitung von partitionsize auf InsertionSort umschaltet.
+     * Sorts the specified <code>Array</code> with <code>Quicksort</code>.Sorts only a specified area. If the to be
+     * sorted area is smaller than or equal partitionSize, <code>InsertionSort</code> will be used.
      *
-     * @param  array          DOCUMENT ME!
-     * @param  left           DOCUMENT ME!
-     * @param  right          DOCUMENT ME!
-     * @param  partitionSize  DOCUMENT ME!
+     * @param  array          <code>Array</code>, which is going to get sorted.
+     * @param  left           left end of the area, which is going to get sorted
+     * @param  right          right end of the area, which is going to get sorted
+     * @param  partitionSize  minimal size for using <code>Quicksort</code>
+     *
+     * @see    #insertionSort(java.lang.Comparable[], int, int)
+     * @see    #partitionIt(java.lang.Comparable[], int, int, java.lang.Object)
+     * @see    #swap(java.lang.Object[], int, int)
      */
 
     private static void quickSort(final Comparable[] array, final int left, final int right, final int partitionSize) {
@@ -98,23 +112,33 @@ public class Sorter {
     }
 
     /**
-     * ----------------------------------------------------------------------------------------------
+     * Sorts the specified <code>Array</code> with <code>Quicksort</code>.Sorts the complete <code>Array</code>. If the
+     * to be sorted area is smaller than or equal 16, <code>InsertionSort</code> will be used.
      *
-     * @param  array  DOCUMENT ME!
+     * @param  array  <code>Array</code>, which is going to get sorted.
+     *
+     * @see    #quickSort(java.lang.Comparable[], int, int, int)
      */
     public static void quickSort(final Comparable[] array) {
         quickSort(array, 0, array.length - 1, 16); // no insertion when partition >=16
     }
     /**
-     * --------------------------------------------------------------------------- nimmt die unterteilung in die Mengen
-     * S< u. S> vor wird von Quicksort verwendet*
+     * Divides into two Sets.
      *
-     * @param   array  DOCUMENT ME!
-     * @param   left   DOCUMENT ME!
-     * @param   right  DOCUMENT ME!
-     * @param   pivot  DOCUMENT ME!
+     * <ol>
+     *   <li>all Elements which are smaller than the Rightmost</li>
+     *   <li>all Elements which are bigger than the Rightmost</li>
+     * </ol>
      *
-     * @return  DOCUMENT ME!
+     * @param   array  <code>Array</code>, which is going to get <code>Sorted</code>
+     * @param   left   left end of the area, which is going to get sorted
+     * @param   right  right end of the area, which is going to get sorted
+     * @param   pivot  <code>Rightmost</code>
+     *
+     * @return  Location of the Rightmost after the Sorting
+     *
+     * @see     #quickSort(java.lang.Comparable[], int, int, int)
+     * @see     #swap(java.lang.Object[], int, int)
      */
     private static int partitionIt(final Comparable[] array, final int left, final int right, final Object pivot) {
         int leftPtr = left - 1;
@@ -144,11 +168,14 @@ public class Sorter {
 //----------------------------------------------------------------------------------------------
 
     /**
-     * tauscht 2 Elemente eines Arrays.
+     * Swaps two Elements of the specified <code>Array</code>.
      *
-     * @param  array  DOCUMENT ME!
-     * @param  i      DOCUMENT ME!
-     * @param  j      DOCUMENT ME!
+     * @param  array  <code>Array</code>, which is going to get sorted
+     * @param  i      Location of Element one
+     * @param  j      Location of Element two
+     *
+     * @see    #quickSort(java.lang.Comparable[], int, int, int)
+     * @see    #partitionIt(java.lang.Comparable[], int, int, java.lang.Object)
      */
 
     private static void swap(final Object[] array, final int i, final int j) {

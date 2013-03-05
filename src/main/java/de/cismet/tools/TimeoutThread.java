@@ -45,10 +45,10 @@ public abstract class TimeoutThread<T extends Object> implements Runnable {
      *
      * @param   timeInMillis  the time to wait in milliseconds
      *
-     * @return  DOCUMENT ME
+     * @return  result
      *
-     * @throws  Exception         DOCUMENT ME!
-     * @throws  TimeoutException  DOCUMENT ME!
+     * @throws  Exception         an exception during the execution of the thread ocured
+     * @throws  TimeoutException  Execution is timeouted and interrupted.
      */
     public T start(final long timeInMillis) throws Exception {
         final Thread t = new Thread(this);

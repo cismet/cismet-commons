@@ -38,7 +38,7 @@ public final class CismetThreadPool {
      * Executes the given runnable in the applications common cached threadpool. Notice: It is smarter to pass plain
      * Runnables instead of Threads as arguments, as one purpose of this pool is minimizing thread creation overhead.
      *
-     * @param       command  DOCUMENT ME!
+     * @param       command  given runnable
      *
      * @deprecated  it should not be allowed for a "general-purpose" pool to increase in size infinitely and thus may be
      *              able to break an application just because of allowing to many threads to run concurrently.
@@ -51,7 +51,7 @@ public final class CismetThreadPool {
      * Executes the given runnable in the applications threadpool. All threads, which will be started with this method
      * will be run sequentially.
      *
-     * @param       command  DOCUMENT ME!
+     * @param       command  given runnable
      *
      * @deprecated  if there is a need for an execution queue it is not likely that it's focus has to be global.
      *              Additionally it is better to think about the purpose of the sequential execution and then to narrow
@@ -64,11 +64,11 @@ public final class CismetThreadPool {
     }
 
     /**
-     * DOCUMENT ME!
+     * Submits the given runnable in the applications common cached threadpool.
      *
-     * @param       command  DOCUMENT ME!
+     * @param       command  given runnable
      *
-     * @return      DOCUMENT ME!
+     * @return      a Future representing pending completion of the runnable
      *
      * @deprecated  it should not be allowed for a "general-purpose" pool to increase in size infinitely and thus may be
      *              able to break an application just because of allowing to many threads to run concurrently.
@@ -78,9 +78,10 @@ public final class CismetThreadPool {
     }
 
     /**
-     * DOCUMENT ME!
+     * Attempts to stop all actively executing tasks, halts the processing of waiting tasks, and returns a list of the
+     * tasks that were awaiting execution.
      *
-     * @return      DOCUMENT ME!
+     * @return      list
      *
      * @deprecated  shutdown immediately renders this global pool unusable. It can never be revived. Thus any call to
      *              this operation is dangerous for any piece of code that depends on this implementation.
@@ -92,7 +93,8 @@ public final class CismetThreadPool {
     }
 
     /**
-     * DOCUMENT ME!
+     * Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be
+     * accepted.
      *
      * @deprecated  shutdown immediately renders this global pool unusable. It can never be revived. Thus any call to
      *              this operation is dangerous for any piece of code that depends on this implementation.
