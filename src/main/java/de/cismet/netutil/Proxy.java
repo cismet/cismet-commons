@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import de.cismet.tools.PasswordEncrypter;
 
 /**
- * DOCUMENT ME!
+ * Class that provides Proxy Usage.
  *
  * @author   spuhl
  * @author   martin.scholl@cismet.de
@@ -55,43 +55,45 @@ public final class Proxy {
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * Creates a new ProxyConfig object.
+     * Creates a Default Proxy object.
      */
     public Proxy() {
         this(null, -1, null, null, null, false);
     }
 
     /**
-     * Creates a new Proxy object.
+     * Creates a new Proxy object with specified <code>host</code> and <code>port</code>.
      *
-     * @param  host  DOCUMENT ME!
-     * @param  port  DOCUMENT ME!
+     * @param  host  proxyURL
+     * @param  port  computerName
      */
     public Proxy(final String host, final int port) {
         this(host, port, null, null, null, true);
     }
 
     /**
-     * Creates a new ProxyConfig object.
+     * Creates a new Proxy object with specified <code>host</code>, <code>port</code>, <code>username</code> and <code>
+     * password</code>.
      *
-     * @param  host      proxyURL DOCUMENT ME!
-     * @param  port      DOCUMENT ME!
-     * @param  username  DOCUMENT ME!
-     * @param  password  DOCUMENT ME!
+     * @param  host      proxyURL
+     * @param  port      computerName
+     * @param  username  username
+     * @param  password  password
      */
     public Proxy(final String host, final int port, final String username, final String password) {
         this(host, port, username, password, null, true);
     }
 
     /**
-     * Creates a new ProxyConfig object.
+     * Creates a new Proxy object <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code> and
+     * <code>domain</code>. Additional it can be specified whether the Proxy is enabled or not
      *
-     * @param  host      proxyURL DOCUMENT ME!
-     * @param  port      computerName DOCUMENT ME!
-     * @param  username  DOCUMENT ME!
-     * @param  password  DOCUMENT ME!
-     * @param  domain    DOCUMENT ME!
-     * @param  enabled   DOCUMENT ME!
+     * @param  host      proxyURL
+     * @param  port      computerName
+     * @param  username  username
+     * @param  password  password
+     * @param  domain    domain
+     * @param  enabled   enabled or disabled
      */
     public Proxy(final String host,
             final int port,
@@ -110,41 +112,48 @@ public final class Proxy {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>host</code>.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>host</code>
      */
     public String getHost() {
         return host;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for host.
      *
-     * @param  host  DOCUMENT ME!
+     * @param  host  <code>host</code>
      */
     public void setHost(final String host) {
         this.host = ((host == null) || host.isEmpty()) ? null : host;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>port</code>.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>port</code>
      */
     public int getPort() {
         return port;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for <code>port</code>.
      *
-     * @param  port  DOCUMENT ME!
+     * @param  port  <code>port</code>
      */
     public void setPort(final int port) {
         this.port = port;
     }
 
+    /**
+     * Return the Proxy's Attributes as <code>String</code>.
+     *
+     * @return  "Proxy: " + <code>host</code> + ":" + <code>port</code> + " | username: " + <code>username</code> +" |
+     *          password: " + ((<code>password</code> == <code>null</code>) ? <code>null</code> : "<invisible>") + " |
+     *          domain: " + <code>domain</code>
+     */
     @Override
     public String toString() {
         return "Proxy: " + host + ":" + port + " | username: " + username + " | password: " // NOI18N
@@ -152,86 +161,88 @@ public final class Proxy {
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>domain</code>.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>domain</code>
      */
     public String getDomain() {
         return domain;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for <code>domain</code>.
      *
-     * @param  domain  DOCUMENT ME!
+     * @param  domain  <code>domain</code>
      */
     public void setDomain(final String domain) {
         this.domain = ((domain == null) || domain.isEmpty()) ? null : domain;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>password</code>.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>password</code>
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for <code>password</code>.
      *
-     * @param  password  DOCUMENT ME!
+     * @param  password  <code>password</code>
      */
     public void setPassword(final String password) {
         this.password = ((password == null) || password.isEmpty()) ? null : password;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>username</code>.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>username</code>
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for <code>username</code>.
      *
-     * @param  username  DOCUMENT ME!
+     * @param  username  <code>username</code>
      */
     public void setUsername(final String username) {
         this.username = ((username == null) || username.isEmpty()) ? null : username;
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests whether <code>enabled</code> is true or false.
      *
-     * @return  DOCUMENT ME!
+     * @return  true, if it is enabled
      */
     public boolean isEnabled() {
         return enabled;
     }
 
     /**
-     * DOCUMENT ME!
+     * Enables or disables.
      *
-     * @param  enabled  DOCUMENT ME!
+     * @param  enabled  <code>true</code> or <code>false</code>
      */
     public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
     }
 
     /**
-     * DOCUMENT ME!
+     * Stores this proxy in the user's preferences.
+     *
+     * @see  #toPreferences(de.cismet.netutil.Proxy)
      */
     public void toPreferences() {
         toPreferences(this);
     }
 
     /**
-     * DOCUMENT ME!
+     * Clears the Proxy Object.
      */
     public static void clear() {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
@@ -307,9 +318,11 @@ public final class Proxy {
     }
 
     /**
-     * DOCUMENT ME!
+     * Loads a <code>Proxy</code> instance from System preferences. If there are no host and port proxy information
+     * <code>null</code> will be returned. If the return value is non-null at least the host and the port is
+     * initialised. Username, Password and Domain may be null.
      *
-     * @return  DOCUMENT ME!
+     * @return  the user's proxy settings or null if no settings present
      */
     public static Proxy fromSystem() {
         if (Boolean.getBoolean(System.getProperty(SYSTEM_PROXY_SET))) {
@@ -333,11 +346,10 @@ public final class Proxy {
     }
 
     /**
-     * DOCUMENT ME!
+     * main program; used for testing. // NOTE: use cli library if there shall be more (complex) options
      *
-     * @param  args  DOCUMENT ME!
+     * @param  args  args
      */
-    // NOTE: use cli library if there shall be more (complex) options
     @SuppressWarnings("CallToThreadDumpStack")
     public static void main(final String[] args) {
         try {
@@ -374,10 +386,11 @@ public final class Proxy {
     }
 
     /**
-     * DOCUMENT ME!
+     * shows Message. If there is no System.console it writes the meassage on OptionPane.Else it writes the message on
+     * Console as Error or Output.
      *
-     * @param  message  DOCUMENT ME!
-     * @param  error    DOCUMENT ME!
+     * @param  message  the message
+     * @param  error    true if it is a error message,false if not
      */
     private static void showMessage(final String message, final boolean error) {
         if (System.console() == null) {
@@ -396,7 +409,7 @@ public final class Proxy {
     }
 
     /**
-     * DOCUMENT ME!
+     * print usage.
      */
     private static void printUsage() {
         showMessage("Supported parameters are:\n\n"                  // NOI18N

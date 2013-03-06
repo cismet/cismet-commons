@@ -14,7 +14,7 @@ package de.cismet.netutil.tunnel;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * DOCUMENT ME!
+ * TunnelTargetGroup Class.
  *
  * @author   thorsten
  * @version  $Revision$, $Date$
@@ -37,8 +37,8 @@ public class TunnelTargetGroup {
     /**
      * Creates a new TunnelTargetGroup object.
      *
-     * @param  targetGroupkey     DOCUMENT ME!
-     * @param  targetExpressions  DOCUMENT ME!
+     * @param  targetGroupkey     target Group Key
+     * @param  targetExpressions  target Expressions
      */
     public TunnelTargetGroup(final String targetGroupkey, final String[] targetExpressions) {
         this.targetGroupkey = targetGroupkey;
@@ -48,47 +48,47 @@ public class TunnelTargetGroup {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>targetExpressions</code>.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>targetExpressions</code>
      */
     public String[] getTargetExpressions() {
         return targetExpressions;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for <code>targetExpressions</code>.
      *
-     * @param  targetExpressions  DOCUMENT ME!
+     * @param  targetExpressions  <code>targetExpressions</code>
      */
     public void setTargetExpressions(final String[] targetExpressions) {
         this.targetExpressions = targetExpressions;
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for <code>targetGroupkey</code>.
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>targetGroupkey</code>
      */
     public String getTargetGroupkey() {
         return targetGroupkey;
     }
 
     /**
-     * DOCUMENT ME!
+     * Setter for <code>targetGroupkey</code>.
      *
-     * @param  targetGroupkey  DOCUMENT ME!
+     * @param  targetGroupkey  <code>targetGroupkey</code>
      */
     public void setTargetGroupkey(final String targetGroupkey) {
         this.targetGroupkey = targetGroupkey;
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests whether the <code>String</code> matches or not.
      *
-     * @param   candidate  DOCUMENT ME!
+     * @param   candidate  given <code>String</code>
      *
-     * @return  DOCUMENT ME!
+     * @return  <code>true</code> if it matches
      */
     public boolean matches(final String candidate) {
         for (final String regex : targetExpressions) {

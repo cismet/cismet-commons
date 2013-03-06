@@ -15,7 +15,7 @@ package de.cismet.tools;
 import org.jdom.Element;
 
 /**
- * Bean Klasse zum speichern von Connection Infos.
+ * Bean Class to save Connection Infos.
  *
  * @author   hell
  * @version  $Revision$, $Date$
@@ -40,7 +40,7 @@ public class ConnectionInfo {
     /**
      * Creates a new ConnectionInfo object.
      *
-     * @param  element  DOCUMENT ME!
+     * @param  element  <code>Elemtent</code>
      */
     public ConnectionInfo(final Element element) {              // throws NullPointerException{
         driver = element.getChild("driverClass").getTextTrim(); // NOI18N
@@ -52,7 +52,7 @@ public class ConnectionInfo {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * Gibt die Driver Klasse zur\u00FCck.
+     * Returns the DriverClass.
      *
      * @return  DriverClass
      */
@@ -61,7 +61,7 @@ public class ConnectionInfo {
     }
 
     /**
-     * Setzt die Treiber Klasse.
+     * Sets the DriverClass.
      *
      * @param  driver  Driver Class
      */
@@ -70,7 +70,7 @@ public class ConnectionInfo {
     }
 
     /**
-     * Liefert die DB Url.
+     * Returns the DB Url.
      *
      * @return  DB Url
      */
@@ -79,7 +79,7 @@ public class ConnectionInfo {
     }
 
     /**
-     * Setzt die DB Url.
+     * Sets the DB Url.
      *
      * @param  url  DB Url
      */
@@ -88,16 +88,16 @@ public class ConnectionInfo {
     }
 
     /**
-     * Liefert den User.
+     * Getter for User.
      *
-     * @return  DB USer
+     * @return  DB User
      */
     public String getUser() {
         return user;
     }
 
     /**
-     * Setzt den User.
+     * Setter for User.
      *
      * @param  user  DB User
      */
@@ -106,9 +106,9 @@ public class ConnectionInfo {
     }
 
     /**
-     * Liefert Passwort.
+     * Returns Password.
      *
-     * @return  Pass
+     * @return  Password
      */
     public String getPass() {
         if ((pass != null) && pass.startsWith(PasswordEncrypter.CRYPT_PREFIX)) {
@@ -119,7 +119,7 @@ public class ConnectionInfo {
     }
 
     /**
-     * Setzt Passwort.
+     * Sets Password.
      *
      * @param  pass  Password
      */
@@ -128,9 +128,9 @@ public class ConnectionInfo {
     }
 
     /**
-     * DOCUMENT ME!
+     * Getter for Element.
      *
-     * @return  DOCUMENT ME!
+     * @return  Element
      */
     public Element getElement() {
         final Element e = new Element("dbConnectionInfo");                                       // NOI18N
