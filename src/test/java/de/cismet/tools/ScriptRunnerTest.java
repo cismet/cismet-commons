@@ -1,6 +1,6 @@
 package de.cismet.tools;
 
-import de.cismet.remotetesthelper.ws.rest.RemoteTestHelperClient;
+//import de.cismet.remotetesthelper.ws.rest.RemoteTestHelperClient;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -23,7 +23,7 @@ public class ScriptRunnerTest {
     private static Statement  STMT;
     
     private static final String TEST_DB_NAME = "simple_scriptrunner_test_db";
-    private static final RemoteTestHelperClient SERVICE = new RemoteTestHelperClient();
+//    private static final RemoteTestHelperClient SERVICE = new RemoteTestHelperClient();
     
     
     public ScriptRunnerTest() {
@@ -40,12 +40,12 @@ public class ScriptRunnerTest {
         p.put("log4j.rootLogger", "ALL,Remote");
         org.apache.log4j.PropertyConfigurator.configure(p);
 
-        if (! Boolean.valueOf(SERVICE.initCidsSystem(TEST_DB_NAME))) 
-        {
-            throw new IllegalStateException("cannot initilise test db");
-        }
+//        if (! Boolean.valueOf(SERVICE.initCidsSystem(TEST_DB_NAME))) 
+//        {
+//            throw new IllegalStateException("cannot initilise test db");
+//        }
         
-        CON  = SERVICE.getConnection(TEST_DB_NAME);
+//        CON  = SERVICE.getConnection(TEST_DB_NAME);
         STMT = CON.createStatement();    
     }
 
@@ -55,10 +55,10 @@ public class ScriptRunnerTest {
         STMT.close();
         CON.close();
         
-        if (! Boolean.valueOf(SERVICE.dropDatabase(TEST_DB_NAME))) 
-        {
-            throw new IllegalStateException("could not drop test db");
-        }
+//        if (! Boolean.valueOf(SERVICE.dropDatabase(TEST_DB_NAME))) 
+//        {
+//            throw new IllegalStateException("could not drop test db");
+//        }
     }
     
     // @Before
