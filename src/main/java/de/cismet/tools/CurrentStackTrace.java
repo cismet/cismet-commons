@@ -11,11 +11,14 @@
  */
 package de.cismet.tools;
 
+import de.cismet.commons.utils.StackUtils;
+
 /**
  * Class for the Stack Trace of the currently executing thread.
  *
- * @author   thorsten
- * @version  $Revision$, $Date$
+ * @author      thorsten
+ * @version     $Revision$, $Date$
+ * @deprecated  use {@link StackUtils#getDebuggingThrowable()} instead
  */
 public class CurrentStackTrace extends Throwable {
 
