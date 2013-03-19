@@ -11,8 +11,6 @@
  */
 package de.cismet.netutil.tunnel;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
 /**
  * TunnelTargetGroup Class.
  *
