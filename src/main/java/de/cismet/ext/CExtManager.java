@@ -78,6 +78,10 @@ public class CExtManager {
         final Collection<? extends CExtProvider> providers = Lookup.getDefault().lookupAll(CExtProvider.class);
 
         final ArrayList<T> result = new ArrayList<T>();
+	if(providers == null) {
+	    return result;
+	}
+
         for (final CExtProvider provider : providers) {
             if (provider.canProvide(c)) {
                 final Collection<? extends T> extensions = provider.provideExtensions(context);
