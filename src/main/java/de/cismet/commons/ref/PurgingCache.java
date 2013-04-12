@@ -31,7 +31,7 @@ import de.cismet.tools.Calculator;
  * @version  1.0
  */
 // NOTE: we do a separate implementation (not using the CalculationCache) as we don't want the users of this
-// implementation (the one of CalculationCache) to be confronted with changed behaviour
+// implementation (the ones of CalculationCache) to be confronted with changed behaviour
 public final class PurgingCache<K, V> {
 
     //~ Static fields/initializers ---------------------------------------------
