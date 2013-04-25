@@ -42,4 +42,29 @@ public interface Converter<FROM, TO> {
      * @throws  ConversionException  if any error occurs during conversion
      */
     FROM convertBackward(TO to, final String... params) throws ConversionException;
+
+    //~ Inner Interfaces -------------------------------------------------------
+
+    /**
+     * This interface is intended to be implemented by converter implementations that want to provide a rating on how
+     * well the converter may convert the provided data, or in other word, how well the format of the provided data fits
+     * to the capabilities of the converter.
+     *
+     * @author   martin.scholl@cismet.de
+     * @version  1.0
+     */
+    interface MatchRating<FROM> {
+
+        //~ Methods ------------------------------------------------------------
+
+        /**
+         * This operation shall provide a match rating for the given data. The rating shall be within 0 and 100
+         * inclusive where 0 means absolutely no match and 100 indicates a perfect match.
+         *
+         * @param   from  the data to rate
+         *
+         * @return  a rating between 0 and 100 (0 &lt;= rating &lt;= 100)
+         */
+        int rate(FROM from);
+    }
 }
