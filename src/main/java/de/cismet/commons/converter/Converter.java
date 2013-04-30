@@ -61,10 +61,11 @@ public interface Converter<FROM, TO> {
          * This operation shall provide a match rating for the given data. The rating shall be within 0 and 100
          * inclusive where 0 means absolutely no match and 100 indicates a perfect match.
          *
-         * @param   from  the data to rate
+         * @param   from    the data to rate
+         * @param   params  additional parameters that may be needed for the rating
          *
          * @return  a rating between 0 and 100 (0 &lt;= rating &lt;= 100)
          */
-        int rate(FROM from);
+        int rate(FROM from, String... params);
     }
 }
