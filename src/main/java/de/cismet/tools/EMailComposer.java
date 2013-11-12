@@ -28,8 +28,8 @@ import java.util.List;
 
 /**
  * EMailComposer launches the mail composing window of the user default mail client with the following message fields:
- * "to", "cc", "subject", "body". None of these fields have to be set, only some of the fields can be set or all fields
- * can be set.
+ * "to", "cc", "bcc", "subject", "body". None of these fields have to be set, only some of the fields can be set or all
+ * fields can be set.
  *
  * @author   Gilles Baatz
  * @version  $Revision$, $Date$
@@ -48,6 +48,7 @@ public class EMailComposer {
     private String body;
     private List<String> to;
     private List<String> cc;
+    private List<String> bcc;
     private boolean isFirstHeader;
 
     //~ Constructors -----------------------------------------------------------
@@ -58,6 +59,7 @@ public class EMailComposer {
     public EMailComposer() {
         to = new ArrayList<String>();
         cc = new ArrayList<String>();
+        bcc = new ArrayList<String>();
     }
 
     /**
@@ -73,6 +75,7 @@ public class EMailComposer {
         this.to = new ArrayList<String>();
         this.to.add(to);
         this.cc = new ArrayList<String>();
+        this.bcc = new ArrayList<String>();
     }
 
     /**
@@ -82,12 +85,18 @@ public class EMailComposer {
      * @param  body     DOCUMENT ME!
      * @param  to       DOCUMENT ME!
      * @param  cc       DOCUMENT ME!
+     * @param  bcc      DOCUMENT ME!
      */
-    public EMailComposer(final String subject, final String body, final List<String> to, final List<String> cc) {
+    public EMailComposer(final String subject,
+            final String body,
+            final List<String> to,
+            final List<String> cc,
+            final List<String> bcc) {
         this.subject = subject;
         this.body = body;
         this.to = to;
         this.cc = cc;
+        this.bcc = bcc;
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -100,6 +109,7 @@ public class EMailComposer {
         final StringBuilder uriBuilder = new StringBuilder("mailto:");
         appendTo(uriBuilder);
         appendCC(uriBuilder);
+        appendBCC(uriBuilder);
         appendSubject(uriBuilder);
         appendBody(uriBuilder);
 
@@ -135,6 +145,15 @@ public class EMailComposer {
      */
     private void appendCC(final StringBuilder uriBuilder) {
         appendMail(uriBuilder, "cc", cc);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  uriBuilder  DOCUMENT ME!
+     */
+    private void appendBCC(final StringBuilder uriBuilder) {
+        appendMail(uriBuilder, "bcc", bcc);
     }
 
     /**
@@ -294,6 +313,24 @@ public class EMailComposer {
     /**
      * DOCUMENT ME!
      *
+     * @return  DOCUMENT ME!
+     */
+    public List<String> getBcc() {
+        return bcc;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  bcc  DOCUMENT ME!
+     */
+    public void setBcc(final List<String> bcc) {
+        this.bcc = bcc;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
      * @param  to  DOCUMENT ME!
      */
     public void addTo(final String... to) {
@@ -312,6 +349,16 @@ public class EMailComposer {
             this.cc.add(mail);
         }
     }
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  bcc  DOCUMENT ME!
+     */
+    public void addBCC(final String... bcc) {
+        for (final String mail : bcc) {
+            this.bcc.add(mail);
+        }
+    }
 
     /**
      * DOCUMENT ME!
@@ -325,7 +372,7 @@ public class EMailComposer {
         mail.setBody("bla bla \n bla? \n\r ??? \r\n win newline");
         mail.setSubject("bla bla bla? & ???");
         mail.addTo("hehf@ifhf.de", "guwgfuirwe@ihwfco.de");
-        mail.addCC("hal+&lo@test.de", "ui_i_u_aa@tralalala.com");
+        mail.addBCC("hal+&lo@test.de", "ui_i_u_aa@tralalala.com");
 
         mail.compose();
     }
