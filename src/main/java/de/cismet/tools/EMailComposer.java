@@ -168,7 +168,7 @@ public class EMailComposer {
             uriBuilder.append(headerSeparator()).append(header).append("=");
             uriBuilder.append(urlEncode(mailAddresses.get(0)));
             for (int i = 1; i < mailAddresses.size(); i++) {
-                uriBuilder.append(",");
+                uriBuilder.append(";");
                 uriBuilder.append(urlEncode(mailAddresses.get(i)));
             }
         }
