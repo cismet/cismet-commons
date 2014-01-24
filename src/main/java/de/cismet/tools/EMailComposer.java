@@ -117,6 +117,7 @@ public class EMailComposer {
             final String buildedString = uriBuilder.toString();
             System.out.println(buildedString);
             if (buildedString.equals("mailto:")) {
+                // opens an empty mail
                 Desktop.getDesktop().mail();
             } else {
                 final URI mailtoURI = new URI(uriBuilder.toString());
@@ -378,7 +379,7 @@ public class EMailComposer {
         final EMailComposer mail = new EMailComposer();
         mail.setBody("bla bla \n bla? \n\r ??? \r\n win newline");
         mail.setSubject("bla bla bla? & ???");
-        mail.addTo("hehf@ifhf.de", "guwgfuirwe@ihwfco.de");
+        mail.addTo("hehf@ifhf.de", "guwgfuirwe@ihwfco.de;guwgfuirwe2@ihwfco.de");
         mail.addBCC("hal+&lo@test.de", "ui_i_u_aa@tralalala.com");
 
         mail.compose();
