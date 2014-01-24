@@ -157,14 +157,14 @@ public class EMailComposer {
     }
 
     /**
-     * DOCUMENT ME!
+     * Append mail addresses from a List to a SringBuilder. Those addresses will be separated by semicolons.
      *
      * @param  uriBuilder     DOCUMENT ME!
      * @param  header         DOCUMENT ME!
      * @param  mailAddresses  DOCUMENT ME!
      */
     private void appendMail(final StringBuilder uriBuilder, final String header, final List<String> mailAddresses) {
-        if (!mailAddresses.isEmpty()) {
+        if ((mailAddresses != null) && !mailAddresses.isEmpty()) {
             uriBuilder.append(headerSeparator()).append(header).append("=");
             uriBuilder.append(urlEncode(mailAddresses.get(0)));
             for (int i = 1; i < mailAddresses.size(); i++) {
@@ -335,7 +335,9 @@ public class EMailComposer {
      */
     public void addTo(final String... to) {
         for (final String mail : to) {
-            this.to.add(mail);
+            if (mail != null) {
+                this.to.add(mail);
+            }
         }
     }
 
@@ -346,9 +348,12 @@ public class EMailComposer {
      */
     public void addCC(final String... cc) {
         for (final String mail : cc) {
-            this.cc.add(mail);
+            if (mail != null) {
+                this.cc.add(mail);
+            }
         }
     }
+
     /**
      * DOCUMENT ME!
      *
@@ -356,7 +361,9 @@ public class EMailComposer {
      */
     public void addBCC(final String... bcc) {
         for (final String mail : bcc) {
-            this.bcc.add(mail);
+            if (mail != null) {
+                this.bcc.add(mail);
+            }
         }
     }
 
