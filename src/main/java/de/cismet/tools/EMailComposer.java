@@ -117,6 +117,7 @@ public class EMailComposer {
             final String buildedString = uriBuilder.toString();
             System.out.println(buildedString);
             if (buildedString.equals("mailto:")) {
+                // opens an empty mail
                 Desktop.getDesktop().mail();
             } else {
                 final URI mailtoURI = new URI(uriBuilder.toString());
@@ -157,18 +158,18 @@ public class EMailComposer {
     }
 
     /**
-     * DOCUMENT ME!
+     * Append mail addresses from a List to a SringBuilder. Those addresses will be separated by semicolons.
      *
      * @param  uriBuilder     DOCUMENT ME!
      * @param  header         DOCUMENT ME!
      * @param  mailAddresses  DOCUMENT ME!
      */
     private void appendMail(final StringBuilder uriBuilder, final String header, final List<String> mailAddresses) {
-        if (!mailAddresses.isEmpty()) {
+        if ((mailAddresses != null) && !mailAddresses.isEmpty()) {
             uriBuilder.append(headerSeparator()).append(header).append("=");
             uriBuilder.append(urlEncode(mailAddresses.get(0)));
             for (int i = 1; i < mailAddresses.size(); i++) {
-                uriBuilder.append(",");
+                uriBuilder.append(";");
                 uriBuilder.append(urlEncode(mailAddresses.get(i)));
             }
         }
@@ -335,7 +336,9 @@ public class EMailComposer {
      */
     public void addTo(final String... to) {
         for (final String mail : to) {
-            this.to.add(mail);
+            if (mail != null) {
+                this.to.add(mail);
+            }
         }
     }
 
@@ -346,9 +349,12 @@ public class EMailComposer {
      */
     public void addCC(final String... cc) {
         for (final String mail : cc) {
-            this.cc.add(mail);
+            if (mail != null) {
+                this.cc.add(mail);
+            }
         }
     }
+
     /**
      * DOCUMENT ME!
      *
@@ -356,7 +362,9 @@ public class EMailComposer {
      */
     public void addBCC(final String... bcc) {
         for (final String mail : bcc) {
-            this.bcc.add(mail);
+            if (mail != null) {
+                this.bcc.add(mail);
+            }
         }
     }
 
@@ -371,7 +379,7 @@ public class EMailComposer {
         final EMailComposer mail = new EMailComposer();
         mail.setBody("bla bla \n bla? \n\r ??? \r\n win newline");
         mail.setSubject("bla bla bla? & ???");
-        mail.addTo("hehf@ifhf.de", "guwgfuirwe@ihwfco.de");
+        mail.addTo("hehf@ifhf.de", "guwgfuirwe@ihwfco.de;guwgfuirwe2@ihwfco.de");
         mail.addBCC("hal+&lo@test.de", "ui_i_u_aa@tralalala.com");
 
         mail.compose();
