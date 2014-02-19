@@ -5,7 +5,7 @@
 *              ... and it just works.
 *
 ****************************************************/
-package de.cismet.tools;
+package de.cismet.commons.utils;
 
 import org.apache.log4j.Logger;
 
@@ -18,8 +18,6 @@ import java.security.KeyStore;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -29,31 +27,25 @@ import java.util.jar.JarInputStream;
  * @author   Gilles Baatz
  * @version  $Revision$, $Date$
  */
-public class JarVerifier {
+public class JarUtils {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    /** Cache for the files whose signature has already been verified. */
-    private static final transient Set<File> verified = new HashSet<File>(100);
-    private static final Logger LOG = Logger.getLogger(JarVerifier.class);
+    private static final Logger LOG = Logger.getLogger(JarUtils.class);
 
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * No longer uses the maven jar plugin sign-verify implementation to check for validity of a signature because the
-     * plugin does not support checking for a particular signature. This implementation checks every single class or the
-     * given jar, but classes only, no other resources. It validates whether all classes have been signed with the
-     * cismet signature, defined via the <code>de.cismet.keystore.path</code> and <code>de.cismet.keystore.pass</code>
-     * properties.
+     * This method checks every single class of the given jar, but classes only, no other resources. It validates
+     * whether all classes have been signed with a signature, defined via the arguments <code>keystorePath</code> and
+     * <code>alias</code>.
      *
-     * @param   toSign          the jar file to verify
-     * @param   keystorePath    DOCUMENT ME!
-     * @param   keystorePass    DOCUMENT ME!
-     * @param   alias           DOCUMENT ME!
-     * @param   checkSignature  DOCUMENT ME!
-     * @param   verbose         DOCUMENT ME!
+     * @param   toSign        the jar file to verify
+     * @param   keystorePath  DOCUMENT ME!
+     * @param   keystorePass  DOCUMENT ME!
+     * @param   alias         DOCUMENT ME!
      *
-     * @return  true if checkSignature is true and all class files of the given jar are signed with the cismet
+     * @return  true if checkSignature is true and all class files of the given jar are signed with the specified
      *          signature, false in any other case
      *
      * @throws  IllegalArgumentException  DOCUMENT ME!
@@ -61,44 +53,18 @@ public class JarVerifier {
     public static boolean isSigned(final File toSign,
             final String keystorePath,
             final String keystorePass,
-            final String alias,
-            final boolean checkSignature,
-            final boolean verbose) {
+            final String alias) {
         if (toSign == null) {
             throw new IllegalArgumentException("toSign file must not be null"); // NOI18N
-        }
-
-        if (!checkSignature) {
-            final String message = "not verifying signature because checkSignature is false"; // NOI18N
-            if (verbose) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(message);
-                }
-            } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(message);
-                }
-            }
-
-            return false;
         }
 
         if (LOG.isInfoEnabled()) {
             LOG.info("verifying signature for: " + toSign); // NOI18N
         }
 
-        // the fastest way out, avoids multiple checks on the same file
-        if (verified.contains(toSign)) {
-            if (LOG.isInfoEnabled()) {
-                LOG.info("signature verified: " + toSign); // NOI18N
-            }
-
-            return true;
-        }
-
         if ((keystorePass == null) || (keystorePath == null)) {
             LOG.warn(
-                "Cannot verify signature because either de.cismet.keystore.path or de.cismet.keystore.pass is not set"); // NOI18N
+                "Cannot verify signature because either keystorePath or keystorePass is null"); // NOI18N
 
             return false;
         }
@@ -107,8 +73,8 @@ public class JarVerifier {
             final JarInputStream jis = new JarInputStream(new BufferedInputStream(new FileInputStream(toSign)), true);
             final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore.load(new BufferedInputStream(new FileInputStream(keystorePath)), keystorePass.toCharArray());
-            final Certificate cismet = keystore.getCertificate(alias); // NOI18N
-            final PublicKey key = cismet.getPublicKey();
+            final Certificate certificate = keystore.getCertificate(alias);
+            final PublicKey key = certificate.getPublicKey();
 
             JarEntry entry;
             while ((entry = jis.getNextJarEntry()) != null) {
@@ -134,7 +100,7 @@ public class JarVerifier {
                 } else {
                     boolean isVerified = false;
                     for (final Certificate cert : certs) {
-                        if (cert.equals(cismet)) {
+                        if (cert.equals(certificate)) {
                             try {
                                 cert.verify(key);
                                 isVerified = true;
@@ -165,15 +131,12 @@ public class JarVerifier {
             }
         } catch (final Exception e) {
             LOG.warn("cannot verify signature: " + toSign, e); // NOI18N
-
             return false;
         }
 
         if (LOG.isInfoEnabled()) {
             LOG.info("signature verified: " + toSign); // NOI18N
         }
-
-        verified.add(toSign);
 
         return true;
     }
