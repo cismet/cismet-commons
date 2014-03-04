@@ -13,12 +13,14 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 
 import java.security.KeyStore;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
 
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
 /**
@@ -34,6 +36,30 @@ public class JarUtils {
     private static final Logger LOG = Logger.getLogger(JarUtils.class);
 
     //~ Methods ----------------------------------------------------------------
+
+    /**
+     * A simple check if a file is a Jar and contains the META-INF/MANIFEST.MF file.
+     *
+     * @param   file  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public static boolean checkIfJarWithManifest(final File file) throws IOException {
+        try {
+            final JarFile jarFile = new JarFile(file);
+            final JarEntry entry = jarFile.getJarEntry("META-INF/MANIFEST.MF");
+            if (entry != null) {
+                // META-INF/MANIFEST.MF exists
+                return true;
+            }
+            return false;
+        } catch (java.util.zip.ZipException e) {
+            // the uploaded file is NOT JAR file
+            return false;
+        }
+    }
 
     /**
      * This method checks every single class of the given jar, but classes only, no other resources. It validates
