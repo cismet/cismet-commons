@@ -113,15 +113,14 @@ public final class CismetExecutors {
      * <ul>
      *   <li>a minimum of <code>0</code> threads if there are no tasks</li>
      *   <li>a maximum of <code>maxThreads</code></li>
-     *   <li>a miximum of <code>(maxThreads + 1) * 2 / 3</code> tasks queued for execution</li>
+     *   <li>a maximum of <code>(maxThreads + 1) * 2 / 3</code> tasks queued for execution</li>
      *   <li>threads will die after 180 seconds if they are idle</li>
      *   <li>an {@link AbortPolicy} as {@link RejectedExecutionHandler} if the given handler is <code>null</code></li>
      * </ul>
      * <br/>
-     * This means that this thread pool has faith in the scheduling capabilities of the underlying system because of its
-     * rather small queue size. Additionally keep in mind that tasks are actually rejected if there is too much work
-     * load! By default the <code>AbortPolicy</code> kicks in then which means that an
-     * {@link RejectedExecutionException} is thrown.
+     * This means that this thread pool will not accept more than <code>maxThreads + ((maxThreads + 1) * 2 / 3)</code>
+     * at once for execution. Any supernumerous threads are rejected! By default the <code>AbortPolicy</code> kicks in
+     * then which means that an {@link RejectedExecutionException} is thrown.
      *
      * @param   maxThreads     max amount of threads this {@link ExecutorService} will ever create
      * @param   threadFactory  the <code>ThreadFactory</code> that will be responsible for the creation of new threads
@@ -135,14 +134,17 @@ public final class CismetExecutors {
     public static ExecutorService newCachedLimitedThreadPool(final int maxThreads,
             final ThreadFactory threadFactory,
             final RejectedExecutionHandler rejectHandler) {
-        return new UEHThreadPoolExecutor(
-                0,
+        final UEHThreadPoolExecutor e = new UEHThreadPoolExecutor(
+                maxThreads,
                 maxThreads,
                 180, // shrink in size after 3 minutes again
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<Runnable>((maxThreads + 1) * 2 / 3, true),
                 threadFactory,
                 (rejectHandler == null) ? new AbortPolicy() : rejectHandler);
+        e.allowCoreThreadTimeOut(true);
+
+        return e;
     }
 
     /**
