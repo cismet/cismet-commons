@@ -76,17 +76,24 @@ public final class CismetExecutors {
     /**
      * Calls
      * {@link #newCachedLimitedThreadPool(int, java.util.concurrent.ThreadFactory, java.util.concurrent.RejectedExecutionHandler)}
-     * with a <code>null ThreadFactory</code> and a <code>null RejectedExecutionHandler</code>.
+     * with a <code>null RejectedExecutionHandler</code> and a <code>ThreadFactory</code> that is created using the 
+     * <code>prefix</code> parameter as name of the ThreadFactory.
      *
      * @param   maxThreads  max amount of threads this {@link ExecutorService} will ever create
+     * @param   prefix      prefix used for the generation of the {@link ThreadFactory}
      *
      * @return  the new <code>ExecutorService</code>
      *
      * @see     #newCachedLimitedThreadPool(int, java.util.concurrent.ThreadFactory,
      *          java.util.concurrent.RejectedExecutionHandler)
      */
-    public static ExecutorService newCachedLimitedThreadPool(final int maxThreads) {
-        return newCachedLimitedThreadPool(maxThreads, null, null);
+    public static ExecutorService newCachedLimitedThreadPool(final int maxThreads, final String prefix) {
+        final SecurityManager s = System.getSecurityManager();
+        final ThreadGroup parent = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+
+        final ThreadGroup threadGroup = new ThreadGroup(parent, prefix);
+        final ThreadFactory factory = new CismetConcurrency.CismetThreadFactory(threadGroup, prefix, null);
+        return newCachedLimitedThreadPool(maxThreads, factory, null);
     }
 
     /**
