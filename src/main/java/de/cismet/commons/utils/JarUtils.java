@@ -76,7 +76,7 @@ public class JarUtils {
 
     /**
      * Removes the DSA, RSA and SF files from the META-INF folder from a zip file.
-     * 
+     *
      * <p><b>Warning: Do not use with Java 6 or older.</b></p>
      *
      * @param  file  DOCUMENT ME!
