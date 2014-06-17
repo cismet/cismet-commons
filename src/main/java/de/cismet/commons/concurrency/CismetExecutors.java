@@ -76,7 +76,7 @@ public final class CismetExecutors {
     /**
      * Calls
      * {@link #newCachedLimitedThreadPool(int, java.util.concurrent.ThreadFactory, java.util.concurrent.RejectedExecutionHandler)}
-     * with a <code>null RejectedExecutionHandler</code> and a <code>ThreadFactory</code> that is created using the 
+     * with a <code>null RejectedExecutionHandler</code> and a <code>ThreadFactory</code> that is created using the
      * <code>prefix</code> parameter as name of the ThreadFactory.
      *
      * @param   maxThreads  max amount of threads this {@link ExecutorService} will ever create
@@ -336,7 +336,8 @@ public final class CismetExecutors {
     /**
      * Extension of the {@link ThreadPoolExecutor} that keeps track of the executed tasks and informs the
      * {@link UncaughtExceptionHandler} associated with the executing thread in case of an exception during task
-     * execution.
+     * execution. Important! Threads executed by this class must handle {@link CancellationException} correctly, because
+     * the {@link UncaughtExceptionHandler} is not informed in case the {@link Future} was cancelled.
      *
      * @version  1.0
      */
@@ -398,7 +399,9 @@ public final class CismetExecutors {
             if ((t == null) && (r instanceof Future)) {
                 Throwable thrown = null;
                 try {
-                    ((Future)r).get();
+                    if (!((Future)r).isCancelled()) {
+                        ((Future)r).get();
+                    }
                 } catch (final InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 } catch (final ExecutionException ex) {
