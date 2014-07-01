@@ -10,13 +10,12 @@ package de.cismet.commons.concurrency;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -343,10 +342,6 @@ public final class CismetExecutors {
      */
     public static final class UEHThreadPoolExecutor extends ThreadPoolExecutor {
 
-        //~ Instance fields ----------------------------------------------------
-
-        private final transient Map<Runnable, Thread> runnableToThreadMap;
-
         //~ Constructors -------------------------------------------------------
 
         /**
@@ -375,27 +370,12 @@ public final class CismetExecutors {
                 final ThreadFactory threadFactory,
                 final RejectedExecutionHandler rejectHandler) {
             super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, rejectHandler);
-
-            this.runnableToThreadMap = new HashMap<Runnable, Thread>();
         }
 
         //~ Methods ------------------------------------------------------------
 
         @Override
-        protected void beforeExecute(final Thread t, final Runnable r) {
-            super.beforeExecute(t, r);
-
-            runnableToThreadMap.put(r, t);
-        }
-
-        @Override
         protected void afterExecute(final Runnable r, final Throwable t) {
-            super.afterExecute(r, t);
-
-            final Thread thread = runnableToThreadMap.remove(r);
-
-            assert thread != null : "expected associated thread"; // NOI18N
-
             if ((t == null) && (r instanceof Future)) {
                 Throwable thrown = null;
                 try {
@@ -411,6 +391,8 @@ public final class CismetExecutors {
                 }
 
                 if (thrown != null) {
+                    // the current thread is actually the one that executes the task
+                    final Thread thread = Thread.currentThread();
                     final Thread.UncaughtExceptionHandler handler = thread.getUncaughtExceptionHandler();
                     if (handler == null) {
                         final Thread.UncaughtExceptionHandler groupHandler = thread.getThreadGroup();
