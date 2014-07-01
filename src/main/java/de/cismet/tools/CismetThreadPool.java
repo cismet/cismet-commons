@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 import de.cismet.commons.concurrency.CismetConcurrency;
+import de.cismet.commons.concurrency.CismetExecutors;
 
 /**
  * Cached ThreadPool for all (Swing)Workers in one cismet application.
@@ -29,8 +30,8 @@ public final class CismetThreadPool {
     //~ Static fields/initializers ---------------------------------------------
 
     public static final int NUMBER_OF_PROCESSORS = Runtime.getRuntime().availableProcessors();
-    private static final ExecutorService WORKER_POOL = Executors.newCachedThreadPool();
-    private static final ExecutorService SINGLE_WORKER_POOL = Executors.newSingleThreadExecutor();
+    private static final ExecutorService WORKER_POOL = CismetExecutors.newCachedThreadPool();
+    private static final ExecutorService SINGLE_WORKER_POOL = CismetExecutors.newSingleThreadExecutor();
 
     //~ Methods ----------------------------------------------------------------
 

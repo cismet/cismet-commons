@@ -10,13 +10,12 @@ package de.cismet.commons.concurrency;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -76,17 +75,24 @@ public final class CismetExecutors {
     /**
      * Calls
      * {@link #newCachedLimitedThreadPool(int, java.util.concurrent.ThreadFactory, java.util.concurrent.RejectedExecutionHandler)}
-     * with a <code>null ThreadFactory</code> and a <code>null RejectedExecutionHandler</code>.
+     * with a <code>null RejectedExecutionHandler</code> and a <code>ThreadFactory</code> that is created using the
+     * <code>prefix</code> parameter as name of the ThreadFactory.
      *
      * @param   maxThreads  max amount of threads this {@link ExecutorService} will ever create
+     * @param   prefix      prefix used for the generation of the {@link ThreadFactory}
      *
      * @return  the new <code>ExecutorService</code>
      *
      * @see     #newCachedLimitedThreadPool(int, java.util.concurrent.ThreadFactory,
      *          java.util.concurrent.RejectedExecutionHandler)
      */
-    public static ExecutorService newCachedLimitedThreadPool(final int maxThreads) {
-        return newCachedLimitedThreadPool(maxThreads, null, null);
+    public static ExecutorService newCachedLimitedThreadPool(final int maxThreads, final String prefix) {
+        final SecurityManager s = System.getSecurityManager();
+        final ThreadGroup parent = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+
+        final ThreadGroup threadGroup = new ThreadGroup(parent, prefix);
+        final ThreadFactory factory = new CismetConcurrency.CismetThreadFactory(threadGroup, prefix, null);
+        return newCachedLimitedThreadPool(maxThreads, factory, null);
     }
 
     /**
@@ -113,15 +119,14 @@ public final class CismetExecutors {
      * <ul>
      *   <li>a minimum of <code>0</code> threads if there are no tasks</li>
      *   <li>a maximum of <code>maxThreads</code></li>
-     *   <li>a miximum of <code>(maxThreads + 1) * 2 / 3</code> tasks queued for execution</li>
+     *   <li>a maximum of <code>(maxThreads + 1) * 2 / 3</code> tasks queued for execution</li>
      *   <li>threads will die after 180 seconds if they are idle</li>
      *   <li>an {@link AbortPolicy} as {@link RejectedExecutionHandler} if the given handler is <code>null</code></li>
      * </ul>
      * <br/>
-     * This means that this thread pool has faith in the scheduling capabilities of the underlying system because of its
-     * rather small queue size. Additionally keep in mind that tasks are actually rejected if there is too much work
-     * load! By default the <code>AbortPolicy</code> kicks in then which means that an
-     * {@link RejectedExecutionException} is thrown.
+     * This means that this thread pool will not accept more than <code>maxThreads + ((maxThreads + 1) * 2 / 3)</code>
+     * at once for execution. Any supernumerous threads are rejected! By default the <code>AbortPolicy</code> kicks in
+     * then which means that an {@link RejectedExecutionException} is thrown.
      *
      * @param   maxThreads     max amount of threads this {@link ExecutorService} will ever create
      * @param   threadFactory  the <code>ThreadFactory</code> that will be responsible for the creation of new threads
@@ -135,14 +140,17 @@ public final class CismetExecutors {
     public static ExecutorService newCachedLimitedThreadPool(final int maxThreads,
             final ThreadFactory threadFactory,
             final RejectedExecutionHandler rejectHandler) {
-        return new UEHThreadPoolExecutor(
-                0,
+        final UEHThreadPoolExecutor e = new UEHThreadPoolExecutor(
+                maxThreads,
                 maxThreads,
                 180, // shrink in size after 3 minutes again
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<Runnable>((maxThreads + 1) * 2 / 3, true),
                 threadFactory,
                 (rejectHandler == null) ? new AbortPolicy() : rejectHandler);
+        e.allowCoreThreadTimeOut(true);
+
+        return e;
     }
 
     /**
@@ -327,15 +335,12 @@ public final class CismetExecutors {
     /**
      * Extension of the {@link ThreadPoolExecutor} that keeps track of the executed tasks and informs the
      * {@link UncaughtExceptionHandler} associated with the executing thread in case of an exception during task
-     * execution.
+     * execution. Important! Threads executed by this class must handle {@link CancellationException} correctly, because
+     * the {@link UncaughtExceptionHandler} is not informed in case the {@link Future} was cancelled.
      *
      * @version  1.0
      */
     public static final class UEHThreadPoolExecutor extends ThreadPoolExecutor {
-
-        //~ Instance fields ----------------------------------------------------
-
-        private final transient Map<Runnable, Thread> runnableToThreadMap;
 
         //~ Constructors -------------------------------------------------------
 
@@ -365,31 +370,18 @@ public final class CismetExecutors {
                 final ThreadFactory threadFactory,
                 final RejectedExecutionHandler rejectHandler) {
             super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, rejectHandler);
-
-            this.runnableToThreadMap = new HashMap<Runnable, Thread>();
         }
 
         //~ Methods ------------------------------------------------------------
 
         @Override
-        protected void beforeExecute(final Thread t, final Runnable r) {
-            super.beforeExecute(t, r);
-
-            runnableToThreadMap.put(r, t);
-        }
-
-        @Override
         protected void afterExecute(final Runnable r, final Throwable t) {
-            super.afterExecute(r, t);
-
-            final Thread thread = runnableToThreadMap.remove(r);
-
-            assert thread != null : "expected associated thread"; // NOI18N
-
             if ((t == null) && (r instanceof Future)) {
                 Throwable thrown = null;
                 try {
-                    ((Future)r).get();
+                    if (!((Future)r).isCancelled()) {
+                        ((Future)r).get();
+                    }
                 } catch (final InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 } catch (final ExecutionException ex) {
@@ -399,6 +391,8 @@ public final class CismetExecutors {
                 }
 
                 if (thrown != null) {
+                    // the current thread is actually the one that executes the task
+                    final Thread thread = Thread.currentThread();
                     final Thread.UncaughtExceptionHandler handler = thread.getUncaughtExceptionHandler();
                     if (handler == null) {
                         final Thread.UncaughtExceptionHandler groupHandler = thread.getThreadGroup();

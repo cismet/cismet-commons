@@ -91,6 +91,7 @@ public final class CismetConcurrency implements ShutdownHook {
             CismetConcurrency cc = INSTANCES.get(group);
             if (cc == null) {
                 cc = new CismetConcurrency(group);
+                INSTANCES.put(group, cc);
             }
 
             return cc;
