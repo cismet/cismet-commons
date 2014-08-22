@@ -1,12 +1,10 @@
-/**
- * *************************************************
- *
- * cismet GmbH, Saarbruecken, Germany
- * 
-* ... and it just works.
- * 
-***************************************************
- */
+/***************************************************
+*
+* cismet GmbH, Saarbruecken, Germany
+*
+*              ... and it just works.
+*
+****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -48,26 +46,29 @@ import de.cismet.commons.security.exceptions.CannotReadFromURLException;
 import de.cismet.netutil.Proxy;
 
 /**
- * The SimpleHTTPAccessHandler is a HTTPAccessHandler that uses no Credential Provider.
- * It can therefore be used only for resources with no authentication
+ * The SimpleHTTPAccessHandler is a HTTPAccessHandler that uses no Credential Provider. It can therefore be used only
+ * for resources with no authentication
  *
- * @author spuhl, thorsten
- * @version $Revision$, $Date$
+ * @author   spuhl, thorsten
+ * @version  $Revision$, $Date$
  */
 public class SimpleHttpAccessHandler extends AbstractAccessHandler {
 
     //~ Static fields/initializers ---------------------------------------------
-    public static ACCESS_METHODS[] SUPPORTED_ACCESS_METHODS = new ACCESS_METHODS[]{
-        ACCESS_METHODS.GET_REQUEST,
-        ACCESS_METHODS.POST_REQUEST
-    };
+
+    public static ACCESS_METHODS[] SUPPORTED_ACCESS_METHODS = new ACCESS_METHODS[] {
+            ACCESS_METHODS.GET_REQUEST,
+            ACCESS_METHODS.POST_REQUEST
+        };
     public static final ACCESS_HANDLER_TYPES ACCESS_HANDLER_TYPE = ACCESS_HANDLER_TYPES.HTTP;
 
     //~ Instance fields --------------------------------------------------------
+
     private final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(this.getClass());
     private transient Proxy proxy;
 
     //~ Constructors -----------------------------------------------------------
+
     /**
      * Creates a new DefaultHTTPAccessHandler object.
      */
@@ -76,6 +77,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
     }
 
     //~ Methods ----------------------------------------------------------------
+
     @Override
     public InputStream doRequest(final URL url,
             final Reader requestParameter,
@@ -100,7 +102,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
             case POST_REQUEST_NO_TUNNEL:
             case POST_REQUEST: {
                 httpMethod = new PostMethod(url.toString());
-                ((PostMethod) httpMethod).setRequestEntity(new StringRequestEntity(
+                ((PostMethod)httpMethod).setRequestEntity(new StringRequestEntity(
                         parameter.toString(),
                         "text/xml",
                         "UTF-8"));                                                          // NOI18N
@@ -144,17 +146,17 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
                 if (parameter.length() > 0) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("No method specified, switching to '" + ACCESS_METHODS.GET_REQUEST
-                                + "'. URI used: '"
-                                + url.toString() + "?" + parameter + "'."); // NOI18N
+                                    + "'. URI used: '"
+                                    + url.toString() + "?" + parameter + "'."); // NOI18N
                     }
 
-                        // httpMethod = new PostMethod(url.toString()); ((PostMethod) httpMethod).setRequestEntity(new
+                    // httpMethod = new PostMethod(url.toString()); ((PostMethod) httpMethod).setRequestEntity(new
                     // StringRequestEntity(parameter.toString(), "text/xml", "UTF-8"));
                     httpMethod = new GetMethod(url.toString() + "?" + parameter);                         // NOI18N
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("No method specified, switching to '" + ACCESS_METHODS.GET_REQUEST
-                                + "'. No parameters specified. URI used: '" + url.toString() + "'."); // NOI18N
+                                    + "'. No parameters specified. URI used: '" + url.toString() + "'."); // NOI18N
                     }
 
                     httpMethod = new GetMethod(url.toString());
@@ -182,7 +184,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
                     LOG.debug("HTTP status code from server: OK.");                                 // NOI18N
                 }
                 if ((method == ACCESS_METHODS.HEAD_REQUEST) || (method == ACCESS_METHODS.HEAD_REQUEST_NO_TUNNEL)) {
-                        // returning the HTTP Header as InputStream, because some valid InputStream has to be returned.
+                    // returning the HTTP Header as InputStream, because some valid InputStream has to be returned.
                     // The HTTP body can not be returned because it does not exist for HEAD requests.
                     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -202,14 +204,14 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
             default: {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Unhandled HTTP status code: " + statuscode + " ("
-                            + HttpStatus.getStatusText(statuscode)
-                            + ")"); // NOI18N
+                                + HttpStatus.getStatusText(statuscode)
+                                + ")"); // NOI18N
                 }
 
                 throw new BadHttpStatusCodeException(httpMethod.getURI().toString(),
-                        statuscode,
-                        HttpStatus.getStatusText(statuscode),
-                        httpMethod.getResponseBodyAsString()); // NOI18N
+                    statuscode,
+                    HttpStatus.getStatusText(statuscode),
+                    httpMethod.getResponseBodyAsString()); // NOI18N
             }
         }
     }
@@ -250,13 +252,13 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
             default: {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Unhandled HTTP status code: " + statuscode + " (" + HttpStatus.getStatusText(statuscode)
-                            + ")."); // NOI18N
+                                + ")."); // NOI18N
                 }
 
                 throw new BadHttpStatusCodeException(postMethod.getURI().toString(),
-                        statuscode,
-                        HttpStatus.getStatusText(statuscode),
-                        postMethod.getResponseBodyAsString()); // NOI18N
+                    statuscode,
+                    HttpStatus.getStatusText(statuscode),
+                    postMethod.getResponseBodyAsString()); // NOI18N
             }
         }
     }
@@ -279,9 +281,9 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
     /**
      * DOCUMENT ME!
      *
-     * @param url DOCUMENT ME!
+     * @param   url  DOCUMENT ME!
      *
-     * @return DOCUMENT ME!
+     * @return  DOCUMENT ME!
      */
     protected HttpClient getSecurityEnabledHttpClient(final URL url) {
         if (LOG.isDebugEnabled()) {
@@ -290,14 +292,14 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
         final HttpClient client = getConfiguredHttpClient();
         client.getParams().setParameter(CredentialsProvider.PROVIDER, new CredentialsProvider() {
 
-            @Override
-            public Credentials getCredentials(final AuthScheme scheme,
-                    final String host,
-                    final int port,
-                    final boolean proxy) throws CredentialsNotAvailableException {
-                return null;
-            }
-        });
+                @Override
+                public Credentials getCredentials(final AuthScheme scheme,
+                        final String host,
+                        final int port,
+                        final boolean proxy) throws CredentialsNotAvailableException {
+                    return null;
+                }
+            });
 
         return client;
     }
@@ -305,7 +307,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
     /**
      * Returns a configured HttpClient with (if set) proxy settings.
      *
-     * @return configured HttpClient
+     * @return  configured HttpClient
      */
     protected HttpClient getConfiguredHttpClient() {
         if (LOG.isDebugEnabled()) {
