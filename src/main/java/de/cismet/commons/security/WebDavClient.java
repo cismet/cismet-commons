@@ -138,19 +138,22 @@ public class WebDavClient {
      *
      * @param   path  DOCUMENT ME!
      *
+     * @return  DOCUMENT ME!
+     *
      * @throws  MalformedURLException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
      * @throws  HttpException          DOCUMENT ME!
      */
-    public void delete(final String path) throws MalformedURLException, IOException, HttpException {
+    public int delete(final String path) throws MalformedURLException, IOException, HttpException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("delete: " + path);
         }
         final DavMethod put = new DeleteMethod(path);
-        client.executeMethod(put);
+        final int responseCode = client.executeMethod(put);
 
         put.releaseConnection();
+        return responseCode;
     }
 
     /**
@@ -185,7 +188,7 @@ public class WebDavClient {
      * @throws  IOException            DOCUMENT ME!
      * @throws  HttpException          DOCUMENT ME!
      */
-    public void put(final String path, final InputStream input) throws MalformedURLException,
+    public int put(final String path, final InputStream input) throws MalformedURLException,
         IOException,
         HttpException {
         lazyInitialise(path);
@@ -196,8 +199,9 @@ public class WebDavClient {
         final RequestEntity requestEntity = new InputStreamRequestEntity(input);
 
         put.setRequestEntity(requestEntity);
-        client.executeMethod(put);
+        final int responseCode = client.executeMethod(put);
         put.releaseConnection();
+        return responseCode;
     }
 
     /**
