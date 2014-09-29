@@ -97,6 +97,23 @@ public class WebDavHelper {
     /**
      * DOCUMENT ME!
      *
+     * @param   webDavClient  DOCUMENT ME!
+     * @param   url           DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static boolean isUrlAccessible(final WebDavClient webDavClient, final String url) {
+        try {
+            final int statusCode = webDavClient.getStatusCode(url);
+            return 200 == statusCode;
+        } catch (IOException ex) {
+        }
+        return false;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
      * @param   fileName         DOCUMENT ME!
      * @param   webDavClient     DOCUMENT ME!
      * @param   webDavDirectory  DOCUMENT ME!
