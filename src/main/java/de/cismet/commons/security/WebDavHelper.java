@@ -74,9 +74,11 @@ public class WebDavHelper {
      * @param   webDavClient     DOCUMENT ME!
      * @param   parent           DOCUMENT ME!
      *
+     * @return  DOCUMENT ME!
+     *
      * @throws  IOException  DOCUMENT ME!
      */
-    public static void uploadFileToWebDAV(final String fileName,
+    public static int uploadFileToWebDAV(final String fileName,
             final File toUpload,
             final String webDavDirectory,
             final WebDavClient webDavClient,
@@ -86,10 +88,27 @@ public class WebDavHelper {
                     "Bild wird übertragen...",
                     new FileInputStream(toUpload)));
         try {
-            webDavClient.put(webDavDirectory + encodeURL(fileName), bfis);
+            return webDavClient.put(webDavDirectory + encodeURL(fileName), bfis);
         } finally {
             IOUtils.closeQuietly(bfis);
         }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   webDavClient  DOCUMENT ME!
+     * @param   url           DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static boolean isUrlAccessible(final WebDavClient webDavClient, final String url) {
+        try {
+            final int statusCode = webDavClient.getStatusCode(url);
+            return 200 == statusCode;
+        } catch (IOException ex) {
+        }
+        return false;
     }
 
     /**

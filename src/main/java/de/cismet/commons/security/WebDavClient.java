@@ -17,11 +17,13 @@ import org.apache.commons.httpclient.NTCredentials;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.jackrabbit.webdav.client.methods.DavMethod;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
+import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 import org.apache.jackrabbit.webdav.client.methods.PutMethod;
 import org.apache.log4j.Logger;
 
@@ -138,19 +140,22 @@ public class WebDavClient {
      *
      * @param   path  DOCUMENT ME!
      *
+     * @return  DOCUMENT ME!
+     *
      * @throws  MalformedURLException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
      * @throws  HttpException          DOCUMENT ME!
      */
-    public void delete(final String path) throws MalformedURLException, IOException, HttpException {
+    public int delete(final String path) throws MalformedURLException, IOException, HttpException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("delete: " + path);
         }
         final DavMethod put = new DeleteMethod(path);
-        client.executeMethod(put);
+        final int responseCode = client.executeMethod(put);
 
         put.releaseConnection();
+        return responseCode;
     }
 
     /**
@@ -176,16 +181,48 @@ public class WebDavClient {
     }
 
     /**
+     * DOCUMENT ME!
+     *
+     * @param   url  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public int mkCol(final String url) throws IOException {
+        lazyInitialise(url);
+        final MkColMethod mkcol = new MkColMethod(url);
+        return client.executeMethod(mkcol);
+    }
+
+    /**
+     * Gets the http status code via an head request.
+     *
+     * @param   url  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public int getStatusCode(final String url) throws IOException {
+        lazyInitialise(url);
+        final HeadMethod head = new HeadMethod(url);
+        return client.executeMethod(head);
+    }
+
+    /**
      * copies the content of the given InputStream to the given path.
      *
      * @param   path   DOCUMENT ME!
      * @param   input  DOCUMENT ME!
      *
+     * @return  DOCUMENT ME!
+     *
      * @throws  MalformedURLException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
      * @throws  HttpException          DOCUMENT ME!
      */
-    public void put(final String path, final InputStream input) throws MalformedURLException,
+    public int put(final String path, final InputStream input) throws MalformedURLException,
         IOException,
         HttpException {
         lazyInitialise(path);
@@ -196,8 +233,9 @@ public class WebDavClient {
         final RequestEntity requestEntity = new InputStreamRequestEntity(input);
 
         put.setRequestEntity(requestEntity);
-        client.executeMethod(put);
+        final int responseCode = client.executeMethod(put);
         put.releaseConnection();
+        return responseCode;
     }
 
     /**
