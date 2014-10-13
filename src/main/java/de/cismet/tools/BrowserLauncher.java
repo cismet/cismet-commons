@@ -472,14 +472,22 @@ public class BrowserLauncher {
         String gotoUrl = url;
         try {
             de.cismet.tools.BrowserLauncher.openURL(gotoUrl);
-        } catch (Exception e2) {
-            log.warn("das 1te Mal ging schief.Fehler beim Oeffnen von:" + gotoUrl + "\nLetzter Versuch", e2);
+        } catch (Exception e1) {
+            log.warn("Error while opening the url: " + gotoUrl + "\n Trying to open it as url-file.", e1);
             try {
                 gotoUrl = gotoUrl.replaceAll("\\\\", "/");
                 gotoUrl = gotoUrl.replaceAll(" ", "%20");
                 de.cismet.tools.BrowserLauncher.openURL("file:///" + gotoUrl);
-            } catch (Exception e3) {
-                log.error("Auch das 2te Mal ging schief.Fehler beim Oeffnen von:file://" + gotoUrl, e3);
+            } catch (Exception e2) {
+                log.error("Could not open file:///" + gotoUrl, e2);
+                try {
+                    final File file = new File(url);
+                    if (file.canRead() && Desktop.isDesktopSupported()) {
+                        Desktop.getDesktop().open(file);
+                    }
+                } catch (Exception e3) {
+                    log.error("File " + gotoUrl + " could not be opened.", e3);
+                }
             }
         }
     }
