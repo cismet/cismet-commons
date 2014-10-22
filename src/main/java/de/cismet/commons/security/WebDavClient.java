@@ -87,11 +87,21 @@ public class WebDavClient {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * initialises the http client for the given host.
+     * DOCUMENT ME!
      *
      * @param  host  DOCUMENT ME!
      */
     public void init(final String host) {
+        init(host, 5000);
+    }
+
+    /**
+     * initialises the http client for the given host.
+     *
+     * @param  host               DOCUMENT ME!
+     * @param  connectionTimeout  DOCUMENT ME!
+     */
+    public void init(final String host, final int connectionTimeout) {
         if (log.isDebugEnabled()) {
             log.debug("initialise WebDavClient");
         }
@@ -100,6 +110,7 @@ public class WebDavClient {
         final HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
         final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
         params.setMaxConnectionsPerHost(hostConfig, MAX_HOST_CONNECTIONS);
+        params.setConnectionTimeout(connectionTimeout);
         connectionManager.setParams(params);
         client = new HttpClient(connectionManager);
         client.setHostConfiguration(hostConfig);
