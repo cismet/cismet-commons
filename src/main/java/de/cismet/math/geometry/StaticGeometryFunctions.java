@@ -7,6 +7,7 @@
 ****************************************************/
 package de.cismet.math.geometry;
 
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 /**
@@ -67,6 +68,39 @@ public class StaticGeometryFunctions {
                 y = minY;
             }
             return new Point2D.Double(x, y);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   line1  DOCUMENT ME!
+     * @param   line2  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static Point2D.Double createIntersectionPoint(final Line2D line1, final Line2D line2) {
+        if (!line1.intersectsLine(line2)) {
+            return null;
+        }
+        final double x1 = line1.getX1();
+        final double y1 = line1.getY1();
+        final double x1d = line1.getX2() - x1;
+        final double y1d = line1.getY2() - y1;
+        final double x2 = line2.getX1();
+        final double y2 = line2.getY1();
+        final double x2d = line2.getX2() - x2;
+        final double y2d = line2.getY2() - y2;
+
+        final double det = (x2d * y1d) - (y2d * x1d);
+        if (det == 0) {
+            return null;
+        } else {
+            final double z = ((x2d * (y2 - y1)) + (y2d * (x1 - x2))) / det;
+            if ((z == 0) || (z == 1)) {
+                return null;
+            }
+            return new Point2D.Double(x1 + (z * x1d), y1 + (z * y1d));
         }
     }
 
