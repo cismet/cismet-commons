@@ -86,4 +86,9 @@ public final class OracleGeometryFactory implements IGeometryFactory {
     public String getDialect() {
         return "oracle_11g";
     }
+
+    @Override
+    public boolean isGeometryColumn(final String columnTypeName) {
+        return "MDSYS.SDO_GEOMETRY".equals(columnTypeName); // NOI18N
+    }
 }

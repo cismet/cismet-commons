@@ -34,7 +34,7 @@ public interface IGeometryFactory {
      *
      * @return  DOCUMENT ME!
      */
-    Geometry createGeometry(final Object dbObject);
+    Geometry createGeometry(Object dbObject);
 
     /**
      * DOCUMENT ME!
@@ -43,7 +43,16 @@ public interface IGeometryFactory {
      *
      * @return  DOCUMENT ME!
      */
-    boolean isGeometryObject(final Object dbObject);
+    boolean isGeometryObject(Object dbObject);
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   columnTypeName  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    boolean isGeometryColumn(String columnTypeName);
 
     /**
      * DOCUMENT ME!

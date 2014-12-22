@@ -352,4 +352,9 @@ public class PostGisGeometryFactory implements IGeometryFactory {
         // should be postgis, however choosing this one to be in line with the way the server handles sql
         return "postgres_9";
     }
+
+    @Override
+    public boolean isGeometryColumn(final String columnTypeName) {
+        return "geometry".equals(columnTypeName);
+    }
 }
