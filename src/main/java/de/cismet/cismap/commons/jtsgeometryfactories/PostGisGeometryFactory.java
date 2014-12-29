@@ -22,6 +22,11 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 
 import org.openide.util.lookup.ServiceProvider;
 
+import org.postgis.PGgeometry;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -356,5 +361,10 @@ public class PostGisGeometryFactory implements IGeometryFactory {
     @Override
     public boolean isGeometryColumn(final String columnTypeName) {
         return "geometry".equals(columnTypeName);
+    }
+
+    @Override
+    public Object getDbObject(final Geometry geometry, final Connection con) throws SQLException {
+        return new PGgeometry(getDbString(geometry));
     }
 }

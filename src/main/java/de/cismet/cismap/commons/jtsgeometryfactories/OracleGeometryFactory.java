@@ -7,10 +7,15 @@
 ****************************************************/
 package de.cismet.cismap.commons.jtsgeometryfactories;
 
+import com.mchange.v2.c3p0.impl.NewProxyConnection;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.oracle.OraReader;
+import com.vividsolutions.jts.io.oracle.OraWriter;
+
+import oracle.jdbc.OracleConnection;
 
 import oracle.sql.STRUCT;
 
@@ -18,6 +23,9 @@ import org.apache.log4j.Logger;
 
 import org.openide.util.lookup.ServiceProvider;
 
+import java.lang.reflect.Field;
+
+import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -51,7 +59,41 @@ public final class OracleGeometryFactory implements IGeometryFactory {
 
     @Override
     public String getDbString(final Geometry geometry) {
+        // NOTE: this won't work with prepared statements!
         return "SDO_GEOMETRY('" + geometry.toText() + "', " + geometry.getSRID() + ")"; // NOI18N
+    }
+
+    @Override
+    public Object getDbObject(final Geometry geometry, final Connection con) throws SQLException {
+        try {
+            final OracleConnection oc;
+            if (con instanceof OracleConnection) {
+                oc = (OracleConnection)con;
+            } else if (con instanceof NewProxyConnection) {
+                // FIXME: evil(!) hack that might even break the connection pool
+                final NewProxyConnection npc = (NewProxyConnection)con;
+                final Field field = npc.getClass().getDeclaredField("inner");
+                final boolean accessible = field.isAccessible();
+                field.setAccessible(true);
+                oc = (OracleConnection)field.get(npc);
+                field.setAccessible(accessible);
+            } else {
+                throw new IllegalArgumentException("unsupported connection type: " + con);
+            }
+
+            final OraWriter ow = new OraWriter(oc);
+
+            // FIXME: srid
+            if (geometry.getSRID() == 0) {
+                geometry.setSRID(4326);
+            }
+
+            return ow.write(geometry);
+        } catch (Exception ex) {
+            final String message = "cannot convert geometry: " + geometry;
+            LOG.error(message, ex);
+            throw new SQLException(message, ex);
+        }
     }
 
     @Override

@@ -9,6 +9,9 @@ package de.cismet.cismap.commons.jtsgeometryfactories;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  * DOCUMENT ME!
  *
@@ -27,6 +30,19 @@ public interface IGeometryFactory {
      * @return  DOCUMENT ME!
      */
     String getDbString(Geometry geometry);
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   geometry  DOCUMENT ME!
+     * @param   con       DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  SQLException  DOCUMENT ME!
+     */
+    Object getDbObject(Geometry geometry, Connection con) throws SQLException;
+
     /**
      * DOCUMENT ME!
      *
