@@ -7,8 +7,6 @@
 ****************************************************/
 package de.cismet.cismap.commons.jtsgeometryfactories;
 
-import com.mchange.v2.c3p0.impl.NewProxyConnection;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.PrecisionModel;
@@ -22,8 +20,6 @@ import oracle.sql.STRUCT;
 import org.apache.log4j.Logger;
 
 import org.openide.util.lookup.ServiceProvider;
-
-import java.lang.reflect.Field;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -59,8 +55,7 @@ public final class OracleGeometryFactory implements IGeometryFactory {
 
     @Override
     public String getDbString(final Geometry geometry) {
-        // NOTE: this won't work with prepared statements!
-        return "SDO_GEOMETRY('" + geometry.toText() + "', " + geometry.getSRID() + ")"; // NOI18N
+        return geometry.toText();
     }
 
     @Override
@@ -69,14 +64,6 @@ public final class OracleGeometryFactory implements IGeometryFactory {
             final OracleConnection oc;
             if (con instanceof OracleConnection) {
                 oc = (OracleConnection)con;
-            } else if (con instanceof NewProxyConnection) {
-                // FIXME: evil(!) hack that might even break the connection pool
-                final NewProxyConnection npc = (NewProxyConnection)con;
-                final Field field = npc.getClass().getDeclaredField("inner");
-                final boolean accessible = field.isAccessible();
-                field.setAccessible(true);
-                oc = (OracleConnection)field.get(npc);
-                field.setAccessible(accessible);
             } else {
                 throw new IllegalArgumentException("unsupported connection type: " + con);
             }
