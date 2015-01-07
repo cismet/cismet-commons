@@ -107,11 +107,6 @@
             <version>1.12</version>
         </dependency>
         <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.2-pre4</version>
-        </dependency>
-        <dependency>
             <!-- won't update to jdom2 because of bigger changes and some issues -->
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
