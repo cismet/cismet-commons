@@ -17,6 +17,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NTCredentials;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScheme;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.auth.CredentialsNotAvailableException;
@@ -84,6 +85,27 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
             final Reader requestParameter,
             final ACCESS_METHODS method,
             final HashMap<String, String> options) throws Exception {
+        return doRequest(url, requestParameter, method, options, null);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   url               DOCUMENT ME!
+     * @param   requestParameter  DOCUMENT ME!
+     * @param   method            DOCUMENT ME!
+     * @param   options           DOCUMENT ME!
+     * @param   credentials       DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    public InputStream doRequest(final URL url,
+            final Reader requestParameter,
+            final ACCESS_METHODS method,
+            final HashMap<String, String> options,
+            final UsernamePasswordCredentials credentials) throws Exception {
         final HttpClient client = getSecurityEnabledHttpClient(url);
         final StringBuilder parameter = new StringBuilder();
         final BufferedReader reader = new BufferedReader(requestParameter);
@@ -165,6 +187,9 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
             }
         }
 
+        if (credentials != null) {
+            client.getState().setCredentials(AuthScope.ANY, credentials);
+        }
         if ((options != null) && !options.isEmpty()) {
             for (final Entry<String, String> option : options.entrySet()) {
                 httpMethod.addRequestHeader(option.getKey(), option.getValue());
