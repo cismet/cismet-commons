@@ -122,7 +122,7 @@ public class ConfigurationManager {
     /**
      * Setter for <code>fileName</code>.
      *
-     * @param  fileName {@link #fileName}
+     * @param  fileName  {@link #fileName}
      */
     public void setFileName(final String fileName) {
         this.fileName = fileName;
@@ -140,7 +140,7 @@ public class ConfigurationManager {
     /**
      * Setter for <code>folder</code>.
      *
-     * @param  folder {@link #folder}
+     * @param  folder  {@link #folder}
      */
     public void setFolder(final String folder) {
         this.folder = folder;

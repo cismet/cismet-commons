@@ -52,10 +52,8 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
     private static final byte LF = 0xA;
 
-    @Deprecated
-    public static String CRYPT_PREFIX = "crypt::";                       // NOI18N
-    @Deprecated
-    private static final char[] MASTER_PASS = "fourtytwo".toCharArray(); // NOI18N
+    @Deprecated public static String CRYPT_PREFIX = "crypt::";                       // NOI18N
+    @Deprecated private static final char[] MASTER_PASS = "fourtytwo".toCharArray(); // NOI18N
 
     private static final String CIPHER = "PBEWithMD5AndDES/CBC/PKCS5Padding"; // NOI18N
     private static final String FACTORY = "PBEWithMD5AndDES";                 // NOI18N
