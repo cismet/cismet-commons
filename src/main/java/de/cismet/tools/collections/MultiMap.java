@@ -122,6 +122,7 @@ public class MultiMap extends LinkedHashMap {
      *
      * @return  DOCUMENT ME!
      */
+    @Override
     public boolean remove(final Object key, final Object value) {
         SyncLinkedList list = null;
 
