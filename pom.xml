@@ -214,5 +214,6 @@
                 <version>2.5.2</version>
             </plugin>
         </plugins>
+        <finalName>cismetCommons</finalName>
     </build>
 </project>
