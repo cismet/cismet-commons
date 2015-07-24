@@ -97,16 +97,6 @@
             <version>1.1.7</version>
         </dependency>
         <dependency>
-            <groupId>oracle.jdbc</groupId>
-            <artifactId>ojdbc7_g</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jtsio</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
             <!-- won't update to jdom2 because of bigger changes and some issues -->
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
