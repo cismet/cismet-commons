@@ -32,8 +32,7 @@ public class RESTRemoteControlMethodsApplication extends Application {
 
     //~ Instance fields --------------------------------------------------------
 
-    @Context
-    ResourceConfig rc;
+    @Context ResourceConfig rc;
 
     private final HashSet<Class<?>> clazzes;
 

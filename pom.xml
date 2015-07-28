@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.cismet.cids</groupId>
         <artifactId>cids-parent</artifactId>
-        <version>2.0</version>
+        <version>2.1</version>
     </parent>
 
     <groupId>de.cismet.commons</groupId>
@@ -31,7 +31,8 @@
         <connection>https://github.com/cismet/cismet-commons.git</connection>
         <developerConnection>scm:git:git@github.com:cismet/cismet-commons.git</developerConnection>
         <url>https://github.com/cismet/cismet-commons</url>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
     
     <issueManagement>
         <system>GitHub</system>
@@ -151,7 +152,7 @@
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.1-901-1.jdbc4</version>
+            <version>9.1-903.jdbc4</version>
         </dependency>
         <!-- END: runtime dependencies -->
         
@@ -204,6 +205,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9</version>
+                <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.2</version>
             </plugin>
         </plugins>
         <finalName>cismetCommons</finalName>
