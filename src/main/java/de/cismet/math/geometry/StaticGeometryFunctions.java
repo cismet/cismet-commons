@@ -7,6 +7,12 @@
 ****************************************************/
 package de.cismet.math.geometry;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
@@ -116,5 +122,45 @@ public class StaticGeometryFunctions {
     public static double distanceToLine(final Point2D lineStart, final Point2D lineEnd, final Point2D trigger) {
         final Point2D pointOnLine = createPointOnLine(lineStart, lineEnd, trigger);
         return Math.hypot(pointOnLine.getX() - trigger.getX(), pointOnLine.getY() - trigger.getY());
+    }
+
+    /**
+     * Converts a multi-point/polygon/linestring to a point/polygon/linestring.
+     *
+     * @param   g  the geometry to convert
+     *
+     * @return  the point/polygon/linestring
+     */
+    public static Geometry toSimpleGeometry(final Geometry g) {
+        if (g.getGeometryType().equalsIgnoreCase("multipoint")) {
+            return g.getGeometryN(0);
+        } else if (g.getGeometryType().equalsIgnoreCase("multilinestring")) {
+            return g.getGeometryN(0);
+        } else if (g.getGeometryType().equalsIgnoreCase("multipolygon")) {
+            return g.getGeometryN(0);
+        }
+
+        return g;
+    }
+
+    /**
+     * Converts a single part geometry to a multi part geometry.
+     *
+     * @param   g  a single part geometry
+     *
+     * @return  a multi part geometry
+     */
+    public static Geometry toMultiGeometry(final Geometry g) {
+        final GeometryFactory factory = g.getFactory();
+
+        if (g.getGeometryType().equalsIgnoreCase("point")) {
+            return factory.createMultiPoint(new Point[] { (Point)g });
+        } else if (g.getGeometryType().equalsIgnoreCase("linestring")) {
+            return factory.createMultiLineString(new LineString[] { (LineString)g });
+        } else if (g.getGeometryType().equalsIgnoreCase("polygon")) {
+            return factory.createMultiPolygon(new Polygon[] { (Polygon)g });
+        }
+
+        return g;
     }
 }
