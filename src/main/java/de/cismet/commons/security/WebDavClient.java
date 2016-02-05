@@ -203,7 +203,12 @@ public class WebDavClient {
     public int mkCol(final String url) throws IOException {
         lazyInitialise(url);
         final MkColMethod mkcol = new MkColMethod(url);
-        return client.executeMethod(mkcol);
+
+        try {
+            return client.executeMethod(mkcol);
+        } finally {
+            mkcol.releaseConnection();
+        }
     }
 
     /**
@@ -218,7 +223,12 @@ public class WebDavClient {
     public int getStatusCode(final String url) throws IOException {
         lazyInitialise(url);
         final HeadMethod head = new HeadMethod(url);
-        return client.executeMethod(head);
+
+        try {
+            return client.executeMethod(head);
+        } finally {
+            head.releaseConnection();
+        }
     }
 
     /**

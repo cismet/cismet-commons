@@ -95,6 +95,43 @@ public class WebDavHelper {
     }
 
     /**
+     * creates the given webdav collection (a sub directory in the file system), if it does not exists.
+     *
+     * @param   webDavDirectory  the webdav collection to create
+     * @param   webDavClient     a webdav client
+     *
+     * @return  the http status code of the mkCol operation or 200, if the collection already exists.
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public static int createFolder(final String webDavDirectory,
+            final WebDavClient webDavClient) throws IOException {
+        int status = webDavClient.getStatusCode(webDavDirectory);
+
+        if (status == 404) {
+            status = webDavClient.mkCol(webDavDirectory);
+
+            if (status == 409) {
+                if (webDavDirectory.endsWith("/")) {
+                    String parentPath = webDavDirectory.substring(0, webDavDirectory.length() - 1);
+
+                    if (parentPath.contains("/")) {
+                        parentPath = parentPath.substring(0, parentPath.lastIndexOf("/") + 1);
+
+                        status = createFolder(parentPath, webDavClient);
+
+                        if (status == 201) {
+                            return webDavClient.mkCol(webDavDirectory);
+                        }
+                    }
+                }
+            }
+        }
+
+        return status;
+    }
+
+    /**
      * DOCUMENT ME!
      *
      * @param   webDavClient  DOCUMENT ME!
@@ -186,6 +223,27 @@ public class WebDavHelper {
             final String webDavDirectory,
             final WebDavClient webDavClient,
             final Component parent) throws IOException {
+        return downloadImageFromWebDAV(fileName, webDavDirectory, webDavClient, parent, null);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   fileName          DOCUMENT ME!
+     * @param   webDavDirectory   DOCUMENT ME!
+     * @param   webDavClient      DOCUMENT ME!
+     * @param   parent            DOCUMENT ME!
+     * @param   progressListener  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public static BufferedImage downloadImageFromWebDAV(final String fileName,
+            final String webDavDirectory,
+            final WebDavClient webDavClient,
+            final Component parent,
+            final IIOReadProgressListener progressListener) throws IOException {
         final String encodedFileName = WebDavHelper.encodeURL(fileName);
         final InputStream iStream = webDavClient.getInputStream(webDavDirectory
                         + encodedFileName);
@@ -252,6 +310,10 @@ public class WebDavHelper {
                             monitor.close();
                         }
                     });
+            }
+
+            if (progressListener != null) {
+                reader.addIIOReadProgressListener(progressListener);
             }
 
             final ImageReadParam param = reader.getDefaultReadParam();
