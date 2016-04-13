@@ -463,31 +463,36 @@ public class BrowserLauncher {
      * Attempts to open the default web browser to the given URL. In the second attempt he tries to open the url as a
      * file.
      *
-     * @param  url  url
+     * @param   url  url
+     *
+     * @throws  RuntimeException  DOCUMENT ME!
      */
-    public static void openURLorFile(final String url) {
+    public static void openURLorFile(final String url) { // TODO should declare "throws Exception"
         if (url == null) {
             return;
         }
         String gotoUrl = url;
         try {
             de.cismet.tools.BrowserLauncher.openURL(gotoUrl);
-        } catch (Exception e1) {
+        } catch (final Exception e1) {
             log.warn("Error while opening the url: " + gotoUrl + "\n Trying to open it as url-file.", e1);
             try {
                 gotoUrl = gotoUrl.replaceAll("\\\\", "/");
                 gotoUrl = gotoUrl.replaceAll(" ", "%20");
                 de.cismet.tools.BrowserLauncher.openURL("file:///" + gotoUrl);
-            } catch (Exception e2) {
+            } catch (final Exception e2) {
                 log.error("Could not open file:///" + gotoUrl, e2);
                 try {
                     final File file = new File(url);
                     if (file.canRead() && Desktop.isDesktopSupported()) {
                         Desktop.getDesktop().open(file);
+                        return;
                     }
-                } catch (Exception e3) {
+                } catch (final Exception e3) {
                     log.error("File " + gotoUrl + " could not be opened.", e3);
+                    throw new RuntimeException(e3);      // should throw the exception itself, not a runtimeexception
                 }
+                throw new RuntimeException(e2);          // should throw the exception itself, not a runtimeexception
             }
         }
     }
