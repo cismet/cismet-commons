@@ -46,7 +46,7 @@ public class BadHttpStatusCodeException extends Exception {
             final int statuscode,
             final String message,
             final String response) {
-        super(message + "(" + statuscode + ")");
+        super(message + "(" + statuscode + ")\n[" + requestedURI + "]");
 
         this.requestedURI = requestedURI;
         this.statuscode = statuscode;
