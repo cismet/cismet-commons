@@ -435,23 +435,28 @@ public class ConfigurationManager {
         }
 
         if (hasSubstitutionAttr(e)) {
-            // retrieve the substitution value ...
-            final String value = resolver.getAttr();
-            if (value != null) {
-                // ... try to create elements from the substitution value ...
-                final Set<Element> created = createElements(value);
-                if (created != null) {
-                    // ... and set the substitution elements to be resolved
-                    toResolve = created;
+            final Set<Element> resolved = new LinkedHashSet<Element>();
+            try {
+                // retrieve the substitution value ...
+                final String value = resolver.getAttr();
+                if (value != null) {
+                    // ... try to create elements from the substitution value ...
+                    final Set<Element> created = createElements(value);
+                    if (created != null) {
+                        // ... and set the substitution elements to be resolved
+                        toResolve = created;
+                    }
+                }
+
+                for (final Element element : toResolve) {
+                    // resolve the elements to resolve against the attr resolver
+                    resolved.addAll(resolveElement(element, getAttrResolver(resolver, getSubstitutionAttr(e))));
+                }
+            } catch (Exception resolvingException) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Error during resolving of Element (no surprise when not logged in)", resolvingException);
                 }
             }
-
-            final Set<Element> resolved = new LinkedHashSet<Element>();
-            for (final Element element : toResolve) {
-                // resolve the elements to resolve against the attr resolver
-                resolved.addAll(resolveElement(element, getAttrResolver(resolver, getSubstitutionAttr(e))));
-            }
-
             return resolved;
         } else {
             for (int i = 0; i < e.getContentSize(); ++i) {
