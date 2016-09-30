@@ -40,10 +40,12 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import de.cismet.commons.security.AccessHandler;
 import de.cismet.commons.security.AccessHandler.ACCESS_HANDLER_TYPES;
 import de.cismet.commons.security.AccessHandler.ACCESS_METHODS;
 import de.cismet.commons.security.exceptions.BadHttpStatusCodeException;
 import de.cismet.commons.security.exceptions.CannotReadFromURLException;
+
 
 import de.cismet.netutil.Proxy;
 
@@ -54,7 +56,7 @@ import de.cismet.netutil.Proxy;
  * @author   spuhl, thorsten
  * @version  $Revision$, $Date$
  */
-public class SimpleHttpAccessHandler extends AbstractAccessHandler {
+public class SimpleHttpAccessHandler extends AbstractAccessHandler implements ExtendedAccessHandler {
 
     //~ Static fields/initializers ---------------------------------------------
 
@@ -382,5 +384,74 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler {
         }
 
         return client;
+    }
+
+    @Override
+    public InputStream doRequest(final URL url) throws Exception {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("URL: " + url + "... trying to retrieve parameters automatically by HTTP_GET");       // NOI18N
+        }
+        URL serviceURL;
+        String requestParameter;
+        try {
+            final String urlString = url.toString();
+            if (urlString.indexOf('?') != -1) {
+                serviceURL = new URL(urlString.substring(0, urlString.indexOf('?')));                       // NOI18N
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("service URL: " + serviceURL);                                                // NOI18N
+                }
+                if ((urlString.indexOf('?') + 1) < urlString.length()) {                                    // NOI18N
+                    requestParameter = urlString.substring(urlString.indexOf('?') + 1, urlString.length()); // NOI18N
+                    if (requestParameter.toLowerCase().contains("service=wss")) {                           // NOI18N
+                        // TODO muss auch wfs fähig sein
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("query default WMS");                       // NOI18N
+                        }
+                        requestParameter = "REQUEST=GetCapabilities&service=WMS"; // NOI18N
+                    }
+                } else {
+                    requestParameter = "";                                        // NOI18N
+                }
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("requestParameter: " + requestParameter);               // NOI18N
+                }
+            } else {
+                LOG.warn("Not able to parse requestparameter (no ?) trying without"); // NOI18N
+                serviceURL = url;
+                requestParameter = "";                                                // NOI18N
+            }
+        } catch (Exception ex) {
+            // final String errorMessage = "Exception während dem bestimmen der Request Parameter";
+            final String errorMessage = "Request parameters coud not be parsed: " + ex.getMessage(); // NOI18N
+            LOG.error(errorMessage);
+            throw new Exception(errorMessage, ex);
+        }
+        return doRequest(serviceURL, new StringReader(requestParameter), AccessHandler.ACCESS_METHODS.GET_REQUEST);
+    }
+
+    @Override
+    public boolean checkIfURLaccessible(final URL url) {
+        boolean urlAccessible = false;
+        InputStream inputStream = null;
+        try {
+            inputStream = doRequest(url, new StringReader(""), AccessHandler.ACCESS_METHODS.HEAD_REQUEST);
+            urlAccessible = inputStream != null;
+        } catch (final Exception ex) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("An exception occurred while opening URL '" + url.toExternalForm()
+                            + "'.",
+                    ex);
+            }
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ex) {
+                    LOG.warn("Could not close stream.", ex);
+                }
+            }
+        }
+        return urlAccessible;
     }
 }
