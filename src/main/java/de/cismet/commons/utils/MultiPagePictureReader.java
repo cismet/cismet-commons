@@ -7,7 +7,6 @@
 ****************************************************/
 package de.cismet.commons.utils;
 
-import de.cismet.commons.security.handler.ExtendedAccessHandler;
 import com.sun.media.jai.codec.FileSeekableStream;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageDecoder;
@@ -28,6 +27,7 @@ import java.net.URL;
 
 import javax.media.jai.RenderedImageAdapter;
 
+import de.cismet.commons.security.handler.ExtendedAccessHandler;
 import de.cismet.commons.security.handler.SimpleHttpAccessHandler;
 
 /**

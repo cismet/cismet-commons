@@ -19,6 +19,7 @@ import java.net.URL;
 import de.cismet.commons.security.AccessHandler;
 
 /**
+ * DOCUMENT ME!
  *
  * @author   jruiz
  * @version  $Revision$, $Date$

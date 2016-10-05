@@ -46,7 +46,6 @@ import de.cismet.commons.security.AccessHandler.ACCESS_METHODS;
 import de.cismet.commons.security.exceptions.BadHttpStatusCodeException;
 import de.cismet.commons.security.exceptions.CannotReadFromURLException;
 
-
 import de.cismet.netutil.Proxy;
 
 /**
