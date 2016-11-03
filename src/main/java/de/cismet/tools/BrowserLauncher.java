@@ -63,6 +63,8 @@ public class BrowserLauncher {
 
     //~ Static fields/initializers ---------------------------------------------
 
+    private static Desktop workingDesktop = null;
+
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(BrowserLauncher.class);
     /**
      * The Java virtual machine that we are running on. Actually, in most cases we only care about the operating system,
@@ -213,6 +215,10 @@ public class BrowserLauncher {
     }
 
     //~ Constructors -----------------------------------------------------------
+
+    /**
+     * Attempts to open the given URL with the default web browser.
+     */
 
     /**
      * This class should be never be instantiated; this just ensures so.
@@ -485,7 +491,7 @@ public class BrowserLauncher {
                 try {
                     final File file = new File(url);
                     if (file.canRead() && Desktop.isDesktopSupported()) {
-                        Desktop.getDesktop().open(file);
+                        getWorkingDesktop().open(file);
                         return;
                     }
                 } catch (final Exception e3) {
@@ -498,26 +504,42 @@ public class BrowserLauncher {
     }
 
     /**
-     * Attempts to open the given URL with the default web browser.
+     * DOCUMENT ME!
      *
-     * @param   url  The URL to open
+     * @return  DOCUMENT ME!
+     */
+    private static Desktop getWorkingDesktop() {
+        if (workingDesktop == null) {
+            try {
+                workingDesktop = Desktop.getDesktop();
+            } catch (Throwable t) {
+                log.error("No Desktop for you", t);
+            }
+        }
+        return workingDesktop;
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    public static void initializeDesktop() {
+        getWorkingDesktop();
+    }
+
+    /**
+     * DOCUMENT ME!
      *
-     * @throws  Exception    throws Exeption if anything went wrong
-     * @throws  IOException
-     *                       <ul>
-     *                         <li>If the web browser could not be located or does not run</li>
-     *                         <li>If it catches a <code>InvocationTargetException</code></li>
-     *                         <li>If it catches a <code>IllegalAccessExeption</code></li>
-     *                         <li>if it catches a <code>InstantiationException</code></li>
-     *                       </ul>
+     * @param   url  DOCUMENT ME!
+     *
+     * @throws  Exception    DOCUMENT ME!
+     * @throws  IOException  DOCUMENT ME!
      */
     public static void openURL(final String url) throws Exception {
         if (log.isDebugEnabled()) {
             log.debug("BrowserLauncher.openUrl:" + url);                                // NOI18N
         }
         if (Desktop.isDesktopSupported()) {                                             // NOI18N
-            final Desktop desktop = Desktop.getDesktop();
-            desktop.browse(new URI(url));
+            getWorkingDesktop().browse(new URI(url));
         } else {
             if (!loadedWithoutErrors) {
                 throw new IOException("Exception in finding browser: " + errorMessage); // NOI18N
