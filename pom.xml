@@ -10,7 +10,7 @@
 
     <groupId>de.cismet.commons</groupId>
     <artifactId>cismet-commons</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>4.0</version>
     <packaging>jar</packaging>
     
     <properties>
@@ -37,7 +37,7 @@
         <connection>https://github.com/cismet/cismet-commons.git</connection>
         <developerConnection>scm:git:git@github.com:cismet/cismet-commons.git</developerConnection>
         <url>https://github.com/cismet/cismet-commons</url>
-        <tag>HEAD</tag>
+        <tag>v4.0</tag>
     </scm>
     
     <issueManagement>
