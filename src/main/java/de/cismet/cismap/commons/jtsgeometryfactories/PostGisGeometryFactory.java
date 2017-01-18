@@ -5,14 +5,27 @@
 *              ... and it just works.
 *
 ****************************************************/
-/*
- * PostgisGeometryFactory.java
- *
- * Created on 4. M\u00E4rz 2005, 14:55
- */
 package de.cismet.cismap.commons.jtsgeometryfactories;
 
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
+
+import org.openide.util.lookup.ServiceProvider;
+
+import org.postgis.PGgeometry;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +37,8 @@ import java.util.Collection;
  * @author   hell
  * @version  $Revision$, $Date$
  */
-public class PostGisGeometryFactory {
+@ServiceProvider(service = IGeometryFactory.class)
+public class PostGisGeometryFactory implements IGeometryFactory {
 
     //~ Constructors -----------------------------------------------------------
 
@@ -317,5 +331,40 @@ public class PostGisGeometryFactory {
             }
         }
         return null;
+    }
+
+    @Override
+    public String getDbString(final Geometry geometry) {
+        return getPostGisCompliantDbString(geometry);
+    }
+
+    @Override
+    public Geometry createGeometry(final Object dbObject) {
+        if (dbObject instanceof org.postgis.PGgeometry) {
+            return createJtsGeometry(((org.postgis.PGgeometry)dbObject).getGeometry());
+        }
+
+        throw new IllegalArgumentException("unsupported object type: " + dbObject);
+    }
+
+    @Override
+    public boolean isGeometryObject(final Object dbObject) {
+        return dbObject instanceof org.postgis.PGgeometry;
+    }
+
+    @Override
+    public String getDialect() {
+        // should be postgis, however choosing this one to be in line with the way the server handles sql
+        return "postgres_9";
+    }
+
+    @Override
+    public boolean isGeometryColumn(final String columnTypeName) {
+        return "geometry".equals(columnTypeName);
+    }
+
+    @Override
+    public Object getDbObject(final Geometry geometry, final Connection con) throws SQLException {
+        return new PGgeometry(getDbString(geometry));
     }
 }

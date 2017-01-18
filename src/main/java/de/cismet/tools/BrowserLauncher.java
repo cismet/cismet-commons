@@ -63,6 +63,8 @@ public class BrowserLauncher {
 
     //~ Static fields/initializers ---------------------------------------------
 
+    private static Desktop workingDesktop = null;
+
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(BrowserLauncher.class);
     /**
      * The Java virtual machine that we are running on. Actually, in most cases we only care about the operating system,
@@ -213,6 +215,10 @@ public class BrowserLauncher {
     }
 
     //~ Constructors -----------------------------------------------------------
+
+    /**
+     * Attempts to open the given URL with the default web browser.
+     */
 
     /**
      * This class should be never be instantiated; this just ensures so.
@@ -463,48 +469,77 @@ public class BrowserLauncher {
      * Attempts to open the default web browser to the given URL. In the second attempt he tries to open the url as a
      * file.
      *
-     * @param  url  url
+     * @param   url  url
+     *
+     * @throws  RuntimeException  DOCUMENT ME!
      */
-    public static void openURLorFile(final String url) {
+    public static void openURLorFile(final String url) { // TODO should declare "throws Exception"
         if (url == null) {
             return;
         }
         String gotoUrl = url;
         try {
             de.cismet.tools.BrowserLauncher.openURL(gotoUrl);
-        } catch (Exception e2) {
-            log.warn("das 1te Mal ging schief.Fehler beim Oeffnen von:" + gotoUrl + "\nLetzter Versuch", e2);
+        } catch (final Exception e1) {
+            log.warn("Error while opening the url: " + gotoUrl + "\n Trying to open it as url-file.", e1);
             try {
                 gotoUrl = gotoUrl.replaceAll("\\\\", "/");
                 gotoUrl = gotoUrl.replaceAll(" ", "%20");
                 de.cismet.tools.BrowserLauncher.openURL("file:///" + gotoUrl);
-            } catch (Exception e3) {
-                log.error("Auch das 2te Mal ging schief.Fehler beim Oeffnen von:file://" + gotoUrl, e3);
+            } catch (final Exception e2) {
+                log.error("Could not open file:///" + gotoUrl, e2);
+                try {
+                    final File file = new File(url);
+                    if (file.canRead() && Desktop.isDesktopSupported()) {
+                        getWorkingDesktop().open(file);
+                        return;
+                    }
+                } catch (final Exception e3) {
+                    log.error("File " + gotoUrl + " could not be opened.", e3);
+                    throw new RuntimeException(e3);      // should throw the exception itself, not a runtimeexception
+                }
+                throw new RuntimeException(e2);          // should throw the exception itself, not a runtimeexception
             }
         }
     }
 
     /**
-     * Attempts to open the given URL with the default web browser.
+     * DOCUMENT ME!
      *
-     * @param   url  The URL to open
+     * @return  DOCUMENT ME!
+     */
+    private static Desktop getWorkingDesktop() {
+        if (workingDesktop == null) {
+            try {
+                workingDesktop = Desktop.getDesktop();
+            } catch (Throwable t) {
+                log.error("No Desktop for you", t);
+            }
+        }
+        return workingDesktop;
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    public static void initializeDesktop() {
+        getWorkingDesktop();
+    }
+
+    /**
+     * DOCUMENT ME!
      *
-     * @throws  Exception    throws Exeption if anything went wrong
-     * @throws  IOException
-     *                       <ul>
-     *                         <li>If the web browser could not be located or does not run</li>
-     *                         <li>If it catches a <code>InvocationTargetException</code></li>
-     *                         <li>If it catches a <code>IllegalAccessExeption</code></li>
-     *                         <li>if it catches a <code>InstantiationException</code></li>
-     *                       </ul>
+     * @param   url  DOCUMENT ME!
+     *
+     * @throws  Exception    DOCUMENT ME!
+     * @throws  IOException  DOCUMENT ME!
      */
     public static void openURL(final String url) throws Exception {
         if (log.isDebugEnabled()) {
             log.debug("BrowserLauncher.openUrl:" + url);                                // NOI18N
         }
         if (Desktop.isDesktopSupported()) {                                             // NOI18N
-            final Desktop desktop = Desktop.getDesktop();
-            desktop.browse(new URI(url));
+            getWorkingDesktop().browse(new URI(url));
         } else {
             if (!loadedWithoutErrors) {
                 throw new IOException("Exception in finding browser: " + errorMessage); // NOI18N

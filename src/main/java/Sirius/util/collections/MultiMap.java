@@ -109,6 +109,8 @@ public class MultiMap extends HashMap {
      *
      * @return  true, if remove suceeded
      */
+
+    //J-
     public boolean remove(final Object key, final Object value) {
         SyncLinkedList list = null;
 
@@ -127,6 +129,7 @@ public class MultiMap extends HashMap {
             return false;
         }
     }
+    //J+
 } // end class
 
 //////////////////////////////////////////////////////////////////////////

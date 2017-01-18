@@ -7,6 +7,13 @@
 ****************************************************/
 package de.cismet.math.geometry;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 /**
@@ -71,6 +78,39 @@ public class StaticGeometryFunctions {
     }
 
     /**
+     * DOCUMENT ME!
+     *
+     * @param   line1  DOCUMENT ME!
+     * @param   line2  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static Point2D.Double createIntersectionPoint(final Line2D line1, final Line2D line2) {
+        if (!line1.intersectsLine(line2)) {
+            return null;
+        }
+        final double x1 = line1.getX1();
+        final double y1 = line1.getY1();
+        final double x1d = line1.getX2() - x1;
+        final double y1d = line1.getY2() - y1;
+        final double x2 = line2.getX1();
+        final double y2 = line2.getY1();
+        final double x2d = line2.getX2() - x2;
+        final double y2d = line2.getY2() - y2;
+
+        final double det = (x2d * y1d) - (y2d * x1d);
+        if (det == 0) {
+            return null;
+        } else {
+            final double z = ((x2d * (y2 - y1)) + (y2d * (x1 - x2))) / det;
+            if ((z == 0) || (z == 1)) {
+                return null;
+            }
+            return new Point2D.Double(x1 + (z * x1d), y1 + (z * y1d));
+        }
+    }
+
+    /**
      * Calculates the Distance between a specified Point and a specified Line, which goes through lineStart and lineEnd.
      *
      * @param   lineStart  startPoint of the Line
@@ -82,5 +122,45 @@ public class StaticGeometryFunctions {
     public static double distanceToLine(final Point2D lineStart, final Point2D lineEnd, final Point2D trigger) {
         final Point2D pointOnLine = createPointOnLine(lineStart, lineEnd, trigger);
         return Math.hypot(pointOnLine.getX() - trigger.getX(), pointOnLine.getY() - trigger.getY());
+    }
+
+    /**
+     * Converts a multi-point/polygon/linestring to a point/polygon/linestring.
+     *
+     * @param   g  the geometry to convert
+     *
+     * @return  the point/polygon/linestring
+     */
+    public static Geometry toSimpleGeometry(final Geometry g) {
+        if (g.getGeometryType().equalsIgnoreCase("multipoint")) {
+            return g.getGeometryN(0);
+        } else if (g.getGeometryType().equalsIgnoreCase("multilinestring")) {
+            return g.getGeometryN(0);
+        } else if (g.getGeometryType().equalsIgnoreCase("multipolygon")) {
+            return g.getGeometryN(0);
+        }
+
+        return g;
+    }
+
+    /**
+     * Converts a single part geometry to a multi part geometry.
+     *
+     * @param   g  a single part geometry
+     *
+     * @return  a multi part geometry
+     */
+    public static Geometry toMultiGeometry(final Geometry g) {
+        final GeometryFactory factory = g.getFactory();
+
+        if (g.getGeometryType().equalsIgnoreCase("point")) {
+            return factory.createMultiPoint(new Point[] { (Point)g });
+        } else if (g.getGeometryType().equalsIgnoreCase("linestring")) {
+            return factory.createMultiLineString(new LineString[] { (LineString)g });
+        } else if (g.getGeometryType().equalsIgnoreCase("polygon")) {
+            return factory.createMultiPolygon(new Polygon[] { (Polygon)g });
+        }
+
+        return g;
     }
 }
