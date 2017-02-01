@@ -26,7 +26,6 @@
     </properties>
     
     <name>${names.cismet-commons}</name>
-    
     <description>Common Tools and Utilities for cismet development</description>
     
     <scm>
@@ -36,11 +35,16 @@
         <tag>HEAD</tag>
     </scm>
     
+    <ciManagement>
+        <system>jenkins</system>
+        <url>https://ci.cismet.de/job/cismet-commons/</url>
+    </ciManagement>
+    
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/cismet/cismet-commons/issues</url>
     </issueManagement>
-
+    
     <!-- 
         TODO define versions in dependency management section of ext-libs-bom 
     -->
