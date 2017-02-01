@@ -65,11 +65,12 @@
             <artifactId>org-openide-util-lookup</artifactId>
             <version>RELEASE701</version>
         </dependency>
+        <!-- maven-dependency-plugin: Unused declared dependencies 
         <dependency>
             <groupId>org.swinglabs</groupId>
             <artifactId>swingx</artifactId>
             <version>1.6</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>net.sourceforge</groupId>
             <artifactId>blowfishj</artifactId>
@@ -93,6 +94,18 @@
         </dependency>
         
         <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-servlet</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        
+        <!-- maven-dependency-plugin: Unused declared dependencies 
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
@@ -101,7 +114,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
-        </dependency>        
+        </dependency>    
         
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -119,7 +132,8 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-grizzly</artifactId>
             <version>${jersey.version}</version>
-        </dependency>
+        </dependency>-->
+        
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
