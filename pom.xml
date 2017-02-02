@@ -209,6 +209,27 @@
     </dependencies>
 
     <build>
+        <!--
+            Example maven-jar-plugin configuration to specificy a main class for jar maanifest
+            This configuration is *merged* with the default configuration specified in the
+            pluginManagement Section of cismet-parent!
+        -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <mainClass>de.cismet.tools.PasswordEncrypter</mainClass>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <finalName>cismetCommons</finalName>
     </build>
 </project>
