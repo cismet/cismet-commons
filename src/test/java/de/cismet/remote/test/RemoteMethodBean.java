@@ -5,8 +5,8 @@ package de.cismet.remote.test;
  * @author pd
  */
 public class RemoteMethodBean {
-    
-        private String string;
+
+    private String string = "String";
 
     /**
      * Get the value of string
@@ -26,7 +26,7 @@ public class RemoteMethodBean {
         this.string = string;
     }
 
-        private double dbl;
+    private double dbl = 31.337d;
 
     /**
      * Get the value of dbl
@@ -46,15 +46,15 @@ public class RemoteMethodBean {
         this.dbl = dbl;
     }
 
-    private boolean bool;
+    private boolean boolValue = true;
 
     /**
      * Get the value of bool
      *
      * @return the value of bool
      */
-    public boolean isBool() {
-        return bool;
+    public boolean isBoolValue() {
+        return boolValue;
     }
 
     /**
@@ -62,8 +62,8 @@ public class RemoteMethodBean {
      *
      * @param bool new value of bool
      */
-    public void setBool(boolean bool) {
-        this.bool = bool;
+    public void setBoolValue(boolean boolValue) {
+        this.boolValue = boolValue;
     }
 
 }
