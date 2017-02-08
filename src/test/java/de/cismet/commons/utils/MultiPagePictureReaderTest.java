@@ -55,7 +55,10 @@ public class MultiPagePictureReaderTest
         System.out.println("TEST " + this.getCurrentMethodName());
         
         assertNotNull(this.getClass().getResource("multipage_tif_example_small_jpeg.tif"));
-        final File file = new File(this.getClass().getResource("multipage_tif_example_small_jpeg.tif").toURI());
+        File file = new File(this.getClass().getResource("multipage_tif_example_small_jpeg.tif").toExternalForm());
+        if(!file.canRead()) {
+            file = new File(this.getClass().getResource("multipage_tif_example_small_jpeg.tif").toURI());
+        }
         
         assertTrue(file.canRead());
         final MultiPagePictureReader multiPagePictureReader 
@@ -75,7 +78,13 @@ public class MultiPagePictureReaderTest
         System.out.println("TEST " + this.getCurrentMethodName());
         
         assertNotNull(this.getClass().getResource("multipage_tif_example_small_lzw.tif"));
-        final File file = new File(this.getClass().getResource("multipage_tif_example_small_lzw.tif").toURI());
+        
+        // toExternalForm() is required when upstream projects reuse the tests!
+        // See http://stackoverflow.com/questions/941754/how-to-get-a-path-to-a-resource-in-a-java-jar-file/27149287#27149287
+        File file = new File(this.getClass().getResource("multipage_tif_example_small_lzw.tif").toExternalForm());
+        if(!file.canRead()) {
+            file = new File(this.getClass().getResource("multipage_tif_example_small_lzw.tif").toURI());
+        }
         
         assertTrue(file.canRead());
         final MultiPagePictureReader multiPagePictureReader 
@@ -95,7 +104,10 @@ public class MultiPagePictureReaderTest
         System.out.println("TEST " + this.getCurrentMethodName());
         
         assertNotNull(this.getClass().getResource("multipage_tif_example_small_zip.tif"));
-        final File file = new File(this.getClass().getResource("multipage_tif_example_small_zip.tif").toURI());
+        File file = new File(this.getClass().getResource("multipage_tif_example_small_zip.tif").toExternalForm());
+        if(!file.canRead()) {
+            file = new File(this.getClass().getResource("multipage_tif_example_small_zip.tif").toURI());
+        }
         
         assertTrue(file.canRead());
         final MultiPagePictureReader multiPagePictureReader 
@@ -115,7 +127,10 @@ public class MultiPagePictureReaderTest
         System.out.println("TEST " + this.getCurrentMethodName());
         
         assertNotNull(this.getClass().getResource("multipage_tif_example_big_jpeg.tif"));
-        final File file = new File(this.getClass().getResource("multipage_tif_example_big_jpeg.tif").toURI());
+        File file = new File(this.getClass().getResource("multipage_tif_example_big_jpeg.tif").toExternalForm());
+        if(!file.canRead()) {
+            file = new File(this.getClass().getResource("multipage_tif_example_big_jpeg.tif").toURI());
+        }
         
         assertTrue(file.canRead());
         final MultiPagePictureReader multiPagePictureReader 

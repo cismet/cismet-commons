@@ -203,7 +203,6 @@
         <dependency>
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
-            <version>1.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -278,6 +277,13 @@
                                 <mainClass>de.cismet.tools.PasswordEncrypter</mainClass>
                             </manifest>
                         </archive>
+                        <!--
+                            Exclude JARs required by ClassPathInfoTest.java from test-jar since 
+                            this test does not work from inside a jar file in upstream projects!
+                        -->
+                        <excludes>
+                            <exclude>**/*.jar</exclude>
+                        </excludes>
                     </configuration>
                 </plugin>
             </plugins>
