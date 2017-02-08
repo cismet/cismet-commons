@@ -278,11 +278,12 @@
                             </manifest>
                         </archive>
                         <!--
-                            Exclude JARs required by ClassPathInfoTest.java from test-jar since 
+                            Exclude resopurces required by ClassPathInfoTest and MultiPagePictureReaderTest from test-jar since 
                             this test does not work from inside a jar file in upstream projects!
                         -->
                         <excludes>
                             <exclude>**/*.jar</exclude>
+                            <exclude>**/*.tif</exclude>
                         </excludes>
                     </configuration>
                 </plugin>
