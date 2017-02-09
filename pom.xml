@@ -283,6 +283,7 @@
                         -->
                         <excludes>
                             <exclude>**/*.jar</exclude>
+                            <exclude>**/*.jpg</exclude>
                             <exclude>**/*.tif</exclude>
                         </excludes>
                     </configuration>
