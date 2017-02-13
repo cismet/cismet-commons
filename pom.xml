@@ -267,7 +267,7 @@
                             this test does not work from inside a jar file in upstream projects!
                         -->
                     </configuration>
-                    <executions>
+                    <!--<executions>
                         <execution>
                             <goals>
                                 <goal>test-jar</goal>
@@ -280,7 +280,7 @@
                                 </excludes>
                             </configuration>
                         </execution>
-                    </executions>
+                    </executions>-->
                 </plugin>
             </plugins>
         </pluginManagement>
