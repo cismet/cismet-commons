@@ -18,10 +18,6 @@
     
     <properties>
         <names.cismet-commons>cismet Commons</names.cismet-commons>
-        <!-- 
-            TODO relocate to dependency management section of ext-libs-bom 
-        -->
-        <netbeans.version>RELEASE701</netbeans.version>
     </properties>
     
     <name>${names.cismet-commons}</name>
@@ -58,16 +54,6 @@
             <!-- 
                 TODO integrate into in dependency management section of ext-libs-bom!
             -->
-            <dependency>
-                <groupId>org.netbeans.api</groupId>
-                <artifactId>org-openide-util</artifactId>
-                <version>${netbeans.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.netbeans.api</groupId>
-                <artifactId>org-openide-util-lookup</artifactId>
-                <version>${netbeans.version}</version>
-            </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
