@@ -5,6 +5,7 @@ package de.cismet.commons.utils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,7 +19,9 @@ import org.junit.BeforeClass;
  */
 public class MultiPagePictureReaderTest
 {
-
+    
+    private final static Logger LOGGER = Logger.getLogger(MultiPagePictureReaderTest.class);
+    
     public MultiPagePictureReaderTest()
     {
     }
@@ -52,7 +55,7 @@ public class MultiPagePictureReaderTest
     @Test
     public void test010readMultiPageTiffSmallJpeg() throws IOException, URISyntaxException
     {
-        System.out.println("TEST " + this.getCurrentMethodName());
+        LOGGER.info("TEST " + this.getCurrentMethodName());
         
         assertNotNull(this.getClass().getResource("multipage_tif_example_small_jpeg.tif"));
         File file = new File(this.getClass().getResource("multipage_tif_example_small_jpeg.tif").toExternalForm());
@@ -75,7 +78,7 @@ public class MultiPagePictureReaderTest
     @Test
     public void test020readMultiPageTiffSmallLzw() throws IOException, URISyntaxException
     {
-        System.out.println("TEST " + this.getCurrentMethodName());
+        LOGGER.info("TEST " + this.getCurrentMethodName());
         
         assertNotNull(this.getClass().getResource("multipage_tif_example_small_lzw.tif"));
         
@@ -101,7 +104,7 @@ public class MultiPagePictureReaderTest
     @Test
     public void test030readMultiPageTiffSmallZip() throws IOException, URISyntaxException
     {
-        System.out.println("TEST " + this.getCurrentMethodName());
+        LOGGER.info("TEST " + this.getCurrentMethodName());
         
         assertNotNull(this.getClass().getResource("multipage_tif_example_small_zip.tif"));
         File file = new File(this.getClass().getResource("multipage_tif_example_small_zip.tif").toExternalForm());
@@ -124,7 +127,7 @@ public class MultiPagePictureReaderTest
     @Test
     public void test040readMultiPageTiffBigJpeg() throws IOException, URISyntaxException
     {
-        System.out.println("TEST " + this.getCurrentMethodName());
+        LOGGER.info("TEST " + this.getCurrentMethodName());
         
         assertNotNull(this.getClass().getResource("multipage_tif_example_big_jpeg.tif"));
         File file = new File(this.getClass().getResource("multipage_tif_example_big_jpeg.tif").toExternalForm());
@@ -140,5 +143,32 @@ public class MultiPagePictureReaderTest
         assertEquals(10, multiPagePictureReader.getNumberOfPages());
 
         assertNotNull(multiPagePictureReader.loadPage(0));
+    }
+    
+    @Test
+    public void test050readSinglePageJpeg() throws IOException, URISyntaxException
+    {
+        LOGGER.info("TEST " + this.getCurrentMethodName());
+        
+        LOGGER.debug(this.getClass().getResource("/de/cismet/tools/SX720_2280.jpg"));
+        assertNotNull(this.getClass().getResource("/de/cismet/tools/SX720_2280.jpg"));
+        
+        // toExternalForm() is required when upstream projects reuse the tests!
+        // See http://stackoverflow.com/questions/941754/how-to-get-a-path-to-a-resource-in-a-java-jar-file/27149287#27149287
+        File file = new File(this.getClass().getResource("/de/cismet/tools/SX720_2280.jpg").toExternalForm());
+        if(!file.canRead()) {
+            file = new File(this.getClass().getResource("/de/cismet/tools/SX720_2280.jpg").toURI());
+        }
+        
+        assertTrue(file.canRead());
+        final MultiPagePictureReader multiPagePictureReader 
+                = new MultiPagePictureReader(file);
+        
+        assertEquals(MultiPagePictureReader.CODEC_JPEG, multiPagePictureReader.getCodec());
+        assertEquals(1, multiPagePictureReader.getNumberOfPages());
+        
+        for(int i = 0; i < multiPagePictureReader.getNumberOfPages(); i++) {
+            assertNotNull(multiPagePictureReader.loadPage(i));
+        }
     }
 }
