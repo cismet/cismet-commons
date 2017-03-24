@@ -1,10 +1,12 @@
-/***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+/**
+ * *************************************************
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ***************************************************
+ */
 package de.cismet.tools.configuration;
 
 import org.custommonkey.xmlunit.DetailedDiff;
@@ -23,11 +25,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
-import org.openide.util.lookup.ServiceProvider;
-
 import java.io.StringReader;
 
 import java.lang.reflect.Method;
@@ -35,7 +32,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -43,22 +39,20 @@ import static org.junit.Assert.*;
 /**
  * DOCUMENT ME!
  *
- * @author   martin.scholl@cismet.de
- * @version  $Revision$, $Date$
+ * @author martin.scholl@cismet.de
+ * @version $Revision$, $Date$
  */
-public class ConfigurationManagerTest implements Lookup.Provider {
+public class ConfigurationManagerTest {
 
     //~ Static fields/initializers ---------------------------------------------
-
     private static XMLOutputter out;
     private static XMLOutputter raw;
     private static XMLTestCase xmltestcase;
-    private static Map<String, String> userConfig;
-    private static Map<String, String> groupConfig;
-    private static Map<String, String> domainConfig;
+    static Map<String, String> userConfig;
+    static Map<String, String> groupConfig;
+    static Map<String, String> domainConfig;
 
     //~ Constructors -----------------------------------------------------------
-
     /**
      * Creates a new ConfigurationManagerTest object.
      */
@@ -66,7 +60,6 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     }
 
     //~ Methods ----------------------------------------------------------------
-
     /**
      * DOCUMENT ME!
      */
@@ -87,27 +80,28 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Throwable  DOCUMENT ME!
+     * @throws Throwable DOCUMENT ME!
      */
     @BeforeClass
     public static void setUpClass() throws Throwable {
-        final Properties p = new Properties();
-        p.put("log4j.appender.Remote", "org.apache.log4j.net.SocketAppender");
-        p.put("log4j.appender.Remote.remoteHost", "localhost");
-        p.put("log4j.appender.Remote.port", "4445");
-        p.put("log4j.appender.Remote.locationInfo", "true");
-        p.put("log4j.rootLogger", "ALL,Remote");
-        org.apache.log4j.PropertyConfigurator.configure(p);
+
+        //final Properties p = new Properties();
+        //p.put("log4j.appender.Remote", "org.apache.log4j.net.SocketAppender");
+        //p.put("log4j.appender.Remote.remoteHost", "localhost");
+        //p.put("log4j.appender.Remote.port", "4445");
+        //p.put("log4j.appender.Remote.locationInfo", "true");
+        //p.put("log4j.rootLogger", "ALL,Remote");
+        //org.apache.log4j.PropertyConfigurator.configure(p);
         out = new XMLOutputter(Format.getPrettyFormat());
         raw = new XMLOutputter(Format.getRawFormat());
         xmltestcase = new XMLTestCase(ConfigurationManagerTest.class.getName()) {
-            };
+        };
     }
 
     /**
      * DOCUMENT ME!
      *
-     * @return  DOCUMENT ME!
+     * @return DOCUMENT ME!
      */
     private String getCurrentMethodName() {
         return new Throwable().getStackTrace()[1].getMethodName();
@@ -164,7 +158,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Ignore
     @Test
@@ -174,7 +168,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Test
     public void testCreateElement() throws Exception {
@@ -188,19 +182,19 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         assertTrue(result.size() == 1);
         xmltestcase.assertXMLEqual(simpleElement, out.outputString(result.iterator().next()));
 
-        final String complexElement =
-            "<emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses><receiver>lagerbuch.102@stadt.wuppertal.de</receiver></nkfMailAddresses>"
-                    + "<developerMailaddresses><receiver>sebastian.puhl@cismet.de</receiver></developerMailaddresses>"
-                    + "<maintenanceMailaddresses><receiver>lagerbuch.102@stadt.wuppertal.de</receiver></maintenanceMailaddresses>"
-                    + "</emailConfiguration>";
+        final String complexElement
+                = "<emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses><receiver>lagerbuch.102@stadt.wuppertal.de</receiver></nkfMailAddresses>"
+                + "<developerMailaddresses><receiver>sebastian.puhl@cismet.de</receiver></developerMailaddresses>"
+                + "<maintenanceMailaddresses><receiver>lagerbuch.102@stadt.wuppertal.de</receiver></maintenanceMailaddresses>"
+                + "</emailConfiguration>";
 
         result = manager.createElements("<root>" + complexElement + "</root>");
         assertNotNull(result);
         assertTrue(result.size() == 1);
         final DetailedDiff diff = new DetailedDiff(new Diff(
-                    complexElement,
-                    raw.outputString(result.iterator().next())));
+                complexElement,
+                raw.outputString(result.iterator().next())));
         assertTrue("difference: " + diff, diff.similar());
 
         final String manyElements = "<myElement/><myElement></myElement><myElement/>";
@@ -233,41 +227,41 @@ public class ConfigurationManagerTest implements Lookup.Provider {
 
         final ConfigurationManager manager = new ConfigurationManager();
 
-        final String elementWithSA =
-            "<root><emailConfiguration username=\"\" password=\"\" substitutionAttribute=\"abc\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
-                    + "</nkfMailAddresses>"
-                    + "<developerMailaddresses>"
-                    + "<receiver>sebastian.puhl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "<maintenanceMailaddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
-                    + "</maintenanceMailaddresses>"
-                    + "</emailConfiguration></root>";
+        final String elementWithSA
+                = "<root><emailConfiguration username=\"\" password=\"\" substitutionAttribute=\"abc\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
+                + "</nkfMailAddresses>"
+                + "<developerMailaddresses>"
+                + "<receiver>sebastian.puhl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "<maintenanceMailaddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
+                + "</maintenanceMailaddresses>"
+                + "</emailConfiguration></root>";
         Set<Element> element = manager.createElements(elementWithSA);
         boolean result = manager.hasSubstitutionAttr(element.iterator().next());
         assertTrue(result);
 
-        final String elementWithoutSA =
-            "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
-                    + "</nkfMailAddresses>"
-                    + "<developerMailaddresses>"
-                    + "<receiver>sebastian.puhl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "<maintenanceMailaddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
-                    + "</maintenanceMailaddresses>"
-                    + "</emailConfiguration></root>";
+        final String elementWithoutSA
+                = "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
+                + "</nkfMailAddresses>"
+                + "<developerMailaddresses>"
+                + "<receiver>sebastian.puhl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "<maintenanceMailaddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
+                + "</maintenanceMailaddresses>"
+                + "</emailConfiguration></root>";
 
         element = manager.createElements(elementWithoutSA);
         result = manager.hasSubstitutionAttr(element.iterator().next());
         assertFalse(result);
 
-        final String elementWithSAAndNamespace =
-            "<root><ns:test substitutionAttribute=\"abc\" xmlns:ns=\"test\"/></root>";
+        final String elementWithSAAndNamespace
+                = "<root><ns:test substitutionAttribute=\"abc\" xmlns:ns=\"test\"/></root>";
 
         element = manager.createElements(elementWithSAAndNamespace);
         result = manager.hasSubstitutionAttr(element.iterator().next());
@@ -283,34 +277,34 @@ public class ConfigurationManagerTest implements Lookup.Provider {
 
         final ConfigurationManager manager = new ConfigurationManager();
 
-        final String elementWithSA =
-            "<root><emailConfiguration username=\"\" password=\"\" substitutionAttribute=\"abc\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
-                    + "</nkfMailAddresses>"
-                    + "<developerMailaddresses>"
-                    + "<receiver>sebastian.puhl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "<maintenanceMailaddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
-                    + "</maintenanceMailaddresses>"
-                    + "</emailConfiguration></root>";
+        final String elementWithSA
+                = "<root><emailConfiguration username=\"\" password=\"\" substitutionAttribute=\"abc\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
+                + "</nkfMailAddresses>"
+                + "<developerMailaddresses>"
+                + "<receiver>sebastian.puhl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "<maintenanceMailaddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
+                + "</maintenanceMailaddresses>"
+                + "</emailConfiguration></root>";
         Set<Element> element = manager.createElements(elementWithSA);
         String result = manager.getSubstitutionAttr(element.iterator().next());
         assertEquals("abc", result);
 
-        final String elementWithoutSA =
-            "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
-                    + "</nkfMailAddresses>"
-                    + "<developerMailaddresses>"
-                    + "<receiver>sebastian.puhl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "<maintenanceMailaddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
-                    + "</maintenanceMailaddresses>"
-                    + "</emailConfiguration></root>";
+        final String elementWithoutSA
+                = "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
+                + "</nkfMailAddresses>"
+                + "<developerMailaddresses>"
+                + "<receiver>sebastian.puhl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "<maintenanceMailaddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
+                + "</maintenanceMailaddresses>"
+                + "</emailConfiguration></root>";
 
         element = manager.createElements(elementWithoutSA);
         result = manager.getSubstitutionAttr(element.iterator().next());
@@ -326,18 +320,18 @@ public class ConfigurationManagerTest implements Lookup.Provider {
 
         final ConfigurationManager manager = new ConfigurationManager();
 
-        final String parentNoVoid =
-            "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses substitutionAttribute=\"abc\">"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
-                    + "</nkfMailAddresses>"
-                    + "<developerMailaddresses>"
-                    + "<receiver>sebastian.puhl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "<maintenanceMailaddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
-                    + "</maintenanceMailaddresses>"
-                    + "</emailConfiguration></root>";
+        final String parentNoVoid
+                = "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses substitutionAttribute=\"abc\">"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>"
+                + "</nkfMailAddresses>"
+                + "<developerMailaddresses>"
+                + "<receiver>sebastian.puhl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "<maintenanceMailaddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
+                + "</maintenanceMailaddresses>"
+                + "</emailConfiguration></root>";
         Set<Element> parent = manager.createElements(parentNoVoid);
         Element child = parent.iterator().next().getChild("nkfMailAddresses");
         assertNotNull(parent);
@@ -345,16 +339,16 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         manager.removeVoid(child);
         assertNotNull(parent.iterator().next().getChild("nkfMailAddresses"));
 
-        final String parentNoVoid2 =
-            "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses />"
-                    + "<developerMailaddresses>"
-                    + "<receiver>sebastian.puhl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "<maintenanceMailaddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
-                    + "</maintenanceMailaddresses>"
-                    + "</emailConfiguration></root>";
+        final String parentNoVoid2
+                = "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses />"
+                + "<developerMailaddresses>"
+                + "<receiver>sebastian.puhl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "<maintenanceMailaddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
+                + "</maintenanceMailaddresses>"
+                + "</emailConfiguration></root>";
         parent = manager.createElements(parentNoVoid2);
         child = parent.iterator().next().getChild("nkfMailAddresses");
         assertNotNull(parent.iterator().next());
@@ -362,16 +356,16 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         manager.removeVoid(child);
         assertNotNull(parent.iterator().next().getChild("nkfMailAddresses"));
 
-        final String parentVoid =
-            "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses substitutionAttribute=\"abc\"/>"
-                    + "<developerMailaddresses>"
-                    + "<receiver>sebastian.puhl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "<maintenanceMailaddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
-                    + "</maintenanceMailaddresses>"
-                    + "</emailConfiguration></root>";
+        final String parentVoid
+                = "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses substitutionAttribute=\"abc\"/>"
+                + "<developerMailaddresses>"
+                + "<receiver>sebastian.puhl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "<maintenanceMailaddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
+                + "</maintenanceMailaddresses>"
+                + "</emailConfiguration></root>";
         parent = manager.createElements(parentVoid);
         child = parent.iterator().next().getChild("nkfMailAddresses");
         assertNotNull(parent.iterator().next());
@@ -379,17 +373,17 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         manager.removeVoid(child);
         assertNull(parent.iterator().next().getChild("nkfMailAddresses"));
 
-        final String parentVoid2 =
-            "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses substitutionAttribute=\"abc\">"
-                    + "</nkfMailAddresses>"
-                    + "<developerMailaddresses>"
-                    + "<receiver>sebastian.puhl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "<maintenanceMailaddresses>"
-                    + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
-                    + "</maintenanceMailaddresses>"
-                    + "</emailConfiguration></root>";
+        final String parentVoid2
+                = "<root><emailConfiguration username=\"\" password=\"\" senderAddress=\"sebastian.puhl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses substitutionAttribute=\"abc\">"
+                + "</nkfMailAddresses>"
+                + "<developerMailaddresses>"
+                + "<receiver>sebastian.puhl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "<maintenanceMailaddresses>"
+                + "<receiver>lagerbuch.102@stadt.wuppertal.de</receiver>           "
+                + "</maintenanceMailaddresses>"
+                + "</emailConfiguration></root>";
 
         parent = manager.createElements(parentVoid2);
         child = parent.iterator().next().getChild("nkfMailAddresses");
@@ -402,7 +396,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Test
     public void testResolveNamespace() throws Exception {
@@ -412,13 +406,13 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         StringReader reader = new StringReader(nsTestParent);
         Element root = builder.build(reader).detachRootElement();
         reader.close();
-        Element parent = (Element)((Element)root.getChildren().get(0)).getChildren().get(0);
+        Element parent = (Element) ((Element) root.getChildren().get(0)).getChildren().get(0);
 
         final String nsTestChildren = "<root xmlns:ns1=\""
-                    + ConfigurationManager.DUMMY_NS_ATTR_VALUE
-                    + "\" xmlns:ns2=\""
-                    + ConfigurationManager.DUMMY_NS_ATTR_VALUE
-                    + "\"><ns1:el1/><ns2:el2/></root>";
+                + ConfigurationManager.DUMMY_NS_ATTR_VALUE
+                + "\" xmlns:ns2=\""
+                + ConfigurationManager.DUMMY_NS_ATTR_VALUE
+                + "\"><ns1:el1/><ns2:el2/></root>";
         final Set<Element> children = manager.createElements(nsTestChildren);
         manager.resolveNamespace(parent, children);
 
@@ -433,7 +427,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         reader = new StringReader(nsTestParent);
         root = builder.build(reader).detachRootElement();
         reader.close();
-        parent = (Element)((Element)root.getChildren().get(0)).getChildren().get(0);
+        parent = (Element) ((Element) root.getChildren().get(0)).getChildren().get(0);
 
         manager.resolveNamespace(parent, children);
 
@@ -447,7 +441,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Test
     public void testProcessElement_NoReplacement() throws Exception {
@@ -461,7 +455,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         final Method method = manager.getClass().getDeclaredMethod("preprocessElement", Element.class);
         method.setAccessible(true);
 
-        final Element result = (Element)method.invoke(manager, doc.getRootElement());
+        final Element result = (Element) method.invoke(manager, doc.getRootElement());
         assertNotNull(result);
 
         final Document original = builder.build(this.getClass().getResourceAsStream("NoReplacement.xml"));
@@ -472,7 +466,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Test
     public void testProcessElement_RemoveVoid_simple() throws Exception {
@@ -486,7 +480,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         final Method method = manager.getClass().getDeclaredMethod("preprocessElement", Element.class);
         method.setAccessible(true);
 
-        final Element result = (Element)method.invoke(manager, doc.getRootElement());
+        final Element result = (Element) method.invoke(manager, doc.getRootElement());
         assertNotNull(result);
 
         final Document original = builder.build(this.getClass().getResourceAsStream("RemoveVoid_simple_expected.xml"));
@@ -497,7 +491,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Test
     public void testProcessElement_RemoveVoid_complex() throws Exception {
@@ -511,7 +505,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         final Method method = manager.getClass().getDeclaredMethod("preprocessElement", Element.class);
         method.setAccessible(true);
 
-        final Element result = (Element)method.invoke(manager, doc.getRootElement());
+        final Element result = (Element) method.invoke(manager, doc.getRootElement());
         assertNotNull(result);
 
         final Document original = builder.build(this.getClass().getResourceAsStream("RemoveVoid_complex_expected.xml"));
@@ -522,7 +516,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Test
     public void testProcessElement_ReplaceSingle_simple() throws Exception {
@@ -532,24 +526,28 @@ public class ConfigurationManagerTest implements Lookup.Provider {
 
         final SAXBuilder builder = new SAXBuilder(false);
         final Document doc = builder.build(this.getClass().getResourceAsStream("ReplaceSingle_simple_test.xml"));
+        System.out.println(">>> SAXParserFactory:" + builder.getFactory().getClass());
+        System.out.println(">>> DTDHandler:" + builder.getDTDHandler());
+        System.out.println(">>> SAX Driver:" + builder.getDriverClass());
+        System.out.println(">>> EntityResolver:" + builder.getEntityResolver());
 
         final Method method = manager.getClass().getDeclaredMethod("preprocessElement", Element.class);
         method.setAccessible(true);
 
         domainConfig.put(
-            "perm",
-            "<root>"
-                    + "<permission>"
-                    + "<readWrite>true</readWrite>"
-                    + "<userGroup>subGroup</userGroup>"
-                    + "<userDomain>LAGIS</userDomain>"
-                    + "</permission>"
-                    + "</root>");
-        final Element result = (Element)method.invoke(manager, doc.getRootElement());
+                "perm",
+                "<root>"
+                + "<permission>"
+                + "<readWrite>true</readWrite>"
+                + "<userGroup>subGroup</userGroup>"
+                + "<userDomain>LAGIS</userDomain>"
+                + "</permission>"
+                + "</root>");
+        final Element result = (Element) method.invoke(manager, doc.getRootElement());
         assertNotNull(result);
 
         final Document original = builder.build(this.getClass().getResourceAsStream(
-                    "ReplaceSingle_simple_expected.xml"));
+                "ReplaceSingle_simple_expected.xml"));
 
         xmltestcase.assertXMLEqual(out.outputString(original), out.outputString(result));
     }
@@ -557,7 +555,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Test
     public void testProcessElement_ReplaceSingle_complex() throws Exception {
@@ -566,38 +564,46 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         final ConfigurationManager manager = new ConfigurationManager();
 
         final SAXBuilder builder = new SAXBuilder(false);
+        
+        System.out.println(">>> SAXParserFactory:" + builder.getFactory().getClass());
+        System.out.println(">>> DTDHandler:" + builder.getDTDHandler());
+        System.out.println(">>> SAX Driver:" + builder.getDriverClass());
+        System.out.println(">>> EntityResolver:" + builder.getEntityResolver());
+        
         final Document doc = builder.build(this.getClass().getResourceAsStream("ReplaceSingle_complex_test.xml"));
+        
+        
 
         final Method method = manager.getClass().getDeclaredMethod("preprocessElement", Element.class);
         method.setAccessible(true);
 
         groupConfig.put(
-            "perm",
-            "<root>"
-                    + "<permission>"
-                    + "<readWrite>true</readWrite>"
-                    + "<userGroup>subGroup</userGroup>"
-                    + "<userDomain>LAGIS</userDomain>"
-                    + "</permission>"
-                    + "</root>");
+                "perm",
+                "<root>"
+                + "<permission>"
+                + "<readWrite>true</readWrite>"
+                + "<userGroup>subGroup</userGroup>"
+                + "<userDomain>LAGIS</userDomain>"
+                + "</permission>"
+                + "</root>");
 
         userConfig.put(
-            "email",
-            "<root>"
-                    + "<emailConfiguration username=\"\" password=\"\" senderAddress=\"martin.scholl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses>"
-                    + "<receiver>lagerbuch.103@stadt.wuppertal.de</receiver>"
-                    + "</nkfMailAddresses>"
-                    + "<developerMailaddresses>"
-                    + "<receiver>martin.scholl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "</emailConfiguration></root>");
+                "email",
+                "<root>"
+                + "<emailConfiguration username=\"\" password=\"\" senderAddress=\"martin.scholl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses>"
+                + "<receiver>lagerbuch.103@stadt.wuppertal.de</receiver>"
+                + "</nkfMailAddresses>"
+                + "<developerMailaddresses>"
+                + "<receiver>martin.scholl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "</emailConfiguration></root>");
 
-        final Element result = (Element)method.invoke(manager, doc.getRootElement());
+        final Element result = (Element) method.invoke(manager, doc.getRootElement());
         assertNotNull(result);
 
         final Document original = builder.build(this.getClass().getResourceAsStream(
-                    "ReplaceSingle_complex_expected.xml"));
+                "ReplaceSingle_complex_expected.xml"));
 
         final DetailedDiff diff = new DetailedDiff(new Diff(out.outputString(original), out.outputString(result)));
         assertTrue("diff: " + diff, diff.similar());
@@ -606,7 +612,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Test
     public void testProcessElement_ReplaceSingle_uugd_simple() throws Exception {
@@ -621,41 +627,41 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         method.setAccessible(true);
 
         userConfig.put(
-            "perm",
-            "<root>"
-                    + "<permission>"
-                    + "<readWrite>true</readWrite>"
-                    + "<userGroup>subUser</userGroup>"
-                    + "<userDomain>LAGIS</userDomain>"
-                    + "</permission>"
-                    + "<permission substitutionAttribute=\"perm\"/>"
-                    + "</root>");
+                "perm",
+                "<root>"
+                + "<permission>"
+                + "<readWrite>true</readWrite>"
+                + "<userGroup>subUser</userGroup>"
+                + "<userDomain>LAGIS</userDomain>"
+                + "</permission>"
+                + "<permission substitutionAttribute=\"perm\"/>"
+                + "</root>");
 
         groupConfig.put(
-            "perm",
-            "<root>"
-                    + "<permission substitutionAttribute=\"perm\">"
-                    + "<readWrite>false</readWrite>"
-                    + "<userGroup>subGroup</userGroup>"
-                    + "<userDomain>LAGIS</userDomain>"
-                    + "</permission>"
-                    + "</root>");
+                "perm",
+                "<root>"
+                + "<permission substitutionAttribute=\"perm\">"
+                + "<readWrite>false</readWrite>"
+                + "<userGroup>subGroup</userGroup>"
+                + "<userDomain>LAGIS</userDomain>"
+                + "</permission>"
+                + "</root>");
 
         domainConfig.put(
-            "perm",
-            "<root>"
-                    + "<permission specialPerm=\"sp\">"
-                    + "<readWrite>false</readWrite>"
-                    + "<userGroup>subDomain</userGroup>"
-                    + "<userDomain>Test</userDomain>"
-                    + "</permission>"
-                    + "</root>");
+                "perm",
+                "<root>"
+                + "<permission specialPerm=\"sp\">"
+                + "<readWrite>false</readWrite>"
+                + "<userGroup>subDomain</userGroup>"
+                + "<userDomain>Test</userDomain>"
+                + "</permission>"
+                + "</root>");
 
-        final Element result = (Element)method.invoke(manager, doc.getRootElement());
+        final Element result = (Element) method.invoke(manager, doc.getRootElement());
         assertNotNull(result);
 
         final Document original = builder.build(this.getClass().getResourceAsStream(
-                    "ReplaceSingle_uugd_simple_expected.xml"));
+                "ReplaceSingle_uugd_simple_expected.xml"));
 
         final DetailedDiff diff = new DetailedDiff(new Diff(out.outputString(original), out.outputString(result)));
         assertTrue("diff: " + diff, diff.similar());
@@ -664,7 +670,7 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     /**
      * DOCUMENT ME!
      *
-     * @throws  Exception  DOCUMENT ME!
+     * @throws Exception DOCUMENT ME!
      */
     @Test
     public void testProcessElement_ReplaceAll() throws Exception {
@@ -679,76 +685,76 @@ public class ConfigurationManagerTest implements Lookup.Provider {
         method.setAccessible(true);
 
         userConfig.put(
-            "perm",
-            "<root>"
-                    + "<permission>"
-                    + "<readWrite>true</readWrite>"
-                    + "<userGroup>subUser</userGroup>"
-                    + "<userDomain>LAGIS</userDomain>"
-                    + "</permission>"
-                    + "<permission substitutionAttribute=\"perm\"/>"
-                    + "</root>");
+                "perm",
+                "<root>"
+                + "<permission>"
+                + "<readWrite>true</readWrite>"
+                + "<userGroup>subUser</userGroup>"
+                + "<userDomain>LAGIS</userDomain>"
+                + "</permission>"
+                + "<permission substitutionAttribute=\"perm\"/>"
+                + "</root>");
         userConfig.put(
-            "email",
-            "<root>"
-                    + "<emailConfiguration substitutionAttribute=\"email\" username=\"\" password=\"\" senderAddress=\"martin.scholl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<nkfMailAddresses>"
-                    + "<receiver>lagerbuch.103@stadt.wuppertal.de</receiver>"
-                    + "</nkfMailAddresses>"
-                    + "<developerMailaddresses>"
-                    + "<receiver>martin.scholl@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "</emailConfiguration></root>");
+                "email",
+                "<root>"
+                + "<emailConfiguration substitutionAttribute=\"email\" username=\"\" password=\"\" senderAddress=\"martin.scholl@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<nkfMailAddresses>"
+                + "<receiver>lagerbuch.103@stadt.wuppertal.de</receiver>"
+                + "</nkfMailAddresses>"
+                + "<developerMailaddresses>"
+                + "<receiver>martin.scholl@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "</emailConfiguration></root>");
 
         groupConfig.put(
-            "perm",
-            "<root>"
-                    + "<permission substitutionAttribute=\"perm\">"
-                    + "<readWrite>false</readWrite>"
-                    + "<userGroup>subGroup</userGroup>"
-                    + "<userDomain>LAGIS</userDomain>"
-                    + "</permission>"
-                    + "</root>");
+                "perm",
+                "<root>"
+                + "<permission substitutionAttribute=\"perm\">"
+                + "<readWrite>false</readWrite>"
+                + "<userGroup>subGroup</userGroup>"
+                + "<userDomain>LAGIS</userDomain>"
+                + "</permission>"
+                + "</root>");
         groupConfig.put(
-            "prop",
-            "<root xmlns:wfs=\"http://www.cismet.de/config/dummyNamespace\">"
-                    + "<wfs:PropertyName>app:the_testgroup1</wfs:PropertyName>"
-                    + "<wfs:PropertyName>app:the_testgroup2</wfs:PropertyName>"
-                    + "<wfs:PropertyName substitutionAttribute=\"prop\">app:the_testgroup3</wfs:PropertyName></root>");
+                "prop",
+                "<root xmlns:wfs=\"http://www.cismet.de/config/dummyNamespace\">"
+                + "<wfs:PropertyName>app:the_testgroup1</wfs:PropertyName>"
+                + "<wfs:PropertyName>app:the_testgroup2</wfs:PropertyName>"
+                + "<wfs:PropertyName substitutionAttribute=\"prop\">app:the_testgroup3</wfs:PropertyName></root>");
 
         domainConfig.put(
-            "perm",
-            "<root>"
-                    + "<permission specialPerm=\"sp\">"
-                    + "<readWrite>false</readWrite>"
-                    + "<userGroup>subDomain</userGroup>"
-                    + "<userDomain>Test</userDomain>"
-                    + "</permission>"
-                    + "</root>");
+                "perm",
+                "<root>"
+                + "<permission specialPerm=\"sp\">"
+                + "<readWrite>false</readWrite>"
+                + "<userGroup>subDomain</userGroup>"
+                + "<userDomain>Test</userDomain>"
+                + "</permission>"
+                + "</root>");
         domainConfig.put(
-            "email",
-            "<root>"
-                    + "<emailConfiguration substitutionAttribute=\"email\" username=\"\" password=\"\" senderAddress=\"thorsten.hell@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
-                    + "<developerMailaddresses>"
-                    + "<receiver>thorsten.hell@cismet.de</receiver>"
-                    + "</developerMailaddresses>"
-                    + "<maintenanceMailaddresses>"
-                    + "<receiver>lagerbuch.104@stadt.wuppertal.de</receiver>           "
-                    + "</maintenanceMailaddresses>"
-                    + "</emailConfiguration></root>");
+                "email",
+                "<root>"
+                + "<emailConfiguration substitutionAttribute=\"email\" username=\"\" password=\"\" senderAddress=\"thorsten.hell@cismet.de\" smtpHost=\"smtp.uni-saarland.de\">"
+                + "<developerMailaddresses>"
+                + "<receiver>thorsten.hell@cismet.de</receiver>"
+                + "</developerMailaddresses>"
+                + "<maintenanceMailaddresses>"
+                + "<receiver>lagerbuch.104@stadt.wuppertal.de</receiver>           "
+                + "</maintenanceMailaddresses>"
+                + "</emailConfiguration></root>");
         domainConfig.put(
-            "prop",
-            "<root xmlns:wfs=\"http://www.cismet.de/config/dummyNamespace\">"
-                    + "<wfs:PropertyName>app:the_testdomain1</wfs:PropertyName>"
-                    + "<wfs:PropertyName>app:the_testdomain2</wfs:PropertyName>"
-                    + "<wfs:PropertyName>app:the_testdomain3</wfs:PropertyName>"
-                    + "<wfs:PropertyName substitutionAttribute=\"prop\"/></root>");
+                "prop",
+                "<root xmlns:wfs=\"http://www.cismet.de/config/dummyNamespace\">"
+                + "<wfs:PropertyName>app:the_testdomain1</wfs:PropertyName>"
+                + "<wfs:PropertyName>app:the_testdomain2</wfs:PropertyName>"
+                + "<wfs:PropertyName>app:the_testdomain3</wfs:PropertyName>"
+                + "<wfs:PropertyName substitutionAttribute=\"prop\"/></root>");
 
-        final Element result = (Element)method.invoke(manager, doc.getRootElement());
+        final Element result = (Element) method.invoke(manager, doc.getRootElement());
         assertNotNull(result);
 
         final Document original = builder.build(this.getClass().getResourceAsStream(
-                    "ReplaceAll_expected.xml"));
+                "ReplaceAll_expected.xml"));
 
         final DetailedDiff diff = new DetailedDiff(new Diff(out.outputString(original), out.outputString(result)));
         assertTrue("diff: " + diff, diff.similar());
@@ -768,40 +774,5 @@ public class ConfigurationManagerTest implements Lookup.Provider {
     @Ignore
     @Test
     public void testWriteConfiguration_String() {
-    }
-
-    @Override
-    public Lookup getLookup() {
-        final InstanceContent ic = new InstanceContent();
-        ic.add(new TestConfigAttrProvider());
-        return new AbstractLookup(ic);
-    }
-
-    //~ Inner Classes ----------------------------------------------------------
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @version  $Revision$, $Date$
-     */
-    @ServiceProvider(service = ConfigAttrProvider.class)
-    public static class TestConfigAttrProvider implements ConfigAttrProvider {
-
-        //~ Methods ------------------------------------------------------------
-
-        @Override
-        public String getUserConfigAttr(final String key) {
-            return userConfig.get(key);
-        }
-
-        @Override
-        public String getGroupConfigAttr(final String key) {
-            return groupConfig.get(key);
-        }
-
-        @Override
-        public String getDomainConfigAttr(final String key) {
-            return domainConfig.get(key);
-        }
     }
 }
