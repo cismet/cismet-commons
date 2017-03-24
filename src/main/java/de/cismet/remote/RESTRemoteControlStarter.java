@@ -7,13 +7,13 @@
 ****************************************************/
 package de.cismet.remote;
 
-import com.sun.grizzly.http.embed.GrizzlyWebServer;
-import com.sun.grizzly.http.servlet.ServletAdapter;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 import org.apache.log4j.Logger;
 
-import java.net.URL;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.servlet.Context;
+import org.mortbay.jetty.servlet.ServletHolder;
 
 import java.util.*;
 
@@ -49,25 +49,31 @@ public class RESTRemoteControlStarter {
     public static void initRestRemoteControlMethods(final int defaultPort) throws Exception {
         RESTRemoteControlMethodRegistry.gatherRemoteMethods(defaultPort);
 
-        GrizzlyWebServer webServer;
-        ServletAdapter jerseyAdapter;
-
+        int count = 0;
         final Set<Integer> methodPorts = RESTRemoteControlMethodRegistry.getMethodPorts();
         for (final Integer port : methodPorts) {
-            webServer = new GrizzlyWebServer(port);
+            final Server jettyServer = new Server(port);
 
-            jerseyAdapter = new ServletAdapter();
-            jerseyAdapter.setServletInstance(new ServletContainer());
-            jerseyAdapter.setContextPath("/");
-            jerseyAdapter.addInitParameter(
+            final ServletHolder jerseyServlet = new ServletHolder(ServletContainer.class);
+            jerseyServlet.setInitOrder(0);
+            jerseyServlet.setInitParameter(
                 "javax.ws.rs.Application",
                 RESTRemoteControlMethodsApplication.class.getName());
 
-            jerseyAdapter.addInitParameter(RESTRemoteControlMethodsApplication.PROP_PORT, String.valueOf(port));
+            jerseyServlet.setInitParameter(RESTRemoteControlMethodsApplication.PROP_PORT, String.valueOf(port));
 
-            webServer.addGrizzlyAdapter(jerseyAdapter, new String[] { "/" });
+            final Context context = new Context(jettyServer, "/", Context.SESSIONS);
+            context.addServlet(jerseyServlet, "/*");
 
-            webServer.start();
+            jettyServer.start();
+            // jettyServer.join();
+            LOG.info("JETTY Server startet at port " + port);
+
+            count++;
+        }
+
+        if (count == 0) {
+            LOG.warn("JETTY Server not started: no RestRemoteControlMethods found in RESTRemoteControlMethodRegistry");
         }
     }
 }

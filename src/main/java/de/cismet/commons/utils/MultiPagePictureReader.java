@@ -31,7 +31,12 @@ import de.cismet.commons.security.handler.ExtendedAccessHandler;
 import de.cismet.commons.security.handler.SimpleHttpAccessHandler;
 
 /**
- * DOCUMENT ME!
+ * FIXME: This class seems to use an outdated Version of JAI.
+ *
+ * <p>java.lang.NoClassDefFoundError: com/sun/image/codec/jpeg/JPEGCodec java.lang.NoClassDefFoundError:
+ * com/sun/image/codec/jpeg/ImageFormatException</p>
+ *
+ * <p>See #62</p>
  *
  * @version  $Revision$, $Date$
  */
@@ -212,6 +217,7 @@ public class MultiPagePictureReader {
             throw new IOException("Could not open '" + imageURL.toExternalForm() + "'.", ex);
         }
 
+        // FIXME: Don't use com.sun classes directly
         decoder = ImageCodec.createImageDecoder(codec, stream, null);
 
         pageCount = decoder.getNumPages();
