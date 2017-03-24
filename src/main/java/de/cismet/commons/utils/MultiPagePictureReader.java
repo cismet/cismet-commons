@@ -31,13 +31,12 @@ import de.cismet.commons.security.handler.ExtendedAccessHandler;
 import de.cismet.commons.security.handler.SimpleHttpAccessHandler;
 
 /**
- * FIXME: 
- * This class seems to use an outdated Version of JAI.
- * 
- * java.lang.NoClassDefFoundError: com/sun/image/codec/jpeg/JPEGCodec
- * java.lang.NoClassDefFoundError: com/sun/image/codec/jpeg/ImageFormatException
- * 
- * See #62
+ * FIXME: This class seems to use an outdated Version of JAI.
+ *
+ * <p>java.lang.NoClassDefFoundError: com/sun/image/codec/jpeg/JPEGCodec java.lang.NoClassDefFoundError:
+ * com/sun/image/codec/jpeg/ImageFormatException</p>
+ *
+ * <p>See #62</p>
  *
  * @version  $Revision$, $Date$
  */
