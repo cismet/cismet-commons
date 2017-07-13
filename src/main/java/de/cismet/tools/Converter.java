@@ -16,6 +16,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
 /**
  * Helper class for various convertion related tasks like (de)serialisation.
  *
@@ -209,7 +212,25 @@ public final class Converter {
      * @see     #serialise(java.lang.Object)
      */
     public static String serialiseToString(final Object o) throws IOException {
-        return toString(serialise(o));
+        return serialiseToString(o, false);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   o                   DOCUMENT ME!
+     * @param   compressionEnabled  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public static String serialiseToString(final Object o, final boolean compressionEnabled) throws IOException {
+        if (compressionEnabled) {
+            return toString(serialiseToGzip(o));
+        } else {
+            return toString(serialise(o));
+        }
     }
 
     /**
@@ -230,6 +251,72 @@ public final class Converter {
      */
     public static <T> T deserialiseFromString(final String s, final Class<T> type) throws IOException,
         ClassNotFoundException {
-        return deserialise(fromString(s), type);
+        return deserialiseFromString(s, type, false);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   <T>                 DOCUMENT ME!
+     * @param   s                   DOCUMENT ME!
+     * @param   type                DOCUMENT ME!
+     * @param   compressionEnabled  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException             DOCUMENT ME!
+     * @throws  ClassNotFoundException  DOCUMENT ME!
+     */
+    public static <T> T deserialiseFromString(final String s, final Class<T> type, final boolean compressionEnabled)
+            throws IOException, ClassNotFoundException {
+        if (compressionEnabled) {
+            return deserialiseFromGzip(fromString(s), type);
+        } else {
+            return deserialise(fromString(s), type);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   <T>    DOCUMENT ME!
+     * @param   bytes  DOCUMENT ME!
+     * @param   type   DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException             DOCUMENT ME!
+     * @throws  ClassNotFoundException  DOCUMENT ME!
+     */
+    public static <T> T deserialiseFromGzip(final byte[] bytes, final Class<T> type) throws IOException,
+        ClassNotFoundException {
+        try(final GZIPInputStream gzipIn = new GZIPInputStream(new ByteArrayInputStream(bytes));
+                    final ObjectInputStream uncompressedIn = new ObjectInputStream(gzipIn);
+            ) {
+            return (T)uncompressedIn.readObject();
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   o  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public static byte[] serialiseToGzip(final Object o) throws IOException {
+        try(final ByteArrayOutputStream iout = new ByteArrayOutputStream();
+                    final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                    final ObjectOutputStream oout = new ObjectOutputStream(iout);
+            ) {
+            oout.writeObject(o);
+            oout.flush();
+            final GZIPOutputStream zstream = new GZIPOutputStream(bout);
+            zstream.write(iout.toByteArray());
+            zstream.finish();
+            return bout.toByteArray();
+        }
     }
 }
