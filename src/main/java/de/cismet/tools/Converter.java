@@ -207,15 +207,13 @@ public final class Converter {
      * @return  the ASCII encoded <code>String</code> representation of an <code>Object</code>
      *
      * @throws  IOException  if any error occurs during serialisation
-     * @throws  Error        DOCUMENT ME!
      *
      * @see     #toString(byte[])
      * @see     #serialise(java.lang.Object)
      */
     @Deprecated
     public static String serialiseToString(final Object o) throws IOException {
-        throw new Error("Danger ! This method should not be used anymore !!!", new Exception());
-//        return serialiseToString(o, false);
+        return serialiseToString(o, false);
     }
 
     /**
@@ -248,7 +246,6 @@ public final class Converter {
      *
      * @throws  IOException             if any error occurs during deserialisation
      * @throws  ClassNotFoundException  if the desired <code>Class</code> cannot be found
-     * @throws  Error                   DOCUMENT ME!
      *
      * @see     #deserialise(byte[], java.lang.Class)
      * @see     #fromString(java.lang.String)
@@ -256,8 +253,7 @@ public final class Converter {
     @Deprecated
     public static <T> T deserialiseFromString(final String s, final Class<T> type) throws IOException,
         ClassNotFoundException {
-        throw new Error("Danger ! This method should not be used anymore !!!", new Exception());
-        // return deserialiseFromString(s, type, false);
+        return deserialiseFromString(s, type, false);
     }
 
     /**
