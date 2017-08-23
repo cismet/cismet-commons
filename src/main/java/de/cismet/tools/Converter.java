@@ -292,6 +292,9 @@ public final class Converter {
      */
     public static <T> T deserialiseFromGzip(final byte[] bytes, final Class<T> type) throws IOException,
         ClassNotFoundException {
+        if (bytes == null) {
+            return null;
+        }
         try(final GZIPInputStream gzipIn = new GZIPInputStream(new ByteArrayInputStream(bytes));
                     final ObjectInputStream uncompressedIn = new ObjectInputStream(gzipIn);
             ) {
