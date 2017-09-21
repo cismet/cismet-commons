@@ -20,7 +20,7 @@
         <names.cismet-commons>cismet Commons</names.cismet-commons>
     </properties>
     
-    <name>${names.cismet-commons}</name>
+    <name>${names.cismet-commons} [${project.version}]</name>
     <description>Common Tools and Utilities for cismet development</description>
     
     <scm>
