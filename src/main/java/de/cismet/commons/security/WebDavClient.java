@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NTCredentials;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
@@ -31,6 +32,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.MalformedURLException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.cismet.netutil.Proxy;
 
@@ -114,6 +118,13 @@ public class WebDavClient {
         connectionManager.setParams(params);
         client = new HttpClient(connectionManager);
         client.setHostConfiguration(hostConfig);
+        final List authPrefs = new ArrayList();
+        authPrefs.add(AuthPolicy.DIGEST);
+        authPrefs.add(AuthPolicy.BASIC);
+        if (useNTAuth) {
+            authPrefs.add(AuthPolicy.NTLM);
+        }
+        client.getParams().setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
 
         if ((username != null) && (password != null)) {
             if (useNTAuth) {
