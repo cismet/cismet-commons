@@ -8,6 +8,7 @@
 package de.cismet.tools;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,6 +28,10 @@ import java.util.zip.GZIPOutputStream;
  */
 // TODO: use internal Base64 codec
 public final class Converter {
+
+    //~ Static fields/initializers ---------------------------------------------
+
+    private static final transient Logger LOG = Logger.getLogger(Converter.class);
 
     //~ Constructors -----------------------------------------------------------
 
@@ -299,6 +304,9 @@ public final class Converter {
                     final ObjectInputStream uncompressedIn = new ObjectInputStream(gzipIn);
             ) {
             return (T)uncompressedIn.readObject();
+        } catch (final Exception ex) {
+            LOG.error("error while trying to deserialise message from gzip:\n\n" + new String(bytes), ex);
+            throw ex;
         }
     }
 
