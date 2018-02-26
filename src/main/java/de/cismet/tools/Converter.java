@@ -207,7 +207,8 @@ public final class Converter {
     /**
      * Creates an ASCII encoded <code>String</code> from an <code>Object</code>.
      *
-     * @param   o  the object to serialise
+     * @param   o                   the object to serialise
+     * @param   compressionEnabled  DOCUMENT ME!
      *
      * @return  the ASCII encoded <code>String</code> representation of an <code>Object</code>
      *
@@ -215,21 +216,6 @@ public final class Converter {
      *
      * @see     #toString(byte[])
      * @see     #serialise(java.lang.Object)
-     */
-    @Deprecated
-    public static String serialiseToString(final Object o) throws IOException {
-        return serialiseToString(o, false);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   o                   DOCUMENT ME!
-     * @param   compressionEnabled  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  IOException  DOCUMENT ME!
      */
     public static String serialiseToString(final Object o, final boolean compressionEnabled) throws IOException {
         if (compressionEnabled) {
@@ -242,9 +228,10 @@ public final class Converter {
     /**
      * Creates an <code>Object</code> from an ASCII encoded <code>String</code>.
      *
-     * @param   <T>   the type of the <code>Object</code> to be created
-     * @param   s     the ASCII encoded <code>String</code> representation of an <code>Object</code>
-     * @param   type  the type class fo the <code>Object</code> to be created
+     * @param   <T>                 the type of the <code>Object</code> to be created
+     * @param   s                   the ASCII encoded <code>String</code> representation of an <code>Object</code>
+     * @param   type                the type class fo the <code>Object</code> to be created
+     * @param   compressionEnabled  DOCUMENT ME!
      *
      * @return  the <code>Object</code> create from the ASCII encoded <code>String</code> or <code>null</code> if the
      *          given <code>String</code> is <code>null</code>
@@ -254,25 +241,6 @@ public final class Converter {
      *
      * @see     #deserialise(byte[], java.lang.Class)
      * @see     #fromString(java.lang.String)
-     */
-    @Deprecated
-    public static <T> T deserialiseFromString(final String s, final Class<T> type) throws IOException,
-        ClassNotFoundException {
-        return deserialiseFromString(s, type, false);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   <T>                 DOCUMENT ME!
-     * @param   s                   DOCUMENT ME!
-     * @param   type                DOCUMENT ME!
-     * @param   compressionEnabled  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  IOException             DOCUMENT ME!
-     * @throws  ClassNotFoundException  DOCUMENT ME!
      */
     public static <T> T deserialiseFromString(final String s, final Class<T> type, final boolean compressionEnabled)
             throws IOException, ClassNotFoundException {
@@ -323,10 +291,10 @@ public final class Converter {
         try(final ByteArrayOutputStream iout = new ByteArrayOutputStream();
                     final ByteArrayOutputStream bout = new ByteArrayOutputStream();
                     final ObjectOutputStream oout = new ObjectOutputStream(iout);
+                    final GZIPOutputStream zstream = new GZIPOutputStream(bout);
             ) {
             oout.writeObject(o);
             oout.flush();
-            final GZIPOutputStream zstream = new GZIPOutputStream(bout);
             zstream.write(iout.toByteArray());
             zstream.finish();
             return bout.toByteArray();
