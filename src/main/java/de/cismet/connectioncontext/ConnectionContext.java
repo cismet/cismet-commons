@@ -12,42 +12,24 @@
  */
 package de.cismet.connectioncontext;
 
-import java.io.Serializable;
-
-import java.util.Map;
-
 /**
  * DOCUMENT ME!
  *
  * @author   jruiz
  * @version  $Revision$, $Date$
  */
-public interface ConnectionContext<C extends Object> extends Serializable {
+public class ConnectionContext extends AbstractConnectionContext<String> {
 
-    //~ Enums ------------------------------------------------------------------
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @version  $Revision$, $Date$
-     */
-    public enum Origin {
-
-        //~ Enum constants -----------------------------------------------------
-
-        SERVER, CLIENT, UNKNOWN
-    }
+    //~ Constructors -----------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Creates a new ClientConnectionContext object.
      *
-     * @version  $Revision$, $Date$
+     * @param  category  DOCUMENT ME!
+     * @param  content   DOCUMENT ME!
      */
-    public enum Category {
-
-        //~ Enum constants -----------------------------------------------------
-
-        EDITOR, RENDERER, CATALOGUE, OPTIONS, ACTION, SEARCH, LEGACY, OTHER, DEPRECATED
+    protected ConnectionContext(final Category category, final String content) {
+        super(category, content);
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -57,26 +39,41 @@ public interface ConnectionContext<C extends Object> extends Serializable {
      *
      * @return  DOCUMENT ME!
      */
-    C getContent();
+    public static ConnectionContext createDeprecated() {
+        final StackTraceElement[] elements = new Exception().getStackTrace();
+        final String context = elements[1].toString();
+        return create(Category.DEPRECATED, context);
+    }
 
     /**
      * DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
      */
-    Origin getOrigin();
+    public static ConnectionContext createDummy() {
+        final StackTraceElement[] elements = new Exception().getStackTrace();
+        final String context = elements[1].toString();
+        return create(Category.DUMMY, context);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   category  DOCUMENT ME!
+     * @param   context   DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static ConnectionContext create(final Category category, final String context) {
+        return new ConnectionContext(category, context);
+    }
 
     /**
      * DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
      */
-    Category getCategory();
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    Map<String, Object> getAdditionalFields();
+    public Origin getOrigin() {
+        return Origin.CLIENT;
+    }
 }

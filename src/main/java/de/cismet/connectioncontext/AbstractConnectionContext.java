@@ -12,6 +12,8 @@
  */
 package de.cismet.connectioncontext;
 
+import java.io.Serializable;
+
 import java.util.HashMap;
 
 /**
@@ -22,11 +24,41 @@ import java.util.HashMap;
  * @author   jruiz
  * @version  $Revision$, $Date$
  */
-public abstract class AbstractConnectionContext<C extends Object> implements ConnectionContext<C> {
+public abstract class AbstractConnectionContext<C extends Object> implements Serializable {
 
     //~ Static fields/initializers ---------------------------------------------
 
     private static final transient boolean LOG_DEPRECATED_FULL_STACKTRACE = true;
+
+    public static final String ADDITIONAL_FIELD__CLIENT_IP = "ClientIp";
+    public static final String ADDITIONAL_FIELD__STACKTRACE_EXCEPTION = "EXCEPTION";
+
+    //~ Enums ------------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    public enum Origin {
+
+        //~ Enum constants -----------------------------------------------------
+
+        SERVER, CLIENT, UNKNOWN
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    public enum Category {
+
+        //~ Enum constants -----------------------------------------------------
+
+        EDITOR, RENDERER, CATALOGUE, OPTIONS, ACTION, SEARCH, LEGACY, STARTUP, OTHER, STATIC, INSTANCE, DUMMY,
+        DEPRECATED
+    }
 
     //~ Instance fields --------------------------------------------------------
 
@@ -45,24 +77,36 @@ public abstract class AbstractConnectionContext<C extends Object> implements Con
     public AbstractConnectionContext(final Category category, final C content) {
         this.category = category;
         this.content = content;
-        if (Category.DEPRECATED.equals(category) && LOG_DEPRECATED_FULL_STACKTRACE) {
-            getAdditionalFields().put("EXCEPTION", new Exception());
+        if (LOG_DEPRECATED_FULL_STACKTRACE) {
+            getAdditionalFields().put(ADDITIONAL_FIELD__STACKTRACE_EXCEPTION, new Exception());
         }
     }
 
     //~ Methods ----------------------------------------------------------------
 
-    @Override
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public Category getCategory() {
         return category;
     }
 
-    @Override
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public C getContent() {
         return content;
     }
 
-    @Override
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public HashMap<String, Object> getAdditionalFields() {
         return additionalFields;
     }

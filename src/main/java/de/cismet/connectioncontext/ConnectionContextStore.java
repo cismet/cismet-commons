@@ -27,5 +27,8 @@ public interface ConnectionContextStore extends ConnectionContextProvider {
      *
      * @param  connectionContext  DOCUMENT ME!
      */
-    void setConnectionContext(ConnectionContext connectionContext);
+    void initWithConnectionContext(ConnectionContext connectionContext);
+
+    @Override
+    ConnectionContext getConnectionContext();
 }
