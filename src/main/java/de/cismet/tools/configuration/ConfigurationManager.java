@@ -7,9 +7,6 @@
 ****************************************************/
 package de.cismet.tools.configuration;
 
-import de.cismet.connectioncontext.AbstractConnectionContext;
-import de.cismet.connectioncontext.ConnectionContext;
-import de.cismet.connectioncontext.ConnectionContextStore;
 import org.apache.log4j.Logger;
 
 import org.jdom.Attribute;
@@ -36,6 +33,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import de.cismet.connectioncontext.AbstractConnectionContext;
+import de.cismet.connectioncontext.ConnectionContext;
+import de.cismet.connectioncontext.ConnectionContextStore;
 
 /**
  * Configuaration Manager.
@@ -397,9 +398,11 @@ public class ConfigurationManager {
 
             return e;
         }
-        
+
         if (attrProvider instanceof ConnectionContextStore) {
-            final ConnectionContext connectionContext = ConnectionContext.create(AbstractConnectionContext.Category.OPTIONS, getClass().getSimpleName());
+            final ConnectionContext connectionContext = ConnectionContext.create(
+                    AbstractConnectionContext.Category.OPTIONS,
+                    getClass().getSimpleName());
             ((ConnectionContextStore)attrProvider).initWithConnectionContext(connectionContext);
         }
 

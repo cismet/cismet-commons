@@ -18,16 +18,16 @@ package de.cismet.connectioncontext;
  * @author   jruiz
  * @version  $Revision$, $Date$
  */
-public interface ConnectionContextStore extends ConnectionContextProvider {
+public class OptionsConnectionContext extends ConnectionContext {
 
-    //~ Methods ----------------------------------------------------------------
+    //~ Constructors -----------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * Creates a new RendererConnectionContext object.
      *
-     * @param  connectionContext  DOCUMENT ME!
+     * @param  name  DOCUMENT ME!
      */
-    void initWithConnectionContext(ConnectionContext connectionContext);
-    @Override
-    ConnectionContext getConnectionContext();
+    public OptionsConnectionContext(final String name) {
+        super(Category.OPTIONS, name);
+    }
 }
