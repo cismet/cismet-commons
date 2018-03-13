@@ -34,6 +34,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.cismet.connectioncontext.AbstractConnectionContext;
+import de.cismet.connectioncontext.ConnectionContext;
+import de.cismet.connectioncontext.ConnectionContextStore;
+
 /**
  * Configuaration Manager.
  *
@@ -393,6 +397,13 @@ public class ConfigurationManager {
             }
 
             return e;
+        }
+
+        if (attrProvider instanceof ConnectionContextStore) {
+            final ConnectionContext connectionContext = ConnectionContext.create(
+                    AbstractConnectionContext.Category.OPTIONS,
+                    getClass().getSimpleName());
+            ((ConnectionContextStore)attrProvider).initWithConnectionContext(connectionContext);
         }
 
         if (LOG.isDebugEnabled()) {
