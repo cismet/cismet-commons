@@ -28,7 +28,7 @@ public abstract class AbstractConnectionContext implements Serializable {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    private static final transient boolean LOG_DEPRECATED_FULL_STACKTRACE = true;
+    private static final transient boolean LOG_DEPRECATED_FULL_STACKTRACE = false;
 
     public static String FIELD__CONTEXT_NAME = "contextName";
     public static final String FIELD__CLIENT_IP = "ClientIp";
@@ -68,10 +68,17 @@ public abstract class AbstractConnectionContext implements Serializable {
         }
     }
 
+    /**
+     * Creates a new AbstractConnectionContext object.
+     *
+     * @param  category     DOCUMENT ME!
+     * @param  contextName  DOCUMENT ME!
+     */
     public AbstractConnectionContext(final Category category, final String contextName) {
         this(category);
         getInfoFields().put(FIELD__CONTEXT_NAME, contextName);
     }
+
     //~ Methods ----------------------------------------------------------------
 
     /**

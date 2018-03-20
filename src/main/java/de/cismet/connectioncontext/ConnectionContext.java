@@ -22,15 +22,20 @@ public class ConnectionContext extends AbstractConnectionContext {
 
     //~ Constructors -----------------------------------------------------------
 
+    /**
+     * Creates a new ConnectionContext object.
+     *
+     * @param  category  DOCUMENT ME!
+     */
     protected ConnectionContext(final Category category) {
-        super(category);        
+        super(category);
     }
 
     /**
      * Creates a new ClientConnectionContext object.
      *
-     * @param  category  DOCUMENT ME!
-     * @param  contextName   DOCUMENT ME!
+     * @param  category     DOCUMENT ME!
+     * @param  contextName  DOCUMENT ME!
      */
     protected ConnectionContext(final Category category, final String contextName) {
         super(category, contextName);
@@ -71,5 +76,4 @@ public class ConnectionContext extends AbstractConnectionContext {
     public static ConnectionContext create(final Category category, final String context) {
         return new ConnectionContext(category, context);
     }
-
 }
