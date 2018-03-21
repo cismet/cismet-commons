@@ -16,36 +16,26 @@ import java.io.Serializable;
 
 import java.util.HashMap;
 
+import de.cismet.tools.StaticDebuggingTools;
+
 /**
  * DOCUMENT ME!
- *
- * @param    <C>
  *
  * @author   jruiz
  * @version  $Revision$, $Date$
  */
-public abstract class AbstractConnectionContext<C extends Object> implements Serializable {
+public abstract class AbstractConnectionContext implements Serializable {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    private static final transient boolean LOG_DEPRECATED_FULL_STACKTRACE = true;
+    private static final transient boolean LOG_FULL_STACKTRACE = StaticDebuggingTools.checkHomeForFile(
+            "fullStackTraceConnectionContext");
 
-    public static final String ADDITIONAL_FIELD__CLIENT_IP = "ClientIp";
-    public static final String ADDITIONAL_FIELD__STACKTRACE_EXCEPTION = "EXCEPTION";
+    public static String FIELD__CONTEXT_NAME = "contextName";
+    public static final String FIELD__CLIENT_IP = "ClientIp";
+    public static final String FIELD__STACKTRACE_EXCEPTION = "EXCEPTION";
 
     //~ Enums ------------------------------------------------------------------
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @version  $Revision$, $Date$
-     */
-    public enum Origin {
-
-        //~ Enum constants -----------------------------------------------------
-
-        SERVER, CLIENT, UNKNOWN
-    }
 
     /**
      * DOCUMENT ME!
@@ -63,8 +53,7 @@ public abstract class AbstractConnectionContext<C extends Object> implements Ser
     //~ Instance fields --------------------------------------------------------
 
     private final Category category;
-    private final C content;
-    private final HashMap<String, Object> additionalFields = new HashMap<>();
+    private final HashMap<String, Object> infoFields = new HashMap<>();
 
     //~ Constructors -----------------------------------------------------------
 
@@ -72,14 +61,23 @@ public abstract class AbstractConnectionContext<C extends Object> implements Ser
      * Creates a new AbstractConnectionContext object.
      *
      * @param  category  DOCUMENT ME!
-     * @param  content   DOCUMENT ME!
      */
-    public AbstractConnectionContext(final Category category, final C content) {
+    public AbstractConnectionContext(final Category category) {
         this.category = category;
-        this.content = content;
-        if (LOG_DEPRECATED_FULL_STACKTRACE) {
-            getAdditionalFields().put(ADDITIONAL_FIELD__STACKTRACE_EXCEPTION, new Exception());
+        if (LOG_FULL_STACKTRACE) {
+            getInfoFields().put(FIELD__STACKTRACE_EXCEPTION, new Exception());
         }
+    }
+
+    /**
+     * Creates a new AbstractConnectionContext object.
+     *
+     * @param  category     DOCUMENT ME!
+     * @param  contextName  DOCUMENT ME!
+     */
+    public AbstractConnectionContext(final Category category, final String contextName) {
+        this(category);
+        getInfoFields().put(FIELD__CONTEXT_NAME, contextName);
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -98,16 +96,7 @@ public abstract class AbstractConnectionContext<C extends Object> implements Ser
      *
      * @return  DOCUMENT ME!
      */
-    public C getContent() {
-        return content;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public HashMap<String, Object> getAdditionalFields() {
-        return additionalFields;
+    public final HashMap<String, Object> getInfoFields() {
+        return infoFields;
     }
 }

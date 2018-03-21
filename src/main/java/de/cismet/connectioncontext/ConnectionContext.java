@@ -18,18 +18,27 @@ package de.cismet.connectioncontext;
  * @author   jruiz
  * @version  $Revision$, $Date$
  */
-public class ConnectionContext extends AbstractConnectionContext<String> {
+public class ConnectionContext extends AbstractConnectionContext {
 
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * Creates a new ClientConnectionContext object.
+     * Creates a new ConnectionContext object.
      *
      * @param  category  DOCUMENT ME!
-     * @param  content   DOCUMENT ME!
      */
-    protected ConnectionContext(final Category category, final String content) {
-        super(category, content);
+    protected ConnectionContext(final Category category) {
+        super(category);
+    }
+
+    /**
+     * Creates a new ClientConnectionContext object.
+     *
+     * @param  category     DOCUMENT ME!
+     * @param  contextName  DOCUMENT ME!
+     */
+    protected ConnectionContext(final Category category, final String contextName) {
+        super(category, contextName);
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -66,14 +75,5 @@ public class ConnectionContext extends AbstractConnectionContext<String> {
      */
     public static ConnectionContext create(final Category category, final String context) {
         return new ConnectionContext(category, context);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public Origin getOrigin() {
-        return Origin.CLIENT;
     }
 }
