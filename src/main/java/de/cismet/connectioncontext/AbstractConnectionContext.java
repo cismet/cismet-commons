@@ -16,10 +16,10 @@ import java.io.Serializable;
 
 import java.util.HashMap;
 
+import de.cismet.tools.StaticDebuggingTools;
+
 /**
  * DOCUMENT ME!
- *
- * @param    <C>
  *
  * @author   jruiz
  * @version  $Revision$, $Date$
@@ -28,7 +28,8 @@ public abstract class AbstractConnectionContext implements Serializable {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    private static final transient boolean LOG_DEPRECATED_FULL_STACKTRACE = false;
+    private static final transient boolean LOG_FULL_STACKTRACE = StaticDebuggingTools.checkHomeForFile(
+            "fullStackTraceConnectionContext");
 
     public static String FIELD__CONTEXT_NAME = "contextName";
     public static final String FIELD__CLIENT_IP = "ClientIp";
@@ -63,7 +64,7 @@ public abstract class AbstractConnectionContext implements Serializable {
      */
     public AbstractConnectionContext(final Category category) {
         this.category = category;
-        if (LOG_DEPRECATED_FULL_STACKTRACE) {
+        if (LOG_FULL_STACKTRACE) {
             getInfoFields().put(FIELD__STACKTRACE_EXCEPTION, new Exception());
         }
     }
