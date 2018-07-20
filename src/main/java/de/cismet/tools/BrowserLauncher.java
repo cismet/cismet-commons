@@ -20,6 +20,12 @@ import java.lang.reflect.Method;
 
 import java.net.URI;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.openide.util.Exceptions;
+
 /**
  * BrowserLauncher is a class that provides one static method, openURL, which opens the default web browser for the
  * current user of the system to the given URL. It may support other protocols depending on the system -- mailto, ftp,
@@ -161,6 +167,8 @@ public class BrowserLauncher {
     /** The message from any exception thrown throughout the initialization process. */
     private static String errorMessage;
 
+    private static String customBrowserCmd;
+
     /**
      * An initialization block that determines the operating system and loads the necessary runtime data.
      */
@@ -173,7 +181,7 @@ public class BrowserLauncher {
                     final String mrjVersion = System.getProperty("mrj.version"); // NOI18N
                     final String majorMRJVersion = mrjVersion.substring(0, 3);
                     try {
-                        final double version = Double.valueOf(majorMRJVersion).doubleValue();
+                        final double version = Double.valueOf(majorMRJVersion);
                         if (version == 2) {
                             jvm = MRJ_2_0;
                         } else if ((version >= 2.1) && (version < 3)) {
@@ -479,13 +487,13 @@ public class BrowserLauncher {
         }
         String gotoUrl = url;
         try {
-            de.cismet.tools.BrowserLauncher.openURL(gotoUrl);
+            openURL(gotoUrl);
         } catch (final Exception e1) {
             log.warn("Error while opening the url: " + gotoUrl + "\n Trying to open it as url-file.", e1);
             try {
                 gotoUrl = gotoUrl.replaceAll("\\\\", "/");
                 gotoUrl = gotoUrl.replaceAll(" ", "%20");
-                de.cismet.tools.BrowserLauncher.openURL("file:///" + gotoUrl);
+                openURL("file:///" + gotoUrl);
             } catch (final Exception e2) {
                 log.error("Could not open file:///" + gotoUrl, e2);
                 try {
@@ -526,6 +534,14 @@ public class BrowserLauncher {
         getWorkingDesktop();
     }
 
+    public static void main(String[] args) {
+        try {
+            Runtime.getRuntime().exec(new String[] {"google-chrome", "http://test.local"});
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+    
     /**
      * DOCUMENT ME!
      *
@@ -538,7 +554,14 @@ public class BrowserLauncher {
         if (log.isDebugEnabled()) {
             log.debug("BrowserLauncher.openUrl:" + url);                                // NOI18N
         }
-        if (Desktop.isDesktopSupported()) {                                             // NOI18N
+        if (customBrowserCmd != null) {
+            final List<String> list = new ArrayList<>();
+            final Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(customBrowserCmd);
+            while (m.find()) {
+                list.add(m.group(1).replace("\"", "").replaceAll("<url>", url));
+            }
+            Runtime.getRuntime().exec(list.toArray(new String[0]));
+        } else if (Desktop.isDesktopSupported()) {                                      // NOI18N
             getWorkingDesktop().browse(new URI(url));
         } else {
             if (!loadedWithoutErrors) {
@@ -704,4 +727,22 @@ public class BrowserLauncher {
             int len,
             int[] selectionStart,
             int[] selectionEnd);
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  customBrowserCmd  DOCUMENT ME!
+     */
+    public static void setCustomBrowserCmd(final String customBrowserCmd) {
+        BrowserLauncher.customBrowserCmd = customBrowserCmd;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static String getCustomBrowserCmd() {
+        return customBrowserCmd;
+    }
 }
