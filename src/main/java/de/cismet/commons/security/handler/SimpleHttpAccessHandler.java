@@ -222,7 +222,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             final ObjectOutputStream oos = new ObjectOutputStream(baos);
 
-                            oos.writeObject(httpMethod.getRequestHeaders());
+                            oos.writeObject(httpMethod.getResponseHeaders());
 
                             oos.flush();
                             oos.close();
