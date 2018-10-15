@@ -8,6 +8,8 @@
 package de.cismet.tools;
 //package edu.stanford.ejalbert;
 
+import org.openide.util.Exceptions;
+
 import java.awt.Desktop;
 
 import java.io.File;
@@ -24,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.openide.util.Exceptions;
 
 /**
  * BrowserLauncher is a class that provides one static method, openURL, which opens the default web browser for the
@@ -534,14 +535,19 @@ public class BrowserLauncher {
         getWorkingDesktop();
     }
 
-    public static void main(String[] args) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  args  DOCUMENT ME!
+     */
+    public static void main(final String[] args) {
         try {
-            Runtime.getRuntime().exec(new String[] {"google-chrome", "http://test.local"});
+            Runtime.getRuntime().exec(new String[] { "google-chrome", "http://test.local" });
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
-    
+
     /**
      * DOCUMENT ME!
      *
