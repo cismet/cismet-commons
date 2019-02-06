@@ -11,6 +11,9 @@ package de.cismet.tools;
 import org.openide.util.Exceptions;
 
 import java.awt.Desktop;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * BrowserLauncher is a class that provides one static method, openURL, which opens the default web browser for the
@@ -542,8 +551,68 @@ public class BrowserLauncher {
      */
     public static void main(final String[] args) {
         try {
-            Runtime.getRuntime().exec(new String[] { "google-chrome", "http://test.local" });
-        } catch (IOException ex) {
+            String type = (args.length > 0) ? args[0] : "runtime";
+            String uri = (args.length > 1) ? args[1] : "http://test.loca";
+            String option = (args.length > 2) ? args[2] : "google-chrome";
+            if ("graphical".equals(type)) {
+                final JComboBox<String> typeCb = new JComboBox<>(
+                        new String[] { "runtime", "openUrl", "openUrlOrFile", "openUrlOrFileFixed", "desktopBrowse" });
+                final JTextField uriTf = new JTextField(uri);
+                final JTextField optionTf = new JTextField(option);
+                final JPanel panel = new JPanel(new GridBagLayout());
+                final GridBagConstraints gbConstraits = new GridBagConstraints();
+                gbConstraits.insets = new Insets(4, 4, 4, 4);
+                gbConstraits.fill = GridBagConstraints.BOTH;
+                gbConstraits.gridy = 0;
+                panel.add(new JLabel("type:"), gbConstraits);
+                panel.add(typeCb, gbConstraits);
+                gbConstraits.gridy = 1;
+                panel.add(new JLabel("uri:"), gbConstraits);
+                panel.add(uriTf, gbConstraits);
+                gbConstraits.gridy = 2;
+                panel.add(new JLabel("option:"), gbConstraits);
+                gbConstraits.weightx = 1;
+                panel.add(optionTf, gbConstraits);
+                final int ret = JOptionPane.showConfirmDialog(
+                        null,
+                        panel,
+                        "BrowserLauncher Tester",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE);
+                if (ret == JOptionPane.CANCEL_OPTION) {
+                    return;
+                }
+                type = (String)typeCb.getSelectedItem();
+                uri = uriTf.getText();
+                option = optionTf.getText();
+            }
+
+            switch (type) {
+                case "runtime": {
+                    Runtime.getRuntime().exec(new String[] { option, uri });
+                }
+                break;
+                case "openUrl": {
+                    openURL(uri);
+                }
+                break;
+                case "openUrlOrFile": {
+                    openURLorFile(uri);
+                }
+                break;
+                case "openUrlOrFileFixed": {
+                    openURL("file:///" + uri.replaceAll("\\\\", "/").replaceAll(" ", "%20"));
+                }
+                break;
+                case "desktopBrowse": {
+                    getWorkingDesktop().browse(new URI(uri));
+                }
+                break;
+                default: {
+                    throw new IllegalArgumentException("unkown type");
+                }
+            }
+        } catch (final Exception ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -564,7 +633,7 @@ public class BrowserLauncher {
             final List<String> list = new ArrayList<>();
             final Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(customBrowserCmd);
             while (m.find()) {
-                list.add(m.group(1).replace("\"", "").replaceAll("<url>", url));
+                list.add(m.group(1).replace("\"", "").replace("<url>", url));
             }
             Runtime.getRuntime().exec(list.toArray(new String[0]));
         } else if (Desktop.isDesktopSupported()) {                                      // NOI18N
