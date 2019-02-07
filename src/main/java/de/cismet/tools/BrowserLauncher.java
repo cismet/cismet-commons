@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import java.net.URI;
+import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -629,7 +630,13 @@ public class BrowserLauncher {
         if (log.isDebugEnabled()) {
             log.debug("BrowserLauncher.openUrl:" + url);                                // NOI18N
         }
-        if (customBrowserCmd != null) {
+        boolean isValidUrl = false;
+        try {
+            new URL(url).toString();
+            isValidUrl = true;
+        } catch (final Exception ex) {
+        }
+        if (isValidUrl && (customBrowserCmd != null)) {
             final List<String> list = new ArrayList<>();
             final Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(customBrowserCmd);
             while (m.find()) {
