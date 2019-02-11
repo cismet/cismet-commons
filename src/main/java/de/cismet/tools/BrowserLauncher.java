@@ -631,10 +631,12 @@ public class BrowserLauncher {
             log.debug("BrowserLauncher.openUrl:" + url);                                // NOI18N
         }
         boolean isValidUrl = false;
-        try {
-            new URL(url).toString();
-            isValidUrl = true;
-        } catch (final Exception ex) {
+        if (!url.toLowerCase().startsWith("file:")) {
+            try {
+                new URL(url).toString();
+                isValidUrl = true;
+            } catch (final Exception ex) {
+            }
         }
         if (isValidUrl && (customBrowserCmd != null)) {
             final List<String> list = new ArrayList<>();
