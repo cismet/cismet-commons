@@ -27,6 +27,8 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 
 import java.io.*;
 import java.io.BufferedInputStream;
@@ -260,14 +262,51 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     @Override
     public InputStream doRequest(final URL url,
             final InputStream requestParameter,
-            final HashMap<String, String> options) throws Exception {
-        final HttpClient client = getSecurityEnabledHttpClient(url);
+            final HashMap<String, String> requestHeader) throws Exception {
         final PostMethod postMethod = new PostMethod(url.toString());
-        LOG.fatal("request2", new Exception());
         postMethod.setRequestEntity(new InputStreamRequestEntity(requestParameter));
+        return doRequest(url, postMethod, requestHeader);
+    }
 
-        if ((options != null) && !options.isEmpty()) {
-            for (final Entry<String, String> option : options.entrySet()) {
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   url            DOCUMENT ME!
+     * @param   parts          DOCUMENT ME!
+     * @param   requestHeader  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    public InputStream doMultipartRequest(final URL url,
+            final Part[] parts,
+            final HashMap<String, String> requestHeader) throws Exception {
+        final PostMethod postMethod = new PostMethod(url.toString());
+        final MultipartRequestEntity requestEntity = new MultipartRequestEntity(parts, postMethod.getParams());
+        postMethod.addRequestHeader("Content-Type", requestEntity.getContentType());
+        postMethod.setRequestEntity(requestEntity);
+        return doRequest(url, postMethod, requestHeader);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   url            DOCUMENT ME!
+     * @param   postMethod     requestEntity DOCUMENT ME!
+     * @param   requestHeader  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    private InputStream doRequest(final URL url,
+            final PostMethod postMethod,
+            final HashMap<String, String> requestHeader) throws Exception {
+        final HttpClient client = getSecurityEnabledHttpClient(url);
+
+        if ((requestHeader != null) && !requestHeader.isEmpty()) {
+            for (final Entry<String, String> option : requestHeader.entrySet()) {
                 postMethod.addRequestHeader(option.getKey(), option.getValue());
             }
         }
@@ -313,7 +352,6 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                 Thread.sleep(50);
             }
         }
-//        throw new RuntimeException("Should never happen");
     }
 
     @Override
