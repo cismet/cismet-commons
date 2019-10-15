@@ -273,7 +273,7 @@ public final class Converter {
             ) {
             return (T)uncompressedIn.readObject();
         } catch (final Exception ex) {
-            LOG.error("error while trying to deserialise message from gzip:\n\n" + new String(bytes), ex);
+            LOG.warn("error while trying to deserialise message from gzip", ex);
             throw ex;
         }
     }
