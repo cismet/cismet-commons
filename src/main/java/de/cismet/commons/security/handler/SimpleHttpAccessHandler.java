@@ -70,7 +70,9 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     //~ Instance fields --------------------------------------------------------
 
     private final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(this.getClass());
-    private transient Proxy proxy;
+    private final transient Proxy proxy;
+    private final int connectionTimeout;
+    private final int soTimeout;
 
     //~ Constructors -----------------------------------------------------------
 
@@ -78,7 +80,39 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
      * Creates a new DefaultHTTPAccessHandler object.
      */
     public SimpleHttpAccessHandler() {
-        proxy = Proxy.fromSystem();
+        this(Proxy.fromSystem());
+    }
+
+    /**
+     * Creates a new SimpleHttpAccessHandler object.
+     *
+     * @param  proxy  DOCUMENT ME!
+     */
+    public SimpleHttpAccessHandler(final Proxy proxy) {
+        this(proxy, 0, 0);
+    }
+
+    /**
+     * Creates a new SimpleHttpAccessHandler object.
+     *
+     * @param  connectionTimeout  DOCUMENT ME!
+     * @param  soTimeout          DOCUMENT ME!
+     */
+    public SimpleHttpAccessHandler(final int connectionTimeout, final int soTimeout) {
+        this(Proxy.fromSystem(), connectionTimeout, soTimeout);
+    }
+
+    /**
+     * Creates a new SimpleHttpAccessHandler object.
+     *
+     * @param  proxy              DOCUMENT ME!
+     * @param  connectionTimeout  DOCUMENT ME!
+     * @param  soTimeout          DOCUMENT ME!
+     */
+    public SimpleHttpAccessHandler(final Proxy proxy, final int connectionTimeout, final int soTimeout) {
+        this.proxy = proxy;
+        this.connectionTimeout = connectionTimeout;
+        this.soTimeout = soTimeout;
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -111,6 +145,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             final UsernamePasswordCredentials credentials) throws Exception {
         final HttpClient client = getSecurityEnabledHttpClient(url);
         final StringBuilder parameter = new StringBuilder();
+
         final BufferedReader reader = new BufferedReader(requestParameter);
 
         String currentLine;
@@ -392,6 +427,12 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                 }
             });
 
+        if (connectionTimeout >= 0) {
+            client.getHttpConnectionManager().getParams().setConnectionTimeout(connectionTimeout);
+        }
+        if (soTimeout >= 0) {
+            client.getHttpConnectionManager().getParams().setSoTimeout(soTimeout);
+        }
         return client;
     }
 
@@ -405,7 +446,8 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             LOG.debug("getConfiguredHttpClient"); // NOI18N
         }
 
-        final HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
+        final MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+        final HttpClient client = new HttpClient(connectionManager);
         if (proxy != null) {
             client.getHostConfiguration().setProxy(proxy.getHost(), proxy.getPort());
 
