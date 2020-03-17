@@ -348,7 +348,7 @@ public class Static2DTools {
 
         final BufferedImage bi = new BufferedImage(image.getHeight(),
                 image.getWidth(),
-                image.getType());
+                (image.getType() > 0) ? image.getType() : BufferedImage.TYPE_INT_ARGB);
 
         final Graphics2D g2 = (Graphics2D)bi.getGraphics();
 
