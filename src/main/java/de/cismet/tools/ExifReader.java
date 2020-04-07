@@ -17,6 +17,8 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
+import com.drew.metadata.exif.ExifDirectoryBase;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.GpsDirectory;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -35,9 +37,23 @@ import java.io.IOException;
  */
 public class ExifReader {
 
+    //~ Enums ------------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    public static enum Mirrored {
+
+        //~ Enum constants -----------------------------------------------------
+
+        NONE, HORIZONTAL, VERTICAL
+    }
+
     //~ Instance fields --------------------------------------------------------
 
-    Metadata metadata;
+    private Metadata metadata;
 
     //~ Constructors -----------------------------------------------------------
 
@@ -94,6 +110,22 @@ public class ExifReader {
     }
 
     /**
+     * Determines whether the reference of the direction of the image. 'T' denotes true direction and 'M' is magnetic
+     * direction.
+     *
+     * @return  the reference of direction of the image
+     */
+    public String getGpsDirectionRef() {
+        final GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+
+        if (gpsDirectory != null) {
+            return gpsDirectory.getString(GpsDirectory.TAG_IMG_DIRECTION_REF);
+        }
+
+        return null;
+    }
+
+    /**
      * Prints all exif attributes to stdout.
      */
     public void printAllAttributes() {
@@ -105,6 +137,128 @@ public class ExifReader {
     }
 
     /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String getModel() {
+        final ExifIFD0Directory exifDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+
+        if (exifDirectory != null) {
+            return exifDirectory.getString(ExifIFD0Directory.TAG_MODEL);
+        }
+
+        return null;
+    }
+
+    /**
+     * Determine the orientation of the image from the exif data.
+     *
+     * @return  The orientation of image
+     */
+    public Integer getOrientation() {
+        final ExifIFD0Directory exifDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+
+        if (exifDirectory != null) {
+            return exifDirectory.getInteger(ExifIFD0Directory.TAG_ORIENTATION);
+        }
+
+        return null;
+    }
+
+    /**
+     * Determine the rotation of the image from the exif data.
+     *
+     * @return  the rotation of the image according to the exif data in deegree
+     */
+    public Double getOrientationRotation() {
+        final Integer orientation = getOrientation();
+        double angle = 0.0;
+
+        if (orientation != null) {
+            switch (orientation) {
+                case 1: {
+                    // Horizontal / normal
+                    angle = 0.0;
+                    break;
+                }
+                case 2: {
+                    // Mirror horizontal
+                    break;
+                }
+                case 3: {
+                    // Rotate 180
+                    angle = 180.0;
+                    break;
+                }
+                case 4: {
+                    // Mirror vertical
+                    break;
+                }
+                case 5: {
+                    // Mirror horizontal and rotate 270 CW (clockwise)
+                    angle = 270.0;
+                    break;
+                }
+                case 6: {
+                    // Rotate 90 CW
+                    angle = 90.0;
+                    break;
+                }
+                case 7: {
+                    // Mirror horizontal and rotate 90 CW (clockwise)
+                    angle = 90.0;
+                    break;
+                }
+                case 8: {
+                    // Rotate 270 CW (clockwise)
+                    angle = 270.0;
+                    break;
+                }
+            }
+        }
+
+        return angle;
+    }
+
+    /**
+     * Determine whether the image is mirrored.
+     *
+     * @return  the mirror type of the image
+     */
+    public Mirrored getKindOfMirrored() {
+        final Integer orientation = getOrientation();
+        Mirrored mirrored = Mirrored.NONE;
+
+        if (orientation != null) {
+            switch (orientation) {
+                case 2: {
+                    // Mirror horizontal
+                    mirrored = Mirrored.HORIZONTAL;
+                    break;
+                }
+                case 4: {
+                    // Mirror vertical
+                    mirrored = Mirrored.VERTICAL;
+                    break;
+                }
+                case 5: {
+                    // Mirror horizontal and rotate 270 CW (clockwise)
+                    mirrored = Mirrored.HORIZONTAL;
+                    break;
+                }
+                case 7: {
+                    // Mirror horizontal and rotate 90 CW (clockwise)
+                    mirrored = Mirrored.HORIZONTAL;
+                    break;
+                }
+            }
+        }
+
+        return mirrored;
+    }
+
+    /**
      * Only for test purposes.
      *
      * @param  args  DOCUMENT ME!
@@ -112,8 +266,9 @@ public class ExifReader {
     public static void main(final String[] args) {
         try {
             final long time = System.currentTimeMillis();
-            final File file = new File("/home/therter/archive/RIMG0012.JPG");
+            final File file = new File("/home/therter/Downloads/IMG_5080.jpeg");
             final ExifReader reader = new ExifReader(file);
+            reader.printAllAttributes();
             final Point po = reader.getGpsCoords();
             final double direction = reader.getGpsDirection();
             System.out.println(po.toText());
