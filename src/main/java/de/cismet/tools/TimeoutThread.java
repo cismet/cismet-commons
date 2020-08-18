@@ -19,6 +19,10 @@ import java.util.concurrent.TimeoutException;
  */
 public abstract class TimeoutThread<T extends Object> implements Runnable {
 
+    //~ Static fields/initializers ---------------------------------------------
+
+    private static int openUserDialogCount = 0;
+
     //~ Instance fields --------------------------------------------------------
 
     /** the result of the thread should be saved here. */
@@ -54,7 +58,10 @@ public abstract class TimeoutThread<T extends Object> implements Runnable {
         final Thread t = new Thread(this);
 
         t.start();
-        t.join(timeInMillis);
+
+        do {
+            t.join(timeInMillis);
+        } while ((getOpenUserDialogCount() > 0) && t.isAlive());
 
         if (t.isAlive()) {
             t.interrupt();
@@ -66,5 +73,28 @@ public abstract class TimeoutThread<T extends Object> implements Runnable {
         } else {
             return result;
         }
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    public static synchronized void increaseOpenUserDialogCount() {
+        ++openUserDialogCount;
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    public static synchronized void decreaseOpenUserDialogCount() {
+        --openUserDialogCount;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public static synchronized int getOpenUserDialogCount() {
+        return openUserDialogCount;
     }
 }

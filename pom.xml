@@ -142,6 +142,14 @@
             <artifactId>postgis-jdbc</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>de.cismet.custom</groupId>
+            <artifactId>cismet-deegree</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+        </dependency>
         <!-- END: managed dependencies -->
         
         <!-- BEGIN: unmanaged dependencies -->
