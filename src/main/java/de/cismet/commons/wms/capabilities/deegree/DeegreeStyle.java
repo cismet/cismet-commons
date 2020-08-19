@@ -78,7 +78,11 @@ public class DeegreeStyle implements Style {
 
             if (result[i] != null) {
                 try {
-                    result[i] = new URL(result[i].toString() + "&legend_options=forceLabels:on");
+                    if (result[i].toString().contains("?")) {
+                        result[i] = new URL(result[i].toString() + "&legend_options=forceLabels:on");
+                    } else {
+                        result[i] = new URL(result[i].toString() + "?legend_options=forceLabels:on");
+                    }
                 } catch (Exception e) {
                     // nothing to do here
                 }
