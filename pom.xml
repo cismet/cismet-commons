@@ -144,7 +144,7 @@
         </dependency>
         <dependency>
             <groupId>de.cismet.custom</groupId>
-            <artifactId>cismet-deegree</artifactId>
+            <artifactId>cismet-deegree2.3</artifactId>
         </dependency>
         <dependency>
             <groupId>xml-apis</groupId>
