@@ -143,6 +143,16 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             final ACCESS_METHODS method,
             final HashMap<String, String> options,
             final UsernamePasswordCredentials credentials) throws Exception {
+        return doRequest(url, requestParameter, "text/xml", method, options, credentials);
+    }
+        
+    public InputStream doRequest(final URL url,
+            final Reader requestParameter,
+            final String requestHeader,
+            final ACCESS_METHODS method,
+            final HashMap<String, String> options,
+            final UsernamePasswordCredentials credentials) throws Exception {
+        
         final HttpClient client = getSecurityEnabledHttpClient(url);
         final StringBuilder parameter = new StringBuilder();
 
@@ -165,7 +175,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                 httpMethod = new PostMethod(url.toString());
                 ((PostMethod)httpMethod).setRequestEntity(new StringRequestEntity(
                         parameter.toString(),
-                        "text/xml",
+                        requestHeader,
                         "UTF-8"));                                                          // NOI18N
                 break;
             }
