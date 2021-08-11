@@ -95,7 +95,7 @@ public class ProxyTest {
         assertNotNull(proxy);
         assertEquals("abc", proxy.getHost());
         assertEquals(1, proxy.getPort());
-        proxy = new Proxy("cba", 2, "I", "and", "you", true);
+        proxy = new Proxy("cba", 2, "I", "and", "you", "", true);
         proxy.toPreferences();
         proxy = Proxy.fromPreferences();
         assertNotNull(proxy);
