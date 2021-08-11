@@ -28,18 +28,20 @@ public final class Proxy {
 
     private static final transient Logger LOG = Logger.getLogger(Proxy.class);
 
-    public static final String PROXY_HOST = "proxy.host";         // NOI18N
-    public static final String PROXY_PORT = "proxy.port";         // NOI18N
-    public static final String PROXY_USERNAME = "proxy.username"; // NOI18N
-    public static final String PROXY_PASSWORD = "proxy.password"; // NOI18N
-    public static final String PROXY_DOMAIN = "proxy.domain";     // NOI18N
-    public static final String PROXY_ENABLED = "proxy.enabled";   // NOI18N
+    public static final String PROXY_HOST = "proxy.host";                   // NOI18N
+    public static final String PROXY_PORT = "proxy.port";                   // NOI18N
+    public static final String PROXY_USERNAME = "proxy.username";           // NOI18N
+    public static final String PROXY_PASSWORD = "proxy.password";           // NOI18N
+    public static final String PROXY_DOMAIN = "proxy.domain";               // NOI18N
+    public static final String PROXY_EXCLUDEDHOSTS = "proxy.excludedHosts"; // NOI18N
+    public static final String PROXY_ENABLED = "proxy.enabled";             // NOI18N
 
-    public static final String SYSTEM_PROXY_HOST = "http.proxyHost";         // NOI18N
-    public static final String SYSTEM_PROXY_PORT = "http.proxyPort";         // NOI18N
-    public static final String SYSTEM_PROXY_USERNAME = "http.proxyUsername"; // NOI18N
-    public static final String SYSTEM_PROXY_PASSWORD = "http.proxyPassword"; // NOI18N
-    public static final String SYSTEM_PROXY_DOMAIN = "http.proxyDomain";     // NOI18N
+    public static final String SYSTEM_PROXY_HOST = "http.proxyHost";              // NOI18N
+    public static final String SYSTEM_PROXY_PORT = "http.proxyPort";              // NOI18N
+    public static final String SYSTEM_PROXY_EXCLUDEDHOSTS = "http.nonProxyHosts"; // NOI18N
+    public static final String SYSTEM_PROXY_USERNAME = "http.proxyUsername";      // NOI18N
+    public static final String SYSTEM_PROXY_PASSWORD = "http.proxyPassword";      // NOI18N
+    public static final String SYSTEM_PROXY_DOMAIN = "http.proxyDomain";          // NOI18N
 
     public static final String SYSTEM_PROXY_SET = "proxySet"; // NOI18N
 
@@ -50,6 +52,7 @@ public final class Proxy {
     private transient String username;
     private transient String password;
     private transient String domain;
+    private transient String excludedHosts;
     private transient boolean enabled;
 
     //~ Constructors -----------------------------------------------------------
@@ -58,7 +61,7 @@ public final class Proxy {
      * Creates a Default Proxy object.
      */
     public Proxy() {
-        this(null, -1, null, null, null, false);
+        this(null, -1, null, null, null, null, false);
     }
 
     /**
@@ -68,7 +71,7 @@ public final class Proxy {
      * @param  port  computerName
      */
     public Proxy(final String host, final int port) {
-        this(host, port, null, null, null, true);
+        this(host, port, null, null, null, null, true);
     }
 
     /**
@@ -81,7 +84,7 @@ public final class Proxy {
      * @param  password  password
      */
     public Proxy(final String host, final int port, final String username, final String password) {
-        this(host, port, username, password, null, true);
+        this(host, port, username, password, null, null, true);
     }
 
     /**
@@ -101,12 +104,34 @@ public final class Proxy {
             final String password,
             final String domain,
             final boolean enabled) {
+        this(host, port, username, password, domain, null, enabled);
+    }
+
+    /**
+     * Creates a new Proxy object.
+     *
+     * @param  host           DOCUMENT ME!
+     * @param  port           DOCUMENT ME!
+     * @param  username       DOCUMENT ME!
+     * @param  password       DOCUMENT ME!
+     * @param  domain         DOCUMENT ME!
+     * @param  excludedHosts  DOCUMENT ME!
+     * @param  enabled        DOCUMENT ME!
+     */
+    public Proxy(final String host,
+            final int port,
+            final String username,
+            final String password,
+            final String domain,
+            final String excludedHosts,
+            final boolean enabled) {
         setHost(host);
-        this.port = port;
-        this.enabled = enabled;
+        setPort(port);
+        setEnabled(enabled);
         setUsername(username);
         setPassword(password);
         setDomain(domain);
+        setExcludedHosts(excludedHosts);
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -157,7 +182,7 @@ public final class Proxy {
     @Override
     public String toString() {
         return "Proxy: " + host + ":" + port + " | username: " + username + " | password: " // NOI18N
-                    + ((password == null) ? null : "<invisible>") + " | domain: " + domain; // NOI18N
+                    + ((password == null) ? null : "<invisible>") + " | domain: " + domain + " | excludedHosts: " + excludedHosts; // NOI18N
     }
 
     /**
@@ -253,6 +278,7 @@ public final class Proxy {
         prefs.remove(PROXY_USERNAME);
         prefs.remove(PROXY_PASSWORD);
         prefs.remove(PROXY_DOMAIN);
+        prefs.remove(PROXY_EXCLUDEDHOSTS);
         prefs.remove(PROXY_ENABLED);
     }
 
@@ -278,10 +304,29 @@ public final class Proxy {
             proxy.setUsername(prefs.get(PROXY_USERNAME, null));
             proxy.setPassword(PasswordEncrypter.decryptString(prefs.get(PROXY_PASSWORD, null)));
             proxy.setDomain(prefs.get(PROXY_DOMAIN, null));
+            proxy.setExcludedHosts(prefs.get(PROXY_EXCLUDEDHOSTS, null));
             proxy.setEnabled(prefs.getBoolean(PROXY_ENABLED, false));
         }
 
         return proxy;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  excludedHosts  DOCUMENT ME!
+     */
+    public void setExcludedHosts(final String excludedHosts) {
+        this.excludedHosts = excludedHosts;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public String getExcludedHosts() {
+        return excludedHosts;
     }
 
     /**
@@ -313,6 +358,11 @@ public final class Proxy {
             } else {
                 prefs.put(PROXY_DOMAIN, proxy.getDomain());
             }
+            if (proxy.getExcludedHosts() == null) {
+                prefs.remove(PROXY_EXCLUDEDHOSTS);
+            } else {
+                prefs.put(PROXY_EXCLUDEDHOSTS, proxy.getExcludedHosts());
+            }
             prefs.put(PROXY_ENABLED, Boolean.toString(proxy.isEnabled()));
         }
     }
@@ -334,8 +384,9 @@ public final class Proxy {
                     final String username = System.getProperty(SYSTEM_PROXY_USERNAME);
                     final String password = PasswordEncrypter.decryptString(System.getProperty(SYSTEM_PROXY_PASSWORD));
                     final String domain = System.getProperty(SYSTEM_PROXY_DOMAIN);
+                    final String excludedHost = System.getProperty(SYSTEM_PROXY_EXCLUDEDHOSTS);
 
-                    return new Proxy(host, port, username, password, domain, true);
+                    return new Proxy(host, port, username, password, domain, excludedHost, true);
                 } catch (final NumberFormatException e) {
                     LOG.error("error during creation of proxy from system properties", e); // NOI18N
                 }
