@@ -9,11 +9,14 @@ package de.cismet.netutil;
 
 import org.apache.log4j.Logger;
 
+import java.net.URL;
+
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
 import de.cismet.tools.PasswordEncrypter;
+import de.cismet.tools.WildcardUtils;
 
 /**
  * Class that provides Proxy Usage.
@@ -182,7 +185,8 @@ public final class Proxy {
     @Override
     public String toString() {
         return "Proxy: " + host + ":" + port + " | username: " + username + " | password: " // NOI18N
-                    + ((password == null) ? null : "<invisible>") + " | domain: " + domain + " | excludedHosts: " + excludedHosts; // NOI18N
+                    + ((password == null) ? null : "<invisible>") + " | domain: " + domain + " | excludedHosts: "
+                    + excludedHosts;                                                        // NOI18N
     }
 
     /**
@@ -258,15 +262,6 @@ public final class Proxy {
     }
 
     /**
-     * Stores this proxy in the user's preferences.
-     *
-     * @see  #toPreferences(de.cismet.netutil.Proxy)
-     */
-    public void toPreferences() {
-        toPreferences(this);
-    }
-
-    /**
      * Clears the Proxy Object.
      */
     public static void clear() {
@@ -289,27 +284,7 @@ public final class Proxy {
      *
      * @return  the user's proxy settings or null if no settings present
      */
-    public static Proxy fromPreferences() {
-        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
-        final String host = prefs.get(PROXY_HOST, null); // NOI18N
-        final int port = prefs.getInt(PROXY_PORT, -1);
-
-        final Proxy proxy;
-        if ((host == null) || (port < 1)) {
-            proxy = null;
-        } else {
-            proxy = new Proxy();
-            proxy.setHost(host);
-            proxy.setPort(port);
-            proxy.setUsername(prefs.get(PROXY_USERNAME, null));
-            proxy.setPassword(PasswordEncrypter.decryptString(prefs.get(PROXY_PASSWORD, null)));
-            proxy.setDomain(prefs.get(PROXY_DOMAIN, null));
-            proxy.setExcludedHosts(prefs.get(PROXY_EXCLUDEDHOSTS, null));
-            proxy.setEnabled(prefs.getBoolean(PROXY_ENABLED, false));
-        }
-
-        return proxy;
-    }
+   
 
     /**
      * DOCUMENT ME!
@@ -327,44 +302,6 @@ public final class Proxy {
      */
     public String getExcludedHosts() {
         return excludedHosts;
-    }
-
-    /**
-     * Stores the given proxy in the user's preferences. If the proxy or the host is <code>null</code> or empty or the
-     * port is not greater than 0 all proxy entries will be removed.
-     *
-     * @param  proxy  the proxy to store
-     */
-    public static void toPreferences(final Proxy proxy) {
-        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
-
-        if ((proxy == null) || (proxy.getHost() == null) || proxy.getHost().isEmpty() || (proxy.getPort() < 1)) {
-            clear();
-        } else {
-            prefs.put(PROXY_HOST, proxy.getHost());
-            prefs.putInt(PROXY_PORT, proxy.getPort());
-            if (proxy.getUsername() == null) {
-                prefs.remove(PROXY_USERNAME);
-            } else {
-                prefs.put(PROXY_USERNAME, proxy.getUsername());
-            }
-            if (proxy.getPassword() == null) {
-                prefs.remove(PROXY_PASSWORD);
-            } else {
-                prefs.put(PROXY_PASSWORD, PasswordEncrypter.encryptString(proxy.getPassword()));
-            }
-            if (proxy.getDomain() == null) {
-                prefs.remove(PROXY_DOMAIN);
-            } else {
-                prefs.put(PROXY_DOMAIN, proxy.getDomain());
-            }
-            if (proxy.getExcludedHosts() == null) {
-                prefs.remove(PROXY_EXCLUDEDHOSTS);
-            } else {
-                prefs.put(PROXY_EXCLUDEDHOSTS, proxy.getExcludedHosts());
-            }
-            prefs.put(PROXY_ENABLED, Boolean.toString(proxy.isEnabled()));
-        }
     }
 
     /**
@@ -410,7 +347,7 @@ public final class Proxy {
                     clear();
                     showMessage("Proxy information cleared", false);
                 } else if ("-p".equals(arg) || "--print".equals(arg)) { // NOI18N
-                    final Proxy proxy = fromPreferences();
+                    final Proxy proxy = ProxyHandler.getInstance().getProxy();
 
                     if (proxy == null) {
                         showMessage("Proxy information not set", false); // NOI18N
@@ -467,5 +404,31 @@ public final class Proxy {
                     + "-c --clear\t\tremoves all proxy settings\n"   // NOI18N
                     + "-p --print\t\tprints out the proxy settings", // NOI18N
             true);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   hostOrUrl  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public boolean isEnabledFor(final String hostOrUrl) {
+        if (hostOrUrl == null) {
+            return true; // not false for backwards compability
+        }
+        String host = hostOrUrl.trim();
+        try {
+            host = new URL(host).getHost();
+        } catch (final Exception ex) {
+        }
+        if (excludedHosts != null) {
+            for (final String excludedHost : excludedHosts.split(",")) {
+                if (WildcardUtils.testForMatch(host, excludedHost.trim())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
