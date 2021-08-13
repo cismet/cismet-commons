@@ -82,30 +82,30 @@ public class ProxyTest {
     @Test
     public void testFromAndToPreferences() {
         System.out.println("TEST " + getCurrentMethodName());
-        Proxy.toPreferences(null);
-        Proxy proxy = Proxy.fromPreferences();
+        ProxyHandler.toPreferences(null);
+        Proxy proxy = ProxyHandler.proxyFromPreferences();
         assertNull(proxy);
         proxy = new Proxy(null, 0);
-        proxy.toPreferences();
-        proxy = Proxy.fromPreferences();
+        ProxyHandler.toPreferences(proxy);
+        proxy = ProxyHandler.proxyFromPreferences();
         assertNull(proxy);
         proxy = new Proxy("abc", 1);
-        proxy.toPreferences();
-        proxy = Proxy.fromPreferences();
+        ProxyHandler.toPreferences(proxy);
+        proxy = ProxyHandler.proxyFromPreferences();
         assertNotNull(proxy);
         assertEquals("abc", proxy.getHost());
         assertEquals(1, proxy.getPort());
         proxy = new Proxy("cba", 2, "I", "and", "you", "", true);
-        proxy.toPreferences();
-        proxy = Proxy.fromPreferences();
+        ProxyHandler.toPreferences(proxy);
+        proxy = ProxyHandler.proxyFromPreferences();
         assertNotNull(proxy);
         assertEquals("cba", proxy.getHost());
         assertEquals(2, proxy.getPort());
         assertEquals("I", proxy.getUsername());
         assertEquals("and", proxy.getPassword());
         assertEquals("you", proxy.getDomain());
-        Proxy.toPreferences(null);
-        proxy = Proxy.fromPreferences();
+        ProxyHandler.toPreferences(proxy);
+        proxy = ProxyHandler.proxyFromPreferences();
         assertNull(proxy);
     }
 }
