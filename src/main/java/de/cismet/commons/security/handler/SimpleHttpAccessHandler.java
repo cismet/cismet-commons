@@ -145,27 +145,14 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             final UsernamePasswordCredentials credentials) throws Exception {
         return doRequest(url, requestParameter, "text/xml", method, options, credentials);
     }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   url               DOCUMENT ME!
-     * @param   requestParameter  DOCUMENT ME!
-     * @param   requestHeader     DOCUMENT ME!
-     * @param   method            DOCUMENT ME!
-     * @param   options           DOCUMENT ME!
-     * @param   credentials       DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  Exception  DOCUMENT ME!
-     */
+        
     public InputStream doRequest(final URL url,
             final Reader requestParameter,
             final String requestHeader,
             final ACCESS_METHODS method,
             final HashMap<String, String> options,
             final UsernamePasswordCredentials credentials) throws Exception {
+        
         final HttpClient client = getSecurityEnabledHttpClient(url);
         final StringBuilder parameter = new StringBuilder();
 
