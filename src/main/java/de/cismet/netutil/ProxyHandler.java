@@ -21,13 +21,10 @@ import static de.cismet.netutil.Proxy.PROXY_PORT;
 import static de.cismet.netutil.Proxy.PROXY_USERNAME;
 import static de.cismet.netutil.Proxy.clear;
 import de.cismet.tools.PasswordEncrypter;
-import de.cismet.tools.configuration.Configurable;
-import de.cismet.tools.configuration.NoWriteError;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.prefs.Preferences;
 import org.apache.log4j.Logger;
-import org.jdom.Element;
 
 /**
  * DOCUMENT ME!
@@ -35,18 +32,7 @@ import org.jdom.Element;
  * @author   jruiz
  * @version  $Revision$, $Date$
  */
-public class ProxyHandler implements Configurable {
-
-    //~ Instance fields --------------------------------------------------------
-    
-    private static final String CONFIGURATION = "ProxyOptionsPanel";  // NOI18N
-    private static final String CONF_TYPE = "ProxyType";              // NOI18N
-    private static final String CONF_HOST = "ProxyHost";              // NOI18N
-    private static final String CONF_PORT = "ProxyPort";              // NOI18N
-    private static final String CONF_USERNAME = "ProxyUsername";      // NOI18N
-    private static final String CONF_PASSWORD = "ProxyPassword";      // NOI18N
-    private static final String CONF_EXCLUDEDHOSTS = "ProxyPassword"; // NOI18N
-    private static final String CONF_DOMAIN = "ProxyDomain";          // NOI18N
+public class ProxyHandler {
 
     private static final Logger LOG = Logger.getLogger(ProxyHandler.class);
     private Proxy proxy;
@@ -55,56 +41,6 @@ public class ProxyHandler implements Configurable {
 
     //~ Constructors -----------------------------------------------------------
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param   parent  DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  Exception  DOCUMENT ME!
-     */
-    private Proxy proxyFromElement(final Element parent) throws Exception {
-        String elementProxyType = null;
-        String elementProxyHost = null;
-        String elementProxyPort = null;
-        String elementProxyUsername = null;
-        String elementProxyPassword = null;
-        String elementProxyDomain = null;
-        String elementProxyExcludedhosts = null;
-        if (parent != null) {
-            final Element conf = parent.getChild(CONFIGURATION);
-            if (conf != null) {
-                elementProxyType = conf.getChildText(CONF_TYPE);
-                elementProxyHost = conf.getChildText(CONF_HOST);
-                elementProxyPort = conf.getChildText(CONF_PORT);
-                elementProxyUsername = conf.getChildText(CONF_USERNAME);
-                elementProxyPassword = conf.getChildText(CONF_PASSWORD);
-                elementProxyDomain = conf.getChildText(CONF_DOMAIN);
-                elementProxyExcludedhosts = conf.getChildText(CONF_EXCLUDEDHOSTS);
-            }
-        }
-        final boolean enabled = (elementProxyType != null) && elementProxyType.equals("MANUAL");
-
-        int port;
-        try {
-            port = Integer.valueOf(elementProxyPort);
-        } catch (final NumberFormatException ex) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("cannot parse port from configuration element", ex); // NOI18N
-            }
-            port = 0;
-        }
-
-        return new Proxy(
-                elementProxyHost,
-                port,
-                elementProxyUsername,
-                PasswordEncrypter.decryptString(elementProxyPassword),
-                elementProxyDomain,
-                elementProxyExcludedhosts,
-                enabled);
-    }
     /**
      * Creates a new ProxyHandler object.
      */
@@ -173,22 +109,6 @@ public class ProxyHandler implements Configurable {
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param  parent  DOCUMENT ME!
-     */
-    @Override
-    public void configure(final Element parent) {
-        try {
-            final Proxy proxy = proxyFromElement(parent);
-            if (proxy != null) {
-                setProxy(proxy);
-            }
-        } catch (final Exception ex) {
-            LOG.error("error during ProxyHandler configuration", ex); // NOI18N
-        }
-    }    
     //~ Methods ----------------------------------------------------------------
 
     /**
@@ -294,34 +214,6 @@ public class ProxyHandler implements Configurable {
      */
     public static ProxyHandler getInstance() {
         return LazyInitialiser.INSTANCE;
-    }
-
-    @Override
-    public void masterConfigure(final Element parent) {
-        configure(parent);
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     *
-     * @throws  NoWriteError  DOCUMENT ME!
-     */
-    @Override
-    public Element getConfiguration() throws NoWriteError {
-        final Proxy proxy = getProxy();
-
-        final Element conf = new Element(CONFIGURATION);
-        conf.addContent(new Element(CONF_TYPE).addContent(proxy.isEnabled() ? "MANUAL" : "NO"));
-        conf.addContent(new Element(CONF_HOST).addContent(proxy.getHost()));
-        conf.addContent(new Element(CONF_PORT).addContent(Integer.toString(proxy.getPort())));
-        conf.addContent(new Element(CONF_USERNAME).addContent(proxy.getUsername()));
-        conf.addContent(
-            new Element(CONF_PASSWORD).addContent(
-                (proxy.getPassword() != null) ? PasswordEncrypter.encryptString(proxy.getPassword()) : null));
-        conf.addContent(new Element(CONF_DOMAIN).addContent(proxy.getDomain()));
-        return conf;
     }
 
     //~ Inner Interfaces -------------------------------------------------------
