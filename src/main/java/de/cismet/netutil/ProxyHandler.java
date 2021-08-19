@@ -145,6 +145,33 @@ public class ProxyHandler {
     }
 
     /**
+     * DOCUMENT ME!
+     *
+     * @param   proxyProperties  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Proxy init(final ProxyProperties proxyProperties) {
+        if ((proxyProperties != null) && Boolean.TRUE.equals(proxyProperties.getProxyEnabled())) {
+            final Proxy preconfiguredProxy = new Proxy(
+                    proxyProperties.getProxyHost(),
+                    proxyProperties.getProxyPort(),
+                    proxyProperties.getProxyUsername(),
+                    proxyProperties.getProxyPassword(),
+                    proxyProperties.getProxyDomain(),
+                    proxyProperties.getProxyExcludedHosts());
+            ProxyHandler.getInstance().setPreconfiguredProxy(preconfiguredProxy);
+            if (ProxyHandler.getInstance().getManualProxy() == null) {
+                ProxyHandler.getInstance().setManualProxy(preconfiguredProxy);
+            }
+            if (ProxyHandler.getInstance().getMode() == null) {
+                ProxyHandler.getInstance().usePreconfiguredProxy();
+            }
+        }
+        return getProxy();
+    }
+
+    /**
      * Loads a <code>Proxy</code> instance from System preferences. If there are no host and port proxy information
      * <code>null</code> will be returned. If the return value is non-null at least the host and the port is
      * initialised. Username, Password and Domain may be null.
