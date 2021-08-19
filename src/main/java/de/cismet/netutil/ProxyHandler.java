@@ -12,6 +12,14 @@
  */
 package de.cismet.netutil;
 
+import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.prefs.Preferences;
+
+import de.cismet.tools.PasswordEncrypter;
+
 import static de.cismet.netutil.Proxy.PROXY_DOMAIN;
 import static de.cismet.netutil.Proxy.PROXY_ENABLED;
 import static de.cismet.netutil.Proxy.PROXY_EXCLUDEDHOSTS;
@@ -20,11 +28,6 @@ import static de.cismet.netutil.Proxy.PROXY_PASSWORD;
 import static de.cismet.netutil.Proxy.PROXY_PORT;
 import static de.cismet.netutil.Proxy.PROXY_USERNAME;
 import static de.cismet.netutil.Proxy.clear;
-import de.cismet.tools.PasswordEncrypter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.prefs.Preferences;
-import org.apache.log4j.Logger;
 
 /**
  * DOCUMENT ME!
@@ -34,7 +37,12 @@ import org.apache.log4j.Logger;
  */
 public class ProxyHandler {
 
+    //~ Static fields/initializers ---------------------------------------------
+
     private static final Logger LOG = Logger.getLogger(ProxyHandler.class);
+
+    //~ Instance fields --------------------------------------------------------
+
     private Proxy proxy;
 
     private final Collection<Listener> listeners = new ArrayList<>();
@@ -53,6 +61,8 @@ public class ProxyHandler {
         }
     }
 
+    //~ Methods ----------------------------------------------------------------
+
     /**
      * Stores the given proxy in the user's preferences. If the proxy or the host is <code>null</code> or empty or the
      * port is not greater than 0 all proxy entries will be removed.
@@ -63,7 +73,7 @@ public class ProxyHandler {
         if ((proxy == null) || (proxy.getHost() == null) || proxy.getHost().isEmpty() || (proxy.getPort() < 1)) {
             clear();
         } else {
-        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
+            final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
 
             prefs.put(PROXY_HOST, proxy.getHost());
             prefs.putInt(PROXY_PORT, proxy.getPort());
@@ -91,25 +101,28 @@ public class ProxyHandler {
         }
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
     public static Proxy proxyFromPreferences() {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
         if (prefs != null) {
-        final String host = prefs.get(PROXY_HOST, null); // NOI18N
-        final int port = prefs.getInt(PROXY_PORT, -1);
-        final String username = prefs.get(PROXY_USERNAME, null);
-        final String password = PasswordEncrypter.decryptString(prefs.get(PROXY_PASSWORD, null));
-        final String domain = prefs.get(PROXY_DOMAIN, null);
-        final String excludedHosts = prefs.get(PROXY_EXCLUDEDHOSTS, null);
-        final boolean enabled = prefs.getBoolean(PROXY_ENABLED, false);
+            final String host = prefs.get(PROXY_HOST, null); // NOI18N
+            final int port = prefs.getInt(PROXY_PORT, -1);
+            final String username = prefs.get(PROXY_USERNAME, null);
+            final String password = PasswordEncrypter.decryptString(prefs.get(PROXY_PASSWORD, null));
+            final String domain = prefs.get(PROXY_DOMAIN, null);
+            final String excludedHosts = prefs.get(PROXY_EXCLUDEDHOSTS, null);
+            final boolean enabled = prefs.getBoolean(PROXY_ENABLED, false);
 
-        return ((host != null) && (port > 0))
-            ? new Proxy(host, port, username, password, domain, excludedHosts, enabled) : null;
+            return ((host != null) && (port > 0))
+                ? new Proxy(host, port, username, password, domain, excludedHosts, enabled) : null;
         } else {
             return null;
         }
     }
-
-    //~ Methods ----------------------------------------------------------------
 
     /**
      * DOCUMENT ME!
@@ -203,7 +216,7 @@ public class ProxyHandler {
             System.clearProperty(Proxy.SYSTEM_PROXY_DOMAIN);
             System.clearProperty(Proxy.SYSTEM_PROXY_EXCLUDEDHOSTS);
         }
-        
+
         fireProxyChanged(oldProxy, newProxy);
     }
 

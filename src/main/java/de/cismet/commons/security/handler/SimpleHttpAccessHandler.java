@@ -352,7 +352,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     public void setProxy(final Proxy proxy) {
         this.proxy = proxy;
     }
-    
+
     /**
      * DOCUMENT ME!
      *

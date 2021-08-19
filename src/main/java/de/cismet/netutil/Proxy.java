@@ -282,9 +282,8 @@ public final class Proxy {
      * information <code>null</code> will be returned. If the return value is non-null at least the host and the port is
      * initialised. Username, Password and Domain may be null.
      *
-     * @return  the user's proxy settings or null if no settings present
+     * @param  excludedHosts  DOCUMENT ME!
      */
-   
 
     /**
      * DOCUMENT ME!
@@ -423,7 +422,7 @@ public final class Proxy {
         } catch (final Exception ex) {
         }
         if (excludedHosts != null) {
-            for (final String excludedHost : excludedHosts.split(",")) {
+            for (final String excludedHost : excludedHosts.split("|")) {
                 if (WildcardUtils.testForMatch(host, excludedHost.trim())) {
                     return false;
                 }

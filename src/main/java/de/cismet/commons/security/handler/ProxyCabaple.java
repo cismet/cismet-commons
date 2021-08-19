@@ -1,3 +1,10 @@
+/***************************************************
+*
+* cismet GmbH, Saarbruecken, Germany
+*
+*              ... and it just works.
+*
+****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -8,9 +15,19 @@ package de.cismet.commons.security.handler;
 import de.cismet.netutil.Proxy;
 
 /**
+ * DOCUMENT ME!
  *
- * @author jruiz
+ * @author   jruiz
+ * @version  $Revision$, $Date$
  */
 public interface ProxyCabaple {
-    public void setProxy(final Proxy proxy);
+
+    //~ Methods ----------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  proxy  DOCUMENT ME!
+     */
+    void setProxy(final Proxy proxy);
 }
