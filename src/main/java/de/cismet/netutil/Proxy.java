@@ -26,6 +26,7 @@ public final class Proxy implements Serializable {
 
     //~ Instance fields --------------------------------------------------------
 
+    private transient boolean enabled;
     private transient String host;
     private transient int port;
     private transient String username;
@@ -39,35 +40,42 @@ public final class Proxy implements Serializable {
      * Creates a Default Proxy object.
      */
     public Proxy() {
-        this(null, -1, null, null, null, null);
+        this(false, null, 0, null, null, null, null);
     }
 
     /**
      * Creates a new Proxy object with specified <code>host</code> and <code>port</code>.
      *
-     * @param  host  proxyURL
-     * @param  port  computerName
+     * @param  enabled  DOCUMENT ME!
+     * @param  host     proxyURL
+     * @param  port     computerName
      */
-    public Proxy(final String host, final int port) {
-        this(host, port, null, null, null, null);
+    public Proxy(final boolean enabled, final String host, final int port) {
+        this(enabled, host, port, null, null, null, null);
     }
 
     /**
      * Creates a new Proxy object with specified <code>host</code>, <code>port</code>, <code>username</code> and <code>
      * password</code>.
      *
+     * @param  enabled   DOCUMENT ME!
      * @param  host      proxyURL
      * @param  port      computerName
      * @param  username  username
      * @param  password  password
      */
-    public Proxy(final String host, final int port, final String username, final String password) {
-        this(host, port, username, password, null, null);
+    public Proxy(final boolean enabled,
+            final String host,
+            final int port,
+            final String username,
+            final String password) {
+        this(enabled, host, port, username, password, null, null);
     }
 
     /**
      * Creates a new Proxy object.
      *
+     * @param  enabled        DOCUMENT ME!
      * @param  host           DOCUMENT ME!
      * @param  port           DOCUMENT ME!
      * @param  username       DOCUMENT ME!
@@ -75,12 +83,15 @@ public final class Proxy implements Serializable {
      * @param  domain         DOCUMENT ME!
      * @param  excludedHosts  DOCUMENT ME!
      */
-    public Proxy(final String host,
+    public Proxy(
+            final boolean enabled,
+            final String host,
             final int port,
             final String username,
             final String password,
             final String domain,
             final String excludedHosts) {
+        setEnabled(enabled);
         setHost(host);
         setPort(port);
         setUsername(username);
@@ -90,6 +101,24 @@ public final class Proxy implements Serializable {
     }
 
     //~ Methods ----------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  enabled  DOCUMENT ME!
+     */
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     /**
      * Getter for <code>host</code>.
@@ -136,9 +165,21 @@ public final class Proxy implements Serializable {
      */
     @Override
     public String toString() {
-        return "Proxy: " + host + ":" + port + " | username: " + username + " | password: " // NOI18N
-                    + ((password == null) ? null : "<invisible>") + " | domain: " + domain + " | excludedHosts: "
-                    + excludedHosts;                                                        // NOI18N
+        return String.format(""
+                        + "Enabled: %s\n"
+                        + "Host: %s\n"
+                        + "Port: %d\n"
+                        + "ExcludedHosts: %s\n"
+                        + "Username: %s\n"
+                        + "Password: %s\n"
+                        + "Domain: %s\n",
+                enabled,
+                host,
+                port,
+                excludedHosts,
+                username,
+                ((password == null) ? null : "<invisible>"),
+                domain);
     }
 
     /**
@@ -238,7 +279,7 @@ public final class Proxy implements Serializable {
      * @return  DOCUMENT ME!
      */
     public boolean isEnabledFor(final String hostOrUrl) {
-        if (!isValid()) {
+        if (!isEnabled() || !isValid()) {
             return false;
         }
         if (hostOrUrl == null) {

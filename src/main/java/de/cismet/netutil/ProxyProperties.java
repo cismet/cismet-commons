@@ -117,7 +117,7 @@ public class ProxyProperties extends Properties {
      *
      * @return  DOCUMENT ME!
      */
-    private static Boolean booleanValueOf(final String value) {
-        return (value == null) ? null : (value.equalsIgnoreCase(Boolean.TRUE.toString()) || value.equals("1"));
+    private static boolean booleanValueOf(final String value) {
+        return (value != null) && (value.equalsIgnoreCase(Boolean.TRUE.toString()) || value.equals("1"));
     }
 }

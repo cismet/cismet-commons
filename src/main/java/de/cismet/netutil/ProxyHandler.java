@@ -34,6 +34,7 @@ public class ProxyHandler {
 
     private static final Logger LOG = Logger.getLogger(ProxyHandler.class);
 
+    public static final String PROXY_ENABLED = "proxy.enabled";             // NOI18N
     public static final String PROXY_MODE = "proxy.mode";
     public static final String PROXY_HOST = "proxy.host";                   // NOI18N
     public static final String PROXY_PORT = "proxy.port";                   // NOI18N
@@ -60,7 +61,7 @@ public class ProxyHandler {
 
         //~ Enum constants -----------------------------------------------------
 
-        NO_PROXY, MANUAL, PRECONFIGURED
+        MANUAL, PRECONFIGURED
     }
 
     //~ Instance fields --------------------------------------------------------
@@ -131,8 +132,8 @@ public class ProxyHandler {
     private void setMode(final Mode mode) {
         final ProxyHandler.Mode oldMode = this.mode;
         final Proxy oldProxy = getProxy();
-        this.mode = (mode != null) ? mode : Mode.NO_PROXY;
-        proxyModeChanged(oldMode, oldProxy);
+        this.mode = mode;
+        proxyChanged(oldMode, oldProxy);
     }
 
     /**
@@ -152,8 +153,9 @@ public class ProxyHandler {
      * @return  DOCUMENT ME!
      */
     public Proxy init(final ProxyProperties proxyProperties) {
-        if ((proxyProperties != null) && Boolean.TRUE.equals(proxyProperties.getProxyEnabled())) {
+        if ((proxyProperties != null)) {
             final Proxy preconfiguredProxy = new Proxy(
+                    proxyProperties.getProxyEnabled(),
                     proxyProperties.getProxyHost(),
                     proxyProperties.getProxyPort(),
                     proxyProperties.getProxyUsername(),
@@ -189,7 +191,7 @@ public class ProxyHandler {
                 final String domain = System.getProperty(SYSTEM_PROXY_DOMAIN);
                 final String excludedHost = System.getProperty(SYSTEM_PROXY_EXCLUDEDHOSTS);
 
-                return new Proxy(host, port, username, password, domain, excludedHost);
+                return new Proxy(true, host, port, username, password, domain, excludedHost);
             } catch (final NumberFormatException e) {
                 LOG.error("error during creation of proxy from system properties", e); // NOI18N
             }
@@ -326,6 +328,11 @@ public class ProxyHandler {
     private void initFromPreference() {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
         if (prefs != null) {
+            boolean enabled = false;
+            try {
+                enabled = Boolean.valueOf(prefs.get(PROXY_ENABLED, null));
+            } catch (final Exception ex) {
+            }
             final String host = prefs.get(PROXY_HOST, null); // NOI18N
             final int port = prefs.getInt(PROXY_PORT, 0);
             final String username = prefs.get(PROXY_USERNAME, null);
@@ -333,7 +340,7 @@ public class ProxyHandler {
             final String domain = prefs.get(PROXY_DOMAIN, null);
             final String excludedHosts = prefs.get(PROXY_EXCLUDEDHOSTS, null);
 
-            final Proxy manualProxy = new Proxy(host, port, username, password, domain, excludedHosts);
+            final Proxy manualProxy = new Proxy(enabled, host, port, username, password, domain, excludedHosts);
             if (manualProxy.isValid()) {
                 setManualProxy(manualProxy);
             }
@@ -399,7 +406,10 @@ public class ProxyHandler {
      * DOCUMENT ME!
      */
     public void useNoProxy() {
-        setMode(Mode.NO_PROXY);
+        final Proxy manualProxy = getManualProxy();
+        final Proxy noProxy = (manualProxy != null) ? manualProxy : new Proxy();
+        noProxy.setEnabled(false);
+        setManualProxy(noProxy);
     }
 
     /**
@@ -407,13 +417,6 @@ public class ProxyHandler {
      */
     public void usePreconfiguredProxy() {
         setMode(Mode.PRECONFIGURED);
-    }
-
-    /**
-     * DOCUMENT ME!
-     */
-    public void useManualProxy() {
-        setMode(Mode.NO_PROXY);
     }
 
     /**
@@ -497,7 +500,7 @@ public class ProxyHandler {
      * @param  oldMode   DOCUMENT ME!
      * @param  oldProxy  DOCUMENT ME!
      */
-    public final void proxyModeChanged(final ProxyHandler.Mode oldMode, final Proxy oldProxy) {
+    public final void proxyChanged(final ProxyHandler.Mode oldMode, final Proxy oldProxy) {
         final Proxy newProxy = getProxy();
         final ProxyHandler.Mode newMode = getMode();
         // if (!Objects.equals(oldProxy, newProxy)) {
