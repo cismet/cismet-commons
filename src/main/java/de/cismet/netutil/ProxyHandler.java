@@ -303,9 +303,9 @@ public class ProxyHandler {
             prefs.put(PROXY_MODE, mode.name());
         }
         if (manualProxy.getHost() == null) {
-            prefs.remove(PROXY_EXCLUDEDHOSTS);
+            prefs.remove(PROXY_HOST);
         } else {
-            prefs.put(PROXY_EXCLUDEDHOSTS, manualProxy.getExcludedHosts());
+            prefs.put(PROXY_HOST, manualProxy.getExcludedHosts());
         }
         prefs.putInt(PROXY_PORT, manualProxy.getPort());
         if (manualProxy.getExcludedHosts() == null) {
