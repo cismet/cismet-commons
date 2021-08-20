@@ -94,7 +94,7 @@ public class ProxyHandler {
      * @return  DOCUMENT ME!
      */
     public Proxy getManualProxy() {
-        return manualProxy;
+        return manualProxy != null ? manualProxy : new Proxy();
     }
 
     /**
@@ -103,7 +103,7 @@ public class ProxyHandler {
      * @return  DOCUMENT ME!
      */
     public Proxy getPreconfiguredProxy() {
-        return preconfiguredProxy;
+        return preconfiguredProxy != null ? preconfiguredProxy : new Proxy();
     }
 
     /**
@@ -163,7 +163,7 @@ public class ProxyHandler {
                     proxyProperties.getProxyDomain(),
                     proxyProperties.getProxyExcludedHosts());
             ProxyHandler.getInstance().setPreconfiguredProxy(preconfiguredProxy);
-            if (ProxyHandler.getInstance().getManualProxy() == null) {
+            if (!ProxyHandler.getInstance().getManualProxy().isValid()) {
                 ProxyHandler.getInstance().setManualProxy(preconfiguredProxy);
             }
             if (ProxyHandler.getInstance().getMode() == null) {
