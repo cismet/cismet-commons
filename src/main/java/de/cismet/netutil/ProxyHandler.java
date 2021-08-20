@@ -94,7 +94,7 @@ public class ProxyHandler {
      * @return  DOCUMENT ME!
      */
     public Proxy getManualProxy() {
-        return manualProxy != null ? manualProxy : new Proxy();
+        return (manualProxy != null) ? manualProxy : new Proxy();
     }
 
     /**
@@ -103,7 +103,7 @@ public class ProxyHandler {
      * @return  DOCUMENT ME!
      */
     public Proxy getPreconfiguredProxy() {
-        return preconfiguredProxy != null ? preconfiguredProxy : new Proxy();
+        return (preconfiguredProxy != null) ? preconfiguredProxy : new Proxy();
     }
 
     /**
@@ -297,8 +297,16 @@ public class ProxyHandler {
     private static void toPreferences(final Mode mode, final Proxy manualProxy) {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
 
-        prefs.put(PROXY_MODE, (mode != null) ? mode.name() : null);
-        prefs.put(PROXY_HOST, manualProxy.getHost());
+        if (mode == null) {
+            prefs.remove(PROXY_MODE);
+        } else {
+            prefs.put(PROXY_MODE, mode.name());
+        }
+        if (manualProxy.getHost() == null) {
+            prefs.remove(PROXY_EXCLUDEDHOSTS);
+        } else {
+            prefs.put(PROXY_EXCLUDEDHOSTS, manualProxy.getExcludedHosts());
+        }
         prefs.putInt(PROXY_PORT, manualProxy.getPort());
         if (manualProxy.getExcludedHosts() == null) {
             prefs.remove(PROXY_EXCLUDEDHOSTS);
