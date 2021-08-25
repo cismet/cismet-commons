@@ -16,6 +16,8 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
@@ -66,6 +68,8 @@ public class ProxyHandler {
 
     //~ Instance fields --------------------------------------------------------
 
+    private final transient Map<String, String> hostCrendentials = new HashMap<>();
+
     private Proxy manualProxy;
     private Proxy preconfiguredProxy;
 
@@ -87,6 +91,65 @@ public class ProxyHandler {
     }
 
     //~ Methods ----------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   host  DOCUMENT ME!
+     * @param   port  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static String getHostCredentialsKey(final String host, final int port) {
+        return String.format("%s:%d", host, port);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   user      DOCUMENT ME!
+     * @param   password  DOCUMENT ME!
+     * @param   domain    DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static String getHostCredentialsValue(final String user, final String password, final String domain) {
+        return String.format("%s\n%s\n%s", user, password, domain);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  host      DOCUMENT ME!
+     * @param  port      DOCUMENT ME!
+     * @param  user      DOCUMENT ME!
+     * @param  password  DOCUMENT ME!
+     * @param  domain    DOCUMENT ME!
+     */
+    public void addHostCredentials(final String host,
+            final int port,
+            final String user,
+            final String password,
+            final String domain) {
+        hostCrendentials.put(getHostCredentialsKey(host, port), getHostCredentialsValue(user, password, domain));
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  host  DOCUMENT ME!
+     * @param  port  DOCUMENT ME!
+     */
+    public void clearHostCredentials(final String host, final int port) {
+        hostCrendentials.remove(getHostCredentialsKey(host, port));
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    public void clearHostCredentials() {
+        hostCrendentials.clear();
+    }
 
     /**
      * DOCUMENT ME!
@@ -158,10 +221,10 @@ public class ProxyHandler {
                     proxyProperties.getProxyEnabled(),
                     proxyProperties.getProxyHost(),
                     proxyProperties.getProxyPort(),
+                    proxyProperties.getProxyExcludedHosts(),
                     proxyProperties.getProxyUsername(),
                     proxyProperties.getProxyPassword(),
-                    proxyProperties.getProxyDomain(),
-                    proxyProperties.getProxyExcludedHosts());
+                    proxyProperties.getProxyDomain());
             ProxyHandler.getInstance().setPreconfiguredProxy(preconfiguredProxy);
             if (!ProxyHandler.getInstance().getManualProxy().isValid()) {
                 ProxyHandler.getInstance().setManualProxy(preconfiguredProxy);
@@ -191,7 +254,7 @@ public class ProxyHandler {
                 final String domain = System.getProperty(SYSTEM_PROXY_DOMAIN);
                 final String excludedHost = System.getProperty(SYSTEM_PROXY_EXCLUDEDHOSTS);
 
-                return new Proxy(true, host, port, username, password, domain, excludedHost);
+                return new Proxy(true, host, port, excludedHost, username, password, domain);
             } catch (final NumberFormatException e) {
                 LOG.error("error during creation of proxy from system properties", e); // NOI18N
             }
@@ -302,6 +365,7 @@ public class ProxyHandler {
         } else {
             prefs.put(PROXY_MODE, mode.name());
         }
+        prefs.put(PROXY_ENABLED, Boolean.toString(manualProxy.isEnabled()));
         if (manualProxy.getHost() == null) {
             prefs.remove(PROXY_HOST);
         } else {
@@ -348,7 +412,7 @@ public class ProxyHandler {
             final String domain = prefs.get(PROXY_DOMAIN, null);
             final String excludedHosts = prefs.get(PROXY_EXCLUDEDHOSTS, null);
 
-            final Proxy manualProxy = new Proxy(enabled, host, port, username, password, domain, excludedHosts);
+            final Proxy manualProxy = new Proxy(enabled, host, port, excludedHosts, username, password, domain);
             if (manualProxy.isValid()) {
                 setManualProxy(manualProxy);
             }
@@ -448,20 +512,43 @@ public class ProxyHandler {
      */
     public Proxy getProxy() {
         final Mode mode = getMode();
+        final Proxy proxy;
         if (mode != null) {
             switch (mode) {
                 case MANUAL: {
-                    return manualProxy;
+                    proxy = manualProxy;
                 }
+                break;
                 case PRECONFIGURED: {
-                    return preconfiguredProxy;
+                    proxy = preconfiguredProxy;
                 }
+                break;
                 default: {
-                    return null;
+                    proxy = null;
+                }
+            }
+        } else {
+            proxy = null;
+        }
+        if ((proxy != null) && !proxy.isFullCredentials()) {
+            final String credentials = hostCrendentials.get(getHostCredentialsKey(proxy.getHost(), proxy.getPort()));
+            if (credentials != null) {
+                final String[] split = credentials.split("\n");
+                if (split.length == 3) {
+                    final String username = split[0];
+                    final String password = split[1];
+                    final String domain = split[2];
+                    return new Proxy(proxy.isEnabled(),
+                            proxy.getHost(),
+                            proxy.getPort(),
+                            proxy.getExcludedHosts(),
+                            username,
+                            password,
+                            domain);
                 }
             }
         }
-        return null;
+        return proxy;
     }
 
     /**

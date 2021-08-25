@@ -29,10 +29,10 @@ public final class Proxy implements Serializable {
     private transient boolean enabled;
     private transient String host;
     private transient int port;
+    private transient String excludedHosts;
     private transient String username;
     private transient String password;
     private transient String domain;
-    private transient String excludedHosts;
 
     //~ Constructors -----------------------------------------------------------
 
@@ -44,60 +44,31 @@ public final class Proxy implements Serializable {
     }
 
     /**
-     * Creates a new Proxy object with specified <code>host</code> and <code>port</code>.
-     *
-     * @param  enabled  DOCUMENT ME!
-     * @param  host     proxyURL
-     * @param  port     computerName
-     */
-    public Proxy(final boolean enabled, final String host, final int port) {
-        this(enabled, host, port, null, null, null, null);
-    }
-
-    /**
-     * Creates a new Proxy object with specified <code>host</code>, <code>port</code>, <code>username</code> and <code>
-     * password</code>.
-     *
-     * @param  enabled   DOCUMENT ME!
-     * @param  host      proxyURL
-     * @param  port      computerName
-     * @param  username  username
-     * @param  password  password
-     */
-    public Proxy(final boolean enabled,
-            final String host,
-            final int port,
-            final String username,
-            final String password) {
-        this(enabled, host, port, username, password, null, null);
-    }
-
-    /**
      * Creates a new Proxy object.
      *
      * @param  enabled        DOCUMENT ME!
      * @param  host           DOCUMENT ME!
      * @param  port           DOCUMENT ME!
+     * @param  excludedHosts  DOCUMENT ME!
      * @param  username       DOCUMENT ME!
      * @param  password       DOCUMENT ME!
      * @param  domain         DOCUMENT ME!
-     * @param  excludedHosts  DOCUMENT ME!
      */
     public Proxy(
             final boolean enabled,
             final String host,
             final int port,
+            final String excludedHosts,
             final String username,
             final String password,
-            final String domain,
-            final String excludedHosts) {
+            final String domain) {
         setEnabled(enabled);
         setHost(host);
         setPort(port);
+        setExcludedHosts(excludedHosts);
         setUsername(username);
         setPassword(password);
         setDomain(domain);
-        setExcludedHosts(excludedHosts);
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -269,6 +240,17 @@ public final class Proxy implements Serializable {
      */
     public String getExcludedHosts() {
         return excludedHosts;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public boolean isFullCredentials() {
+        return (getUsername() != null) && !getUsername().isEmpty()
+                    && (getPassword() != null) && !getPassword().isEmpty()
+                    && (getDomain() != null) && !getDomain().isEmpty();
     }
 
     /**
