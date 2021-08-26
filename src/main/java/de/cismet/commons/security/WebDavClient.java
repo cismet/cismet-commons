@@ -139,7 +139,7 @@ public class WebDavClient {
             }
         }
 
-        if ((proxy != null) && proxy.isEnabled()) {
+        if ((proxy != null) && proxy.isValid()) {
             if (log.isDebugEnabled()) {
                 log.debug("use proxy");
             }

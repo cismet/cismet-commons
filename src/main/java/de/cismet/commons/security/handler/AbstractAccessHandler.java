@@ -16,8 +16,6 @@ import java.io.Reader;
 
 import java.net.URL;
 
-import java.util.HashMap;
-
 import de.cismet.commons.security.AccessHandler;
 
 /**

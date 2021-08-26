@@ -30,7 +30,7 @@ public class WildcardUtils {
     private static final String[] DEFAULT_VALUES = new String[] { ".", ".*" };
 
     //~ Methods ----------------------------------------------------------------
- 
+
     /**
      * DOCUMENT ME!
      *
@@ -106,7 +106,7 @@ public class WildcardUtils {
      * @return  DOCUMENT ME!
      */
     public static Pattern compilePattern(final String rule) {
-        return Pattern.compile(WildcardUtils.wildcardToRegex(rule));
+        return Pattern.compile(wildcardToRegex(rule));
     }
 
     /**
@@ -118,6 +118,6 @@ public class WildcardUtils {
      * @return  DOCUMENT ME!
      */
     public static boolean testForMatch(final String test, final String rule) {
-        return compilePattern(rule).matcher(test).matches();
+        return ((test != null) && (rule != null)) ? compilePattern(rule).matcher(test).matches() : false;
     }
 }

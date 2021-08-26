@@ -49,6 +49,7 @@ import de.cismet.commons.security.exceptions.BadHttpStatusCodeException;
 import de.cismet.commons.security.exceptions.CannotReadFromURLException;
 
 import de.cismet.netutil.Proxy;
+import de.cismet.netutil.ProxyHandler;
 
 /**
  * The SimpleHTTPAccessHandler is a HTTPAccessHandler that uses no Credential Provider. It can therefore be used only
@@ -57,7 +58,7 @@ import de.cismet.netutil.Proxy;
  * @author   spuhl, thorsten
  * @version  $Revision$, $Date$
  */
-public class SimpleHttpAccessHandler extends AbstractAccessHandler implements ExtendedAccessHandler {
+public class SimpleHttpAccessHandler extends AbstractAccessHandler implements ExtendedAccessHandler, ProxyCabaple {
 
     //~ Static fields/initializers ---------------------------------------------
 
@@ -70,7 +71,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     //~ Instance fields --------------------------------------------------------
 
     private final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(this.getClass());
-    private final transient Proxy proxy;
+    private transient Proxy proxy;
     private final int connectionTimeout;
     private final int soTimeout;
 
@@ -80,7 +81,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
      * Creates a new DefaultHTTPAccessHandler object.
      */
     public SimpleHttpAccessHandler() {
-        this(Proxy.fromSystem());
+        this(ProxyHandler.getInstance().getProxy(), 0, 0);
     }
 
     /**
@@ -99,7 +100,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
      * @param  soTimeout          DOCUMENT ME!
      */
     public SimpleHttpAccessHandler(final int connectionTimeout, final int soTimeout) {
-        this(Proxy.fromSystem(), connectionTimeout, soTimeout);
+        this(ProxyHandler.getInstance().getProxy(), connectionTimeout, soTimeout);
     }
 
     /**
@@ -145,14 +146,27 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             final UsernamePasswordCredentials credentials) throws Exception {
         return doRequest(url, requestParameter, "text/xml", method, options, credentials);
     }
-        
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   url               DOCUMENT ME!
+     * @param   requestParameter  DOCUMENT ME!
+     * @param   requestHeader     DOCUMENT ME!
+     * @param   method            DOCUMENT ME!
+     * @param   options           DOCUMENT ME!
+     * @param   credentials       DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
     public InputStream doRequest(final URL url,
             final Reader requestParameter,
             final String requestHeader,
             final ACCESS_METHODS method,
             final HashMap<String, String> options,
             final UsernamePasswordCredentials credentials) throws Exception {
-        
         final HttpClient client = getSecurityEnabledHttpClient(url);
         final StringBuilder parameter = new StringBuilder();
 
@@ -332,6 +346,11 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
         postMethod.addRequestHeader("Content-Type", requestEntity.getContentType());
         postMethod.setRequestEntity(requestEntity);
         return doRequest(url, postMethod, requestHeader);
+    }
+
+    @Override
+    public void setProxy(final Proxy proxy) {
+        this.proxy = proxy;
     }
 
     /**
