@@ -7,13 +7,13 @@
 ****************************************************/
 package de.cismet.netutil;
 
-import org.apache.log4j.Logger;
+import java.io.Serializable;
 
-import java.util.prefs.Preferences;
+import java.net.URL;
 
-import javax.swing.JOptionPane;
+import java.util.regex.Pattern;
 
-import de.cismet.tools.PasswordEncrypter;
+import de.cismet.tools.WildcardUtils;
 
 /**
  * Class that provides Proxy Usage.
@@ -22,38 +22,17 @@ import de.cismet.tools.PasswordEncrypter;
  * @author   martin.scholl@cismet.de
  * @version  $Revision$, $Date$
  */
-public final class Proxy {
-
-    //~ Static fields/initializers ---------------------------------------------
-
-    private static final transient Logger LOG = Logger.getLogger(Proxy.class);
-
-    public static final String PROXY_HOST = "proxy.host";                   // NOI18N
-    public static final String PROXY_PORT = "proxy.port";                   // NOI18N
-    public static final String PROXY_USERNAME = "proxy.username";           // NOI18N
-    public static final String PROXY_PASSWORD = "proxy.password";           // NOI18N
-    public static final String PROXY_DOMAIN = "proxy.domain";               // NOI18N
-    public static final String PROXY_EXCLUDEDHOSTS = "proxy.excludedHosts"; // NOI18N
-    public static final String PROXY_ENABLED = "proxy.enabled";             // NOI18N
-
-    public static final String SYSTEM_PROXY_HOST = "http.proxyHost";              // NOI18N
-    public static final String SYSTEM_PROXY_PORT = "http.proxyPort";              // NOI18N
-    public static final String SYSTEM_PROXY_EXCLUDEDHOSTS = "http.nonProxyHosts"; // NOI18N
-    public static final String SYSTEM_PROXY_USERNAME = "http.proxyUsername";      // NOI18N
-    public static final String SYSTEM_PROXY_PASSWORD = "http.proxyPassword";      // NOI18N
-    public static final String SYSTEM_PROXY_DOMAIN = "http.proxyDomain";          // NOI18N
-
-    public static final String SYSTEM_PROXY_SET = "proxySet"; // NOI18N
+public final class Proxy implements Serializable {
 
     //~ Instance fields --------------------------------------------------------
 
+    private transient boolean enabled;
     private transient String host;
     private transient int port;
+    private transient String excludedHosts;
     private transient String username;
     private transient String password;
     private transient String domain;
-    private transient String excludedHosts;
-    private transient boolean enabled;
 
     //~ Constructors -----------------------------------------------------------
 
@@ -61,80 +40,56 @@ public final class Proxy {
      * Creates a Default Proxy object.
      */
     public Proxy() {
-        this(null, -1, null, null, null, null, false);
-    }
-
-    /**
-     * Creates a new Proxy object with specified <code>host</code> and <code>port</code>.
-     *
-     * @param  host  proxyURL
-     * @param  port  computerName
-     */
-    public Proxy(final String host, final int port) {
-        this(host, port, null, null, null, null, true);
-    }
-
-    /**
-     * Creates a new Proxy object with specified <code>host</code>, <code>port</code>, <code>username</code> and <code>
-     * password</code>.
-     *
-     * @param  host      proxyURL
-     * @param  port      computerName
-     * @param  username  username
-     * @param  password  password
-     */
-    public Proxy(final String host, final int port, final String username, final String password) {
-        this(host, port, username, password, null, null, true);
-    }
-
-    /**
-     * Creates a new Proxy object <code>host</code>, <code>port</code>, <code>username</code>, <code>password</code> and
-     * <code>domain</code>. Additional it can be specified whether the Proxy is enabled or not
-     *
-     * @param  host      proxyURL
-     * @param  port      computerName
-     * @param  username  username
-     * @param  password  password
-     * @param  domain    domain
-     * @param  enabled   enabled or disabled
-     */
-    public Proxy(final String host,
-            final int port,
-            final String username,
-            final String password,
-            final String domain,
-            final boolean enabled) {
-        this(host, port, username, password, domain, null, enabled);
+        this(false, null, 0, null, null, null, null);
     }
 
     /**
      * Creates a new Proxy object.
      *
+     * @param  enabled        DOCUMENT ME!
      * @param  host           DOCUMENT ME!
      * @param  port           DOCUMENT ME!
+     * @param  excludedHosts  DOCUMENT ME!
      * @param  username       DOCUMENT ME!
      * @param  password       DOCUMENT ME!
      * @param  domain         DOCUMENT ME!
-     * @param  excludedHosts  DOCUMENT ME!
-     * @param  enabled        DOCUMENT ME!
      */
-    public Proxy(final String host,
+    public Proxy(
+            final boolean enabled,
+            final String host,
             final int port,
+            final String excludedHosts,
             final String username,
             final String password,
-            final String domain,
-            final String excludedHosts,
-            final boolean enabled) {
+            final String domain) {
+        setEnabled(enabled);
         setHost(host);
         setPort(port);
-        setEnabled(enabled);
+        setExcludedHosts(excludedHosts);
         setUsername(username);
         setPassword(password);
         setDomain(domain);
-        setExcludedHosts(excludedHosts);
     }
 
     //~ Methods ----------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  enabled  DOCUMENT ME!
+     */
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     /**
      * Getter for <code>host</code>.
@@ -181,8 +136,21 @@ public final class Proxy {
      */
     @Override
     public String toString() {
-        return "Proxy: " + host + ":" + port + " | username: " + username + " | password: " // NOI18N
-                    + ((password == null) ? null : "<invisible>") + " | domain: " + domain + " | excludedHosts: " + excludedHosts; // NOI18N
+        return String.format(""
+                        + "Enabled: %s\n"
+                        + "Host: %s\n"
+                        + "Port: %d\n"
+                        + "ExcludedHosts: %s\n"
+                        + "Username: %s\n"
+                        + "Password: %s\n"
+                        + "Domain: %s\n",
+                enabled,
+                host,
+                port,
+                excludedHosts,
+                username,
+                ((password == null) ? null : "<invisible>"),
+                domain);
     }
 
     /**
@@ -244,42 +212,8 @@ public final class Proxy {
      *
      * @return  true, if it is enabled
      */
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    /**
-     * Enables or disables.
-     *
-     * @param  enabled  <code>true</code> or <code>false</code>
-     */
-    public void setEnabled(final boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    /**
-     * Stores this proxy in the user's preferences.
-     *
-     * @see  #toPreferences(de.cismet.netutil.Proxy)
-     */
-    public void toPreferences() {
-        toPreferences(this);
-    }
-
-    /**
-     * Clears the Proxy Object.
-     */
-    public static void clear() {
-        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
-
-        // won't use clear since we don't know if anybody else stored preferences for this package
-        prefs.remove(PROXY_HOST);
-        prefs.remove(PROXY_PORT);
-        prefs.remove(PROXY_USERNAME);
-        prefs.remove(PROXY_PASSWORD);
-        prefs.remove(PROXY_DOMAIN);
-        prefs.remove(PROXY_EXCLUDEDHOSTS);
-        prefs.remove(PROXY_ENABLED);
+    public boolean isValid() {
+        return (getHost() != null) && (getPort() > 0) && (getPort() <= 65535);
     }
 
     /**
@@ -287,29 +221,8 @@ public final class Proxy {
      * information <code>null</code> will be returned. If the return value is non-null at least the host and the port is
      * initialised. Username, Password and Domain may be null.
      *
-     * @return  the user's proxy settings or null if no settings present
+     * @param  excludedHosts  DOCUMENT ME!
      */
-    public static Proxy fromPreferences() {
-        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
-        final String host = prefs.get(PROXY_HOST, null); // NOI18N
-        final int port = prefs.getInt(PROXY_PORT, -1);
-
-        final Proxy proxy;
-        if ((host == null) || (port < 1)) {
-            proxy = null;
-        } else {
-            proxy = new Proxy();
-            proxy.setHost(host);
-            proxy.setPort(port);
-            proxy.setUsername(prefs.get(PROXY_USERNAME, null));
-            proxy.setPassword(PasswordEncrypter.decryptString(prefs.get(PROXY_PASSWORD, null)));
-            proxy.setDomain(prefs.get(PROXY_DOMAIN, null));
-            proxy.setExcludedHosts(prefs.get(PROXY_EXCLUDEDHOSTS, null));
-            proxy.setEnabled(prefs.getBoolean(PROXY_ENABLED, false));
-        }
-
-        return proxy;
-    }
 
     /**
      * DOCUMENT ME!
@@ -330,142 +243,42 @@ public final class Proxy {
     }
 
     /**
-     * Stores the given proxy in the user's preferences. If the proxy or the host is <code>null</code> or empty or the
-     * port is not greater than 0 all proxy entries will be removed.
+     * DOCUMENT ME!
      *
-     * @param  proxy  the proxy to store
+     * @return  DOCUMENT ME!
      */
-    public static void toPreferences(final Proxy proxy) {
-        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
-
-        if ((proxy == null) || (proxy.getHost() == null) || proxy.getHost().isEmpty() || (proxy.getPort() < 1)) {
-            clear();
-        } else {
-            prefs.put(PROXY_HOST, proxy.getHost());
-            prefs.putInt(PROXY_PORT, proxy.getPort());
-            if (proxy.getUsername() == null) {
-                prefs.remove(PROXY_USERNAME);
-            } else {
-                prefs.put(PROXY_USERNAME, proxy.getUsername());
-            }
-            if (proxy.getPassword() == null) {
-                prefs.remove(PROXY_PASSWORD);
-            } else {
-                prefs.put(PROXY_PASSWORD, PasswordEncrypter.encryptString(proxy.getPassword()));
-            }
-            if (proxy.getDomain() == null) {
-                prefs.remove(PROXY_DOMAIN);
-            } else {
-                prefs.put(PROXY_DOMAIN, proxy.getDomain());
-            }
-            if (proxy.getExcludedHosts() == null) {
-                prefs.remove(PROXY_EXCLUDEDHOSTS);
-            } else {
-                prefs.put(PROXY_EXCLUDEDHOSTS, proxy.getExcludedHosts());
-            }
-            prefs.put(PROXY_ENABLED, Boolean.toString(proxy.isEnabled()));
-        }
+    public boolean isFullCredentials() {
+        return (getUsername() != null) && !getUsername().isEmpty()
+                    && (getPassword() != null) && !getPassword().isEmpty()
+                    && (getDomain() != null) && !getDomain().isEmpty();
     }
 
     /**
-     * Loads a <code>Proxy</code> instance from System preferences. If there are no host and port proxy information
-     * <code>null</code> will be returned. If the return value is non-null at least the host and the port is
-     * initialised. Username, Password and Domain may be null.
+     * DOCUMENT ME!
      *
-     * @return  the user's proxy settings or null if no settings present
+     * @param   hostOrUrl  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
      */
-    public static Proxy fromSystem() {
-        if (Boolean.getBoolean(System.getProperty(SYSTEM_PROXY_SET))) {
-            final String host = System.getProperty(SYSTEM_PROXY_HOST);
-            final String portString = System.getProperty(SYSTEM_PROXY_PORT);
-            if ((host != null) && (portString != null)) {
-                try {
-                    final int port = Integer.valueOf(portString);
-                    final String username = System.getProperty(SYSTEM_PROXY_USERNAME);
-                    final String password = PasswordEncrypter.decryptString(System.getProperty(SYSTEM_PROXY_PASSWORD));
-                    final String domain = System.getProperty(SYSTEM_PROXY_DOMAIN);
-                    final String excludedHost = System.getProperty(SYSTEM_PROXY_EXCLUDEDHOSTS);
-
-                    return new Proxy(host, port, username, password, domain, excludedHost, true);
-                } catch (final NumberFormatException e) {
-                    LOG.error("error during creation of proxy from system properties", e); // NOI18N
-                }
-            }
+    public boolean isEnabledFor(final String hostOrUrl) {
+        if (!isEnabled() || !isValid()) {
+            return false;
         }
-
-        return null;
-    }
-
-    /**
-     * main program; used for testing. // NOTE: use cli library if there shall be more (complex) options
-     *
-     * @param  args  args
-     */
-    @SuppressWarnings("CallToThreadDumpStack")
-    public static void main(final String[] args) {
+        if (hostOrUrl == null) {
+            return true; // not false for backwards compability
+        }
+        String host = hostOrUrl.trim();
         try {
-            if (args.length == 1) {
-                final String arg = args[0];
-                if ("-c".equals(arg) || "--clear".equals(arg)) {        // NOI18N
-                    clear();
-                    showMessage("Proxy information cleared", false);
-                } else if ("-p".equals(arg) || "--print".equals(arg)) { // NOI18N
-                    final Proxy proxy = fromPreferences();
-
-                    if (proxy == null) {
-                        showMessage("Proxy information not set", false); // NOI18N
-                    } else {
-                        showMessage(proxy.toString(), false);
-                    }
-                } else {
-                    printUsage();
-                    System.exit(1);
+            host = new URL(host).getHost();
+        } catch (final Exception ex) {
+        }
+        if (excludedHosts != null) {
+            for (final String excludedHost : excludedHosts.split(Pattern.quote("|"))) {
+                if (WildcardUtils.testForMatch(host, excludedHost.trim())) {
+                    return false;
                 }
-            } else {
-                printUsage();
-                System.exit(1);
-            }
-
-            System.exit(0);
-        } catch (final Exception e) {
-            showMessage("Something went wrong: " + e.getMessage(), true); // NOI18N
-            System.err.println("\n");
-            e.printStackTrace();
-            System.err.println();
-            System.exit(2);
-        }
-    }
-
-    /**
-     * shows Message. If there is no System.console it writes the meassage on OptionPane.Else it writes the message on
-     * Console as Error or Output.
-     *
-     * @param  message  the message
-     * @param  error    true if it is a error message,false if not
-     */
-    private static void showMessage(final String message, final boolean error) {
-        if (System.console() == null) {
-            JOptionPane.showMessageDialog(
-                null,
-                message,
-                error ? "Error" : "Information", // NOI18N
-                error ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            if (error) {
-                System.err.println("\n" + message + "\n"); // NOI18N
-            } else {
-                System.out.println("\n" + message + "\n"); // NOI18N
             }
         }
-    }
-
-    /**
-     * print usage.
-     */
-    private static void printUsage() {
-        showMessage("Supported parameters are:\n\n"                  // NOI18N
-                    + "-c --clear\t\tremoves all proxy settings\n"   // NOI18N
-                    + "-p --print\t\tprints out the proxy settings", // NOI18N
-            true);
+        return true;
     }
 }
