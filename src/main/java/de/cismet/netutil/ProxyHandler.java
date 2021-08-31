@@ -14,10 +14,13 @@ package de.cismet.netutil;
 
 import org.apache.log4j.Logger;
 
+import org.openide.util.Exceptions;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
@@ -391,6 +394,11 @@ public class ProxyHandler {
             prefs.remove(PROXY_DOMAIN);
         } else {
             prefs.put(PROXY_DOMAIN, manualProxy.getDomain());
+        }
+        try {
+            prefs.sync();
+        } catch (final BackingStoreException ex) {
+            throw new RuntimeException("Proxy-Einstellungen konnten nicht abgespeichert werden.", ex);
         }
     }
 
