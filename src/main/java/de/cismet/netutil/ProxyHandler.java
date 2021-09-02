@@ -14,7 +14,6 @@ package de.cismet.netutil;
 
 import org.apache.log4j.Logger;
 
-import org.openide.util.Exceptions;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -219,22 +218,24 @@ public class ProxyHandler {
      * @return  DOCUMENT ME!
      */
     public Proxy init(final ProxyProperties proxyProperties) {
-        if ((proxyProperties != null)) {
-            final Proxy preconfiguredProxy = new Proxy(
+        final Proxy preconfiguredProxy = proxyProperties != null ? new Proxy(
                     proxyProperties.getProxyEnabled(),
                     proxyProperties.getProxyHost(),
                     proxyProperties.getProxyPort(),
                     proxyProperties.getProxyExcludedHosts(),
                     proxyProperties.getProxyUsername(),
                     proxyProperties.getProxyPassword(),
-                    proxyProperties.getProxyDomain());
-            ProxyHandler.getInstance().setPreconfiguredProxy(preconfiguredProxy);
-            if (!ProxyHandler.getInstance().getManualProxy().isValid()) {
-                ProxyHandler.getInstance().setManualProxy(preconfiguredProxy);
+                    proxyProperties.getProxyDomain()) : null;
+        setPreconfiguredProxy(preconfiguredProxy);
+        if (preconfiguredProxy != null && preconfiguredProxy.isValid()) {            
+            if (!getManualProxy().isValid()) {
+                setManualProxy(preconfiguredProxy);
             }
-            if (ProxyHandler.getInstance().getMode() == null) {
-                ProxyHandler.getInstance().usePreconfiguredProxy();
+            if (getMode() == null) {
+                usePreconfiguredProxy();
             }
+        } else {
+            useManualProxy();
         }
         return getProxy();
     }
@@ -280,8 +281,9 @@ public class ProxyHandler {
                     clear();
                     showMessage("Proxy information cleared", false);
                 } else if ("-p".equals(arg) || "--print".equals(arg)) { // NOI18N
-                    final Mode mode = ProxyHandler.getInstance().getMode();
-                    final Proxy proxy = ProxyHandler.getInstance().getProxy();
+                    final ProxyHandler proxyHandler = ProxyHandler.getInstance();
+                    final Mode mode = proxyHandler.getMode();
+                    final Proxy proxy = proxyHandler.getProxy();
 
                     showMessage(String.format("proxy is set to: %s", (mode != null) ? mode.name() : null), false);
                     showMessage(String.format("manual proxy: %s", (proxy != null) ? proxy.toString() : null), false);
@@ -499,6 +501,10 @@ public class ProxyHandler {
         setMode(Mode.PRECONFIGURED);
     }
 
+    public final void useManualProxy() {
+        setMode(Mode.MANUAL);
+    }
+    
     /**
      * DOCUMENT ME!
      *
@@ -507,7 +513,7 @@ public class ProxyHandler {
     public final void useManualProxy(final Proxy proxy) {
         if (proxy != null) {
             setManualProxy(proxy);
-            setMode(Mode.MANUAL);
+            useManualProxy();
         } else {
             useNoProxy();
         }
