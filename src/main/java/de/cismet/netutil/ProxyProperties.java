@@ -103,7 +103,7 @@ public class ProxyProperties extends Properties {
      */
     private static Integer integerValueOf(final String value) {
         try {
-            return Integer.parseInt(value);
+            return value != null ? Integer.parseInt(value) : null;
         } catch (final Exception exp) {
             LOG.warn(String.format("%s could not be parsed to Integer", value), exp); // NOI18N
             return null;
