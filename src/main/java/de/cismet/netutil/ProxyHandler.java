@@ -14,7 +14,6 @@ package de.cismet.netutil;
 
 import org.apache.log4j.Logger;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -218,16 +217,17 @@ public class ProxyHandler {
      * @return  DOCUMENT ME!
      */
     public Proxy init(final ProxyProperties proxyProperties) {
-        final Proxy preconfiguredProxy = proxyProperties != null ? new Proxy(
-                    proxyProperties.getProxyEnabled(),
-                    proxyProperties.getProxyHost(),
-                    proxyProperties.getProxyPort(),
-                    proxyProperties.getProxyExcludedHosts(),
-                    proxyProperties.getProxyUsername(),
-                    proxyProperties.getProxyPassword(),
-                    proxyProperties.getProxyDomain()) : null;
+        final Proxy preconfiguredProxy = (proxyProperties != null)
+            ? new Proxy(
+                proxyProperties.getProxyEnabled(),
+                proxyProperties.getProxyHost(),
+                proxyProperties.getProxyPort(),
+                proxyProperties.getProxyExcludedHosts(),
+                proxyProperties.getProxyUsername(),
+                proxyProperties.getProxyPassword(),
+                proxyProperties.getProxyDomain()) : null;
         setPreconfiguredProxy(preconfiguredProxy);
-        if (preconfiguredProxy != null && preconfiguredProxy.isValid()) {            
+        if ((preconfiguredProxy != null) && preconfiguredProxy.isValid()) {
             if (!getManualProxy().isValid()) {
                 setManualProxy(preconfiguredProxy);
             }
@@ -359,8 +359,10 @@ public class ProxyHandler {
      * Stores the given proxy in the user's preferences. If the proxy or the host is <code>null</code> or empty or the
      * port is not greater than 0 all proxy entries will be removed.
      *
-     * @param  mode         DOCUMENT ME!
-     * @param  manualProxy  the proxy to store
+     * @param   mode         DOCUMENT ME!
+     * @param   manualProxy  the proxy to store
+     *
+     * @throws  RuntimeException  DOCUMENT ME!
      */
     private static void toPreferences(final Mode mode, final Proxy manualProxy) {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
@@ -501,10 +503,13 @@ public class ProxyHandler {
         setMode(Mode.PRECONFIGURED);
     }
 
+    /**
+     * DOCUMENT ME!
+     */
     public final void useManualProxy() {
         setMode(Mode.MANUAL);
     }
-    
+
     /**
      * DOCUMENT ME!
      *

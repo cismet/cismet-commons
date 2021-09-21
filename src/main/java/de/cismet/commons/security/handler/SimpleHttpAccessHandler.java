@@ -12,6 +12,7 @@
 package de.cismet.commons.security.handler;
 
 import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -29,6 +30,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.io.BufferedInputStream;
@@ -40,6 +42,7 @@ import java.net.BindException;
 import java.net.URL;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import de.cismet.commons.security.AccessHandler;
@@ -167,6 +170,31 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             final ACCESS_METHODS method,
             final HashMap<String, String> options,
             final UsernamePasswordCredentials credentials) throws Exception {
+        return doRequest(url, requestParameter, requestHeader, method, options, credentials, false);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   url               DOCUMENT ME!
+     * @param   requestParameter  DOCUMENT ME!
+     * @param   requestHeader     DOCUMENT ME!
+     * @param   method            DOCUMENT ME!
+     * @param   options           DOCUMENT ME!
+     * @param   credentials       DOCUMENT ME!
+     * @param   withHeaders       DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    public InputStream doRequest(final URL url,
+            final Reader requestParameter,
+            final String requestHeader,
+            final ACCESS_METHODS method,
+            final HashMap<String, String> options,
+            final UsernamePasswordCredentials credentials,
+            final boolean withHeaders) throws Exception {
         final HttpClient client = getSecurityEnabledHttpClient(url);
         final StringBuilder parameter = new StringBuilder();
 
@@ -292,7 +320,26 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                             baos.close();
                             return is;
                         } else {
-                            return new BufferedInputStream(httpMethod.getResponseBodyAsStream());
+                            if (withHeaders) {
+                                String contentType = "";
+                                final InputStream is = httpMethod.getResponseBodyAsStream();
+
+                                for (final Header h : httpMethod.getResponseHeaders()) {
+                                    if (h.getName().equalsIgnoreCase("Content-Type")) {
+                                        contentType = h.getValue();
+                                    }
+                                }
+
+                                final ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+                                result.write(contentType.getBytes());
+                                result.write("\n".getBytes("utf-8"));
+                                result.write(IOUtils.toByteArray(is));
+
+                                return new ByteArrayInputStream(result.toByteArray());
+                            } else {
+                                return new BufferedInputStream(httpMethod.getResponseBodyAsStream());
+                            }
                         }
                     }
                     default: {
