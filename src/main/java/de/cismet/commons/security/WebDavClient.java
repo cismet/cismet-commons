@@ -8,6 +8,7 @@
 package de.cismet.commons.security;
 
 import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
@@ -35,6 +36,7 @@ import java.net.MalformedURLException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import de.cismet.netutil.Proxy;
 
@@ -192,12 +194,44 @@ public class WebDavClient {
      * @throws  HttpException          DOCUMENT ME!
      */
     public InputStream getInputStream(final String path) throws MalformedURLException, IOException, HttpException {
+        return getInputStream(path, null, null);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   path             DOCUMENT ME!
+     * @param   responseHeaders  if this is not null, then the given map will be filled with the response headers
+     * @param   statusValues     responseHeaders if this is not null, then the given map will be filled with status
+     *                           code, line, text
+     *
+     * @return  an InputStream from the given path
+     *
+     * @throws  MalformedURLException  DOCUMENT ME!
+     * @throws  IOException            DOCUMENT ME!
+     * @throws  HttpException          DOCUMENT ME!
+     */
+    public InputStream getInputStream(final String path,
+            final Map<String, String> responseHeaders,
+            final Map<String, Object> statusValues) throws MalformedURLException, IOException, HttpException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("get: " + path);
         }
         final GetMethod get = new GetMethod(path);
         client.executeMethod(get);
+
+        if (responseHeaders != null) {
+            for (final Header h : get.getResponseHeaders()) {
+                responseHeaders.put(h.getName(), h.getValue());
+            }
+        }
+
+        if (statusValues != null) {
+            statusValues.put("code", get.getStatusCode());
+            statusValues.put("line", get.getStatusLine());
+            statusValues.put("text", get.getStatusText());
+        }
 
         return get.getResponseBodyAsStream();
     }
