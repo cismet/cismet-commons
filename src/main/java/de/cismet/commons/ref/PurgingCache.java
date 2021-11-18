@@ -7,6 +7,8 @@
 ****************************************************/
 package de.cismet.commons.ref;
 
+import org.apache.log4j.Logger;
+
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 
@@ -40,6 +42,7 @@ public final class PurgingCache<K, V> {
     public static final long DEFAULT_KEY_PURGE_INTERVAL = 300000L;
     /** The default value purge interval of the cache, 30 seconds. */
     public static final long DEFAULT_VALUE_PURGE_INTERVAL = 30000L;
+    private static Logger LOG = Logger.getLogger(PurgingCache.class);
 
     //~ Instance fields --------------------------------------------------------
 
@@ -164,7 +167,15 @@ public final class PurgingCache<K, V> {
         try {
             Reference ref = cache.get(key);
 
-            Object value = (ref == null) ? null : ref.get();
+            Object value = null;
+
+            if (ref != null) {
+                try {
+                    value = ref.get();
+                } catch (Exception e) {
+                    LOG.info(String.format("error in PurgeCache. So the value for key %s must be reloaded.", key), e);
+                }
+            }
 
             if (value == null) {
                 // lock upgrade
