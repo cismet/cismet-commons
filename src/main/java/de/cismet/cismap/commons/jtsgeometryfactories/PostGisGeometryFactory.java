@@ -19,6 +19,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.WKTWriter;
 
 import org.openide.util.lookup.ServiceProvider;
 
@@ -30,6 +31,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
+import de.cismet.tools.WKTWriter4D;
 
 /**
  * Factory for org.postgis Geometries.
@@ -61,7 +64,25 @@ public class PostGisGeometryFactory implements IGeometryFactory {
         if (g == null) {
             return null;
         } else {
-            return "SRID=" + g.getSRID() + ";" + g.toText(); // NOI18N
+            return "SRID=" + g.getSRID() + ";" + getEWKT(g); // NOI18N
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   g  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static String getEWKT(final Geometry g) {
+        if ((g.getCoordinates() != null) && (g.getCoordinates().length > 0)
+                    && (g.getCoordinates()[0] instanceof CoordinateM)) {
+            final WKTWriter4D writer = new WKTWriter4D(4);
+            return writer.write(g);
+        } else {
+            final WKTWriter writer = new WKTWriter(3);
+            return writer.write(g);
         }
     }
 
@@ -74,7 +95,16 @@ public class PostGisGeometryFactory implements IGeometryFactory {
      * @return  <code>point</code>
      */
     private static Point createJtsPoint(final org.postgis.Point point, final GeometryFactory geometryFactory) {
-        return geometryFactory.createPoint(new Coordinate(point.getX(), point.getY()));
+        final boolean hasMCoordinate = hasZAndMValue(point);
+        final boolean hasZCoordinate = hasMCoordinate || hasZValue(point);
+
+        if (hasMCoordinate) {
+            return geometryFactory.createPoint(new CoordinateM(point.getX(), point.getY(), point.getZ(), point.getM()));
+        } else if (hasZCoordinate) {
+            return geometryFactory.createPoint(new Coordinate(point.getX(), point.getY(), point.getZ()));
+        } else {
+            return geometryFactory.createPoint(new Coordinate(point.getX(), point.getY()));
+        }
     }
 
     /**
@@ -88,10 +118,57 @@ public class PostGisGeometryFactory implements IGeometryFactory {
     private static LineString createJtsLineString(final org.postgis.LineString lineString,
             final GeometryFactory geometryFactory) {
         final Coordinate[] ca = new Coordinate[lineString.numPoints()];
+        final boolean hasMCoordinate = hasZAndMValue(lineString);
+        final boolean hasZCoordinate = hasMCoordinate || hasZValue(lineString);
+
         for (int i = 0; i < lineString.numPoints(); ++i) {
-            ca[i] = new Coordinate(lineString.getPoint(i).x, lineString.getPoint(i).y);
+            if (hasMCoordinate) {
+                ca[i] = new CoordinateM(
+                        lineString.getPoint(i).x,
+                        lineString.getPoint(i).y,
+                        lineString.getPoint(i).z,
+                        lineString.getPoint(i).m);
+            } else if (hasZCoordinate) {
+                ca[i] = new Coordinate(lineString.getPoint(i).x, lineString.getPoint(i).y, lineString.getPoint(i).z);
+            } else {
+                ca[i] = new Coordinate(lineString.getPoint(i).x, lineString.getPoint(i).y);
+            }
         }
         return (LineString)geometryFactory.createLineString(ca);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   g  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static boolean hasZValue(final org.postgis.Geometry g) {
+        for (int i = 0; i < g.numPoints(); ++i) {
+            if (g.getPoint(i).z != 0.0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   g  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static boolean hasZAndMValue(final org.postgis.Geometry g) {
+        for (int i = 0; i < g.numPoints(); ++i) {
+            if (g.getPoint(i).m != 0.0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -106,9 +183,18 @@ public class PostGisGeometryFactory implements IGeometryFactory {
             final GeometryFactory geometryFactory) {
         final int numberOfPoints = linearRing.numPoints();
         if (numberOfPoints > 0) {
+            final boolean hasMCoordinate = hasZAndMValue(linearRing);
+            final boolean hasZCoordinate = hasMCoordinate || hasZValue(linearRing);
             final Collection<Coordinate> coords = new ArrayList<Coordinate>(numberOfPoints);
+
             for (final org.postgis.Point point : linearRing.getPoints()) {
-                coords.add(new Coordinate(point.getX(), point.getY()));
+                if (hasMCoordinate) {
+                    coords.add(new CoordinateM(point.getX(), point.getY(), point.getZ(), point.getM()));
+                } else if (hasZCoordinate) {
+                    coords.add(new Coordinate(point.getX(), point.getY(), point.getZ()));
+                } else {
+                    coords.add(new Coordinate(point.getX(), point.getY()));
+                }
             }
             return geometryFactory.createLinearRing(coords.toArray(new Coordinate[0]));
         } else {
