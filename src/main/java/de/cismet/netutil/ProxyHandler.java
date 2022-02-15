@@ -233,6 +233,8 @@ public class ProxyHandler {
             }
             if (getMode() == null) {
                 usePreconfiguredProxy();
+            } else {
+                proxyChanged(getMode(), getProxy());
             }
         } else {
             useManualProxy();
