@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -55,13 +56,34 @@ public final class Converter {
     public static byte[] serialise(final Object o) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(o);
+
+        try {
+            oos.writeObject(o);
+        } catch (NotSerializableException e) {
+            if (o instanceof Exception) {
+                oos.writeObject(convertNonSerializableException2SerializableException((Exception)o));
+            } else {
+                throw e;
+            }
+        }
+
         oos.flush();
 
         final byte[] bytes = baos.toByteArray();
         oos.close();
 
         return bytes;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   e  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private static Object convertNonSerializableException2SerializableException(final Exception e) {
+        return new NotSerializableExceptionException(e.getMessage(), e.getCause());
     }
 
     /**
@@ -293,7 +315,15 @@ public final class Converter {
                     final ObjectOutputStream oout = new ObjectOutputStream(iout);
                     final GZIPOutputStream zstream = new GZIPOutputStream(bout);
             ) {
-            oout.writeObject(o);
+            try {
+                oout.writeObject(o);
+            } catch (NotSerializableException e) {
+                if (o instanceof Exception) {
+                    oout.writeObject(convertNonSerializableException2SerializableException((Exception)o));
+                } else {
+                    throw e;
+                }
+            }
             oout.flush();
             zstream.write(iout.toByteArray());
             zstream.finish();
