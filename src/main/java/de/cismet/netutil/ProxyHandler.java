@@ -85,10 +85,13 @@ public class ProxyHandler {
      */
     private ProxyHandler() {
         initFromPreference();
-        final Proxy systemProxy = fromSystem();
-        if (systemProxy != null) {
-            useManualProxy(systemProxy);
-        }
+        // do not use the system proxy. Only use the proxy that was configured by the application
+        // If the system proxy is used, no one will know, what proxy is currently in use
+// final Proxy systemProxy = fromSystem();
+// if (systemProxy != null) {
+// LOG.warn("Set proxy from system");
+// useManualProxy(systemProxy);
+// }
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -247,8 +250,11 @@ public class ProxyHandler {
      * <code>null</code> will be returned. If the return value is non-null at least the host and the port is
      * initialised. Username, Password and Domain may be null.
      *
+     * <p>This method should not be used anymore. The Proxy that was configured by the application should be used</p>
+     *
      * @return  the user's proxy settings or null if no settings present
      */
+    @Deprecated
     private static Proxy fromSystem() {
         final String host = System.getProperty(SYSTEM_PROXY_HOST);
         final String portString = System.getProperty(SYSTEM_PROXY_PORT);
@@ -361,10 +367,8 @@ public class ProxyHandler {
      * Stores the given proxy in the user's preferences. If the proxy or the host is <code>null</code> or empty or the
      * port is not greater than 0 all proxy entries will be removed.
      *
-     * @param   mode         DOCUMENT ME!
-     * @param   manualProxy  the proxy to store
-     *
-     * @throws  RuntimeException  DOCUMENT ME!
+     * @param  mode         DOCUMENT ME!
+     * @param  manualProxy  the proxy to store
      */
     private static void toPreferences(final Mode mode, final Proxy manualProxy) {
         final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
@@ -404,7 +408,9 @@ public class ProxyHandler {
         try {
             prefs.sync();
         } catch (final BackingStoreException ex) {
-            throw new RuntimeException("Proxy-Einstellungen konnten nicht abgespeichert werden.", ex);
+            // do not throw an exception. Otherwise, the proxy settings will not be applied
+            LOG.error("Cannot save proxy configuration", ex);
+            // throw new RuntimeException("Proxy-Einstellungen konnten nicht abgespeichert werden.", ex);
         }
     }
 
@@ -566,6 +572,8 @@ public class ProxyHandler {
                             username,
                             password,
                             domain);
+                } else {
+                    LOG.warn("credentials have not 3 parts");
                 }
             }
         }
