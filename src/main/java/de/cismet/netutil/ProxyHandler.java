@@ -135,7 +135,9 @@ public class ProxyHandler {
             final String user,
             final String password,
             final String domain) {
+        final Proxy proxy = getProxy();
         hostCrendentials.put(getHostCredentialsKey(host, port), getHostCredentialsValue(user, password, domain));
+        fireProxyChanged(getMode(), getMode(), proxy, getProxy());
     }
 
     /**

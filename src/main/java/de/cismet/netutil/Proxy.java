@@ -248,9 +248,9 @@ public final class Proxy implements Serializable {
      * @return  DOCUMENT ME!
      */
     public boolean isFullCredentials() {
-        return (getUsername() != null) && !getUsername().isEmpty()
-                    && (getPassword() != null) && !getPassword().isEmpty()
-                    && (getDomain() != null) && !getDomain().isEmpty();
+        return (getUsername() != null) && !getUsername().trim().isEmpty()
+                    && (getPassword() != null) && !getPassword().trim().isEmpty()
+                    && (getDomain() != null) && !getDomain().trim().isEmpty();
     }
 
     /**
