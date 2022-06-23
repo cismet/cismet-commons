@@ -95,6 +95,35 @@ public class WebDavHelper {
     }
 
     /**
+     * DOCUMENT ME!
+     *
+     * @param   fileName         DOCUMENT ME!
+     * @param   toUpload         DOCUMENT ME!
+     * @param   webDavDirectory  DOCUMENT ME!
+     * @param   webDavClient     DOCUMENT ME!
+     * @param   parent           DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public static int uploadFileToWebDAV(final String fileName,
+            final InputStream toUpload,
+            final String webDavDirectory,
+            final WebDavClient webDavClient,
+            final Component parent) throws IOException {
+        final BufferedInputStream bfis = new BufferedInputStream(new ProgressMonitorInputStream(
+                    parent,
+                    "Daten werden übertragen...",
+                    toUpload));
+        try {
+            return webDavClient.put(webDavDirectory + encodeURL(fileName), bfis);
+        } finally {
+            IOUtils.closeQuietly(bfis);
+        }
+    }
+
+    /**
      * creates the given webdav collection (a sub directory in the file system), if it does not exists.
      *
      * @param   webDavDirectory  the webdav collection to create
