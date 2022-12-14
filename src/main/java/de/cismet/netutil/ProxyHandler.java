@@ -319,7 +319,7 @@ public class ProxyHandler {
      * @param  mode         DOCUMENT ME!
      * @param  manualProxy  DOCUMENT ME!
      */
-    private static void saveProperties(final Mode mode, final Proxy manualProxy) {
+    private void saveProperties(final Mode mode, final Proxy manualProxy) {
         try {
             final ProxyProperties properties = new ProxyProperties();
             properties.setProxyMode(mode);
@@ -330,7 +330,7 @@ public class ProxyHandler {
             properties.setProxyUsername(manualProxy.getUsername());
             properties.setProxyPassword(manualProxy.getPassword());
             properties.setProxyExcludedHosts(manualProxy.getExcludedHosts());
-            getInstance().getPropertiesHandler().saveProperties(properties);
+            getPropertiesHandler().saveProperties(properties);
         } catch (final Exception ex) {
             LOG.warn("could not write proxy properties", ex);
         }
