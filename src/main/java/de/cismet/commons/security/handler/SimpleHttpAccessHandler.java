@@ -42,7 +42,6 @@ import java.net.BindException;
 import java.net.URL;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import de.cismet.commons.security.AccessHandler;
@@ -524,7 +523,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
 
         final MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
         final HttpClient client = new HttpClient(connectionManager);
-        if (proxy != null) {
+        if ((proxy != null) && proxy.isEnabled()) {
             client.getHostConfiguration().setProxy(proxy.getHost(), proxy.getPort());
 
             // proxy needs authentication
