@@ -189,7 +189,8 @@ public class ProxyProperties extends Properties {
      * @return  DOCUMENT ME!
      */
     public Boolean getProxyEnabled() {
-        return booleanValueOf(getProperty(PROXY_ENABLED));
+        final String enabled = getProperty(PROXY_ENABLED);
+        return booleanValueOf(enabled);
     }
 
     /**
@@ -213,7 +214,8 @@ public class ProxyProperties extends Properties {
      * @return  DOCUMENT ME!
      */
     public ProxyHandler.Mode getProxyMode() {
-        return ProxyHandler.Mode.valueOf(getProperty(PROXY_MODE));
+        final String mode = getProperty(PROXY_MODE);
+        return (mode != null) ? ProxyHandler.Mode.valueOf(mode) : null;
     }
 
     /**
