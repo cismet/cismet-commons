@@ -14,12 +14,12 @@ package de.cismet.netutil;
 
 import org.apache.log4j.Logger;
 
+import org.openide.util.Lookup;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import javax.swing.JOptionPane;
 
@@ -36,22 +36,6 @@ public class ProxyHandler {
     //~ Static fields/initializers ---------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(ProxyHandler.class);
-
-    public static final String PROXY_ENABLED = "proxy.enabled";             // NOI18N
-    public static final String PROXY_MODE = "proxy.mode";
-    public static final String PROXY_HOST = "proxy.host";                   // NOI18N
-    public static final String PROXY_PORT = "proxy.port";                   // NOI18N
-    public static final String PROXY_USERNAME = "proxy.username";           // NOI18N
-    public static final String PROXY_PASSWORD = "proxy.password";           // NOI18N
-    public static final String PROXY_DOMAIN = "proxy.domain";               // NOI18N
-    public static final String PROXY_EXCLUDEDHOSTS = "proxy.excludedHosts"; // NOI18N
-
-    public static final String SYSTEM_PROXY_HOST = "http.proxyHost";              // NOI18N
-    public static final String SYSTEM_PROXY_PORT = "http.proxyPort";              // NOI18N
-    public static final String SYSTEM_PROXY_USERNAME = "http.proxyUsername";      // NOI18N
-    public static final String SYSTEM_PROXY_PASSWORD = "http.proxyPassword";      // NOI18N
-    public static final String SYSTEM_PROXY_DOMAIN = "http.proxyDomain";          // NOI18N
-    public static final String SYSTEM_PROXY_EXCLUDEDHOSTS = "http.nonProxyHosts"; // NOI18N
 
     //~ Enums ------------------------------------------------------------------
 
@@ -78,20 +62,19 @@ public class ProxyHandler {
 
     private Mode mode;
 
+    private final ProxyPropertiesHandler propertiesHandler;
+
     //~ Constructors -----------------------------------------------------------
 
     /**
      * Creates a new ProxyHandler object.
      */
     private ProxyHandler() {
-        initFromPreference();
-        // do not use the system proxy. Only use the proxy that was configured by the application
-        // If the system proxy is used, no one will know, what proxy is currently in use
-// final Proxy systemProxy = fromSystem();
-// if (systemProxy != null) {
-// LOG.warn("Set proxy from system");
-// useManualProxy(systemProxy);
-// }
+        final ProxyPropertiesHandler propertiesHandler = Lookup.getDefault().lookup(ProxyPropertiesHandler.class);
+        this.propertiesHandler = (propertiesHandler != null) ? propertiesHandler : new DummyProxyPropertiesHandler();
+        if (propertiesHandler != null) {
+            initProperties(propertiesHandler);
+        }
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -248,36 +231,6 @@ public class ProxyHandler {
     }
 
     /**
-     * Loads a <code>Proxy</code> instance from System preferences. If there are no host and port proxy information
-     * <code>null</code> will be returned. If the return value is non-null at least the host and the port is
-     * initialised. Username, Password and Domain may be null.
-     *
-     * <p>This method should not be used anymore. The Proxy that was configured by the application should be used</p>
-     *
-     * @return  the user's proxy settings or null if no settings present
-     */
-    @Deprecated
-    private static Proxy fromSystem() {
-        final String host = System.getProperty(SYSTEM_PROXY_HOST);
-        final String portString = System.getProperty(SYSTEM_PROXY_PORT);
-        if ((host != null) && (portString != null)) {
-            try {
-                final int port = Integer.valueOf(portString);
-                final String username = System.getProperty(SYSTEM_PROXY_USERNAME);
-                final String password = PasswordEncrypter.decryptString(System.getProperty(SYSTEM_PROXY_PASSWORD));
-                final String domain = System.getProperty(SYSTEM_PROXY_DOMAIN);
-                final String excludedHost = System.getProperty(SYSTEM_PROXY_EXCLUDEDHOSTS);
-
-                return new Proxy(true, host, port, excludedHost, username, password, domain);
-            } catch (final NumberFormatException e) {
-                LOG.error("error during creation of proxy from system properties", e); // NOI18N
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * main program; used for testing. // NOTE: use cli library if there shall be more (complex) options
      *
      * @param  args  args
@@ -288,7 +241,7 @@ public class ProxyHandler {
             if (args.length == 1) {
                 final String arg = args[0];
                 if ("-c".equals(arg) || "--clear".equals(arg)) {        // NOI18N
-                    clear();
+                    ProxyHandler.getInstance().clear();
                     showMessage("Proxy information cleared", false);
                 } else if ("-p".equals(arg) || "--print".equals(arg)) { // NOI18N
                     final ProxyHandler proxyHandler = ProxyHandler.getInstance();
@@ -352,97 +305,65 @@ public class ProxyHandler {
     /**
      * Clears the Proxy Object.
      */
-    public static void clear() {
-        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
-
-        // won't use clear since we don't know if anybody else stored preferences for this package
-        prefs.remove(PROXY_MODE);
-        prefs.remove(PROXY_HOST);
-        prefs.remove(PROXY_PORT);
-        prefs.remove(PROXY_EXCLUDEDHOSTS);
-        prefs.remove(PROXY_USERNAME);
-        prefs.remove(PROXY_PASSWORD);
-        prefs.remove(PROXY_DOMAIN);
-    }
-
-    /**
-     * Stores the given proxy in the user's preferences. If the proxy or the host is <code>null</code> or empty or the
-     * port is not greater than 0 all proxy entries will be removed.
-     *
-     * @param  mode         DOCUMENT ME!
-     * @param  manualProxy  the proxy to store
-     */
-    private static void toPreferences(final Mode mode, final Proxy manualProxy) {
-        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
-
-        if (mode == null) {
-            prefs.remove(PROXY_MODE);
-        } else {
-            prefs.put(PROXY_MODE, mode.name());
-        }
-        prefs.put(PROXY_ENABLED, Boolean.toString(manualProxy.isEnabled()));
-        if (manualProxy.getHost() == null) {
-            prefs.remove(PROXY_HOST);
-        } else {
-            prefs.put(PROXY_HOST, manualProxy.getHost());
-        }
-        prefs.putInt(PROXY_PORT, manualProxy.getPort());
-        if (manualProxy.getExcludedHosts() == null) {
-            prefs.remove(PROXY_EXCLUDEDHOSTS);
-        } else {
-            prefs.put(PROXY_EXCLUDEDHOSTS, manualProxy.getExcludedHosts());
-        }
-        if (manualProxy.getUsername() == null) {
-            prefs.remove(PROXY_USERNAME);
-        } else {
-            prefs.put(PROXY_USERNAME, manualProxy.getUsername());
-        }
-        if (manualProxy.getPassword() == null) {
-            prefs.remove(PROXY_PASSWORD);
-        } else {
-            prefs.put(PROXY_PASSWORD, PasswordEncrypter.encryptString(manualProxy.getPassword()));
-        }
-        if (manualProxy.getDomain() == null) {
-            prefs.remove(PROXY_DOMAIN);
-        } else {
-            prefs.put(PROXY_DOMAIN, manualProxy.getDomain());
-        }
+    private void clear() {
         try {
-            prefs.sync();
-        } catch (final BackingStoreException ex) {
-            // do not throw an exception. Otherwise, the proxy settings will not be applied
-            LOG.error("Cannot save proxy configuration", ex);
-            // throw new RuntimeException("Proxy-Einstellungen konnten nicht abgespeichert werden.", ex);
+            getPropertiesHandler().saveProperties(new ProxyProperties());
+        } catch (final Exception ex) {
+            LOG.warn("could not clear proxy preferences", ex);
         }
     }
 
     /**
      * DOCUMENT ME!
+     *
+     * @param  mode         DOCUMENT ME!
+     * @param  manualProxy  DOCUMENT ME!
      */
-    private void initFromPreference() {
-        final Preferences prefs = Preferences.userNodeForPackage(Proxy.class);
-        if (prefs != null) {
-            boolean enabled = false;
-            try {
-                enabled = Boolean.valueOf(prefs.get(PROXY_ENABLED, null));
-            } catch (final Exception ex) {
-            }
-            final String host = prefs.get(PROXY_HOST, null); // NOI18N
-            final int port = prefs.getInt(PROXY_PORT, 0);
-            final String username = prefs.get(PROXY_USERNAME, null);
-            final String password = PasswordEncrypter.decryptString(prefs.get(PROXY_PASSWORD, null));
-            final String domain = prefs.get(PROXY_DOMAIN, null);
-            final String excludedHosts = prefs.get(PROXY_EXCLUDEDHOSTS, null);
+    private static void saveProperties(final Mode mode, final Proxy manualProxy) {
+        try {
+            final ProxyProperties properties = new ProxyProperties();
+            properties.setProxyMode(mode);
+            properties.setProxyEnabled(manualProxy.isEnabled());
+            properties.setProxyHost(manualProxy.getHost());
+            properties.setProxyPort(manualProxy.getPort());
+            properties.setProxyDomain(manualProxy.getDomain());
+            properties.setProxyUsername(manualProxy.getUsername());
+            properties.setProxyPassword(manualProxy.getPassword());
+            properties.setProxyExcludedHosts(manualProxy.getExcludedHosts());
+            getInstance().getPropertiesHandler().saveProperties(properties);
+        } catch (final Exception ex) {
+            LOG.warn("could not write proxy properties", ex);
+        }
+    }
 
-            final Proxy manualProxy = new Proxy(enabled, host, port, excludedHosts, username, password, domain);
-            if (manualProxy.isValid()) {
-                setManualProxy(manualProxy);
-            }
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  propertiesHandler  DOCUMENT ME!
+     */
+    private void initProperties(final ProxyPropertiesHandler propertiesHandler) {
+        final ProxyProperties properties = propertiesHandler.loadProperties();
+        if (properties != null) {
+            final ProxyHandler.Mode mode = properties.getProxyMode();
+            final Boolean enabled = properties.getProxyEnabled();
+            final String host = properties.getProxyHost();
+            final int port = properties.getProxyPort();
+            final String username = properties.getProxyUsername();
+            final String password = properties.getProxyPassword();
+            final String domain = properties.getProxyDomain();
+            final String excludedHosts = properties.getProxyExcludedHosts();
 
-            try {
-                setMode(Mode.valueOf(prefs.get(PROXY_MODE, null)));
-            } catch (final Exception ex) {
+            final Proxy proxy = new Proxy((enabled != null) ? enabled : false,
+                    host,
+                    port,
+                    excludedHosts,
+                    username,
+                    (password != null) ? PasswordEncrypter.decryptString(password) : null,
+                    domain);
+            if (proxy.isValid()) {
+                setManualProxy(proxy);
             }
+            setMode(mode);
         }
     }
 
@@ -453,6 +374,15 @@ public class ProxyHandler {
      */
     public Collection<Listener> getListeners() {
         return listeners;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private ProxyPropertiesHandler getPropertiesHandler() {
+        return propertiesHandler;
     }
 
     /**
@@ -585,55 +515,14 @@ public class ProxyHandler {
     /**
      * DOCUMENT ME!
      *
-     * @param  proxy  DOCUMENT ME!
-     */
-    private static void toSystem(final Proxy proxy) {
-        if ((proxy != null) && proxy.isValid()) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("set proxy in system-property: " + proxy); // NOI18N
-            }
-            System.setProperty(SYSTEM_PROXY_HOST, proxy.getHost());
-            System.setProperty(SYSTEM_PROXY_PORT, String.valueOf(proxy.getPort()));
-            if (proxy.getUsername() != null) {
-                System.setProperty(SYSTEM_PROXY_USERNAME, proxy.getUsername());
-            }
-            if (proxy.getPassword() != null) {
-                System.setProperty(
-                    SYSTEM_PROXY_PASSWORD,
-                    PasswordEncrypter.encryptString(proxy.getPassword()));
-            }
-            if (proxy.getDomain() != null) {
-                System.setProperty(SYSTEM_PROXY_DOMAIN, proxy.getDomain());
-            }
-            if (proxy.getExcludedHosts() != null) {
-                System.setProperty(SYSTEM_PROXY_EXCLUDEDHOSTS, proxy.getExcludedHosts());
-            }
-        } else {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("clear proxy in system-property");         // NOI18N
-            }
-            System.clearProperty(SYSTEM_PROXY_HOST);
-            System.clearProperty(SYSTEM_PROXY_PORT);
-            System.clearProperty(SYSTEM_PROXY_USERNAME);
-            System.clearProperty(SYSTEM_PROXY_PASSWORD);
-            System.clearProperty(SYSTEM_PROXY_DOMAIN);
-            System.clearProperty(SYSTEM_PROXY_EXCLUDEDHOSTS);
-        }
-    }
-    /**
-     * DOCUMENT ME!
-     *
      * @param  oldMode   DOCUMENT ME!
      * @param  oldProxy  DOCUMENT ME!
      */
     public final void proxyChanged(final ProxyHandler.Mode oldMode, final Proxy oldProxy) {
         final Proxy newProxy = getProxy();
         final ProxyHandler.Mode newMode = getMode();
-        // if (!Objects.equals(oldProxy, newProxy)) {
-        toPreferences(newMode, getManualProxy());
-        // toSystem(newProxy); ?!?!?!
+        saveProperties(newMode, getManualProxy());
         fireProxyChanged(oldMode, newMode, oldProxy, newProxy);
-        // }
     }
 
     /**
@@ -665,6 +554,31 @@ public class ProxyHandler {
     }
 
     //~ Inner Classes ----------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private class DummyProxyPropertiesHandler implements ProxyPropertiesHandler {
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public ProxyProperties loadProperties() {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("dummyProxyPropertiesHandler.loadProperties()");
+            }
+            return new ProxyProperties();
+        }
+
+        @Override
+        public void saveProperties(final ProxyProperties properties) throws Exception {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("dummyProxyPropertiesHandler.saveProperties()");
+            }
+        }
+    }
 
     /**
      * DOCUMENT ME!
