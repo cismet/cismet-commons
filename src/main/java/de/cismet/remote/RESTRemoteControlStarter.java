@@ -11,12 +11,11 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 import org.apache.log4j.Logger;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.bio.SocketConnector;
-import org.mortbay.jetty.security.SslSocketConnector;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import java.util.*;
 
@@ -92,17 +91,17 @@ public class RESTRemoteControlStarter {
         int count = 0;
         final Set<Integer> methodPorts = RESTRemoteControlMethodRegistry.getMethodPorts();
         for (final Integer port : methodPorts) {
-            Connector con = new SocketConnector(); // unverschluesselte Verbindung!!!
             final Server server = new Server();
+            ServerConnector con = new ServerConnector(server); // unverschluesselte Verbindung!!!
 
             if (secure && (keystore != null) && (storePasswd != null) && (keyPasswd != null)) {
                 try {
-                    final SslSocketConnector ssl = new SslSocketConnector();
-                    ssl.setMaxIdleTime(30000);
-                    ssl.setKeystore(keystore);
-                    ssl.setPassword(storePasswd);
-                    ssl.setKeyPassword(keyPasswd);
-                    con = ssl;
+                    final SslContextFactory.Server ssl = new SslContextFactory.Server();
+//                    ssl.setMaxIdleTime(30000);
+                    ssl.setKeyStorePath(keystore);
+                    ssl.setKeyStorePassword(storePasswd);
+                    ssl.setKeyManagerPassword(keyPasswd);
+                    con = new ServerConnector(server, ssl);
                 } catch (final Exception e) {
                     final String message = "cannot initialise SSL connector"; // NOI18N
                     LOG.error(message, e);
@@ -120,7 +119,10 @@ public class RESTRemoteControlStarter {
 
             jerseyServlet.setInitParameter(RESTRemoteControlMethodsApplication.PROP_PORT, String.valueOf(port));
 
-            final Context context = new Context(server, "/", Context.SESSIONS);
+            final ServletContextHandler context = new ServletContextHandler(
+                    server,
+                    "/",
+                    ServletContextHandler.SESSIONS);
             context.addServlet(jerseyServlet, "/*");
 
             server.start();
