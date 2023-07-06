@@ -17,7 +17,6 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
-import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.GpsDirectory;
 
@@ -28,6 +27,8 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 
 import java.io.File;
 import java.io.IOException;
+
+import java.util.Date;
 
 /**
  * Reads exif meta data of image files.
@@ -90,6 +91,27 @@ public class ExifReader {
         }
 
         return p;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Date getTimeDate() {
+        final ExifIFD0Directory ifdDirectory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+
+        if (ifdDirectory != null) {
+            if (ifdDirectory.getDate(ExifIFD0Directory.TAG_DATETIME_ORIGINAL) != null) {
+                return ifdDirectory.getDate(ExifIFD0Directory.TAG_DATETIME_ORIGINAL);
+            } else if (ifdDirectory.getDate(ExifIFD0Directory.TAG_DATETIME_DIGITIZED) != null) {
+                return ifdDirectory.getDate(ExifIFD0Directory.TAG_DATETIME_DIGITIZED);
+            } else if (ifdDirectory.getDate(ExifIFD0Directory.TAG_DATETIME) != null) {
+                return ifdDirectory.getDate(ExifIFD0Directory.TAG_DATETIME);
+            }
+        }
+
+        return null;
     }
 
     /**
