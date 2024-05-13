@@ -18,6 +18,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -108,6 +109,18 @@ public class ExifReader {
                 return ifdDirectory.getDate(ExifIFD0Directory.TAG_DATETIME_DIGITIZED);
             } else if (ifdDirectory.getDate(ExifIFD0Directory.TAG_DATETIME) != null) {
                 return ifdDirectory.getDate(ExifIFD0Directory.TAG_DATETIME);
+            }
+        }
+
+        final ExifSubIFDDirectory subIfdDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+
+        if (subIfdDirectory != null) {
+            if (ifdDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL) != null) {
+                return ifdDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+            } else if (ifdDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED) != null) {
+                return ifdDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED);
+            } else if (ifdDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME) != null) {
+                return ifdDirectory.getDate(ExifSubIFDDirectory.TAG_DATETIME);
             }
         }
 
