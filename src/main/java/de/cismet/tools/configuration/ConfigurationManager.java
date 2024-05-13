@@ -21,6 +21,7 @@ import org.jdom.output.XMLOutputter;
 
 import org.openide.util.Lookup;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -217,12 +219,12 @@ public class ConfigurationManager {
 
         final Element srvRootObj = getRootObjectFromClassPath();
 
-        final Format format = Format.getPrettyFormat();
-        // TODO: WHY NOT USING UTF-8
-        format.setEncoding("ISO-8859-1"); // NOI18N
-        final XMLOutputter serializer = new XMLOutputter(format);
-
         if (LOG.isInfoEnabled()) {
+            final Format format = Format.getPrettyFormat();
+            // TODO: WHY NOT USING UTF-8
+            format.setEncoding("ISO-8859-1"); // NOI18N
+            final XMLOutputter serializer = new XMLOutputter(format);
+
             LOG.info("Configuration Document: " + serializer.outputString(rootObject.getDocument()));        // NOI18N
             LOG.info("Server Configuration Document: " + serializer.outputString(srvRootObj.getDocument())); // NOI18N
         }
@@ -676,9 +678,60 @@ public class ConfigurationManager {
     /**
      * Writes a Configuration File in specified path.
      *
+     * @param   doc1  path path
+     * @param   doc2  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public boolean isEqual(final Document doc1, final Document doc2) {
+        try {
+            final Format format = Format.getPrettyFormat();
+            format.setEncoding(XML_ENCODING); // NOI18N
+            // TODO: why not using UTF-8
+            final XMLOutputter serializer = new XMLOutputter(format);
+            final ByteArrayOutputStream byteArrayOut1 = new ByteArrayOutputStream();
+            final OutputStreamWriter writer1 = new OutputStreamWriter(byteArrayOut1, XML_ENCODING);
+            serializer.output(doc1, writer1);
+            writer1.flush();
+            final ByteArrayOutputStream byteArrayOut2 = new ByteArrayOutputStream();
+            final OutputStreamWriter writer2 = new OutputStreamWriter(byteArrayOut2, XML_ENCODING);
+            serializer.output(doc2, writer2);
+            writer2.flush();
+
+            return Arrays.equals(byteArrayOut1.toByteArray(), byteArrayOut2.toByteArray());
+        } catch (final Exception tt) {
+            LOG.error("Error while writing configuration.", tt); // NOI18N
+        }
+
+        return false;
+    }
+
+    /**
+     * Writes a Configuration File in specified path.
+     *
      * @param  path  path
      */
     public void writeConfiguration(final String path) {
+        try {
+            final Format format = Format.getPrettyFormat();
+            format.setEncoding(XML_ENCODING); // NOI18N
+            // TODO: why not using UTF-8
+            final XMLOutputter serializer = new XMLOutputter(format);
+            final File file = new File(path);
+            final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), XML_ENCODING);
+            serializer.output(getConfigurationDocument(), writer);
+            writer.flush();
+        } catch (final Exception tt) {
+            LOG.error("Error while writing configuration.", tt); // NOI18N
+        }
+    }
+
+    /**
+     * Writes a Configuration File in specified path.
+     *
+     * @return  DOCUMENT ME!
+     */
+    public Document getConfigurationDocument() {
         try {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("try to write configuration of this configurables:" + configurables); // NOI18N
@@ -700,17 +753,13 @@ public class ConfigurationManager {
                 }
             }
             final Document doc = new Document(root);
-            final Format format = Format.getPrettyFormat();
-            format.setEncoding(XML_ENCODING);                       // NOI18N
-            // TODO: why not using UTF-8
-            final XMLOutputter serializer = new XMLOutputter(format);
-            final File file = new File(path);
-            final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), XML_ENCODING);
-            serializer.output(doc, writer);
-            writer.flush();
+
+            return doc;
         } catch (final Exception tt) {
-            LOG.error("Error while writing configuration.", tt); // NOI18N
+            LOG.error("Error while creating configuration document.", tt); // NOI18N
         }
+
+        return null;
     }
 
     /**
