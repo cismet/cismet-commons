@@ -81,9 +81,11 @@ public final class Base64 {
                         + ((byteStringPadded[i + 1] & 0xFF) << 8)
                         + (byteStringPadded[i + 2] & 0xFF);
 
-            byteStringPadded[i] = PasswordEncrypter.getWipe();
-            byteStringPadded[i + 1] = PasswordEncrypter.getWipe();
-            byteStringPadded[i + 2] = PasswordEncrypter.getWipe();
+            if (wipeInput) {
+                byteStringPadded[i] = PasswordEncrypter.getWipe();
+                byteStringPadded[i + 1] = PasswordEncrypter.getWipe();
+                byteStringPadded[i + 2] = PasswordEncrypter.getWipe();
+            }
 
             base64[k++] = BASE64CODE[(j >> 18) & 0x3F];
             base64[k++] = BASE64CODE[(j >> 12) & 0x3F];
@@ -100,7 +102,9 @@ public final class Base64 {
                 base64Br[j++] = LF;
             }
             base64Br[j] = base64[i];
-            base64[i] = PasswordEncrypter.getWipe();
+            if (wipeInput) {
+                base64[i] = PasswordEncrypter.getWipe();
+            }
         }
         for (int i = base64Br.length - 1; i > (base64Br.length - 1 - padding); --i) {
             base64Br[i] = EQ;
@@ -175,10 +179,12 @@ public final class Base64 {
                         + ((indexOf(strippedBr[i + 2]) & 0x3F) << 6)
                         + (indexOf(strippedBr[i + 3]) & 0x3F);
 
-            strippedBr[i] = PasswordEncrypter.getWipe();
-            strippedBr[i + 1] = PasswordEncrypter.getWipe();
-            strippedBr[i + 2] = PasswordEncrypter.getWipe();
-            strippedBr[i + 3] = PasswordEncrypter.getWipe();
+            if (wipeInput) {
+                strippedBr[i] = PasswordEncrypter.getWipe();
+                strippedBr[i + 1] = PasswordEncrypter.getWipe();
+                strippedBr[i + 2] = PasswordEncrypter.getWipe();
+                strippedBr[i + 3] = PasswordEncrypter.getWipe();
+            }
 
             decoded[k++] = (byte)((j >> 16) & 0xFF);
             if ((i < (strippedBr.length - 4)) || (padding < 2)) {
