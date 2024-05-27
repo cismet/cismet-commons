@@ -164,14 +164,15 @@ public class ConfigurationManager {
 
     /**
      * Configures all <code>Configurable</code> in <code>configuables</code>; Uses a specified Path to the local root
-     * Object.
+     * Object. This is a convenient method for <code>configure(String, false)</code>
      *
      * @param  path  specified path
      *
      * @see    #configure(de.cismet.tools.configuration.Configurable, java.lang.String)
+     * @see    #configure(java.lang.String, boolean)
      */
     public void configure(final String path) {
-        configure(null, path);
+        configure(null, path, false);
     }
 
     /**
@@ -196,6 +197,20 @@ public class ConfigurationManager {
      * @see    #pureConfigure(de.cismet.tools.configuration.Configurable, org.jdom.Element, org.jdom.Element)
      */
     public void configure(final Configurable singleConfig, final String path) {
+        configure(singleConfig, path, false);
+    }
+
+    /**
+     * Configures the specified <code>Configurable</code>; Uses a specified path to the local Object.
+     *
+     * @param  singleConfig  specified <code>Configurable</code>; if ==null: uses all <code>Configurable</code> in
+     *                       <code>configurables</code>.
+     * @param  path          specified <code>path</code> to the local root Object.
+     * @param  merge         iff true, the given configuration will be merged with the current configuration
+     *
+     * @see    #pureConfigure(de.cismet.tools.configuration.Configurable, org.jdom.Element, org.jdom.Element)
+     */
+    public void configure(final Configurable singleConfig, final String path, final boolean merge) {
         Element rootObject = null;
         try {
             final SAXBuilder builder = new SAXBuilder(false);
@@ -228,7 +243,7 @@ public class ConfigurationManager {
             LOG.info("Configuration Document: " + serializer.outputString(rootObject.getDocument()));        // NOI18N
             LOG.info("Server Configuration Document: " + serializer.outputString(srvRootObj.getDocument())); // NOI18N
         }
-        pureConfigure(singleConfig, rootObject, srvRootObj);
+        pureConfigure(singleConfig, rootObject, srvRootObj, merge);
     }
 
     /**
@@ -251,7 +266,7 @@ public class ConfigurationManager {
      */
     public void configureFromClasspath(final Configurable singleConfig) {
         final Element rootObject = getRootObjectFromClassPath();
-        pureConfigure(singleConfig, rootObject, getRootObjectFromClassPath());
+        pureConfigure(singleConfig, rootObject, getRootObjectFromClassPath(), false);
     }
 
     /**
@@ -267,7 +282,20 @@ public class ConfigurationManager {
      */
     public void configureFromClasspath(final String url, final Configurable singleConfig) throws Exception {
         final Element rootObject = getObjectFromClassPath(url);
-        pureConfigure(singleConfig, rootObject, getRootObjectFromClassPath());
+        pureConfigure(singleConfig, rootObject, getRootObjectFromClassPath(), false);
+    }
+
+    /**
+     * Configures all <code>Configurable</code> in <code>configurables</code>; Uses a specified Path to the local root
+     * Object.
+     *
+     * @param  path   specified path
+     * @param  merge  iff true, the given configuration will be merged with the current configuration
+     *
+     * @see    #configure(de.cismet.tools.configuration.Configurable, java.lang.String)
+     */
+    public void configure(final String path, final boolean merge) {
+        configure(null, path, merge);
     }
 
     /**
@@ -352,27 +380,42 @@ public class ConfigurationManager {
      *                           !=null the specified <code>Configurable</code> will be used</code></code>
      * @param  rootObject        local root Object
      * @param  serverRootObject  server root Object
+     * @param  merge             true, iff the new configuration should merge the the current configuration
      */
     private void pureConfigure(final Configurable singleConfig,
             final Element rootObject,
-            final Element serverRootObject) {
+            final Element serverRootObject,
+            final boolean merge) {
         final Element serverObject = preprocessElement(serverRootObject);
         if (singleConfig == null) {
             for (final Configurable elem : configurables) {
                 try {
-                    elem.masterConfigure(serverObject);
+                    if (merge) {
+                        elem.masterConfigure(serverObject, true);
+                    } else {
+                        elem.masterConfigure(serverObject);
+                    }
                 } catch (final Exception serverT) {
                     LOG.warn("Error in elem.masterConfigure(serverRootObject)", serverT); // NOI18N
                 }
                 try {
-                    elem.configure(rootObject);
+                    if (merge) {
+                        elem.configure(rootObject, true);
+                    } else {
+                        elem.configure(rootObject);
+                    }
                 } catch (final Exception clientT) {
                     LOG.warn("Error in elem.configure(rootObject)", clientT);             // NOI18N
                 }
             }
         } else {
-            singleConfig.masterConfigure(serverObject);
-            singleConfig.configure(rootObject);
+            if (merge) {
+                singleConfig.masterConfigure(serverObject, true);
+                singleConfig.configure(rootObject, true);
+            } else {
+                singleConfig.masterConfigure(serverObject);
+                singleConfig.configure(rootObject);
+            }
         }
     }
 
