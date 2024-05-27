@@ -39,4 +39,26 @@ public interface Configurable {
      * @throws  NoWriteError  throws NoWriteError if anything went wrong
      */
     Element getConfiguration() throws NoWriteError;
+
+    /**
+     * This method is used, if the component should not be configured, but merged with the given configuration. If this
+     * method is not implemented, the default implementation will do nothing
+     *
+     * @param  parent  DOCUMENT ME!
+     * @param  merge   DOCUMENT ME!
+     */
+    default void configure(final Element parent, final boolean merge) {
+        // do nothing
+    }
+
+    /**
+     * This method is used, if the component should not be configured, but merged with the given configuration. If this
+     * method is not implemented, the default implementation will do nothing
+     *
+     * @param  parent  DOCUMENT ME!
+     * @param  merge   DOCUMENT ME!
+     */
+    default void masterConfigure(final Element parent, final boolean merge) {
+        // do nothing
+    }
 }
