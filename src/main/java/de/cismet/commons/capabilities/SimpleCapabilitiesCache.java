@@ -134,7 +134,7 @@ public class SimpleCapabilitiesCache extends CalculationCache<String, String> {
                         }
                         if (con instanceof HttpURLConnection) {
                             final HttpURLConnection http = (HttpURLConnection)con;
-                            if (http.getResponseCode() == 301) {
+                            if ((http.getResponseCode() == 301) || (http.getResponseCode() == 308)) {
                                 con = new URL(http.getHeaderField("Location")).openConnection();
                             }
                         }
