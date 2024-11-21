@@ -18,10 +18,12 @@ import org.apache.commons.httpclient.NTCredentials;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.FileRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.jackrabbit.webdav.client.methods.DavMethod;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
@@ -29,6 +31,7 @@ import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 import org.apache.jackrabbit.webdav.client.methods.PutMethod;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -301,6 +304,37 @@ public class WebDavClient {
         put.setRequestEntity(requestEntity);
         final int responseCode = client.executeMethod(put);
         put.releaseConnection();
+        return responseCode;
+    }
+
+    /**
+     * copies the content of the given file to the given path. This method does use preemptive authentication. So the
+     * put request will be only sent once, even if authentication is required
+     *
+     * @param   path   DOCUMENT ME!
+     * @param   input  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  MalformedURLException  DOCUMENT ME!
+     * @throws  IOException            DOCUMENT ME!
+     * @throws  HttpException          DOCUMENT ME!
+     */
+    public int put(final String path, final File input) throws MalformedURLException, IOException, HttpException {
+        lazyInitialise(path);
+        if (log.isDebugEnabled()) {
+            log.debug("put: " + path);
+        }
+        final PutMethod put = new PutMethod(path);
+
+        final FileRequestEntity requestEntity = new FileRequestEntity(input, "application/octet-stream");
+        put.setRequestEntity(requestEntity);
+        client.getParams().setAuthenticationPreemptive(true);
+
+        final int responseCode = client.executeMethod(put);
+        put.releaseConnection();
+        client.getParams().setAuthenticationPreemptive(false);
+
         return responseCode;
     }
 
