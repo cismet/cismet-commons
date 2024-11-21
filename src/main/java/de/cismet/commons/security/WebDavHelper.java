@@ -124,6 +124,28 @@ public class WebDavHelper {
     }
 
     /**
+     * Uploads the given file and does not use a ProgressMonitorInputStream. It also use preemptive authentication. So
+     * the put request will be only sent once, even if authentication is required
+     *
+     * @param   fileName         DOCUMENT ME!
+     * @param   toUpload         DOCUMENT ME!
+     * @param   webDavDirectory  DOCUMENT ME!
+     * @param   webDavClient     DOCUMENT ME!
+     * @param   parent           DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public static int uploadFileToWebDAVWithPreemptiveAuth(final String fileName,
+            final File toUpload,
+            final String webDavDirectory,
+            final WebDavClient webDavClient,
+            final Component parent) throws IOException {
+        return webDavClient.put(webDavDirectory + encodeURL(fileName), toUpload);
+    }
+
+    /**
      * creates the given webdav collection (a sub directory in the file system), if it does not exists.
      *
      * @param   webDavDirectory  the webdav collection to create
