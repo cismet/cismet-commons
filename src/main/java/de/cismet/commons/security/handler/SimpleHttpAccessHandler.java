@@ -69,6 +69,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             ACCESS_METHODS.POST_REQUEST
         };
     public static final ACCESS_HANDLER_TYPES ACCESS_HANDLER_TYPE = ACCESS_HANDLER_TYPES.HTTP;
+    private static final String USER_AGENT_HEADER_KEY = "User-Agent";
 
     //~ Instance fields --------------------------------------------------------
 
@@ -288,6 +289,8 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
         while (!hasBound) {
             try {
                 httpMethod.setDoAuthentication(true);
+                // some urls are not reachable without a user agent
+                httpMethod.addRequestHeader(new Header(USER_AGENT_HEADER_KEY, "wunda"));
 
                 final int statuscode = client.executeMethod(httpMethod);
                 switch (statuscode) {
@@ -414,9 +417,13 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             final PostMethod postMethod,
             final HashMap<String, String> requestHeader) throws Exception {
         final HttpClient client = getSecurityEnabledHttpClient(url);
+        boolean hasUserAgent = false;
 
         if ((requestHeader != null) && !requestHeader.isEmpty()) {
             for (final Entry<String, String> option : requestHeader.entrySet()) {
+                if (option.getKey().equalsIgnoreCase(USER_AGENT_HEADER_KEY)) {
+                    hasUserAgent = true;
+                }
                 postMethod.addRequestHeader(option.getKey(), option.getValue());
             }
         }
@@ -424,6 +431,10 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
         while (!hasBound) {
             try {
                 postMethod.setDoAuthentication(true);
+                // some urls are not reachable without a user agent
+                if (!hasUserAgent) {
+                    postMethod.addRequestHeader(new Header(USER_AGENT_HEADER_KEY, "wunda"));
+                }
 
                 final int statuscode = client.executeMethod(postMethod);
                 switch (statuscode) {
