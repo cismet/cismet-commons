@@ -19,10 +19,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import static org.junit.Assert.*;
 
@@ -56,15 +59,27 @@ public class ClassPathInfoTest {
      */
     @BeforeClass
     public static void setUpClass() throws Exception {
-        Logger.getRootLogger().addAppender(TEST_APPENDER);
+        org.apache.logging.log4j.core.LoggerContext ctx = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+        Configuration config = ctx.getConfiguration();
+        
+        LoggerConfig rootLoggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+        TEST_APPENDER.start();
+        rootLoggerConfig.addAppender(TEST_APPENDER, null, null);
+        rootLoggerConfig.setLevel(Level.DEBUG);
+        
+        ctx.updateLoggers();
         CLASSPATH = System.getProperty(CP_PROP);
     }
     
-    private static final TestAppender TEST_APPENDER = new TestAppender();
+    private static final TestAppender TEST_APPENDER = new TestAppender("test");
     
-    private static final class TestAppender extends AppenderSkeleton {
+    private static final class TestAppender extends AbstractAppender {
         
         private final transient Set<AppenderListener> listeners = new HashSet<AppenderListener>();
+        
+        protected TestAppender(String name) {
+            super(name, null, PatternLayout.createDefaultLayout(), false);
+        }        
         
         public void addAppenderListener(final AppenderListener l){
             synchronized(listeners){
@@ -79,19 +94,7 @@ public class ClassPathInfoTest {
         }
 
         @Override
-        public void close()
-        {
-            // noop
-        }
-
-        @Override
-        public boolean requiresLayout()
-        {
-            return false;
-        }
-
-        @Override
-        protected void append(LoggingEvent event)
+        public void append(LogEvent event)
         {
             final Iterator<AppenderListener> it;
             
@@ -103,9 +106,9 @@ public class ClassPathInfoTest {
                 it.next().loggingEvent(event);
             }
         }
-        
+
         interface AppenderListener {
-            void loggingEvent(LoggingEvent event);
+            void loggingEvent(LogEvent event);
         }
     }
 
@@ -313,9 +316,9 @@ public class ClassPathInfoTest {
             }
             
             @Override
-            public void loggingEvent(LoggingEvent event)
+            public void loggingEvent(LogEvent event)
             {
-                if(event.getLevel() == Level.WARN && ((String)event.getMessage()).startsWith("multiple origins for package: [package=")){
+                if(event.getLevel() == Level.WARN && ((String)event.getMessage().getFormattedMessage()).startsWith("multiple origins for package: [package=")){
                     ++count;
                     System.out.println(event.getMessage());
                 }
