@@ -40,6 +40,7 @@ public abstract class CachedExecutor {
 
     private boolean resultExists = false;
     private Object result = null;
+    private Exception exception = null;
 
     //~ Methods ----------------------------------------------------------------
 
@@ -92,6 +93,8 @@ public abstract class CachedExecutor {
 
             if (result != null) {
                 return result;
+            } else if (exception != null) {
+                throw exception;
             } else {
                 return run();
             }
@@ -103,17 +106,19 @@ public abstract class CachedExecutor {
                 res = run();
             } catch (Exception e) {
                 LOG.error("Error while processing request", e);
-                res = e;
+                exception = e;
                 exceptionThrown = true;
             }
 
             synchronized (RUNNING_REQUESTS) {
-                final List<CachedExecutor> executors = WAITING_REQUESTS.get(key);
+                final List<CachedExecutor> executors = WAITING_REQUESTS.remove(key);
                 RUNNING_REQUESTS.remove(key);
 
                 if (executors != null) {
                     for (final CachedExecutor tmp : executors) {
-                        if (!(res instanceof Exception)) {
+                        if (exceptionThrown) {
+                            tmp.exception = exception;
+                        } else {
                             tmp.result = res;
                         }
                         tmp.resultExists = true;
