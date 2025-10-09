@@ -1,11 +1,12 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
+
 /**
  * Sorter Tool.
  *
@@ -15,7 +16,7 @@ public class Sorter {
 
     //~ Methods ----------------------------------------------------------------
 
-// -----------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------
     /**
      * Tests whether the specified <code>Array</code> is sorted or not. Sorted <code>Arrays</code> are <code>
      * Arrays</code> with only ONE Element.
@@ -30,8 +31,7 @@ public class Sorter {
         }
 
         for (int i = 1; i < array.length; i++) {
-            if (array[i - 1].compareTo(array[i]) > 0)   // >
-            {
+            if (array[i - 1].compareTo(array[i]) > 0) { // >
                 System.out.println("fehler bei i" + i); // NOI18N
                 return false;
             }
@@ -67,8 +67,7 @@ public class Sorter {
             final Comparable tmp = array[out];
             in = out;
 
-            while ((in > left) && (array[in - 1].compareTo(tmp) >= 0)) // >=
-            {
+            while ((in > left) && (array[in - 1].compareTo(tmp) >= 0)) { // >=
                 array[in] = array[in - 1];
                 --in;
             }
@@ -77,7 +76,7 @@ public class Sorter {
         }
     }
 
-//----------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------
 
     /**
      * Sorts the specified <code>Array</code> with <code>Quicksort</code>.Sorts only a specified area. If the to be
@@ -122,6 +121,7 @@ public class Sorter {
     public static void quickSort(final Comparable[] array) {
         quickSort(array, 0, array.length - 1, 16); // no insertion when partition >=16
     }
+
     /**
      * Divides into two Sets.
      *
@@ -146,11 +146,11 @@ public class Sorter {
 
         while (true) {
             while (array[++leftPtr].compareTo(pivot) < 0) { // <
-                ;                                           // nop
+                // nop
             }
 
             while ((array[--rightPtr].compareTo(pivot) > 0) && (rightPtr > 0)) { // >
-                ;                                                                // nop
+                // nop
             }
 
             if (leftPtr >= rightPtr) {
@@ -165,7 +165,7 @@ public class Sorter {
         return leftPtr;
     }
 
-//----------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
 
     /**
      * Swaps two Elements of the specified <code>Array</code>.

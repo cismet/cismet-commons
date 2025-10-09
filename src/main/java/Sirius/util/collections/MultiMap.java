@@ -1,13 +1,14 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package Sirius.util.collections;
 
 import java.util.*;
+
 /**
  * Modified {@link HashMap}, which makes it possible to map Keys to multiple Values.
  *
@@ -25,6 +26,7 @@ public class MultiMap extends HashMap {
     public MultiMap() {
         this(10);
     }
+
     /**
      * Creates new Multimap Object with specified size.
      *
@@ -52,15 +54,11 @@ public class MultiMap extends HashMap {
     public Object put(final Object key, final Object value) {
         SyncLinkedList list = null;
 
-        if (containsKey(key))
-        // anh\u00E4ngen an bestehende liste
-        {
-            list = (SyncLinkedList)get(key);
+        if (containsKey(key)) { // anh\u00E4ngen an bestehende liste
+            list = (SyncLinkedList) get(key);
 
             list.add(value);
-        } else
-        // keine existierende liste
-        {
+        } else { // keine existierende liste
             list = new SyncLinkedList();
             list.add(value);
             super.put(key, list);
@@ -83,14 +81,14 @@ public class MultiMap extends HashMap {
         final Iterator i = t.entrySet().iterator();
 
         while (i.hasNext()) {
-            final Map.Entry e = (Map.Entry)i.next();
+            final Map.Entry e = (Map.Entry) i.next();
 
             final Object val = e.getValue();
             final Object key = e.getKey();
 
             // wenn mehrere Eintr\u00E4ge zu einem key
             if (val instanceof SyncLinkedList) {
-                final Iterator iter = ((SyncLinkedList)val).iterator();
+                final Iterator iter = ((SyncLinkedList) val).iterator();
 
                 while (iter.hasNext()) {
                     put(key, iter.next());
@@ -115,10 +113,9 @@ public class MultiMap extends HashMap {
         SyncLinkedList list = null;
 
         if (containsKey(key)) {
-            list = (SyncLinkedList)get(key);
+            list = (SyncLinkedList) get(key);
 
             return list.remove(value);
-
             // Iterator iter = list.iterator();
             //
             // while(iter.hasNext())
@@ -131,5 +128,4 @@ public class MultiMap extends HashMap {
     }
     //J+
 } // end class
-
 //////////////////////////////////////////////////////////////////////////

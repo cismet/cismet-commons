@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.converter;
 
 /**
@@ -57,7 +57,6 @@ public final class ConversionException extends Exception {
      */
     public ConversionException(final String message, final Throwable cause, final Converter originatingConverter) {
         super(message, cause);
-
         this.originatingConverter = originatingConverter;
     }
 

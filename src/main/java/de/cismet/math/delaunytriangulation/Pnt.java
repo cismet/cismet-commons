@@ -1,11 +1,12 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.math.delaunytriangulation;
+
 /*
  * Copyright (c) 2005 by L. Paul Chew.
  *
@@ -68,13 +69,13 @@ public class Pnt {
     @Override
     public String toString() {
         if (coordinates.length == 0) {
-            return "()";                               // NOI18N
+            return "()"; // NOI18N
         }
-        String result = "Pnt(" + coordinates[0];       // NOI18N
+        String result = "Pnt(" + coordinates[0]; // NOI18N
         for (int i = 1; i < coordinates.length; i++) { // NOI18N
-            result = result + "," + coordinates[i];    // NOI18N
+            result = result + "," + coordinates[i]; // NOI18N
         }
-        result = result + ")";                         // NOI18N
+        result = result + ")"; // NOI18N
         return result;
     }
 
@@ -90,7 +91,7 @@ public class Pnt {
         if (!(other instanceof Pnt)) {
             return false;
         }
-        final Pnt p = (Pnt)other;
+        final Pnt p = (Pnt) other;
         if (this.coordinates.length != p.coordinates.length) {
             return false;
         }
@@ -112,7 +113,7 @@ public class Pnt {
         int hash = 0;
         for (final double c : this.coordinates) {
             final long bits = Double.doubleToLongBits(c);
-            hash = (31 * hash) ^ (int)(bits ^ (bits >> 32));
+            hash = (31 * hash) ^ (int) (bits ^ (bits >> 32));
         }
         return hash;
     }
@@ -266,9 +267,9 @@ public class Pnt {
     public static String toString(final Pnt[] matrix) {
         final StringBuilder buf = new StringBuilder("{"); // NOI18N
         for (final Pnt row : matrix) {
-            buf.append(" " + row);                        // NOI18N
+            buf.append(" " + row); // NOI18N
         }
-        buf.append(" }");                                 // NOI18N
+        buf.append(" }"); // NOI18N
         return buf.toString();
     }
 
@@ -284,7 +285,7 @@ public class Pnt {
      */
     public static double determinant(final Pnt[] matrix) {
         if (matrix.length != matrix[0].dimension()) {
-            throw new IllegalArgumentException("Matrix is not square");  // NOI18N
+            throw new IllegalArgumentException("Matrix is not square"); // NOI18N
         }
         final boolean[] columns = new boolean[matrix.length];
         for (int i = 0; i < matrix.length; i++) {
@@ -317,8 +318,7 @@ public class Pnt {
                 continue;
             }
             columns[col] = false;
-            sum += sign * matrix[row].coordinates[col]
-                        * determinant(matrix, row + 1, columns);
+            sum += sign * matrix[row].coordinates[col] * determinant(matrix, row + 1, columns);
             columns[col] = true;
             sign = -sign;
         }
@@ -338,7 +338,7 @@ public class Pnt {
     public static Pnt cross(final Pnt[] matrix) {
         final int len = matrix.length + 1;
         if (len != matrix[0].dimension()) {
-            throw new IllegalArgumentException("Dimension mismatch");    // NOI18N
+            throw new IllegalArgumentException("Dimension mismatch"); // NOI18N
         }
         final boolean[] columns = new boolean[len];
         for (int i = 0; i < len; i++) {
@@ -545,7 +545,7 @@ public class Pnt {
         for (int i = 0; i < dim; i++) {
             matrix[i] = simplex[i].bisector(simplex[i + 1]);
         }
-        final Pnt hCenter = cross(matrix);                            // Center in homogeneous coordinates
+        final Pnt hCenter = cross(matrix); // Center in homogeneous coordinates
         final double last = hCenter.coordinates[dim];
         final double[] result = new double[dim];
         for (int i = 0; i < dim; i++) {
@@ -561,28 +561,43 @@ public class Pnt {
      */
     public static void main(final String[] args) {
         final Pnt p = new Pnt(1, 2, 3);
-        System.out.println("Pnt created: " + p);                                           // NOI18N
+        System.out.println("Pnt created: " + p); // NOI18N
         final Pnt[] matrix1 = { new Pnt(1, 2), new Pnt(3, 4) };
         final Pnt[] matrix2 = { new Pnt(7, 0, 5), new Pnt(2, 4, 6), new Pnt(3, 8, 1) };
-        System.out.print("Results should be -2 and -288: ");                               // NOI18N
-        System.out.println(determinant(matrix1) + " " + determinant(matrix2));             // NOI18N
+        System.out.print("Results should be -2 and -288: "); // NOI18N
+        System.out.println(determinant(matrix1) + " " + determinant(matrix2)); // NOI18N
         final Pnt p1 = new Pnt(1, 1);
         final Pnt p2 = new Pnt(-1, 1);
-        System.out.println("Angle between " + p1 + " and " + p2 + ": " + p1.angle(p2));    // NOI18N
-        System.out.println(p1 + " subtract " + p2 + ": " + p1.subtract(p2));               // NOI18N
+        System.out.println("Angle between " + p1 + " and " + p2 + ": " + p1.angle(p2)); // NOI18N
+        System.out.println(p1 + " subtract " + p2 + ": " + p1.subtract(p2)); // NOI18N
         final Pnt v0 = new Pnt(0, 0);
         final Pnt v1 = new Pnt(1, 1);
         final Pnt v2 = new Pnt(2, 2);
         final Pnt[] vs = { v0, new Pnt(0, 1), new Pnt(1, 0) };
         final Pnt vp = new Pnt(.1, .1);
-        System.out.println(vp + " isInside " + toString(vs) + ": " + vp.isInside(vs));     // NOI18N
-        System.out.println(v1 + " isInside " + toString(vs) + ": " + v1.isInside(vs));     // NOI18N
-        System.out.println(vp + " vsCircumcircle " + toString(vs) + ": "                   // NOI18N
-                    + vp.vsCircumcircle(vs));
-        System.out.println(v1 + " vsCircumcircle " + toString(vs) + ": "                   // NOI18N
-                    + v1.vsCircumcircle(vs));
-        System.out.println(v2 + " vsCircumcircle " + toString(vs) + ": "                   // NOI18N
-                    + v2.vsCircumcircle(vs));
+        System.out.println(vp + " isInside " + toString(vs) + ": " + vp.isInside(vs)); // NOI18N
+        System.out.println(v1 + " isInside " + toString(vs) + ": " + v1.isInside(vs)); // NOI18N
+        System.out.println(
+            vp +
+            " vsCircumcircle " +
+            toString(vs) +
+            ": " + // NOI18N
+            vp.vsCircumcircle(vs)
+        );
+        System.out.println(
+            v1 +
+            " vsCircumcircle " +
+            toString(vs) +
+            ": " + // NOI18N
+            v1.vsCircumcircle(vs)
+        );
+        System.out.println(
+            v2 +
+            " vsCircumcircle " +
+            toString(vs) +
+            ": " + // NOI18N
+            v2.vsCircumcircle(vs)
+        );
         System.out.println("Circumcenter of " + toString(vs) + " is " + circumcenter(vs)); // NOI18N
     }
 }

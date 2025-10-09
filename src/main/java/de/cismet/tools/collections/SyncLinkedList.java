@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * SyncLinkedList.java
  *
@@ -13,6 +13,7 @@
 package de.cismet.tools.collections;
 
 import java.util.*;
+
 /**
  * Deprecated.
  *

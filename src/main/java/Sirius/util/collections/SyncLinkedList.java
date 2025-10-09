@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * SyncLinkedList.java
  *
@@ -13,6 +13,7 @@
 package Sirius.util.collections;
 
 import java.util.*;
+
 /**
  * Modified {@link LinkedList} for synchronisation.
  *
@@ -41,6 +42,7 @@ public class SyncLinkedList extends LinkedList {
             return true;
         }
     }
+
     /**
      * Checks whether the List is Empty or not. <code>synchronized</code>.
      *
@@ -52,6 +54,7 @@ public class SyncLinkedList extends LinkedList {
     public synchronized boolean isEmpty() {
         return super.isEmpty();
     }
+
     /**
      * Adds the given Collection to the List. <code>synchronized</code>.
      *
@@ -65,6 +68,7 @@ public class SyncLinkedList extends LinkedList {
     public synchronized boolean addAll(final Collection c) {
         return super.addAll(c);
     }
+
     /**
      * Removes the first Object in the List. <code>synchronized</code>.
      *
@@ -76,6 +80,7 @@ public class SyncLinkedList extends LinkedList {
     public synchronized Object removeFirst() {
         return super.removeFirst();
     }
+
     /**
      * Removes the first occurrence of the specified element from this list, if it is present. If this list does not
      * contain the element, it is unchanged. <code>synchronized</code>.

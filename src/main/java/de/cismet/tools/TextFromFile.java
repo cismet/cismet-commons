@@ -1,13 +1,13 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
-import java.io.*;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -44,15 +44,15 @@ public class TextFromFile {
 
             inFile = new File(filepath);
 
-            data = new byte[(int)inFile.length()];
+            data = new byte[(int) inFile.length()];
             stream = new FileInputStream(inFile);
 
             // read the file into data
-            final int bytesRead = stream.read(data, 0, (int)inFile.length());
+            final int bytesRead = stream.read(data, 0, (int) inFile.length());
 
-            if (bytesRead == -1) {                                  // error occured during readingprocess
-                throw new Exception("read failed");                 // NOI18N
-            } else if (bytesRead != (int)inFile.length()) {
+            if (bytesRead == -1) { // error occured during readingprocess
+                throw new Exception("read failed"); // NOI18N
+            } else if (bytesRead != (int) inFile.length()) {
                 throw new Exception("Information probably faulty"); // NOI18N
             }
 
@@ -94,6 +94,5 @@ public class TextFromFile {
 
         return words;
     }
-
     // ---------------------------------------------------------------
 }

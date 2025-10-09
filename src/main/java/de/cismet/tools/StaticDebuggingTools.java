@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * StaticDebuggingTools.java
  *
@@ -30,8 +30,7 @@ public class StaticDebuggingTools {
     /**
      * Creates a new instance of StaticDebuggingTools.
      */
-    public StaticDebuggingTools() {
-    }
+    public StaticDebuggingTools() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -46,10 +45,10 @@ public class StaticDebuggingTools {
         try {
             // Merke dir den Pfad zum Homeverzeichnis
             final String home = System.getProperty("user.home"); // NOI18N
-//            System.out.println(home);
+            //            System.out.println(home);
             // Merke dir das Trennzeichen zwischen Pfad und Dateinamen
             final String fileSep = System.getProperty("file.separator"); // NOI18N
-// System.out.println(fileSep);
+            // System.out.println(fileSep);
 
             final File f = new File(home + fileSep + filename);
 

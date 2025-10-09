@@ -1,17 +1,14 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.classloading;
-
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -20,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.apache.log4j.Logger;
 
 /**
  * This class provides information about the packages, their resources and their origins that are currently on the
@@ -101,7 +99,7 @@ public final class ClassPathInfo {
             final File f = new File(cpEntry);
             if (f.isDirectory()) {
                 handleCPDir(f, f);
-            } else if (f.isFile() && f.getName().endsWith(".jar")) {           // NOI18N
+            } else if (f.isFile() && f.getName().endsWith(".jar")) { // NOI18N
                 handleCPJar(f);
             } else {
                 LOG.warn("skipping unrecognised classpath entry: " + cpEntry); // NOI18N
@@ -140,8 +138,13 @@ public final class ClassPathInfo {
         }
 
         if (!ancestor) {
-            throw new IllegalArgumentException("basedir is not ancestor of currentDir: [baseDir=" + baseDir // NOI18N
-                        + "|currentDir=" + currentDir + "]"); // NOI18N
+            throw new IllegalArgumentException(
+                "basedir is not ancestor of currentDir: [baseDir=" +
+                baseDir + // NOI18N
+                "|currentDir=" +
+                currentDir +
+                "]"
+            ); // NOI18N
         }
 
         final File[] files = currentDir.listFiles();
@@ -154,7 +157,7 @@ public final class ClassPathInfo {
             } else {
                 final String bdPath = baseDir.getAbsolutePath();
                 final String pakkage = fileToJavaPath(currentDir.getAbsolutePath().replace(bdPath, "")); // NOI18N
-                final String resource = fileToJavaPath(file.getAbsolutePath().replace(bdPath, ""));      // NOI18N
+                final String resource = fileToJavaPath(file.getAbsolutePath().replace(bdPath, "")); // NOI18N
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("found package '" + pakkage + "' for resource: " + file); // NOI18N
@@ -221,9 +224,13 @@ public final class ClassPathInfo {
                 origins.add(origin);
 
                 if (origins.size() > 1) {
-                    LOG.warn("multiple origins for package: [package=" + pakkage + "|origins="
-                                + origins.toString() // NOI18N
-                                + "]");              // NOI18N
+                    LOG.warn(
+                        "multiple origins for package: [package=" +
+                        pakkage +
+                        "|origins=" +
+                        origins.toString() + // NOI18N
+                        "]"
+                    ); // NOI18N
                 }
             }
         }
@@ -276,7 +283,7 @@ public final class ClassPathInfo {
                     if (!entryName.startsWith(META_INF)) {
                         final int indexof = entryName.lastIndexOf('/');
                         final String pakkage = (indexof > 0) ? entryName.substring(0, indexof).replace("/", ".") : ""; // NOI18N
-                        final String resource = entryName.replace("/", ".");                                           // NOI18N
+                        final String resource = entryName.replace("/", "."); // NOI18N
 
                         addOrigin(pakkage, jar);
                         addResource(pakkage, resource);

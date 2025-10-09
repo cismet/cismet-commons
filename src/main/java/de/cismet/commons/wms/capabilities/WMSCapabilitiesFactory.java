@@ -1,25 +1,19 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities;
 
-import org.apache.log4j.Logger;
-
-import java.io.ByteArrayInputStream;
-
-import java.net.MalformedURLException;
-
 import de.cismet.commons.capabilities.AbstractVersionNegotiator;
-
 import de.cismet.commons.exceptions.ParserException;
-
 import de.cismet.commons.wms.capabilities.deegree.DeegreeWMSCapabilities;
-
 import de.cismet.tools.CalculationCache;
+import java.io.ByteArrayInputStream;
+import java.net.MalformedURLException;
+import org.apache.log4j.Logger;
 
 /**
  * This class provides an implementation of a WMS GetCapabilities response parser.
@@ -59,9 +53,8 @@ public class WMSCapabilitiesFactory extends AbstractVersionNegotiator {
      * @throws  ParserException        DOCUMENT ME!
      * @throws  Exception              DOCUMENT ME!
      */
-    public synchronized WMSCapabilities createCapabilities(final String link) throws MalformedURLException,
-        ParserException,
-        Exception {
+    public synchronized WMSCapabilities createCapabilities(final String link)
+        throws MalformedURLException, ParserException, Exception {
         String document = getCapabilitiesDocument(link);
         ByteArrayInputStream docStream = new ByteArrayInputStream(document.getBytes());
         WMSCapabilities result = null;

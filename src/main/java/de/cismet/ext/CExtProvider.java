@@ -1,16 +1,15 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.ext;
 
+import java.util.Collection;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
-
-import java.util.Collection;
 
 /**
  * This interface can be used to provide extensions that can be loaded into applications that support the extension
@@ -26,7 +25,6 @@ import java.util.Collection;
  * @see      ServiceProvider
  */
 public interface CExtProvider<T> {
-
     //~ Methods ----------------------------------------------------------------
 
     /**

@@ -1,18 +1,16 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.remote;
 
 import com.sun.jersey.api.core.ResourceConfig;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
@@ -32,7 +30,8 @@ public class RESTRemoteControlMethodsApplication extends Application {
 
     //~ Instance fields --------------------------------------------------------
 
-    @Context ResourceConfig rc;
+    @Context
+    ResourceConfig rc;
 
     private final HashSet<Class<?>> clazzes;
 
@@ -70,7 +69,7 @@ public class RESTRemoteControlMethodsApplication extends Application {
      */
     @Override
     public synchronized Set<Class<?>> getClasses() {
-        this.collectServiceClasses((String)rc.getProperty(PROP_PORT));
+        this.collectServiceClasses((String) rc.getProperty(PROP_PORT));
         return this.clazzes;
     }
 }

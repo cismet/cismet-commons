@@ -1,20 +1,19 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities.deegree;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import de.cismet.commons.wms.capabilities.Envelope;
 import de.cismet.commons.wms.capabilities.Layer;
 import de.cismet.commons.wms.capabilities.LayerBoundingBox;
 import de.cismet.commons.wms.capabilities.Style;
 import de.cismet.commons.wms.capabilities.WMSCapabilities;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DOCUMENT ME!
@@ -38,8 +37,10 @@ public class DeegreeLayer implements Layer {
      * @param  layer         DOCUMENT ME!
      * @param  capabilities  DOCUMENT ME!
      */
-    public DeegreeLayer(final org.deegree.ogcwebservices.wms.capabilities.Layer layer,
-            final WMSCapabilities capabilities) {
+    public DeegreeLayer(
+        final org.deegree.ogcwebservices.wms.capabilities.Layer layer,
+        final WMSCapabilities capabilities
+    ) {
         this.layer = layer;
         this.capabilities = capabilities;
     }
@@ -182,9 +183,13 @@ public class DeegreeLayer implements Layer {
      * @return  DOCUMENT ME!
      */
     private boolean fulfilFilterRequirements(final org.deegree.ogcwebservices.wms.capabilities.Layer l) {
-        if (((l.getTitle().toLowerCase().indexOf(filterString.toLowerCase()) != -1)
-                        || containsFilterString(l.getKeywordList()))
-                    && (l.getLayer().length == 0)) {
+        if (
+            (
+                (l.getTitle().toLowerCase().indexOf(filterString.toLowerCase()) != -1) ||
+                containsFilterString(l.getKeywordList())
+            ) &&
+            (l.getLayer().length == 0)
+        ) {
             return true;
         } else {
             final org.deegree.ogcwebservices.wms.capabilities.Layer[] children = l.getLayer();

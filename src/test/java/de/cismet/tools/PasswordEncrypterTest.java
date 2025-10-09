@@ -1,18 +1,17 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
-
-import static org.junit.Assert.*;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * DOCUMENT ME!
@@ -109,36 +108,36 @@ public class PasswordEncrypterTest {
     @Ignore // fails randomly under Java 1.8 windows x64
     public void testEncryptDecryptUTF8() {
         System.out.println("TEST " + getCurrentMethodName());
-        
+
         char[] input = null;
         char[] out = PasswordEncrypter.encrypt(input, true);
         char[] in = PasswordEncrypter.decrypt(out, true);
         assertNull(in);
-        
+
         input = "".toCharArray();
         out = PasswordEncrypter.encrypt(input, false);
         assertFalse(input.length == out.length);
         in = PasswordEncrypter.decrypt(out, false);
         assertArrayEquals(input, in);
-        
+
         input = "aaaa".toCharArray();
         out = PasswordEncrypter.encrypt(input, false);
         assertFalse(input.length == out.length);
         in = PasswordEncrypter.decrypt(out, false);
         assertArrayEquals(input, in);
-        
+
         input = "adsfwewrefdg34erf".toCharArray();
         out = PasswordEncrypter.encrypt(input, false);
         assertFalse(input.length == out.length);
         in = PasswordEncrypter.decrypt(out, false);
         assertArrayEquals(input, in);
-        
+
         input = ")§/Zhm$ER876HN §5refbdz0hoiä%GRbf".toCharArray();
         out = PasswordEncrypter.encrypt(input, false);
         assertFalse(input.length == out.length);
         in = PasswordEncrypter.decrypt(out, false);
         assertArrayEquals(input, in);
-        
+
         input = "$§MORGPw45eht-dfHJBeTDfg§$E)QWpesdhg$WRSGDwrlsjg90ou24hre9to35eRGR$%rEfbø¨⁄€ª∞fn4lwef4r".toCharArray();
         out = PasswordEncrypter.encrypt(input, false);
         assertFalse(input.length == out.length);
@@ -234,7 +233,7 @@ public class PasswordEncrypterTest {
     private char[] getChars(final byte[] bytes) {
         final char[] chars = new char[bytes.length];
         for (int i = 0; i < bytes.length; ++i) {
-            chars[i] = (char)bytes[i];
+            chars[i] = (char) bytes[i];
         }
 
         return chars;
@@ -250,7 +249,7 @@ public class PasswordEncrypterTest {
     private byte[] getBytes(final char[] chars) {
         final byte[] bytes = new byte[chars.length];
         for (int i = 0; i < chars.length; ++i) {
-            bytes[i] = (byte)chars[i];
+            bytes[i] = (byte) chars[i];
         }
 
         return bytes;

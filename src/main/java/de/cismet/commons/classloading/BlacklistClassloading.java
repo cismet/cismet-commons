@@ -1,16 +1,15 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.classloading;
-
-import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 /**
  * BlacklistClassloading optimises the <code>Class.forName(String)</code> operation by caching already found class
@@ -75,7 +74,7 @@ public final class BlacklistClassloading {
                         }
                     } else {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug("class retrieved from cache: " + clazz);                       // NOI18N
+                            LOG.debug("class retrieved from cache: " + clazz); // NOI18N
                         }
                     }
                 }

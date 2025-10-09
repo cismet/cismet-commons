@@ -1,13 +1,11 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
-
-import org.apache.log4j.Logger;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -23,9 +21,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
-
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import org.apache.log4j.Logger;
 
 /**
  * DOCUMENT ME!
@@ -94,10 +92,11 @@ public class Static2DTools {
             iHeight = (gap * (icons.length - 1)) + addedHeight;
         } else {
             throw new IllegalArgumentException(
-                "OrientationParameter must be either Static2DTools.HORIZONTAL or Static2DTools.VERTICAL"); // NOI18N
+                "OrientationParameter must be either Static2DTools.HORIZONTAL or Static2DTools.VERTICAL"
+            ); // NOI18N
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug("JOIN(" + iWidth + "," + iHeight);                                                   // NOI18N
+            LOG.debug("JOIN(" + iWidth + "," + iHeight); // NOI18N
         }
 
         image = new BufferedImage(iWidth, iHeight + 1, BufferedImage.TYPE_INT_ARGB);
@@ -114,7 +113,8 @@ public class Static2DTools {
                     alignmentPosition = (iHeight - icons[i].getIconHeight()) / 2;
                 } else {
                     throw new IllegalArgumentException(
-                        "If orientation is HORIZONTAL the aligment options must bei in {Static2DTools.TOP;Static2DTools.CENTER;Static2DTools.BOTTOM}"); // NOI18N
+                        "If orientation is HORIZONTAL the aligment options must bei in {Static2DTools.TOP;Static2DTools.CENTER;Static2DTools.BOTTOM}"
+                    ); // NOI18N
                 }
                 final Graphics g = image.getGraphics();
                 icons[i].paintIcon(null, g, runningPosition, alignmentPosition);
@@ -131,7 +131,8 @@ public class Static2DTools {
                     alignmentPosition = (iWidth - icons[i].getIconWidth()) / 2;
                 } else {
                     throw new IllegalArgumentException(
-                        "If orientation is VERTICAL the aligment options must bei in {Static2DTools.LEFT;Static2DTools.CENTER;Static2DTools.RIGHT}"); // NOI18N
+                        "If orientation is VERTICAL the aligment options must bei in {Static2DTools.LEFT;Static2DTools.CENTER;Static2DTools.RIGHT}"
+                    ); // NOI18N
                 }
                 final Graphics g = image.getGraphics();
                 icons[i].paintIcon(null, g, alignmentPosition, runningPosition);
@@ -153,8 +154,9 @@ public class Static2DTools {
      * @return  DOCUMENT ME!
      */
     public static ImageIcon createOverlayIcon(final ImageIcon overlayIcon, final int width, final int heigth) {
-        final Image scaledOverlayImage = overlayIcon.getImage()
-                    .getScaledInstance((int)(width / 1.5), (int)(heigth / 1.5), Image.SCALE_SMOOTH);
+        final Image scaledOverlayImage = overlayIcon
+            .getImage()
+            .getScaledInstance((int) (width / 1.5), (int) (heigth / 1.5), Image.SCALE_SMOOTH);
 
         return new ImageIcon(scaledOverlayImage);
     }
@@ -190,7 +192,7 @@ public class Static2DTools {
      */
     public static BufferedImage toBufferedImage(final Image image) {
         if (image instanceof BufferedImage) {
-            return (BufferedImage)image;
+            return (BufferedImage) image;
         }
 
         // Determine if the image has transparent pixels
@@ -243,7 +245,7 @@ public class Static2DTools {
     public static boolean hasAlpha(final Image image) {
         // If buffered image, the color model is readily available
         if (image instanceof BufferedImage) {
-            final BufferedImage bimage = (BufferedImage)image;
+            final BufferedImage bimage = (BufferedImage) image;
 
             return bimage.getColorModel().hasAlpha();
         }
@@ -286,11 +288,13 @@ public class Static2DTools {
             throw new IllegalArgumentException("icon must not be null"); // NOI18N
         }
 
-        final BufferedImage bi = new BufferedImage(icon.getIconWidth(),
-                icon.getIconHeight(),
-                BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage bi = new BufferedImage(
+            icon.getIconWidth(),
+            icon.getIconHeight(),
+            BufferedImage.TYPE_INT_ARGB
+        );
 
-        final Graphics2D g2 = (Graphics2D)bi.getGraphics();
+        final Graphics2D g2 = (Graphics2D) bi.getGraphics();
 
         final double radianAngle;
         if ((Double.isNaN(angle)) || (Double.isInfinite(angle))) {
@@ -304,9 +308,10 @@ public class Static2DTools {
         }
 
         final AffineTransform rotateTransform = AffineTransform.getRotateInstance(
-                radianAngle,
-                (bi.getWidth() / 2d),
-                (bi.getHeight() / 2d));
+            radianAngle,
+            (bi.getWidth() / 2d),
+            (bi.getHeight() / 2d)
+        );
         g2.drawImage(icon.getImage(), rotateTransform, null);
         g2.dispose();
 
@@ -338,19 +343,23 @@ public class Static2DTools {
      *
      * @throws  IllegalArgumentException  if the given image is <code>null</code>
      */
-    public static BufferedImage rotate(final BufferedImage image,
-            final double angle,
-            final boolean radian,
-            final Color backgroundColor) {
+    public static BufferedImage rotate(
+        final BufferedImage image,
+        final double angle,
+        final boolean radian,
+        final Color backgroundColor
+    ) {
         if (image == null) {
             throw new IllegalArgumentException("image must not be null"); // NOI18N
         }
 
-        final BufferedImage bi = new BufferedImage(image.getHeight(),
-                image.getWidth(),
-                (image.getType() > 0) ? image.getType() : BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage bi = new BufferedImage(
+            image.getHeight(),
+            image.getWidth(),
+            (image.getType() > 0) ? image.getType() : BufferedImage.TYPE_INT_ARGB
+        );
 
-        final Graphics2D g2 = (Graphics2D)bi.getGraphics();
+        final Graphics2D g2 = (Graphics2D) bi.getGraphics();
 
         if (backgroundColor != null) {
             g2.setBackground(backgroundColor);
@@ -390,11 +399,11 @@ public class Static2DTools {
      * @return  DOCUMENT ME!
      */
     public static Icon borderIcon(final Icon icon, final int left, final int right, final int top, final int bottom) {
-        final BufferedImage bi = new BufferedImage(icon.getIconWidth() + left + right,
-                icon.getIconHeight()
-                        + top
-                        + bottom,
-                BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage bi = new BufferedImage(
+            icon.getIconWidth() + left + right,
+            icon.getIconHeight() + top + bottom,
+            BufferedImage.TYPE_INT_ARGB
+        );
         icon.paintIcon(null, bi.getGraphics(), left, top);
 
         return new ImageIcon(bi);
@@ -409,21 +418,21 @@ public class Static2DTools {
      *
      * @return  DOCUMENT ME!
      */
-    public static Image removeUnusedBorder(final Image i,
-            final int borderPixelsAfterwards,
-            final double scalingFactor) {
+    public static Image removeUnusedBorder(
+        final Image i,
+        final int borderPixelsAfterwards,
+        final double scalingFactor
+    ) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("removeUnusedBorder"); // NOI18N
         }
 
-        final int width = (int)(i.getWidth(null) * scalingFactor);
-        final int height = (int)(i.getHeight(null) * scalingFactor);
+        final int width = (int) (i.getWidth(null) * scalingFactor);
+        final int height = (int) (i.getHeight(null) * scalingFactor);
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        final Graphics2D g = (Graphics2D)bi.getGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING,
-            RenderingHints.VALUE_RENDER_QUALITY);
+        final Graphics2D g = (Graphics2D) bi.getGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.drawImage(i, 0, 0, width, height, null);
         g.drawLine(10, 0, 20, 0);
         g.dispose();
@@ -494,8 +503,8 @@ public class Static2DTools {
      * @return  DOCUMENT ME!
      */
     public static Image scaleImage(final Image i, final double scalingFactor) {
-        final int newWidth = (int)(i.getWidth(null) * scalingFactor);
-        final int newHeight = (int)(i.getHeight(null) * scalingFactor);
+        final int newWidth = (int) (i.getWidth(null) * scalingFactor);
+        final int newHeight = (int) (i.getHeight(null) * scalingFactor);
         final Image ii = i.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
 
         return ii;
@@ -514,9 +523,10 @@ public class Static2DTools {
         final GraphicsConfiguration c = d.getDefaultConfiguration();
 
         final BufferedImage compatibleImage = c.createCompatibleImage(
-                image.getWidth(null),
-                image.getHeight(null),
-                Transparency.BITMASK);
+            image.getWidth(null),
+            image.getHeight(null),
+            Transparency.BITMASK
+        );
 
         final Graphics g = compatibleImage.getGraphics();
         g.drawImage(image, 0, 0, null);
@@ -562,10 +572,12 @@ public class Static2DTools {
      * @return  DOCUMENT ME!
      */
     public static Color getOffsetAlphaColor(final Color c, final Color offset, final int alpha) {
-        return new Color(addRGB(c.getRed(), offset.getRed()),
-                addRGB(c.getGreen(), offset.getGreen()),
-                addRGB(c.getBlue(), offset.getBlue()),
-                alpha);
+        return new Color(
+            addRGB(c.getRed(), offset.getRed()),
+            addRGB(c.getGreen(), offset.getGreen()),
+            addRGB(c.getBlue(), offset.getBlue()),
+            alpha
+        );
     }
 
     /**
@@ -605,13 +617,16 @@ public class Static2DTools {
      *
      * @return  a scaled version of the original BufferedImage
      */
-    public static BufferedImage getFasterScaledInstance(final BufferedImage img,
-            final int targetWidth,
-            final int targetHeight,
-            final Object hint,
-            final boolean progressiveBilinear) {
-        final int type = (img.getTransparency() == Transparency.OPAQUE) ? BufferedImage.TYPE_INT_RGB
-                                                                        : BufferedImage.TYPE_INT_ARGB;
+    public static BufferedImage getFasterScaledInstance(
+        final BufferedImage img,
+        final int targetWidth,
+        final int targetHeight,
+        final Object hint,
+        final boolean progressiveBilinear
+    ) {
+        final int type = (img.getTransparency() == Transparency.OPAQUE)
+            ? BufferedImage.TYPE_INT_RGB
+            : BufferedImage.TYPE_INT_ARGB;
         BufferedImage ret = img;
         BufferedImage scratchImage = null;
         Graphics2D g2 = null;
@@ -620,14 +635,14 @@ public class Static2DTools {
         int prevW = ret.getWidth();
         int prevH = ret.getHeight();
         if (progressiveBilinear) {
-// Use multistep technique: start with original size,
-// then scale down in multiple passes with drawImage()
-// until the target size is reached
+            // Use multistep technique: start with original size,
+            // then scale down in multiple passes with drawImage()
+            // until the target size is reached
             w = img.getWidth();
             h = img.getHeight();
         } else {
-// Use one-step technique: scale directly from original
-// size to target size with a single drawImage() call
+            // Use one-step technique: scale directly from original
+            // size to target size with a single drawImage() call
             w = targetWidth;
             h = targetHeight;
         }
@@ -653,14 +668,13 @@ public class Static2DTools {
             }
 
             if (scratchImage == null) {
-// Use a single scratch buffer for all iterations
-// and then copy to the final, correctly sized image
-// before returning
+                // Use a single scratch buffer for all iterations
+                // and then copy to the final, correctly sized image
+                // before returning
                 scratchImage = new BufferedImage(w, h, type);
                 g2 = scratchImage.createGraphics();
             }
-            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                hint);
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, hint);
             g2.drawImage(ret, 0, 0, w, h, 0, 0, prevW, prevH, null);
             prevW = w;
             prevH = h;
@@ -671,13 +685,11 @@ public class Static2DTools {
             g2.dispose();
         }
 
-// If we used a scratch buffer that is larger than our
-// target size, create an image of the right size and copy
-// the results into it
-        if ((targetWidth != ret.getWidth())
-                    || (targetHeight != ret.getHeight())) {
-            scratchImage = new BufferedImage(targetWidth,
-                    targetHeight, type);
+        // If we used a scratch buffer that is larger than our
+        // target size, create an image of the right size and copy
+        // the results into it
+        if ((targetWidth != ret.getWidth()) || (targetHeight != ret.getHeight())) {
+            scratchImage = new BufferedImage(targetWidth, targetHeight, type);
             g2 = scratchImage.createGraphics();
             g2.drawImage(ret, 0, 0, null);
             g2.dispose();

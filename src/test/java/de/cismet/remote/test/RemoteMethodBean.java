@@ -65,5 +65,4 @@ public class RemoteMethodBean {
     public void setBoolValue(boolean boolValue) {
         this.boolValue = boolValue;
     }
-
 }

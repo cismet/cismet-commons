@@ -1,22 +1,19 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities.deegree;
 
-import org.deegree.model.crs.GeoTransformer;
-import org.deegree.model.crs.UnknownCRSException;
-
-import java.security.InvalidParameterException;
-
 import de.cismet.commons.exceptions.ConvertException;
-
 import de.cismet.commons.wms.capabilities.CoordinateSystem;
 import de.cismet.commons.wms.capabilities.Envelope;
 import de.cismet.commons.wms.capabilities.Position;
+import java.security.InvalidParameterException;
+import org.deegree.model.crs.GeoTransformer;
+import org.deegree.model.crs.UnknownCRSException;
 
 /**
  * DOCUMENT ME!

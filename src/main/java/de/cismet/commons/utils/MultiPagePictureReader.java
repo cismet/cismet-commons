@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.utils;
 
 import com.sun.media.jai.codec.FileSeekableStream;
@@ -12,23 +12,17 @@ import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageDecoder;
 import com.sun.media.jai.codec.MemoryCacheSeekableStream;
 import com.sun.media.jai.codec.SeekableStream;
-
+import de.cismet.commons.security.handler.ExtendedAccessHandler;
+import de.cismet.commons.security.handler.SimpleHttpAccessHandler;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.image.SampleModel;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.lang.ref.SoftReference;
-
 import java.net.URL;
-
 import javax.media.jai.RenderedImageAdapter;
-
-import de.cismet.commons.security.handler.ExtendedAccessHandler;
-import de.cismet.commons.security.handler.SimpleHttpAccessHandler;
 
 /**
  * FIXME: This class seems to use an outdated Version of JAI.
@@ -93,7 +87,7 @@ public class MultiPagePictureReader {
      * @throws  IOException  DOCUMENT ME!
      */
     public MultiPagePictureReader(final File imageFile, final ExtendedAccessHandler extendedAccessHandler)
-            throws IOException {
+        throws IOException {
         this(imageFile, true, false, extendedAccessHandler);
     }
 
@@ -106,7 +100,7 @@ public class MultiPagePictureReader {
      * @throws  IOException  DOCUMENT ME!
      */
     public MultiPagePictureReader(final URL imageURL, final ExtendedAccessHandler extendedAccessHandler)
-            throws IOException {
+        throws IOException {
         this(imageURL, true, false, extendedAccessHandler);
     }
 
@@ -120,7 +114,7 @@ public class MultiPagePictureReader {
      * @throws  IOException  DOCUMENT ME!
      */
     public MultiPagePictureReader(final File imageFile, final boolean caching, final boolean checkHeapSize)
-            throws IOException {
+        throws IOException {
         this(imageFile, caching, checkHeapSize, new SimpleHttpAccessHandler());
     }
 
@@ -134,7 +128,7 @@ public class MultiPagePictureReader {
      * @throws  IOException  DOCUMENT ME!
      */
     public MultiPagePictureReader(final URL imageURL, final boolean caching, final boolean checkHeapSize)
-            throws IOException {
+        throws IOException {
         this(imageURL, caching, checkHeapSize, new SimpleHttpAccessHandler());
     }
 
@@ -148,18 +142,21 @@ public class MultiPagePictureReader {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    public MultiPagePictureReader(final File imageFile,
-            final boolean caching,
-            final boolean checkHeapSize,
-            final ExtendedAccessHandler extendedAccessHandler) throws IOException {
+    public MultiPagePictureReader(
+        final File imageFile,
+        final boolean caching,
+        final boolean checkHeapSize,
+        final ExtendedAccessHandler extendedAccessHandler
+    ) throws IOException {
         if ((imageFile == null) || !imageFile.isFile() || !imageFile.canRead()) {
             throw new IOException("Could not open file: " + imageFile); // NOI18N
         }
 
         codec = getCodecString(imageFile.getName());
         if (codec == null) {
-            throw new IOException("Unsupported filetype: " + imageFile.getAbsolutePath()
-                        + " is not a tiff or jpeg file!"); // NOI18N
+            throw new IOException(
+                "Unsupported filetype: " + imageFile.getAbsolutePath() + " is not a tiff or jpeg file!"
+            ); // NOI18N
         }
 
         pathOfImage = imageFile.getAbsolutePath();
@@ -192,10 +189,12 @@ public class MultiPagePictureReader {
      * @throws  IOException               DOCUMENT ME!
      * @throws  IllegalArgumentException  DOCUMENT ME!
      */
-    public MultiPagePictureReader(final URL imageURL,
-            final boolean caching,
-            final boolean checkHeapSize,
-            final ExtendedAccessHandler extendedAccessHandler) throws IOException {
+    public MultiPagePictureReader(
+        final URL imageURL,
+        final boolean caching,
+        final boolean checkHeapSize,
+        final ExtendedAccessHandler extendedAccessHandler
+    ) throws IOException {
         if (imageURL == null) {
             throw new IllegalArgumentException("Cannot open a null URL.");
         }
@@ -203,8 +202,9 @@ public class MultiPagePictureReader {
         codec = getCodecString(imageURL.toExternalForm());
 
         if (codec == null) {
-            throw new IOException("Unsupported filetype: '" + imageURL.toExternalForm()
-                        + "' doesn't point to a tiff or jpeg file!");
+            throw new IOException(
+                "Unsupported filetype: '" + imageURL.toExternalForm() + "' doesn't point to a tiff or jpeg file!"
+            );
         }
 
         pathOfImage = imageURL.toExternalForm();
@@ -258,9 +258,9 @@ public class MultiPagePictureReader {
     private String getCodecString(final String imagePath) {
         final String filename = imagePath.toLowerCase();
         final String extension = filename.substring(filename.lastIndexOf(".") + 1); // NOI18N
-        if (extension.matches("(tiff|tif)")) {                                      // NOI18N
+        if (extension.matches("(tiff|tif)")) { // NOI18N
             return CODEC_TIFF;
-        } else if (extension.matches("(jpg|jpeg|jpe)")) {                           // NOI18N
+        } else if (extension.matches("(jpg|jpeg|jpe)")) { // NOI18N
             return CODEC_JPEG;
         }
         return null;
@@ -354,8 +354,9 @@ public class MultiPagePictureReader {
         }
 
         if (checkHeapSize && (size > freeMemory)) {
-            LOG.warn("Couldn't read page '" + page + "' from image '" + pathOfImage
-                        + "', since there's no memory left.");
+            LOG.warn(
+                "Couldn't read page '" + page + "' from image '" + pathOfImage + "', since there's no memory left."
+            );
         } else {
             result = imageAdapter.getAsBufferedImage();
         }

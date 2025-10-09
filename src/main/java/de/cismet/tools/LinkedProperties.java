@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -286,7 +286,7 @@ public class LinkedProperties extends Properties {
     @Override
     public String getProperty(final String key) {
         final Object oval = get(key);
-        final String sval = (oval instanceof String) ? (String)oval : null;
+        final String sval = (oval instanceof String) ? (String) oval : null;
         return ((sval == null) && (defaults != null)) ? defaults.getProperty(key) : sval;
     }
 }

@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package Sirius.util.collections;
 
 import java.util.Hashtable;
@@ -74,15 +74,16 @@ public class IntMapsString extends java.util.Hashtable {
             final java.lang.Object candidate = super.get(key);
 
             if (candidate instanceof java.lang.String) {
-                return ((String)candidate);
+                return ((String) candidate);
             }
 
             throw new java.lang.NullPointerException("Entry is not a String :" + id); // NOI18N
-        }                                                                             // endif
+        } // endif
 
         throw new java.lang.NullPointerException("No entry :" + id); // NOI18N // to be changed in further versions
-                                                                     // when exception concept is accomplished
+        // when exception concept is accomplished
     }
+
     /**
      * Tests whether the specified object is a key in <code>IntMapsString</code> or not.
      *

@@ -1,14 +1,13 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities;
 
 import java.net.URL;
-
 import java.util.List;
 
 /**
@@ -19,7 +18,6 @@ import java.util.List;
  * @version  $Revision$, $Date$
  */
 public interface Operation {
-
     //~ Methods ----------------------------------------------------------------
 
     /**

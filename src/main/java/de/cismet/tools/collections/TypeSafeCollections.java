@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -169,7 +169,7 @@ public final class TypeSafeCollections {
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] newArray(final int size) {
-        return (T[])new Object[size];
+        return (T[]) new Object[size];
     }
 
     /**
@@ -249,6 +249,7 @@ public final class TypeSafeCollections {
     public static <T> ConcurrentLinkedQueue<T> newConcurrentLinkedQueue() {
         return new ConcurrentLinkedQueue<T>();
     }
+
     // --------
 
     /**
@@ -342,9 +343,11 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(final int capacity,
-            final float loadfactor,
-            final int concurrencyLevel) {
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(
+        final int capacity,
+        final float loadfactor,
+        final int concurrencyLevel
+    ) {
         return new ConcurrentHashMap<K, V>(capacity, loadfactor, concurrencyLevel);
     }
 
@@ -707,9 +710,11 @@ public final class TypeSafeCollections {
      *
      * @return  DOCUMENT ME!
      */
-    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final int capacity,
-            final float loadfactor,
-            final boolean accessOrder) {
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(
+        final int capacity,
+        final float loadfactor,
+        final boolean accessOrder
+    ) {
         return new LinkedHashMap<K, V>(capacity, loadfactor, accessOrder);
     }
 

@@ -1,14 +1,13 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
 import java.io.UnsupportedEncodingException;
-
 import java.net.URLEncoder;
 
 /**
@@ -38,29 +37,29 @@ public class StaticHtmlTools {
         final char ten = 10;
         final char thirteen = 13;
         hrefEndChars = " " + zero + nine + ten + thirteen; // NOI18N
-        hrefStartPos = newString.indexOf("http://");       // NOI18N
+        hrefStartPos = newString.indexOf("http://"); // NOI18N
 
         while (hrefStartPos > 0) {
             final int startPos = newString.indexOf("<", hrefStartPos); // NOI18N
-            final int endPos = newString.indexOf(">", hrefStartPos);   // NOI18N
-//
+            final int endPos = newString.indexOf(">", hrefStartPos); // NOI18N
+            //
             if ((endPos == -1) || ((endPos > startPos) && (startPos > 0))) {
-//                      '** if we're not inside a <tag>, then convert the link
+                //                      '** if we're not inside a <tag>, then convert the link
                 hrefEndPos = hrefStartPos + 7;
-//
-//                      '** find the end of the http:// reference
+                //
+                //                      '** find the end of the http:// reference
                 while (hrefEndPos <= newString.length()) {
-//
+                    //
                     if (hrefEndChars.indexOf(newString.charAt(hrefEndPos)) >= 0) {
                         break;
                     }
                     hrefEndPos++;
                 }
-//
-//                      '** make sure that the character at the end of the http:// reference
-//                      '** isn't really some punctuation that's probably not part of the URL
-//                      '** (these characters aren't strictly illegal, but we're making some
-//                      '** educated guesses based on common URL and sentence structure)
+                //
+                //                      '** make sure that the character at the end of the http:// reference
+                //                      '** isn't really some punctuation that's probably not part of the URL
+                //                      '** (these characters aren't strictly illegal, but we're making some
+                //                      '** educated guesses based on common URL and sentence structure)
 
                 while (hrefEndPos > hrefStartPos) {
                     if (".,?!&:-()[]<>{}'\"".indexOf(newString.charAt(hrefEndPos - 1)) == -1) { // NOI18N
@@ -70,17 +69,23 @@ public class StaticHtmlTools {
                 }
 
                 hrefString = newString.substring(hrefStartPos, hrefEndPos);
-                newString = newString.substring(0, hrefStartPos) + "<a href=\"" + hrefString + "\">" + hrefString
-                            + "</a>" + newString.substring(hrefStartPos + hrefString.length()); // NOI18N
+                newString =
+                    newString.substring(0, hrefStartPos) +
+                    "<a href=\"" +
+                    hrefString +
+                    "\">" +
+                    hrefString +
+                    "</a>" +
+                    newString.substring(hrefStartPos + hrefString.length()); // NOI18N
 
                 hrefEndPos += ("<a href='" + hrefString + "'></a>").length(); // NOI18N
             } else if ((endPos < startPos) && (endPos > 0)) {
-//              Elseif (endPos < startPos) And (endPos > 0) Then
-//                      '** if we're inside a tag, assume it's an <a href> tag, and skip
-//                      '** to the closing </a> tag (so we don't accidentally double-link
-//                      '** something like <a href="http://blah">http://blah</a>)
+                //              Elseif (endPos < startPos) And (endPos > 0) Then
+                //                      '** if we're inside a tag, assume it's an <a href> tag, and skip
+                //                      '** to the closing </a> tag (so we don't accidentally double-link
+                //                      '** something like <a href="http://blah">http://blah</a>)
                 hrefEndPos = newString.indexOf("</a>", endPos) + 5; // NOI18N
-//                      hrefEndPos = Instr(endPos, newString, "</a>", 5)
+                //                      hrefEndPos = Instr(endPos, newString, "</a>", 5)
                 if (hrefEndPos == 4) {
                     hrefEndPos = newString.length();
                 }
@@ -167,15 +172,15 @@ public class StaticHtmlTools {
                 lastWasBlankChar = false;
                 //
                 // HTML Special Chars
-                if (c == '"') {          // NOI18N
+                if (c == '"') { // NOI18N
                     sb.append("&quot;"); // NOI18N
-                } else if (c == '&') {   // NOI18N
-                    sb.append("&amp;");  // NOI18N
-                } else if (c == '<') {   // NOI18N
-                    sb.append("&lt;");   // NOI18N
-                } else if (c == '>') {   // NOI18N
-                    sb.append("&gt;");   // NOI18N
-                } else if (c == '\n') {  // NOI18N
+                } else if (c == '&') { // NOI18N
+                    sb.append("&amp;"); // NOI18N
+                } else if (c == '<') { // NOI18N
+                    sb.append("&lt;"); // NOI18N
+                } else if (c == '>') { // NOI18N
+                    sb.append("&gt;"); // NOI18N
+                } else if (c == '\n') { // NOI18N
                     // Handle Newline
                     // sb.append("&lt;/br&gt;");
                     sb.append("\n"); // NOI18N
@@ -188,7 +193,7 @@ public class StaticHtmlTools {
                         // Not 7 Bit use the unicode system
                         sb.append("&#"); // NOI18N
                         sb.append(new Integer(ci).toString());
-                        sb.append(';');  // NOI18N
+                        sb.append(';'); // NOI18N
                     }
                 }
             }

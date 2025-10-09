@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities;
 
 import de.cismet.commons.exceptions.ConvertException;
@@ -16,7 +16,6 @@ import de.cismet.commons.exceptions.ConvertException;
  * @version  $Revision$, $Date$
  */
 public interface Unit {
-
     //~ Methods ----------------------------------------------------------------
 
     /**
@@ -51,6 +50,7 @@ public interface Unit {
      * @return  DOCUMENT ME!
      */
     boolean isBaseType();
+
     @Override
     String toString();
 }

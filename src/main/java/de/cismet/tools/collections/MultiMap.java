@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools.collections;
 
 import java.util.Iterator;
@@ -27,6 +27,7 @@ public class MultiMap extends LinkedHashMap {
     public MultiMap() {
         this(10);
     }
+
     /**
      * //////////////////////////////////////////////
      *
@@ -44,15 +45,11 @@ public class MultiMap extends LinkedHashMap {
     public Object put(final Object key, final Object value) {
         SyncLinkedList list = null;
 
-        if (containsKey(key))
-        // anh\u00E4ngen an bestehende liste
-        {
-            list = (SyncLinkedList)get(key);
+        if (containsKey(key)) { // anh\u00E4ngen an bestehende liste
+            list = (SyncLinkedList) get(key);
 
             list.add(value);
-        } else
-        // keine existierende liste
-        {
+        } else { // keine existierende liste
             list = new SyncLinkedList();
             list.add(value);
             super.put(key, list);
@@ -69,14 +66,14 @@ public class MultiMap extends LinkedHashMap {
         final Iterator i = t.entrySet().iterator();
 
         while (i.hasNext()) {
-            final Map.Entry e = (Map.Entry)i.next();
+            final Map.Entry e = (Map.Entry) i.next();
 
             final Object val = e.getValue();
             final Object key = e.getKey();
 
             // wenn mehrere Eintr\u00E4ge zu einem key
             if (val instanceof SyncLinkedList) {
-                final Iterator iter = ((SyncLinkedList)val).iterator();
+                final Iterator iter = ((SyncLinkedList) val).iterator();
 
                 while (iter.hasNext()) {
                     put(key, iter.next());
@@ -86,6 +83,7 @@ public class MultiMap extends LinkedHashMap {
             }
         }
     }
+
     /**
      * HELL.
      *
@@ -95,8 +93,9 @@ public class MultiMap extends LinkedHashMap {
      * @return  true if the specified key with the specified mapping does exist
      */
     public boolean contains(final Object key, final Object value) {
-        return containsKey(key) && ((SyncLinkedList)get(key)).contains(value);
+        return containsKey(key) && ((SyncLinkedList) get(key)).contains(value);
     }
+
     /**
      * HELL.
      *
@@ -106,13 +105,13 @@ public class MultiMap extends LinkedHashMap {
      */
     public Iterator iterator(final String key) {
         if (containsKey(key)) {
-            return ((SyncLinkedList)get(key)).iterator();
+            return ((SyncLinkedList) get(key)).iterator();
         } else {
             return null;
         }
     }
 
-////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////
 
     /**
      * DOCUMENT ME!
@@ -128,7 +127,7 @@ public class MultiMap extends LinkedHashMap {
         SyncLinkedList list = null;
 
         if (containsKey(key)) {
-            list = (SyncLinkedList)get(key);
+            list = (SyncLinkedList) get(key);
 
             final boolean listElementRemoved = list.remove(value);
 
@@ -149,5 +148,4 @@ public class MultiMap extends LinkedHashMap {
     }
     //J+
 } // end class
-
 //////////////////////////////////////////////////////////////////////////

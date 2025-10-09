@@ -1,23 +1,21 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package de.cismet.commons.wms.capabilities.deegree;
 
-import org.deegree.datatypes.values.TypedLiteral;
-import org.deegree.owscommon_new.DomainType;
-
+import de.cismet.commons.wms.capabilities.Parameter;
 import java.util.ArrayList;
 import java.util.List;
-
-import de.cismet.commons.wms.capabilities.Parameter;
+import org.deegree.datatypes.values.TypedLiteral;
+import org.deegree.owscommon_new.DomainType;
 
 /**
  * DOCUMENT ME!
@@ -47,7 +45,7 @@ public class DeegreeParameter implements Parameter {
     @Override
     public String getName() {
         if (parameter instanceof DomainType) {
-            return ((DomainType)parameter).getName().getLocalName();
+            return ((DomainType) parameter).getName().getLocalName();
         }
 
         return null;
@@ -58,7 +56,7 @@ public class DeegreeParameter implements Parameter {
         final List<String> result = new ArrayList<String>();
 
         if (parameter instanceof DomainType) {
-            final DomainType dt = (DomainType)parameter;
+            final DomainType dt = (DomainType) parameter;
 
             for (final TypedLiteral tl : dt.getValues()) {
                 result.add(tl.getValue());
@@ -71,7 +69,7 @@ public class DeegreeParameter implements Parameter {
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof DeegreeParameter) {
-            final DeegreeParameter other = (DeegreeParameter)obj;
+            final DeegreeParameter other = (DeegreeParameter) obj;
 
             return getName().equals(other.getName());
         }

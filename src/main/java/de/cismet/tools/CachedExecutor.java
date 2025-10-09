@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,13 +12,12 @@
  */
 package de.cismet.tools;
 
-import org.apache.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 /**
  * DOCUMENT ME!
@@ -33,8 +32,9 @@ public abstract class CachedExecutor {
     private static final transient Logger LOG = Logger.getLogger(CachedExecutor.class);
     private static final List<String> RUNNING_REQUESTS = Collections.synchronizedList(new ArrayList<>());
     private static final Map<String, List<CachedExecutor>> WAITING_REQUESTS = Collections.synchronizedMap(
-            new HashMap<>());
-//    private static final Map<String, Object> results = Collections.synchronizedMap(new HashMap<>());
+        new HashMap<>()
+    );
+    //    private static final Map<String, Object> results = Collections.synchronizedMap(new HashMap<>());
 
     //~ Instance fields --------------------------------------------------------
 
@@ -127,7 +127,7 @@ public abstract class CachedExecutor {
             }
 
             if (exceptionThrown) {
-                throw (Exception)res;
+                throw (Exception) res;
             } else {
                 return res;
             }

@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package Sirius.util.collections;
 
 import java.util.Hashtable;
@@ -69,7 +69,7 @@ public class StringMapsString extends java.util.Hashtable {
         if (!containsKey(descriptor)) {
             throw new Exception("Could not insert key :" + descriptor); // NOI18N
         }
-    }                                                                   // end add
+    } // end add
 
     /**
      * Getter for the Value as a <code>String</code>.
@@ -86,14 +86,15 @@ public class StringMapsString extends java.util.Hashtable {
             final java.lang.Object candidate = super.get(descriptor);
 
             if (candidate instanceof String) {
-                return ((String)candidate);
+                return ((String) candidate);
             }
 
             throw new java.lang.NullPointerException("Entry is not a String :" + descriptor); // NOI18N
-        }                                                                                     // endif
+        } // endif
 
         throw new java.lang.NullPointerException("No entry :" + descriptor); // NOI18N
     }
+
     /**
      * Tests whether the specified object is a key in <code>StringMapsString</code> or not.
      *

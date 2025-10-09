@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -60,10 +60,11 @@ public class HtmlConverter implements DatasourcesPojoConverter {
         if (recursion > 0) {
             sb.append(createIdentationPrefix(recursion + 1)).append("<li>").append(s.getName());
             if (s.getAccessError() != null) {
-                sb.append(createIdentationPrefix(recursion + 1))
-                        .append("<div class='accessError'>")
-                        .append(s.getAccessError())
-                        .append("</div>");
+                sb
+                    .append(createIdentationPrefix(recursion + 1))
+                    .append("<div class='accessError'>")
+                    .append(s.getAccessError())
+                    .append("</div>");
             }
             sb.append("</li>").append("\n");
         }
@@ -102,11 +103,12 @@ public class HtmlConverter implements DatasourcesPojoConverter {
             if ((s.getAbstractText() != null) && !s.getAbstractText().equals("")) {
                 final String abstractTmp = s.getAbstractText().trim();
 
-                sb.append("\n")
-                        .append(createIdentationPrefix(recursion + 1))
-                        .append(OPEN_ABSTRACT_DIV)
-                        .append(abstractTmp)
-                        .append(CLOSE_DIV);
+                sb
+                    .append("\n")
+                    .append(createIdentationPrefix(recursion + 1))
+                    .append(OPEN_ABSTRACT_DIV)
+                    .append(abstractTmp)
+                    .append(CLOSE_DIV);
             }
             sb.append("</li>").append("\n");
         }

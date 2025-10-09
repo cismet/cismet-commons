@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
 import java.io.BufferedInputStream;
@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -48,8 +47,7 @@ public final class FileUtils {
     /**
      * Creates a new instance of FileUtils.
      */
-    private FileUtils() {
-    }
+    private FileUtils() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -87,34 +85,37 @@ public final class FileUtils {
      */
     private static String[] getMetaEntries(final int mode) {
         switch (mode) {
-            case MAC_META: {
-                return MAC_META_ENTRIES;
-            }
-            case UNIX_META: {
-                return UNIX_META_ENTRIES;
-            }
-            case WINDOWS_META: {
-                return WINDOWS_META_ENTRIES;
-            }
+            case MAC_META:
+                {
+                    return MAC_META_ENTRIES;
+                }
+            case UNIX_META:
+                {
+                    return UNIX_META_ENTRIES;
+                }
+            case WINDOWS_META:
+                {
+                    return WINDOWS_META_ENTRIES;
+                }
             case ALL_META:
             // ALL_META is default case
-            default: {
-                final String[] allMetaEntries =
-                    new String[MAC_META_ENTRIES.length
-                                + UNIX_META_ENTRIES.length
-                                + WINDOWS_META_ENTRIES.length];
-                int i = -1;
-                for (final String s : MAC_META_ENTRIES) {
-                    allMetaEntries[++i] = s;
+            default:
+                {
+                    final String[] allMetaEntries = new String[MAC_META_ENTRIES.length +
+                    UNIX_META_ENTRIES.length +
+                    WINDOWS_META_ENTRIES.length];
+                    int i = -1;
+                    for (final String s : MAC_META_ENTRIES) {
+                        allMetaEntries[++i] = s;
+                    }
+                    for (final String s : UNIX_META_ENTRIES) {
+                        allMetaEntries[++i] = s;
+                    }
+                    for (final String s : WINDOWS_META_ENTRIES) {
+                        allMetaEntries[++i] = s;
+                    }
+                    return allMetaEntries;
                 }
-                for (final String s : UNIX_META_ENTRIES) {
-                    allMetaEntries[++i] = s;
-                }
-                for (final String s : WINDOWS_META_ENTRIES) {
-                    allMetaEntries[++i] = s;
-                }
-                return allMetaEntries;
-            }
         }
     }
 
@@ -142,11 +143,9 @@ public final class FileUtils {
      */
     private static int getMode() {
         final String os = System.getProperty("os.name"); // NOI18N
-        if (os.startsWith("Mac"))                        // NOI18N
-        {
+        if (os.startsWith("Mac")) { // NOI18N
             return MAC_META;
-        } else if (os.startsWith("Win"))                 // NOI18N
-        {
+        } else if (os.startsWith("Win")) { // NOI18N
             return WINDOWS_META;
         } else {
             return UNIX_META;
@@ -181,7 +180,7 @@ public final class FileUtils {
         final String nameExt = file.getName();
         final int index = nameExt.lastIndexOf('.'); // NOI18N
         if (index == -1) {
-            return "";                              // NOI18N
+            return ""; // NOI18N
         } else {
             return nameExt.substring(index + 1, nameExt.length());
         }
@@ -227,6 +226,7 @@ public final class FileUtils {
         }
         return true;
     }
+
     /**
      * Copies the specified <code>File</code> Note: exception thrown and not handled to avoid logger call if it is
      * necessary to use logger in this class return boolean and handle exceptions.
@@ -277,17 +277,19 @@ public final class FileUtils {
      * @throws  IOException            <code>IOException</code>
      */
     public static void copyContent(
-            final File srcDir,
-            final File destDir,
-            final FileFilter filter,
-            final boolean recursive) throws FileNotFoundException, IOException {
+        final File srcDir,
+        final File destDir,
+        final FileFilter filter,
+        final boolean recursive
+    ) throws FileNotFoundException, IOException {
         if (!srcDir.isDirectory()) {
             throw new FileNotFoundException(
-                "you can only copy the content of a directory, for copying files use copy(File, File) instead"); // NOI18N
+                "you can only copy the content of a directory, for copying files use copy(File, File) instead"
+            ); // NOI18N
         }
         if (destDir.exists()) {
             if (!destDir.isDirectory()) {
-                throw new FileNotFoundException("you can only copy to a directory");                             // NOI18N
+                throw new FileNotFoundException("you can only copy to a directory"); // NOI18N
             }
         } else {
             destDir.mkdirs();
@@ -328,19 +330,15 @@ public final class FileUtils {
             if (f.isFile()) {
                 if (!f.delete()) {
                     throw new IOException(
-                        "could not delete file: "
-                                + f.getAbsolutePath()
-                                + File.pathSeparator
-                                + f.getName());                     // NOI18N
+                        "could not delete file: " + f.getAbsolutePath() + File.pathSeparator + f.getName()
+                    ); // NOI18N
                 }
             } else if (f.isDirectory() && recursive) {
                 deleteContent(f, recursive);
                 if (!f.delete()) {
                     throw new IOException(
-                        "could not delete folder: "
-                                + f.getAbsolutePath()
-                                + File.pathSeparator
-                                + f.getName());                     // NOI18N
+                        "could not delete folder: " + f.getAbsolutePath() + File.pathSeparator + f.getName()
+                    ); // NOI18N
                 }
             }
         }
@@ -365,10 +363,8 @@ public final class FileUtils {
         deleteContent(srcDir, true);
         if (!srcDir.delete()) {
             throw new IOException(
-                "could not delete file: "
-                        + srcDir.getAbsolutePath()
-                        + File.pathSeparator
-                        + srcDir.getName());                        // NOI18N
+                "could not delete file: " + srcDir.getAbsolutePath() + File.pathSeparator + srcDir.getName()
+            ); // NOI18N
         }
     }
 
@@ -392,19 +388,19 @@ public final class FileUtils {
      */
     public static void extractJar(final File jar, final File dest, final FileFilter filter) throws IOException {
         if (!dest.exists()) {
-            throw new IOException("dest dir does not exist: " + dest);        // NOI18N
+            throw new IOException("dest dir does not exist: " + dest); // NOI18N
         }
         if (!jar.exists()) {
-            throw new IOException("jar file does not exist: " + jar);         // NOI18N
+            throw new IOException("jar file does not exist: " + jar); // NOI18N
         }
         if (!dest.isDirectory()) {
-            throw new IOException("dest dir is not a directory: " + dest);    // NOI18N
+            throw new IOException("dest dir is not a directory: " + dest); // NOI18N
         }
         if (!dest.canWrite()) {
             throw new IOException("cannot write to dest directory: " + dest); // NOI18N
         }
         if (!jar.canRead()) {
-            throw new IOException("cannot read jar file: " + jar);            // NOI18N
+            throw new IOException("cannot read jar file: " + jar); // NOI18N
         }
         final JarFile jarFile = new JarFile(jar);
         final Enumeration<JarEntry> e = jarFile.entries();

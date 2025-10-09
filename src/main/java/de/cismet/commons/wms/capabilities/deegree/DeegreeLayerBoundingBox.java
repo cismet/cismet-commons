@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  *  Copyright (C) 2010 therter
  *
@@ -45,7 +45,8 @@ public class DeegreeLayerBoundingBox extends DeegreeEnvelope implements LayerBou
      * @param  layerBoundingBox  DOCUMENT ME!
      */
     public DeegreeLayerBoundingBox(
-            final org.deegree.ogcwebservices.wms.capabilities.LayerBoundingBox layerBoundingBox) {
+        final org.deegree.ogcwebservices.wms.capabilities.LayerBoundingBox layerBoundingBox
+    ) {
         super(layerBoundingBox);
         this.layerBoundingBox = layerBoundingBox;
     }

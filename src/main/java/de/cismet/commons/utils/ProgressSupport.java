@@ -1,14 +1,13 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.utils;
 
 import java.awt.EventQueue;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -69,13 +68,14 @@ public final class ProgressSupport {
 
         while (it.hasNext()) {
             final ProgressListener next = it.next();
-            EventQueue.invokeLater(new Runnable() {
-
+            EventQueue.invokeLater(
+                new Runnable() {
                     @Override
                     public void run() {
                         next.progress(event);
                     }
-                });
+                }
+            );
         }
     }
 }

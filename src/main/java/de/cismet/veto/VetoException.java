@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -24,8 +24,7 @@ public class VetoException extends Exception {
     /**
      * Creates a new VetoException object.
      */
-    public VetoException() {
-    }
+    public VetoException() {}
 
     /**
      * Creates a new VetoException object.

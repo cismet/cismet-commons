@@ -1,18 +1,14 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.security;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
 import java.awt.Component;
 import java.awt.image.BufferedImage;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,17 +18,16 @@ import java.io.UnsupportedEncodingException;
 
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-
 import java.util.Iterator;
-
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.event.IIOReadProgressListener;
 import javax.imageio.stream.ImageInputStream;
-
 import javax.swing.ProgressMonitor;
 import javax.swing.ProgressMonitorInputStream;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 /**
  * This class contains some static method, which are useful in conjunction with the WebDavClient.
@@ -79,15 +74,16 @@ public class WebDavHelper {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    public static int uploadFileToWebDAV(final String fileName,
-            final File toUpload,
-            final String webDavDirectory,
-            final WebDavClient webDavClient,
-            final Component parent) throws IOException {
-        final BufferedInputStream bfis = new BufferedInputStream(new ProgressMonitorInputStream(
-                    parent,
-                    "Bild wird übertragen...",
-                    new FileInputStream(toUpload)));
+    public static int uploadFileToWebDAV(
+        final String fileName,
+        final File toUpload,
+        final String webDavDirectory,
+        final WebDavClient webDavClient,
+        final Component parent
+    ) throws IOException {
+        final BufferedInputStream bfis = new BufferedInputStream(
+            new ProgressMonitorInputStream(parent, "Bild wird übertragen...", new FileInputStream(toUpload))
+        );
         try {
             return webDavClient.put(webDavDirectory + encodeURL(fileName), bfis);
         } finally {
@@ -108,15 +104,16 @@ public class WebDavHelper {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    public static int uploadFileToWebDAV(final String fileName,
-            final InputStream toUpload,
-            final String webDavDirectory,
-            final WebDavClient webDavClient,
-            final Component parent) throws IOException {
-        final BufferedInputStream bfis = new BufferedInputStream(new ProgressMonitorInputStream(
-                    parent,
-                    "Daten werden übertragen...",
-                    toUpload));
+    public static int uploadFileToWebDAV(
+        final String fileName,
+        final InputStream toUpload,
+        final String webDavDirectory,
+        final WebDavClient webDavClient,
+        final Component parent
+    ) throws IOException {
+        final BufferedInputStream bfis = new BufferedInputStream(
+            new ProgressMonitorInputStream(parent, "Daten werden übertragen...", toUpload)
+        );
         try {
             return webDavClient.put(webDavDirectory + encodeURL(fileName), bfis);
         } finally {
@@ -157,8 +154,7 @@ public class WebDavHelper {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    public static int createFolder(final String webDavDirectory,
-            final WebDavClient webDavClient) throws IOException {
+    public static int createFolder(final String webDavDirectory, final WebDavClient webDavClient) throws IOException {
         int status = webDavClient.getStatusCode(webDavDirectory);
 
         if (status == 404) {
@@ -196,8 +192,7 @@ public class WebDavHelper {
         try {
             final int statusCode = webDavClient.getStatusCode(url);
             return 200 == statusCode;
-        } catch (IOException ex) {
-        }
+        } catch (IOException ex) {}
         return false;
     }
 
@@ -210,9 +205,11 @@ public class WebDavHelper {
      *
      * @return  DOCUMENT ME!
      */
-    public static boolean deleteFileFromWebDAV(final String fileName,
-            final WebDavClient webDavClient,
-            final String webDavDirectory) {
+    public static boolean deleteFileFromWebDAV(
+        final String fileName,
+        final WebDavClient webDavClient,
+        final String webDavDirectory
+    ) {
         if ((fileName != null) && (fileName.length() > 0)) {
             try {
                 webDavClient.delete(webDavDirectory + encodeURL(fileName));
@@ -300,8 +297,7 @@ public class WebDavHelper {
             final Component parent,
             final IIOReadProgressListener progressListener) throws IOException, URISyntaxException {
         final String encodedFileName = WebDavHelper.encodeURL(fileName);
-        final InputStream iStream = webDavClient.getInputStream(webDavDirectory
-                        + encodedFileName);
+        final InputStream iStream = webDavClient.getInputStream(webDavDirectory + encodedFileName);
         if (LOG.isDebugEnabled()) {
             LOG.debug("original: " + fileName + "\nweb dav path: " + webDavDirectory + encodedFileName);
         }
@@ -313,15 +309,13 @@ public class WebDavHelper {
             if (parent != null) {
                 final ProgressMonitor monitor = new ProgressMonitor(parent, "Bild wird übertragen...", "", 0, 100);
 
-                reader.addIIOReadProgressListener(new IIOReadProgressListener() {
+                reader.addIIOReadProgressListener(
+                    new IIOReadProgressListener() {
+                        @Override
+                        public void sequenceStarted(final ImageReader source, final int minIndex) {}
 
                         @Override
-                        public void sequenceStarted(final ImageReader source, final int minIndex) {
-                        }
-
-                        @Override
-                        public void sequenceComplete(final ImageReader source) {
-                        }
+                        public void sequenceComplete(final ImageReader source) {}
 
                         @Override
                         public void imageStarted(final ImageReader source, final int imageIndex) {
@@ -347,24 +341,24 @@ public class WebDavHelper {
                         }
 
                         @Override
-                        public void thumbnailStarted(final ImageReader source,
-                                final int imageIndex,
-                                final int thumbnailIndex) {
-                        }
+                        public void thumbnailStarted(
+                            final ImageReader source,
+                            final int imageIndex,
+                            final int thumbnailIndex
+                        ) {}
 
                         @Override
-                        public void thumbnailProgress(final ImageReader source, final float percentageDone) {
-                        }
+                        public void thumbnailProgress(final ImageReader source, final float percentageDone) {}
 
                         @Override
-                        public void thumbnailComplete(final ImageReader source) {
-                        }
+                        public void thumbnailComplete(final ImageReader source) {}
 
                         @Override
                         public void readAborted(final ImageReader source) {
                             monitor.close();
                         }
-                    });
+                    }
+                );
             }
 
             if (progressListener != null) {

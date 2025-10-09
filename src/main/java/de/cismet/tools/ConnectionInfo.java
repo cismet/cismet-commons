@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * ConnectionInfo.java
  *
@@ -34,19 +34,18 @@ public class ConnectionInfo {
     /**
      * Creates a new instance of ConnectionInfo.
      */
-    public ConnectionInfo() {
-    }
+    public ConnectionInfo() {}
 
     /**
      * Creates a new ConnectionInfo object.
      *
      * @param  element  <code>Elemtent</code>
      */
-    public ConnectionInfo(final Element element) {              // throws NullPointerException{
+    public ConnectionInfo(final Element element) { // throws NullPointerException{
         driver = element.getChild("driverClass").getTextTrim(); // NOI18N
-        url = element.getChild("dbUrl").getTextTrim();          // NOI18N
-        user = element.getChild("user").getTextTrim();          // NOI18N
-        pass = element.getChild("pass").getTextTrim();          // NOI18N
+        url = element.getChild("dbUrl").getTextTrim(); // NOI18N
+        user = element.getChild("user").getTextTrim(); // NOI18N
+        pass = element.getChild("pass").getTextTrim(); // NOI18N
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -133,14 +132,14 @@ public class ConnectionInfo {
      * @return  Element
      */
     public Element getElement() {
-        final Element e = new Element("dbConnectionInfo");                                       // NOI18N
-        e.addContent(new Element("driverClass").addContent(driver));                             // NOI18N
-        e.addContent(new Element("dbUrl").addContent(url));                                      // NOI18N
-        e.addContent(new Element("user").addContent(user));                                      // NOI18N
-        if (!pass.trim().startsWith("crypt::")) {                                                // NOI18N
+        final Element e = new Element("dbConnectionInfo"); // NOI18N
+        e.addContent(new Element("driverClass").addContent(driver)); // NOI18N
+        e.addContent(new Element("dbUrl").addContent(url)); // NOI18N
+        e.addContent(new Element("user").addContent(user)); // NOI18N
+        if (!pass.trim().startsWith("crypt::")) { // NOI18N
             e.addContent(new Element("pass").addContent(PasswordEncrypter.encryptString(pass))); // NOI18N
         } else {
-            e.addContent(new Element("pass").addContent(pass));                                  // NOI18N
+            e.addContent(new Element("pass").addContent(pass)); // NOI18N
         }
         return e;
     }

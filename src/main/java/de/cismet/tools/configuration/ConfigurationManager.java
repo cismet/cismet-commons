@@ -1,14 +1,28 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools.configuration;
 
+import de.cismet.connectioncontext.AbstractConnectionContext;
+import de.cismet.connectioncontext.ConnectionContext;
+import de.cismet.connectioncontext.ConnectionContextStore;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import org.apache.log4j.Logger;
-
 import org.jdom.Attribute;
 import org.jdom.Content;
 import org.jdom.Document;
@@ -18,27 +32,7 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-
 import org.openide.util.Lookup;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
-
-import java.nio.charset.Charset;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import de.cismet.connectioncontext.AbstractConnectionContext;
-import de.cismet.connectioncontext.ConnectionContext;
-import de.cismet.connectioncontext.ConnectionContextStore;
 
 /**
  * Configuaration Manager.
@@ -52,7 +46,7 @@ public class ConfigurationManager {
 
     private static final transient Logger LOG = Logger.getLogger(ConfigurationManager.class);
 
-    public static final String SUBSTITUTION_ATTR = "substitutionAttribute";                        // NOI18N
+    public static final String SUBSTITUTION_ATTR = "substitutionAttribute"; // NOI18N
     public static final String DUMMY_NS_ATTR_VALUE = "http://www.cismet.de/config/dummyNamespace"; // NOI18N
     private static final String XML_ENCODING;
 
@@ -86,8 +80,8 @@ public class ConfigurationManager {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Create ConfigurationManager."); // NOI18N
         }
-        home = System.getProperty("user.home");        // NOI18N
-        fs = System.getProperty("file.separator");     // NOI18N
+        home = System.getProperty("user.home"); // NOI18N
+        fs = System.getProperty("file.separator"); // NOI18N
         fileName = "configuration.xml";
         fallBackFileName = fileName;
         defaultFileName = fileName;
@@ -159,7 +153,7 @@ public class ConfigurationManager {
      * @see  #configure(de.cismet.tools.configuration.Configurable)
      */
     public void configure() {
-        configure((Configurable)null);
+        configure((Configurable) null);
     }
 
     /**
@@ -218,8 +212,10 @@ public class ConfigurationManager {
 
             rootObject = doc.getRootElement();
         } catch (final Exception e) {
-            final String message = "Error while reading configuration (User.Home) (" + singleConfig // NOI18N
-                        + ") if null then all are";                                                 // NOI18N
+            final String message =
+                "Error while reading configuration (User.Home) (" +
+                singleConfig + // NOI18N
+                ") if null then all are"; // NOI18N
             LOG.warn(message, e);
         }
 
@@ -240,7 +236,7 @@ public class ConfigurationManager {
             format.setEncoding("ISO-8859-1"); // NOI18N
             final XMLOutputter serializer = new XMLOutputter(format);
 
-            LOG.info("Configuration Document: " + serializer.outputString(rootObject.getDocument()));        // NOI18N
+            LOG.info("Configuration Document: " + serializer.outputString(rootObject.getDocument())); // NOI18N
             LOG.info("Server Configuration Document: " + serializer.outputString(srvRootObj.getDocument())); // NOI18N
         }
         pureConfigure(singleConfig, rootObject, srvRootObj, merge);
@@ -305,8 +301,8 @@ public class ConfigurationManager {
         try {
             final SAXBuilder builder = new SAXBuilder(false);
             final Document doc = builder.build(getClass().getResourceAsStream(classPathFolder + defaultFileName));
-            final Element configuration = doc.getRootElement().getChild("Configuration");                         // NOI18N
-            setFolder(configuration.getChildText("LocalFolder"));                                                 // NOI18N
+            final Element configuration = doc.getRootElement().getChild("Configuration"); // NOI18N
+            setFolder(configuration.getChildText("LocalFolder")); // NOI18N
         } catch (final Exception ex) {
             LOG.error("error during initialisation of configuration manager using file: " + defaultFileName, ex); // NOI18N
         }
@@ -323,22 +319,25 @@ public class ConfigurationManager {
     private Element getRootObjectFromClassPath() {
         if (serverRootObject == null) {
             if (LOG.isInfoEnabled()) {
-                LOG.info("reading settings (InputStream from ClassPath)");                                           // NOI18N
+                LOG.info("reading settings (InputStream from ClassPath)"); // NOI18N
             }
             try {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("getRootObjectFromClassPath():classPathFolder+defaultFileName="
-                                + classPathFolder                                                                    // NOI18N
-                                + defaultFileName);
+                    LOG.debug(
+                        "getRootObjectFromClassPath():classPathFolder+defaultFileName=" +
+                        classPathFolder + // NOI18N
+                        defaultFileName
+                    );
                 }
                 serverRootObject = getObjectFromClassPath(classPathFolder + defaultFileName);
             } catch (final Exception e) {
                 LOG.warn(
-                    "in getRootObjectFromClassPath: error reading settings (InputStream from ClassPath) "            // NOI18N
-                            + "trying fallback filename: "                                                           // NOI18N
-                            + classPathFolder
-                            + fallBackFileName,
-                    e);
+                    "in getRootObjectFromClassPath: error reading settings (InputStream from ClassPath) " + // NOI18N
+                    "trying fallback filename: " + // NOI18N
+                    classPathFolder +
+                    fallBackFileName,
+                    e
+                );
                 try {
                     serverRootObject = getObjectFromClassPath(classPathFolder + fallBackFileName);
                 } catch (final Exception t) {
@@ -382,10 +381,12 @@ public class ConfigurationManager {
      * @param  serverRootObject  server root Object
      * @param  merge             true, iff the new configuration should merge the the current configuration
      */
-    private void pureConfigure(final Configurable singleConfig,
-            final Element rootObject,
-            final Element serverRootObject,
-            final boolean merge) {
+    private void pureConfigure(
+        final Configurable singleConfig,
+        final Element rootObject,
+        final Element serverRootObject,
+        final boolean merge
+    ) {
         final Element serverObject = preprocessElement(serverRootObject);
         if (singleConfig == null) {
             for (final Configurable elem : configurables) {
@@ -405,7 +406,7 @@ public class ConfigurationManager {
                         elem.configure(rootObject);
                     }
                 } catch (final Exception clientT) {
-                    LOG.warn("Error in elem.configure(rootObject)", clientT);             // NOI18N
+                    LOG.warn("Error in elem.configure(rootObject)", clientT); // NOI18N
                 }
             }
         } else {
@@ -446,9 +447,10 @@ public class ConfigurationManager {
 
         if (attrProvider instanceof ConnectionContextStore) {
             final ConnectionContext connectionContext = ConnectionContext.create(
-                    AbstractConnectionContext.Category.OPTIONS,
-                    getClass().getSimpleName());
-            ((ConnectionContextStore)attrProvider).initWithConnectionContext(connectionContext);
+                AbstractConnectionContext.Category.OPTIONS,
+                getClass().getSimpleName()
+            );
+            ((ConnectionContextStore) attrProvider).initWithConnectionContext(connectionContext);
         }
 
         if (LOG.isDebugEnabled()) {
@@ -460,7 +462,8 @@ public class ConfigurationManager {
 
         if (resolved.size() != 1) {
             throw new IllegalStateException(
-                "during resolve the given element was duplicated. This is illegal. Check your configuration"); // NOI18N
+                "during resolve the given element was duplicated. This is illegal. Check your configuration"
+            ); // NOI18N
         }
 
         final Element resolvedRoot = resolved.iterator().next();
@@ -518,7 +521,7 @@ public class ConfigurationManager {
             for (int i = 0; i < e.getContentSize(); ++i) {
                 final Content content = e.getContent(i);
                 if (content instanceof Element) {
-                    final Element child = (Element)content;
+                    final Element child = (Element) content;
                     final Set<Element> newChildren = resolveElement(child, resolver);
 
                     if ((newChildren.size() == 1) && newChildren.iterator().next().equals(child)) {
@@ -626,7 +629,7 @@ public class ConfigurationManager {
             final List children = root.getChildren();
             final Set<Element> elements = new LinkedHashSet<Element>(children.size());
             for (final Object o : children) {
-                elements.add((Element)o);
+                elements.add((Element) o);
             }
 
             // to be done in seperate loop to avoid concurrent modification
@@ -653,7 +656,7 @@ public class ConfigurationManager {
     public void removeVoid(final Element child) {
         final List attributes = child.getAttributes();
         if (attributes.size() == 1) {
-            final Attribute attribute = (Attribute)attributes.get(0);
+            final Attribute attribute = (Attribute) attributes.get(0);
             if (SUBSTITUTION_ATTR.equals(attribute.getName()) && child.getChildren().isEmpty()) {
                 child.getParent().removeContent(child);
             }
@@ -682,9 +685,9 @@ public class ConfigurationManager {
      */
     private AttrResolver getAttrResolver(final AttrResolver resolver, final String key) {
         if (resolver instanceof DefaultAttrResolver) {
-            final DefaultAttrResolver defaultResolver = (DefaultAttrResolver)resolver;
+            final DefaultAttrResolver defaultResolver = (DefaultAttrResolver) resolver;
             if (defaultResolver instanceof KeyAttrResolver) {
-                final KeyAttrResolver keyResolver = (KeyAttrResolver)defaultResolver;
+                final KeyAttrResolver keyResolver = (KeyAttrResolver) defaultResolver;
                 if (keyResolver instanceof UserAttrResolver) {
                     return new GroupAttrResolver(keyResolver.key, keyResolver.provider);
                 } else if (keyResolver instanceof GroupAttrResolver) {
@@ -779,14 +782,14 @@ public class ConfigurationManager {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("try to write configuration of this configurables:" + configurables); // NOI18N
             }
-            final Element root = new Element("cismetConfigurationManager");                     // NOI18N
+            final Element root = new Element("cismetConfigurationManager"); // NOI18N
 
             for (final Configurable elem : configurables) {
                 try {
                     final Element e = elem.getConfiguration();
 
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("Writing Element: " + e);         // NOI18N
+                        LOG.debug("Writing Element: " + e); // NOI18N
                     }
                     if (e != null) {
                         root.addContent(e);
@@ -903,7 +906,6 @@ public class ConfigurationManager {
      * @version  $Revision$, $Date$
      */
     private static interface AttrResolver {
-
         //~ Methods ------------------------------------------------------------
 
         /**

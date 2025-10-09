@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities;
 
 import java.net.URL;
@@ -17,7 +17,6 @@ import java.net.URL;
  * @version  $Revision$, $Date$
  */
 public interface Style {
-
     //~ Methods ----------------------------------------------------------------
 
     /**

@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
 /**
@@ -20,8 +20,7 @@ public final class PasswordEncrypterException extends RuntimeException {
     /**
      * Creates a new instance of <code>PasswordEncrypterException</code> without detail message.
      */
-    public PasswordEncrypterException() {
-    }
+    public PasswordEncrypterException() {}
 
     /**
      * Constructs an instance of <code>PasswordEncrypterException</code> with the specified detail message.

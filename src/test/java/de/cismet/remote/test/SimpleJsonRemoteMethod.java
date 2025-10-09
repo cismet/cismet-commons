@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.remote.test;
 
 import de.cismet.remote.AbstractRESTRemoteControlMethod;
@@ -29,8 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = RESTRemoteControlMethod.class)
 public class SimpleJsonRemoteMethod extends AbstractRESTRemoteControlMethod implements RESTRemoteControlMethod {
 
-    private static final Logger LOG = Logger.getLogger(RESTRemoteControlStarter.class
-    );
+    private static final Logger LOG = Logger.getLogger(RESTRemoteControlStarter.class);
 
     public SimpleJsonRemoteMethod() {
         super(-1, "/simpleJsonRemoteMethod");
@@ -42,6 +41,6 @@ public class SimpleJsonRemoteMethod extends AbstractRESTRemoteControlMethod impl
     @Produces({ MediaType.APPLICATION_JSON })
     public Response show() {
         LOG.debug("show() method called");
-        return Response.ok(Arrays.asList(new Integer[]{1,2,3,4,5,6,7,8,9})).build();
+        return Response.ok(Arrays.asList(new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 })).build();
     }
 }

@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.remote.test;
 
 import de.cismet.remote.AbstractRESTRemoteControlMethod;
@@ -28,8 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = RESTRemoteControlMethod.class)
 public class XmlRemoteMethod extends AbstractRESTRemoteControlMethod implements RESTRemoteControlMethod {
 
-    private static final Logger LOG = Logger.getLogger(RESTRemoteControlStarter.class
-    );
+    private static final Logger LOG = Logger.getLogger(RESTRemoteControlStarter.class);
 
     public XmlRemoteMethod() {
         super(31338, "/xmlRemoteMethod");

@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools.configuration;
 
 /**
@@ -14,5 +14,4 @@ package de.cismet.tools.configuration;
  * @version  $Revision$, $Date$
  */
 // TODO: unnecessary class, another appropriate exception could be thrown
-public class NoWriteError extends Exception {
-}
+public class NoWriteError extends Exception {}

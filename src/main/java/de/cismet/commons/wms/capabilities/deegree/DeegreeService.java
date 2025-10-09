@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  *  Copyright (C) 2010 therter
  *
@@ -23,15 +23,13 @@
  */
 package de.cismet.commons.wms.capabilities.deegree;
 
+import de.cismet.commons.capabilities.Service;
+import java.util.ArrayList;
+import java.util.List;
 import org.deegree.model.metadata.iso19115.Constraints;
 import org.deegree.model.metadata.iso19115.Keywords;
 import org.deegree.owscommon_new.ServiceIdentification;
 import org.deegree.owscommon_new.ServiceProvider;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import de.cismet.commons.capabilities.Service;
 
 /**
  * DOCUMENT ME!

@@ -1,14 +1,11 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,9 +14,10 @@ import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
-
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.log4j.Logger;
 
 /**
  * Helper class for various convertion related tasks like (de)serialisation.
@@ -39,8 +37,7 @@ public final class Converter {
     /**
      * Creates a new Converter object.
      */
-    private Converter() {
-    }
+    private Converter() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -61,7 +58,7 @@ public final class Converter {
             oos.writeObject(o);
         } catch (NotSerializableException e) {
             if (o instanceof Exception) {
-                oos.writeObject(convertNonSerializableException2SerializableException((Exception)o));
+                oos.writeObject(convertNonSerializableException2SerializableException((Exception) o));
             } else {
                 throw e;
             }
@@ -98,8 +95,8 @@ public final class Converter {
      * @throws  IOException             if an error occurs during deserialisation
      * @throws  ClassNotFoundException  if any of the classes of the object cannot be found
      */
-    public static <T> T deserialise(final byte[] bytes, final Class<T> type) throws IOException,
-        ClassNotFoundException {
+    public static <T> T deserialise(final byte[] bytes, final Class<T> type)
+        throws IOException, ClassNotFoundException {
         if (bytes == null) {
             return null;
         }
@@ -109,7 +106,7 @@ public final class Converter {
         final Object o = ois.readObject();
         ois.close();
 
-        return (T)o;
+        return (T) o;
     }
 
     /**
@@ -144,8 +141,8 @@ public final class Converter {
      * @see     #deserialise(byte[], java.lang.Class)
      * @see     #fromBase64(byte[])
      */
-    public static <T> T deserialiseFromBase64(final byte[] bytes, final Class<T> type) throws IOException,
-        ClassNotFoundException {
+    public static <T> T deserialiseFromBase64(final byte[] bytes, final Class<T> type)
+        throws IOException, ClassNotFoundException {
         return deserialise(fromBase64(bytes), type);
     }
 
@@ -193,7 +190,7 @@ public final class Converter {
      */
     public static String toString(final byte[] bytes) {
         try {
-            return new String(toBase64(bytes), "ASCII");                     // NOI18N
+            return new String(toBase64(bytes), "ASCII"); // NOI18N
         } catch (final UnsupportedEncodingException ex) {
             final String message = "system does not support ASCII encoding"; // NOI18N
             throw new IllegalStateException(message, ex);
@@ -218,7 +215,7 @@ public final class Converter {
             if (bytes == null) {
                 return null;
             } else {
-                return fromBase64(bytes.getBytes("ASCII"));                  // NOI18N
+                return fromBase64(bytes.getBytes("ASCII")); // NOI18N
             }
         } catch (final UnsupportedEncodingException ex) {
             final String message = "system does not support ASCII encoding"; // NOI18N
@@ -265,7 +262,7 @@ public final class Converter {
      * @see     #fromString(java.lang.String)
      */
     public static <T> T deserialiseFromString(final String s, final Class<T> type, final boolean compressionEnabled)
-            throws IOException, ClassNotFoundException {
+        throws IOException, ClassNotFoundException {
         if (compressionEnabled) {
             return deserialiseFromGzip(fromString(s), type);
         } else {
@@ -285,15 +282,16 @@ public final class Converter {
      * @throws  IOException             DOCUMENT ME!
      * @throws  ClassNotFoundException  DOCUMENT ME!
      */
-    public static <T> T deserialiseFromGzip(final byte[] bytes, final Class<T> type) throws IOException,
-        ClassNotFoundException {
+    public static <T> T deserialiseFromGzip(final byte[] bytes, final Class<T> type)
+        throws IOException, ClassNotFoundException {
         if (bytes == null) {
             return null;
         }
-        try(final GZIPInputStream gzipIn = new GZIPInputStream(new ByteArrayInputStream(bytes));
-                    final ObjectInputStream uncompressedIn = new ObjectInputStream(gzipIn);
-            ) {
-            return (T)uncompressedIn.readObject();
+        try (
+            final GZIPInputStream gzipIn = new GZIPInputStream(new ByteArrayInputStream(bytes));
+            final ObjectInputStream uncompressedIn = new ObjectInputStream(gzipIn);
+        ) {
+            return (T) uncompressedIn.readObject();
         } catch (final Exception ex) {
             LOG.warn("error while trying to deserialise message from gzip", ex);
             throw ex;
@@ -310,16 +308,17 @@ public final class Converter {
      * @throws  IOException  DOCUMENT ME!
      */
     public static byte[] serialiseToGzip(final Object o) throws IOException {
-        try(final ByteArrayOutputStream iout = new ByteArrayOutputStream();
-                    final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                    final ObjectOutputStream oout = new ObjectOutputStream(iout);
-                    final GZIPOutputStream zstream = new GZIPOutputStream(bout);
-            ) {
+        try (
+            final ByteArrayOutputStream iout = new ByteArrayOutputStream();
+            final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            final ObjectOutputStream oout = new ObjectOutputStream(iout);
+            final GZIPOutputStream zstream = new GZIPOutputStream(bout);
+        ) {
             try {
                 oout.writeObject(o);
             } catch (NotSerializableException e) {
                 if (o instanceof Exception) {
-                    oout.writeObject(convertNonSerializableException2SerializableException((Exception)o));
+                    oout.writeObject(convertNonSerializableException2SerializableException((Exception) o));
                 } else {
                     throw e;
                 }

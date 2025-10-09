@@ -1,18 +1,16 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities.deegree;
-
-import org.apache.log4j.Logger;
-
-import org.deegree.owscommon_new.OperationsMetadata;
 
 import de.cismet.commons.wms.capabilities.Operation;
 import de.cismet.commons.wms.capabilities.Request;
+import org.apache.log4j.Logger;
+import org.deegree.owscommon_new.OperationsMetadata;
 
 /**
  * DOCUMENT ME!
@@ -46,8 +44,10 @@ public class DeegreeRequest implements Request {
     @Override
     public Operation getMapOperation() {
         for (final org.deegree.owscommon_new.Operation op : req.getOperations()) {
-            if ((op.getName().getLocalName().indexOf("getMap") != -1)
-                        || (op.getName().getLocalName().indexOf("GetMap") != -1)) {
+            if (
+                (op.getName().getLocalName().indexOf("getMap") != -1) ||
+                (op.getName().getLocalName().indexOf("GetMap") != -1)
+            ) {
                 return new DeegreeOperation(op);
             }
         }
@@ -59,8 +59,10 @@ public class DeegreeRequest implements Request {
     @Override
     public Operation getFeatureInfoOperation() {
         for (final org.deegree.owscommon_new.Operation op : req.getOperations()) {
-            if ((op.getName().getLocalName().indexOf("getFeatureInfo") != -1)
-                        || (op.getName().getLocalName().indexOf("GetFeatureInfo") != -1)) {
+            if (
+                (op.getName().getLocalName().indexOf("getFeatureInfo") != -1) ||
+                (op.getName().getLocalName().indexOf("GetFeatureInfo") != -1)
+            ) {
                 return new DeegreeOperation(op);
             }
         }

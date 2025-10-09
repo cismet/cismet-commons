@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities;
 
 /**
@@ -13,5 +13,4 @@ package de.cismet.commons.wms.capabilities;
  * @author   therter
  * @version  $Revision$, $Date$
  */
-public interface Extent {
-}
+public interface Extent {}

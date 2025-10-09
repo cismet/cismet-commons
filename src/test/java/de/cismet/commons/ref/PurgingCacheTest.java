@@ -1,25 +1,22 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.ref;
 
+import static org.junit.Assert.*;
+
+import de.cismet.tools.Calculator;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.lang.reflect.Field;
-
-import java.util.HashMap;
-
-import de.cismet.tools.Calculator;
-
-import static org.junit.Assert.*;
 
 /**
  * These test depends on proper timing and may cause problems sometimes when run on machines that have some kind of
@@ -39,8 +36,7 @@ public class PurgingCacheTest {
     /**
      * Creates a new PurgingCacheTest object.
      */
-    public PurgingCacheTest() {
-    }
+    public PurgingCacheTest() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -50,8 +46,7 @@ public class PurgingCacheTest {
      * @throws  Exception  DOCUMENT ME!
      */
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     /**
      * DOCUMENT ME!
@@ -59,8 +54,7 @@ public class PurgingCacheTest {
      * @throws  Exception  DOCUMENT ME!
      */
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     /**
      * DOCUMENT ME!
@@ -74,8 +68,7 @@ public class PurgingCacheTest {
      * DOCUMENT ME!
      */
     @After
-    public void tearDown() {
-    }
+    public void tearDown() {}
 
     /**
      * DOCUMENT ME!
@@ -95,15 +88,18 @@ public class PurgingCacheTest {
     public void testGet() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
 
-        final PurgingCache pc = new PurgingCache(new Calculator() {
+        final PurgingCache pc = new PurgingCache(
+            new Calculator() {
+                @Override
+                public String calculate(final Object input) throws Exception {
+                    initCalls++;
 
-                    @Override
-                    public String calculate(final Object input) throws Exception {
-                        initCalls++;
-
-                        return "value_" + input;
-                    }
-                }, 1000, 200);
+                    return "value_" + input;
+                }
+            },
+            1000,
+            200
+        );
 
         Object o1 = pc.get("1");
         assertEquals("value_1", o1);
@@ -138,6 +134,7 @@ public class PurgingCacheTest {
         assertEquals("value_2", o2);
         assertEquals(2, initCalls);
     }
+
     /**
      * highly dependent on the internal implementation details of the cache.
      *
@@ -147,15 +144,18 @@ public class PurgingCacheTest {
     public void testGetInternal() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
 
-        final PurgingCache pc = new PurgingCache(new Calculator() {
+        final PurgingCache pc = new PurgingCache(
+            new Calculator() {
+                @Override
+                public String calculate(final Object input) throws Exception {
+                    initCalls++;
 
-                    @Override
-                    public String calculate(final Object input) throws Exception {
-                        initCalls++;
-
-                        return "value_" + input;
-                    }
-                }, 500, 200);
+                    return "value_" + input;
+                }
+            },
+            500,
+            200
+        );
 
         Object o1 = pc.get("1");
         assertEquals("value_1", o1);
@@ -164,9 +164,9 @@ public class PurgingCacheTest {
         final Field cacheField = pc.getClass().getDeclaredField("cache");
         cacheField.setAccessible(true);
 
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(300);
-        assertEquals(0, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(0, ((HashMap) cacheField.get(pc)).size());
 
         o1 = pc.get("1");
         final Object o2 = pc.get("2");
@@ -179,19 +179,19 @@ public class PurgingCacheTest {
         assertEquals("value_4", o4);
         assertEquals("value_5", o5);
 
-        assertEquals(5, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(5, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(100);
-        assertEquals(5, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(5, ((HashMap) cacheField.get(pc)).size());
         o3 = pc.get("3");
         o5 = pc.get("5");
         Thread.currentThread().sleep(150);
-        assertEquals(5, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(5, ((HashMap) cacheField.get(pc)).size());
         o3 = pc.get("3");
         o5 = pc.get("5");
         Thread.currentThread().sleep(300);
-        assertEquals(2, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(2, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(500);
-        assertEquals(0, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(0, ((HashMap) cacheField.get(pc)).size());
     }
 
     /**
@@ -203,28 +203,34 @@ public class PurgingCacheTest {
     public void testGet_CalculateException() {
         System.out.println("TEST " + getCurrentMethodName());
 
-        final PurgingCache pc = new PurgingCache(new Calculator() {
-
-                    @Override
-                    public String calculate(final Object input) throws Exception {
-                        throw new IllegalStateException("test");
-                    }
-                }, 1000, 200);
+        final PurgingCache pc = new PurgingCache(
+            new Calculator() {
+                @Override
+                public String calculate(final Object input) throws Exception {
+                    throw new IllegalStateException("test");
+                }
+            },
+            1000,
+            200
+        );
 
         pc.get("1");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testGet_NullKeyException() {
         System.out.println("TEST " + getCurrentMethodName());
 
-        final PurgingCache pc = new PurgingCache(new Calculator() {
-
-                    @Override
-                    public String calculate(final Object input) throws Exception {
-                        throw new IllegalStateException("test");
-                    }
-                }, 1000, 200);
+        final PurgingCache pc = new PurgingCache(
+            new Calculator() {
+                @Override
+                public String calculate(final Object input) throws Exception {
+                    throw new IllegalStateException("test");
+                }
+            },
+            1000,
+            200
+        );
 
         pc.get(null);
     }
@@ -238,64 +244,67 @@ public class PurgingCacheTest {
     public void testSetKeyPurgeInterval() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
 
-        final PurgingCache pc = new PurgingCache(new Calculator() {
+        final PurgingCache pc = new PurgingCache(
+            new Calculator() {
+                @Override
+                public String calculate(final Object input) throws Exception {
+                    initCalls++;
 
-                    @Override
-                    public String calculate(final Object input) throws Exception {
-                        initCalls++;
-
-                        return "value_" + input;
-                    }
-                }, 500, 200);
+                    return "value_" + input;
+                }
+            },
+            500,
+            200
+        );
         final Field cacheField = pc.getClass().getDeclaredField("cache");
         cacheField.setAccessible(true);
 
         Object o1 = pc.get("1");
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(300);
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(300);
-        assertEquals(0, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(0, ((HashMap) cacheField.get(pc)).size());
 
         pc.setKeyPurgeInterval(300);
 
         o1 = pc.get("1");
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(400);
-        assertEquals(0, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(0, ((HashMap) cacheField.get(pc)).size());
 
         pc.setKeyPurgeInterval(800);
 
         o1 = pc.get("1");
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(400);
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(200);
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(300);
-        assertEquals(0, ((HashMap)cacheField.get(pc)).size());
-        
+        assertEquals(0, ((HashMap) cacheField.get(pc)).size());
+
         pc.setKeyPurgeInterval(0);
         assertEquals(0, pc.getKeyPurgeInterval());
         pc.setKeyPurgeInterval(-100);
         assertEquals(0, pc.getKeyPurgeInterval());
-        
+
         initCalls = 0;
-        
+
         pc.get(1);
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(100);
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(300);
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
         Thread.currentThread().sleep(500);
-        assertEquals(1, ((HashMap)cacheField.get(pc)).size());
-        
+        assertEquals(1, ((HashMap) cacheField.get(pc)).size());
+
         pc.setKeyPurgeInterval(100);
         assertEquals(100, pc.getKeyPurgeInterval());
-        
+
         Thread.currentThread().sleep(200);
-        assertEquals(0, ((HashMap)cacheField.get(pc)).size());
+        assertEquals(0, ((HashMap) cacheField.get(pc)).size());
     }
 
     /**
@@ -307,15 +316,18 @@ public class PurgingCacheTest {
     public void testSetValuePurgeInterval() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
 
-        final PurgingCache pc = new PurgingCache(new Calculator() {
+        final PurgingCache pc = new PurgingCache(
+            new Calculator() {
+                @Override
+                public String calculate(final Object input) throws Exception {
+                    initCalls++;
 
-                    @Override
-                    public String calculate(final Object input) throws Exception {
-                        initCalls++;
-
-                        return "value_" + input;
-                    }
-                }, 1000, 200);
+                    return "value_" + input;
+                }
+            },
+            1000,
+            200
+        );
 
         Object o1 = pc.get("1");
         assertEquals(1, initCalls);
@@ -349,15 +361,15 @@ public class PurgingCacheTest {
         Thread.currentThread().sleep(200);
         o1 = pc.get("1");
         assertEquals(4, initCalls);
-        
+
         pc.setValuePurgeInterval(0);
         assertEquals(0, pc.getValuePurgeInterval());
         pc.setValuePurgeInterval(-100);
         assertEquals(0, pc.getValuePurgeInterval());
-        
+
         initCalls = 0;
         Thread.currentThread().sleep(200);
-        
+
         o1 = pc.get("1");
         assertEquals(1, initCalls);
         o1 = pc.get("1");
@@ -368,9 +380,9 @@ public class PurgingCacheTest {
         Thread.currentThread().sleep(800);
         o1 = pc.get("1");
         assertEquals(1, initCalls);
-                
+
         initCalls = 0;
-        
+
         pc.setValuePurgeInterval(100);
         assertEquals(100, pc.getValuePurgeInterval());
         o1 = pc.get("2");
@@ -381,56 +393,62 @@ public class PurgingCacheTest {
         o1 = pc.get("2");
         assertEquals(2, initCalls);
     }
-    
+
     @Test
     public void testClear() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
-        
-        final PurgingCache pc = new PurgingCache(new Calculator() {
 
-                    @Override
-                    public String calculate(final Object input) throws Exception {
-                        initCalls++;
+        final PurgingCache pc = new PurgingCache(
+            new Calculator() {
+                @Override
+                public String calculate(final Object input) throws Exception {
+                    initCalls++;
 
-                        return "value_" + input;
-                    }
-                }, 0, 0);
-        
+                    return "value_" + input;
+                }
+            },
+            0,
+            0
+        );
+
         initCalls = 0;
-        
+
         pc.get("1");
         pc.get("2");
         pc.get("3");
         pc.get("4");
         pc.get("5");
-        
+
         assertEquals(5, initCalls);
-        
+
         pc.clear();
-        
+
         pc.get("1");
         pc.get("2");
         pc.get("3");
-        
+
         assertEquals(8, initCalls);
     }
-    
+
     @Test
     public void testValueNull() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
-        
-        final PurgingCache pc = new PurgingCache(new Calculator() {
 
-                    @Override
-                    public String calculate(final Object input) throws Exception {
-                        initCalls++;
+        final PurgingCache pc = new PurgingCache(
+            new Calculator() {
+                @Override
+                public String calculate(final Object input) throws Exception {
+                    initCalls++;
 
-                        return null;
-                    }
-                }, 0, 0); // false for init null values is default
-        
+                    return null;
+                }
+            },
+            0,
+            0
+        ); // false for init null values is default
+
         initCalls = 0;
-        
+
         pc.get("1");
         pc.get("1");
         Thread.currentThread().sleep(100);
@@ -442,11 +460,11 @@ public class PurgingCacheTest {
         System.gc();
         Thread.currentThread().sleep(300);
         pc.get("1");
-        
+
         assertEquals(5, initCalls);
-        
+
         initCalls = 0;
-        
+
         pc.setCacheNullValues(true);
         pc.get("1");
         pc.get("1");
@@ -459,9 +477,9 @@ public class PurgingCacheTest {
         System.gc();
         Thread.currentThread().sleep(300);
         pc.get("1");
-        
+
         assertEquals(1, initCalls);
-        
+
         pc.setCacheNullValues(false);
         pc.get("1");
         pc.get("1");
@@ -474,11 +492,11 @@ public class PurgingCacheTest {
         System.gc();
         Thread.currentThread().sleep(300);
         pc.get("1");
-        
+
         assertEquals(1, initCalls);
-        
+
         initCalls = 0;
-        
+
         pc.get("2");
         pc.get("2");
         Thread.currentThread().sleep(100);
@@ -490,7 +508,7 @@ public class PurgingCacheTest {
         System.gc();
         Thread.currentThread().sleep(300);
         pc.get("2");
-        
+
         assertEquals(5, initCalls);
     }
 }

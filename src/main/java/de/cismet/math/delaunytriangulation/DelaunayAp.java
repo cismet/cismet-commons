@@ -1,11 +1,12 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.math.delaunytriangulation;
+
 /*
  * Copyright (c) 2005 by L. Paul Chew.
  *
@@ -23,10 +24,8 @@ package de.cismet.math.delaunytriangulation;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.swing.*;
 
 /**
@@ -63,12 +62,12 @@ public class DelaunayAp extends javax.swing.JApplet implements Runnable {
         setLayout(new BorderLayout());
 
         // Build the button controls
-        final JRadioButton voronoiButton = new JRadioButton("Voronoi Diagram");         // NOI18N
-        voronoiButton.setActionCommand("voronoi");                                      // NOI18N
+        final JRadioButton voronoiButton = new JRadioButton("Voronoi Diagram"); // NOI18N
+        voronoiButton.setActionCommand("voronoi"); // NOI18N
         final JRadioButton delaunayButton = new JRadioButton("Delaunay Triangulation"); // NOI18N
-        delaunayButton.setActionCommand("delaunay");                                    // NOI18N
-        final JButton clearButton = new JButton("Clear");                               // NOI18N
-        clearButton.setActionCommand("clear");                                          // NOI18N
+        delaunayButton.setActionCommand("delaunay"); // NOI18N
+        final JButton clearButton = new JButton("Clear"); // NOI18N
+        clearButton.setActionCommand("clear"); // NOI18N
         final ButtonGroup group = new ButtonGroup();
         group.add(voronoiButton);
         group.add(delaunayButton);
@@ -76,22 +75,22 @@ public class DelaunayAp extends javax.swing.JApplet implements Runnable {
         buttonPanel.add(voronoiButton);
         buttonPanel.add(delaunayButton);
         buttonPanel.add(clearButton);
-        this.add(buttonPanel, "North");                                                 // NOI18N
+        this.add(buttonPanel, "North"); // NOI18N
 
         // Build the mouse-entry switches
-        final JLabel circleLabel = new JLabel("Show Empty Circles");    // NOI18N
-        circleLabel.setName("circles");                                 // NOI18N
+        final JLabel circleLabel = new JLabel("Show Empty Circles"); // NOI18N
+        circleLabel.setName("circles"); // NOI18N
         final JLabel delaunayLabel = new JLabel("Show Delaunay Edges"); // NOI18N
-        delaunayLabel.setName("delaunay");                              // NOI18N
-        final JLabel voronoiLabel = new JLabel("Show Voronoi Edges");   // NOI18N
-        voronoiLabel.setName("voronoi");                                // NOI18N
+        delaunayLabel.setName("delaunay"); // NOI18N
+        final JLabel voronoiLabel = new JLabel("Show Voronoi Edges"); // NOI18N
+        voronoiLabel.setName("voronoi"); // NOI18N
         final JPanel switchPanel = new JPanel();
         switchPanel.add(circleLabel);
-        switchPanel.add(new Label("     "));                            // NOI18N
+        switchPanel.add(new Label("     ")); // NOI18N
         switchPanel.add(delaunayLabel);
-        switchPanel.add(new Label("     "));                            // NOI18N
+        switchPanel.add(new Label("     ")); // NOI18N
         switchPanel.add(voronoiLabel);
-        this.add(switchPanel, "South");                                 // NOI18N
+        this.add(switchPanel, "South"); // NOI18N
 
         // Build the graphics panel
         final DelaunayPanel graphicsPanel = new DelaunayPanel();
@@ -117,17 +116,17 @@ public class DelaunayAp extends javax.swing.JApplet implements Runnable {
      * @param  args  arguments
      */
     public static void main(final String[] args) {
-        final DelaunayAp applet = new DelaunayAp();  // Create applet
-        applet.init();                               // Perform applet initialization
-        final JFrame dWindow = new JFrame();         // Create window
-        dWindow.setSize(700, 500);                   // Set window size
+        final DelaunayAp applet = new DelaunayAp(); // Create applet
+        applet.init(); // Perform applet initialization
+        final JFrame dWindow = new JFrame(); // Create window
+        dWindow.setSize(700, 500); // Set window size
         dWindow.setTitle("Voronoi/Delaunay Window"); // NOI18N
         // Set window title
         dWindow.setLayout(new BorderLayout()); // Specify layout manager
         dWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Specify closing behavior
         dWindow.add(applet, "Center"); // NOI18N       // Place applet into window
-        dWindow.setVisible(true);      // Show the window
+        dWindow.setVisible(true); // Show the window
     }
 }
 
@@ -146,14 +145,14 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
     public Color delaunayColor = Color.green;
     public int pointRadius = 3;
 
-    private DelaunayTriangulation dt;     // The Delaunay triangulation
+    private DelaunayTriangulation dt; // The Delaunay triangulation
     private Simplex<Pnt> initialTriangle; // The large initial triangle
-    private int initialSize = 10000;      // Controls size of initial triangle
-    private boolean isVoronoi;            // True iff VoD instead of DT
-    private boolean showCircles = false;  // True iff showing empty circles
+    private int initialSize = 10000; // Controls size of initial triangle
+    private boolean isVoronoi; // True iff VoD instead of DT
+    private boolean showCircles = false; // True iff showing empty circles
     private boolean showDelaunay = false; // True iff showing Delaunay edges
-    private boolean showVoronoi = false;  // True iff showing Voronoi edges
-    private Graphics g;                   // Stored graphics context
+    private boolean showVoronoi = false; // True iff showing Voronoi edges
+    private Graphics g; // Stored graphics context
 
     //~ Constructors -----------------------------------------------------------
 
@@ -161,9 +160,12 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
      * Create and initialize the DT.
      */
     public DelaunayPanel() {
-        initialTriangle = new Simplex<Pnt>(new Pnt(-initialSize, -initialSize),
+        initialTriangle =
+            new Simplex<Pnt>(
+                new Pnt(-initialSize, -initialSize),
                 new Pnt(initialSize, -initialSize),
-                new Pnt(0, initialSize));
+                new Pnt(0, initialSize)
+            );
         dt = new DelaunayTriangulation(initialTriangle);
     }
 
@@ -183,9 +185,9 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
             System.out.println(command);
         }
         if (command.equals("voronoi")) {
-            isVoronoi = true;                 // NOI18N
+            isVoronoi = true; // NOI18N
         } else if (command.equals("delaunay")) {
-            isVoronoi = false;                // NOI18N
+            isVoronoi = false; // NOI18N
         } else if (command.equals("clear")) { // NOI18N
             dt = new DelaunayTriangulation(initialTriangle);
         }
@@ -224,9 +226,9 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
         if (debug) {
             System.out.println("Entering " + name); // NOI18N
         }
-        showCircles = (name == "circles");          // NOI18N
-        showDelaunay = (name == "delaunay");        // NOI18N
-        showVoronoi = (name == "voronoi");          // NOI18N
+        showCircles = (name == "circles"); // NOI18N
+        showDelaunay = (name == "delaunay"); // NOI18N
+        showVoronoi = (name == "voronoi"); // NOI18N
         repaint();
     }
 
@@ -255,8 +257,7 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
      * @param  e  MouseClick Event
      */
     @Override
-    public void mouseClicked(final MouseEvent e) {
-    }
+    public void mouseClicked(final MouseEvent e) {}
 
     /**
      * MouseRelease event (not used, but needed for MouseListener).
@@ -264,8 +265,7 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
      * @param  e  MouseRelease Event
      */
     @Override
-    public void mouseReleased(final MouseEvent e) {
-    }
+    public void mouseReleased(final MouseEvent e) {}
 
     /* Basic Drawing Methods */
 
@@ -276,8 +276,8 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
      */
     public void draw(final Pnt point) {
         final int r = pointRadius;
-        final int x = (int)point.coord(0);
-        final int y = (int)point.coord(1);
+        final int x = (int) point.coord(0);
+        final int y = (int) point.coord(1);
         g.fillOval(x - r, y - r, r + r, r + r);
     }
 
@@ -288,7 +288,7 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
      * @param  endB  the other endpoint
      */
     public void draw(final Pnt endA, final Pnt endB) {
-        g.drawLine((int)endA.coord(0), (int)endA.coord(1), (int)endB.coord(0), (int)endB.coord(1));
+        g.drawLine((int) endA.coord(0), (int) endA.coord(1), (int) endB.coord(0), (int) endB.coord(1));
     }
 
     /**
@@ -299,9 +299,9 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
      * @param  fillColor  null implies no fill
      */
     public void draw(final Pnt center, final double radius, final Color fillColor) {
-        final int x = (int)center.coord(0);
-        final int y = (int)center.coord(1);
-        final int r = (int)radius;
+        final int x = (int) center.coord(0);
+        final int y = (int) center.coord(1);
+        final int r = (int) radius;
         if (fillColor != null) {
             final Color temp = g.getColor();
             g.setColor(fillColor);
@@ -407,9 +407,8 @@ class DelaunayPanel extends JPanel implements ActionListener, MouseListener {
      * Draw all the empty circles (one for each triangle) of the DT.
      */
     public void drawAllCircles() {
-// Loop through all triangles of the DT
-loop:
-        for (final Simplex<Pnt> triangle : dt) {
+        // Loop through all triangles of the DT
+        loop:for (final Simplex<Pnt> triangle : dt) {
             for (final Pnt p : initialTriangle) { // Skip circles invoving initialTriangle
                 if (triangle.contains(p)) {
                     continue loop;

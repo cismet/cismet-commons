@@ -1,41 +1,33 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
-
-import net.sourceforge.blowfishj.BlowfishEasy;
-
-import org.apache.log4j.Logger;
-
-import org.openide.util.NbBundle;
-import org.openide.util.WeakListeners;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FocusTraversalPolicy;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.security.SecureRandom;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import net.sourceforge.blowfishj.BlowfishEasy;
+import org.apache.log4j.Logger;
+import org.openide.util.NbBundle;
+import org.openide.util.WeakListeners;
 
 /**
  * Applet Password Encrypter.
@@ -52,16 +44,19 @@ public class PasswordEncrypter extends javax.swing.JFrame {
 
     private static final byte LF = 0xA;
 
-    @Deprecated public static String CRYPT_PREFIX = "crypt::";                       // NOI18N
-    @Deprecated private static final char[] MASTER_PASS = "fourtytwo".toCharArray(); // NOI18N
+    @Deprecated
+    public static String CRYPT_PREFIX = "crypt::"; // NOI18N
+
+    @Deprecated
+    private static final char[] MASTER_PASS = "fourtytwo".toCharArray(); // NOI18N
 
     private static final String CIPHER = "PBEWithMD5AndDES/CBC/PKCS5Padding"; // NOI18N
-    private static final String FACTORY = "PBEWithMD5AndDES";                 // NOI18N
+    private static final String FACTORY = "PBEWithMD5AndDES"; // NOI18N
     private static final int ITERATIONS = 20;
     private static final byte[] DEFAULT_SALT = new byte[] { 124, 10, 10, 54, 23, 43, 72, 78 };
 
     private static final char[] PE_MASTERKEY_PROP = "PasswordEncrypter.masterKey".toCharArray(); // NOI18N
-    private static final char[] PE_SALT_PROP = "PasswordEncrypter.salt".toCharArray();           // NOI18N
+    private static final char[] PE_SALT_PROP = "PasswordEncrypter.salt".toCharArray(); // NOI18N
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -79,6 +74,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     private javax.swing.JPasswordField pwfPassword1;
     private javax.swing.JPasswordField pwfPassword2;
     private javax.swing.JTextArea txaCode;
+
     // End of variables declaration//GEN-END:variables
 
     //~ Constructors -----------------------------------------------------------
@@ -121,9 +117,9 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setFont(new java.awt.Font("MS Sans Serif", 1, 12)); // NOI18N
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(
-                PasswordEncrypter.class,
-                "PasswordEncrypter.jLabel1.text"));                 // NOI18N
+        jLabel1.setText(
+            org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel1.text")
+        ); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -133,13 +129,14 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         getContentPane().add(jLabel1, gridBagConstraints);
 
         cmdGo.setText(org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.cmdGo.text")); // NOI18N
-        cmdGo.addActionListener(new java.awt.event.ActionListener() {
-
+        cmdGo.addActionListener(
+            new java.awt.event.ActionListener() {
                 @Override
                 public void actionPerformed(final java.awt.event.ActionEvent evt) {
                     cmdGoActionPerformed(evt);
                 }
-            });
+            }
+        );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
@@ -159,9 +156,9 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         getContentPane().add(txaCode, gridBagConstraints);
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(
-                PasswordEncrypter.class,
-                "PasswordEncrypter.jLabel2.text")); // NOI18N
+        jLabel2.setText(
+            org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel2.text")
+        ); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -169,9 +166,9 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         getContentPane().add(jLabel2, gridBagConstraints);
 
-        jLabel3.setText(org.openide.util.NbBundle.getMessage(
-                PasswordEncrypter.class,
-                "PasswordEncrypter.jLabel3.text")); // NOI18N
+        jLabel3.setText(
+            org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel3.text")
+        ); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -179,9 +176,9 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         getContentPane().add(jLabel3, gridBagConstraints);
 
-        jLabel4.setText(org.openide.util.NbBundle.getMessage(
-                PasswordEncrypter.class,
-                "PasswordEncrypter.jLabel4.text")); // NOI18N
+        jLabel4.setText(
+            org.openide.util.NbBundle.getMessage(PasswordEncrypter.class, "PasswordEncrypter.jLabel4.text")
+        ); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -189,13 +186,14 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         getContentPane().add(jLabel4, gridBagConstraints);
 
-        pwfPassword1.addFocusListener(new java.awt.event.FocusAdapter() {
-
+        pwfPassword1.addFocusListener(
+            new java.awt.event.FocusAdapter() {
                 @Override
                 public void focusGained(final java.awt.event.FocusEvent evt) {
                     pwfPassword1FocusGained(evt);
                 }
-            });
+            }
+        );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -205,13 +203,14 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         getContentPane().add(pwfPassword1, gridBagConstraints);
 
-        pwfPassword2.addFocusListener(new java.awt.event.FocusAdapter() {
-
+        pwfPassword2.addFocusListener(
+            new java.awt.event.FocusAdapter() {
                 @Override
                 public void focusGained(final java.awt.event.FocusEvent evt) {
                     pwfPassword2FocusGained(evt);
                 }
-            });
+            }
+        );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -240,7 +239,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     private void pwfPassword2FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword2FocusGained
         pwfPassword2.setSelectionStart(0);
         pwfPassword2.setSelectionEnd(pwfPassword1.getPassword().length);
-    }                                                                           //GEN-LAST:event_pwfPassword2FocusGained
+    } //GEN-LAST:event_pwfPassword2FocusGained
 
     /**
      * Focus Gained Password1.
@@ -250,14 +249,14 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     private void pwfPassword1FocusGained(final java.awt.event.FocusEvent evt) { //GEN-FIRST:event_pwfPassword1FocusGained
         pwfPassword1.setSelectionStart(0);
         pwfPassword1.setSelectionEnd(pwfPassword1.getPassword().length);
-    }                                                                           //GEN-LAST:event_pwfPassword1FocusGained
+    } //GEN-LAST:event_pwfPassword1FocusGained
 
     /**
      * Starter.
      *
      * @param  evt  Event
      */
-    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) {                        //GEN-FIRST:event_cmdGoActionPerformed
+    private void cmdGoActionPerformed(final java.awt.event.ActionEvent evt) { //GEN-FIRST:event_cmdGoActionPerformed
         final String p1 = new String(pwfPassword1.getPassword());
         final String p2 = new String(pwfPassword2.getPassword());
         if (p1.equals(p2)) {
@@ -276,25 +275,31 @@ public class PasswordEncrypter extends javax.swing.JFrame {
                     cause = current;
                     current = current.getCause();
                 }
-                txaCode.setText(NbBundle.getMessage(
+                txaCode.setText(
+                    NbBundle.getMessage(
                         PasswordEncrypter.class,
-                        "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).txtCode.text.pwEncEx",  // NOI18N
-                        cause.getLocalizedMessage()));
+                        "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).txtCode.text.pwEncEx", // NOI18N
+                        cause.getLocalizedMessage()
+                    )
+                );
             }
         } else {
             JOptionPane.showMessageDialog(
                 this,
                 NbBundle.getMessage(
                     PasswordEncrypter.class,
-                    "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.message"), // NOI18N
+                    "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.message"
+                ), // NOI18N
                 NbBundle.getMessage(
                     PasswordEncrypter.class,
-                    "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.title"),   // NOI18N
-                JOptionPane.ERROR_MESSAGE);
-            pwfPassword1.setText("");                                                                // NOI18N
-            pwfPassword2.setText("");                                                                // NOI18N
+                    "PasswordEncrypter.cmdGoActionPerformed(ActionEvent).JOptionPane_anon.title"
+                ), // NOI18N
+                JOptionPane.ERROR_MESSAGE
+            );
+            pwfPassword1.setText(""); // NOI18N
+            pwfPassword2.setText(""); // NOI18N
         }
-    }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
+    } //GEN-LAST:event_cmdGoActionPerformed
 
     /**
      * main program.
@@ -304,8 +309,8 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      * @throws  Exception  throws Exeption if anything went wrong
      */
     public static void main(final String[] args) throws Exception {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
+        java.awt.EventQueue.invokeLater(
+            new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -315,7 +320,8 @@ public class PasswordEncrypter extends javax.swing.JFrame {
                     }
                     new PasswordEncrypter().setVisible(true);
                 }
-            });
+            }
+        );
     }
 
     /**
@@ -410,7 +416,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         final byte[] base64 = Base64.toBase64(enc, true);
         final char[] chars = new char[base64.length];
         for (int i = 0; i < base64.length; ++i) {
-            chars[i] = (char)base64[i];
+            chars[i] = (char) base64[i];
             base64[i] = getWipe();
         }
 
@@ -419,7 +425,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         ret[0] = '{';
         for (int i = 0; i < chars.length; ++i) {
             ret[i + 1] = chars[i];
-            chars[i] = (char)getWipe();
+            chars[i] = (char) getWipe();
         }
         ret[ret.length - 1] = '}';
 
@@ -495,19 +501,19 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             for (int i = 0; i < (string.length - 2); ++i) {
                 base64[i] = string[i + 1];
                 if (wipeInput) {
-                    string[i] = (char)getWipe();
+                    string[i] = (char) getWipe();
                 }
             }
 
             if (wipeInput) {
-                string[0] = (char)getWipe();
-                string[string.length - 1] = (char)getWipe();
+                string[0] = (char) getWipe();
+                string[string.length - 1] = (char) getWipe();
             }
 
             final byte[] b64Bytes = new byte[base64.length];
             for (int i = 0; i < base64.length; ++i) {
-                b64Bytes[i] = (byte)base64[i];
-                base64[i] = (char)getWipe();
+                b64Bytes[i] = (byte) base64[i];
+                base64[i] = (char) getWipe();
             }
 
             final byte[] bytes = Base64.fromBase64(b64Bytes, true);
@@ -597,7 +603,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
             // simple cast because of ASCII only support
             final char[] chars = new char[bytes.length];
             for (int i = 0; i < bytes.length; ++i) {
-                chars[i] = (char)bytes[i];
+                chars[i] = (char) bytes[i];
                 bytes[i] = getWipe();
             }
 
@@ -623,7 +629,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         } else {
             final byte[] salt = safeRead(peStream, PE_SALT_PROP);
             if (salt == null) {
-                LOG.warn("salt not set, using default salt");                  // NOI18N
+                LOG.warn("salt not set, using default salt"); // NOI18N
 
                 return DEFAULT_SALT;
             } else if (salt.length < 8) {
@@ -677,7 +683,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         final char[] chars = new char[bytes.length >> 1];
         for (int i = 0; i < chars.length; ++i) {
             final int p = i << 1;
-            chars[i] = (char)(((bytes[p] & 0x00FF) << 8) + (bytes[p + 1] & 0x00FF));
+            chars[i] = (char) (((bytes[p] & 0x00FF) << 8) + (bytes[p + 1] & 0x00FF));
 
             if (wipeInput) {
                 bytes[p] = getWipe();
@@ -714,11 +720,11 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         final byte[] bytes = new byte[chars.length << 1];
         for (int i = 0; i < chars.length; ++i) {
             final int p = i << 1;
-            bytes[p] = (byte)((chars[i] & 0xFF00) >> 8);
-            bytes[p + 1] = (byte)(chars[i] & 0x00FF);
+            bytes[p] = (byte) ((chars[i] & 0xFF00) >> 8);
+            bytes[p + 1] = (byte) (chars[i] & 0x00FF);
 
             if (wipeInput) {
-                chars[i] = (char)getWipe();
+                chars[i] = (char) getWipe();
             }
         }
 
@@ -734,7 +740,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      */
     public static void wipe(final char[] chars) {
         for (int i = 0; i < chars.length; ++i) {
-            chars[i] = (char)getWipe();
+            chars[i] = (char) getWipe();
         }
     }
 
@@ -773,7 +779,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
      * @throws  PasswordEncrypterException  throws PasswordEncrypterExeption if anything went wrong
      */
     public static byte[] safeRead(final InputStream propertyStream, final char[] property)
-            throws PasswordEncrypterException {
+        throws PasswordEncrypterException {
         // TODO: optimise parser
         try {
             int c;
@@ -800,7 +806,7 @@ public class PasswordEncrypter extends javax.swing.JFrame {
                     int p;
                     int index = 0;
                     while (((p = propertyStream.read()) > 0) && (p != LF)) {
-                        bytes[index] = (byte)p;
+                        bytes[index] = (byte) p;
                         index++;
 
                         final byte[] tmp = new byte[bytes.length + 100];

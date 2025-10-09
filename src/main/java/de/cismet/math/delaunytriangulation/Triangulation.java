@@ -1,11 +1,12 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.math.delaunytriangulation;
+
 /*
  * Copyright (c) 2005 by L. Paul Chew.
  *
@@ -109,10 +110,10 @@ public class Triangulation<V> implements Iterable<Simplex<V>> {
         System.out.println("Neighbor data for " + this); // NOI18N
         for (final Simplex<V> simplex : neighbors.keySet()) {
             Simplex.moreInfo = true;
-            System.out.print("    " + simplex + ":");    // NOI18N
+            System.out.print("    " + simplex + ":"); // NOI18N
             Simplex.moreInfo = false;
             for (final Simplex neighbor : neighbors.get(simplex)) {
-                System.out.print(" " + neighbor);        // NOI18N
+                System.out.print(" " + neighbor); // NOI18N
             }
             System.out.println();
         }
@@ -135,8 +136,7 @@ public class Triangulation<V> implements Iterable<Simplex<V>> {
         if (!simplex.contains(vertex)) {
             throw new IllegalArgumentException("Bad vertex; not in simplex"); // NOI18N
         }
-SimplexLoop:
-        for (final Simplex<V> s : neighbors.get(simplex)) {
+        SimplexLoop:for (final Simplex<V> s : neighbors.get(simplex)) {
             for (final V v : simplex) {
                 if (v.equals(vertex)) {
                     continue;

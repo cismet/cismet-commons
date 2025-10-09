@@ -1,14 +1,13 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities.deegree;
 
 import de.cismet.commons.exceptions.ConvertException;
-
 import de.cismet.commons.wms.capabilities.Unit;
 
 /**
@@ -39,7 +38,7 @@ public class DeegreeUnit implements Unit {
     @Override
     public double convert(final double value, final Unit targetUnit) throws ConvertException {
         if (targetUnit instanceof DeegreeUnit) {
-            final org.deegree.crs.components.Unit dUnit = ((DeegreeUnit)targetUnit).toDeegreeUnit();
+            final org.deegree.crs.components.Unit dUnit = ((DeegreeUnit) targetUnit).toDeegreeUnit();
             if (un.canConvert(dUnit)) {
                 return un.convert(value, dUnit);
             } else {
@@ -47,8 +46,9 @@ public class DeegreeUnit implements Unit {
             }
         } else {
             throw new ConvertException(
-                "can only convert objects of the type DeegreeUnit. The given object has the type "
-                        + targetUnit.getClass().getName());
+                "can only convert objects of the type DeegreeUnit. The given object has the type " +
+                targetUnit.getClass().getName()
+            );
         }
     }
 

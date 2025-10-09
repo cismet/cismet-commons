@@ -1,22 +1,20 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package de.cismet.commons.security.handler;
 
+import de.cismet.commons.security.AccessHandler;
 import java.io.InputStream;
 import java.io.Reader;
-
 import java.net.URL;
-
-import de.cismet.commons.security.AccessHandler;
 
 /**
  * DOCUMENT ME!
@@ -40,9 +38,8 @@ public abstract class AbstractAccessHandler implements AccessHandler {
      * @throws  Exception  DOCUMENT ME!
      */
     public InputStream doRequest(final URL url, final Reader requestParameter, final ACCESS_METHODS method)
-            throws Exception {
+        throws Exception {
         return doRequest(url, requestParameter, method, null);
     }
-
     // idee methode die prüft ob ein Array/Liste von Options gesetzt ist
 }

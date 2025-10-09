@@ -1,11 +1,12 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.math.delaunytriangulation;
+
 /*
  * Copyright (c) 2005 by L. Paul Chew.
  *
@@ -49,13 +50,13 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    private static long idGenerator = 0;    // Used to create id numbers
+    private static long idGenerator = 0; // Used to create id numbers
     public static boolean moreInfo = false; // True iff more info in toString
 
     //~ Instance fields --------------------------------------------------------
 
     private List<V> vertices; // The simplex's vertices
-    private long idNumber;    // The id number
+    private long idNumber; // The id number
 
     //~ Constructors -----------------------------------------------------------
 
@@ -94,7 +95,7 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
     @Override
     public String toString() {
         if (!moreInfo) {
-            return "Simplex" + idNumber;                // NOI18N
+            return "Simplex" + idNumber; // NOI18N
         }
         return "Simplex" + idNumber + super.toString(); // NOI18N
     }
@@ -189,7 +190,7 @@ class Simplex<V> extends AbstractSet<V> implements Set<V> {
      */
     @Override
     public int hashCode() {
-        return (int)(idNumber ^ (idNumber >>> 32));
+        return (int) (idNumber ^ (idNumber >>> 32));
     }
 
     /**

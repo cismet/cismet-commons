@@ -11,36 +11,26 @@
  */
 package de.cismet.commons.security.handler;
 
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.NTCredentials;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScheme;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.auth.CredentialsNotAvailableException;
+import org.apache.commons.httpclient.auth.CredentialsProvider;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.io.IOUtils;
-import org.apache.hc.client5.http.auth.AuthScope;
-import org.apache.hc.client5.http.auth.Credentials;
-import org.apache.hc.client5.http.auth.CredentialsProvider;
-import org.apache.hc.client5.http.auth.NTCredentials;
-import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.classic.methods.HttpHead;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
-import org.apache.hc.client5.http.config.RequestConfig;
-import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
-import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
-import org.apache.hc.client5.http.protocol.HttpClientContext;
-import org.apache.hc.core5.http.ContentType;
-import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.HttpHost;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.HttpStatus;
-import org.apache.hc.core5.http.io.entity.InputStreamEntity;
-import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.apache.hc.core5.http.protocol.HttpContext;
-import org.apache.hc.core5.util.Timeout;
 
 import java.io.*;
 import java.io.BufferedInputStream;
@@ -51,17 +41,12 @@ import java.io.Reader;
 import java.net.BindException;
 import java.net.URL;
 
-import java.nio.charset.StandardCharsets;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 import de.cismet.commons.security.AccessHandler;
 import de.cismet.commons.security.AccessHandler.ACCESS_HANDLER_TYPES;
 import de.cismet.commons.security.AccessHandler.ACCESS_METHODS;
-import de.cismet.commons.security.WebDavClient;
 import de.cismet.commons.security.exceptions.BadHttpStatusCodeException;
 import de.cismet.commons.security.exceptions.CannotReadFromURLException;
 
@@ -85,20 +70,6 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
         };
     public static final ACCESS_HANDLER_TYPES ACCESS_HANDLER_TYPE = ACCESS_HANDLER_TYPES.HTTP;
     private static final String USER_AGENT_HEADER_KEY = "User-Agent";
-
-    //~ Enums ------------------------------------------------------------------
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @version  $Revision$, $Date$
-     */
-    public enum PartType {
-
-        //~ Enum constants -----------------------------------------------------
-
-        STRING, FILE, STREAM
-    }
 
     //~ Instance fields --------------------------------------------------------
 
@@ -224,7 +195,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             final HashMap<String, String> options,
             final UsernamePasswordCredentials credentials,
             final boolean withHeaders) throws Exception {
-        final CloseableHttpClient client = getSecurityEnabledHttpClient(url, credentials);
+        final HttpClient client = getSecurityEnabledHttpClient(url);
         final StringBuilder parameter = new StringBuilder();
 
         final BufferedReader reader = new BufferedReader(requestParameter);
@@ -234,7 +205,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             parameter.append(currentLine);
         }
 
-        HttpUriRequest httpMethod;
+        HttpMethod httpMethod;
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Access method: '" + method + "'."); // NOI18N
@@ -243,15 +214,11 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
         switch (method) {
             case POST_REQUEST_NO_TUNNEL:
             case POST_REQUEST: {
-                httpMethod = new HttpPost(url.toString());
-
-                httpMethod.setEntity(new StringEntity(
+                httpMethod = new PostMethod(url.toString());
+                ((PostMethod)httpMethod).setRequestEntity(new StringRequestEntity(
                         parameter.toString(),
-                        ContentType.create(requestHeader, StandardCharsets.UTF_8)));
-//                ((PostMethod)httpMethod).setRequestEntity(new StringRequestEntity(
-//                        parameter.toString(),
-//                        requestHeader,
-//                        "UTF-8"));                                                          // NOI18N
+                        requestHeader,
+                        "UTF-8"));                                                          // NOI18N
                 break;
             }
             case GET_REQUEST_NO_TUNNEL:
@@ -261,13 +228,13 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                         LOG.debug("HTTP GET: '" + url.toString() + "?" + parameter + "'."); // NOI18N
                     }
 
-                    httpMethod = new HttpGet(url.toString() + "?" + parameter);                    // NOI18N
+                    httpMethod = new GetMethod(url.toString() + "?" + parameter);                  // NOI18N
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("No parameters specified. HTTP GET: '" + url.toString() + "'."); // NOI18N
                     }
 
-                    httpMethod = new HttpGet(url.toString());
+                    httpMethod = new GetMethod(url.toString());
                 }
                 break;
             }
@@ -278,13 +245,13 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                         LOG.debug("HTTP HEAD: '" + url.toString() + "?" + parameter + "'."); // NOI18N
                     }
 
-                    httpMethod = new HttpHead(url.toString() + "?" + parameter);                    // NOI18N
+                    httpMethod = new HeadMethod(url.toString() + "?" + parameter);                  // NOI18N
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("No parameters specified. HTTP HEAD: '" + url.toString() + "'."); // NOI18N
                     }
 
-                    httpMethod = new HttpHead(url.toString());
+                    httpMethod = new HeadMethod(url.toString());
                 }
                 break;
             }
@@ -298,35 +265,34 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
 
                     // httpMethod = new PostMethod(url.toString()); ((PostMethod) httpMethod).setRequestEntity(new
                     // StringRequestEntity(parameter.toString(), "text/xml", "UTF-8"));
-                    httpMethod = new HttpGet(url.toString() + "?" + parameter);                           // NOI18N
+                    httpMethod = new GetMethod(url.toString() + "?" + parameter);                         // NOI18N
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("No method specified, switching to '" + ACCESS_METHODS.GET_REQUEST
                                     + "'. No parameters specified. URI used: '" + url.toString() + "'."); // NOI18N
                     }
 
-                    httpMethod = new HttpGet(url.toString());
+                    httpMethod = new GetMethod(url.toString());
                 }
             }
         }
 
+        if (credentials != null) {
+            client.getState().setCredentials(AuthScope.ANY, credentials);
+        }
         if ((options != null) && !options.isEmpty()) {
             for (final Entry<String, String> option : options.entrySet()) {
-                httpMethod.addHeader(option.getKey(), option.getValue());
+                httpMethod.addRequestHeader(option.getKey(), option.getValue());
             }
         }
         final boolean hasBound = false;
-
         while (!hasBound) {
             try {
+                httpMethod.setDoAuthentication(true);
                 // some urls are not reachable without a user agent
-                httpMethod.addHeader(USER_AGENT_HEADER_KEY, "wunda");
-                final int statuscode;
-                final CloseableHttpResponse response;
+                httpMethod.addRequestHeader(new Header(USER_AGENT_HEADER_KEY, "wunda"));
 
-                response = client.execute(httpMethod);
-                statuscode = response.getCode();
-
+                final int statuscode = client.executeMethod(httpMethod);
                 switch (statuscode) {
                     case (HttpStatus.SC_UNAUTHORIZED): {
                         if (LOG.isInfoEnabled()) {
@@ -334,7 +300,6 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                                         + ")."); // NOI18N
                         }
 
-                        response.close();
                         throw new CannotReadFromURLException("You are not authorized to access this URL."); // NOI18N
                     }
                     case (HttpStatus.SC_OK): {
@@ -348,22 +313,20 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             final ObjectOutputStream oos = new ObjectOutputStream(baos);
 
-                            oos.writeObject(response.getHeaders());
+                            oos.writeObject(httpMethod.getResponseHeaders());
 
                             oos.flush();
                             oos.close();
 
                             final InputStream is = new ByteArrayInputStream(baos.toByteArray());
                             baos.close();
-
-                            response.close();
                             return is;
                         } else {
                             if (withHeaders) {
                                 String contentType = "";
-                                final InputStream is = response.getEntity().getContent();
+                                final InputStream is = httpMethod.getResponseBodyAsStream();
 
-                                for (final Header h : response.getHeaders()) {
+                                for (final Header h : httpMethod.getResponseHeaders()) {
                                     if (h.getName().equalsIgnoreCase("Content-Type")) {
                                         contentType = h.getValue();
                                     }
@@ -375,29 +338,23 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                                 result.write("\n".getBytes("utf-8"));
                                 result.write(IOUtils.toByteArray(is));
 
-                                response.close();
                                 return new ByteArrayInputStream(result.toByteArray());
                             } else {
-                                return new BufferedInputStream(new WebDavClient.ResponseInputStream(
-                                            response.getEntity().getContent(),
-                                            response));
+                                return new BufferedInputStream(httpMethod.getResponseBodyAsStream());
                             }
                         }
                     }
                     default: {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Unhandled HTTP status code: " + statuscode + " ("
-                                        + response.getReasonPhrase()
+                                        + HttpStatus.getStatusText(statuscode)
                                         + ")"); // NOI18N
                         }
-                        final String content = new String(IOUtils.toByteArray(response.getEntity().getContent()));
 
-                        response.close();
-
-                        throw new BadHttpStatusCodeException(httpMethod.getRequestUri(),
+                        throw new BadHttpStatusCodeException(httpMethod.getURI().toString(),
                             statuscode,
-                            response.getReasonPhrase(),
-                            content); // NOI18N
+                            HttpStatus.getStatusText(statuscode),
+                            httpMethod.getResponseBodyAsString()); // NOI18N
                     }
                 }
             } catch (BindException e) {
@@ -414,8 +371,8 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     public InputStream doRequest(final URL url,
             final InputStream requestParameter,
             final HashMap<String, String> requestHeader) throws Exception {
-        final HttpPost postMethod = new HttpPost(url.toString());
-        postMethod.setEntity(new InputStreamEntity(requestParameter, ContentType.APPLICATION_OCTET_STREAM));
+        final PostMethod postMethod = new PostMethod(url.toString());
+        postMethod.setRequestEntity(new InputStreamRequestEntity(requestParameter));
         return doRequest(url, postMethod, requestHeader);
     }
 
@@ -433,31 +390,11 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     public InputStream doMultipartRequest(final URL url,
             final Part[] parts,
             final HashMap<String, String> requestHeader) throws Exception {
-        final HttpPost post = new HttpPost(url.toURI());
-        final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-
-        for (final Part part : parts) {
-            if (PartType.STRING.equals(part.getType())) {
-                builder.addTextBody(
-                    part.getName(),
-                    (String)part.getContent(),
-                    ContentType.TEXT_PLAIN.withCharset(StandardCharsets.UTF_8));
-            } else if (PartType.STREAM.equals(part.getType())) {
-                builder.addBinaryBody(
-                    part.getName(),
-                    (InputStream)part.getContent());
-            } else if (PartType.FILE.equals(part.getType())) {
-                builder.addBinaryBody(
-                    part.getName(),
-                    (File)part.getContent(),
-                    ContentType.APPLICATION_OCTET_STREAM,
-                    ((File)part.getContent()).getName());
-            }
-        }
-
-        final HttpEntity multipartEntity = builder.build();
-        post.setEntity(multipartEntity);
-        return doRequest(url, post, requestHeader);
+        final PostMethod postMethod = new PostMethod(url.toString());
+        final MultipartRequestEntity requestEntity = new MultipartRequestEntity(parts, postMethod.getParams());
+        postMethod.addRequestHeader("Content-Type", requestEntity.getContentType());
+        postMethod.setRequestEntity(requestEntity);
+        return doRequest(url, postMethod, requestHeader);
     }
 
     @Override
@@ -477,9 +414,9 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
      * @throws  Exception  DOCUMENT ME!
      */
     private InputStream doRequest(final URL url,
-            final HttpPost postMethod,
+            final PostMethod postMethod,
             final HashMap<String, String> requestHeader) throws Exception {
-        final CloseableHttpClient client = getSecurityEnabledHttpClient(url, null);
+        final HttpClient client = getSecurityEnabledHttpClient(url);
         boolean hasUserAgent = false;
 
         if ((requestHeader != null) && !requestHeader.isEmpty()) {
@@ -487,22 +424,19 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                 if (option.getKey().equalsIgnoreCase(USER_AGENT_HEADER_KEY)) {
                     hasUserAgent = true;
                 }
-                postMethod.addHeader(option.getKey(), option.getValue());
+                postMethod.addRequestHeader(option.getKey(), option.getValue());
             }
         }
         final boolean hasBound = false;
         while (!hasBound) {
             try {
-//                postMethod.setDoAuthentication(true);     //in version 5 not needed enymore
+                postMethod.setDoAuthentication(true);
                 // some urls are not reachable without a user agent
                 if (!hasUserAgent) {
-                    postMethod.addHeader(USER_AGENT_HEADER_KEY, "wunda");
+                    postMethod.addRequestHeader(new Header(USER_AGENT_HEADER_KEY, "wunda"));
                 }
 
-                final CloseableHttpResponse response = client.execute(postMethod);
-
-                final int statuscode = response.getCode();
-
+                final int statuscode = client.executeMethod(postMethod);
                 switch (statuscode) {
                     case (HttpStatus.SC_UNAUTHORIZED): {
                         if (LOG.isInfoEnabled()) {
@@ -510,7 +444,6 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                                         + ")."); // NOI18N
                         }
 
-                        response.close();
                         throw new CannotReadFromURLException("You are not authorized to access this URL."); // NOI18N
                     }
                     case (HttpStatus.SC_OK): {
@@ -518,25 +451,19 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                             LOG.debug("HTTP status code from server: OK.");                                 // NOI18N
                         }
 
-                        return new BufferedInputStream(new WebDavClient.ResponseInputStream(
-                                    response.getEntity().getContent(),
-                                    response));
+                        return new BufferedInputStream(postMethod.getResponseBodyAsStream());
                     }
                     default: {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Unhandled HTTP status code: " + statuscode + " ("
-                                        + response.getReasonPhrase()
-                                        + ")"); // NOI18N
+                                        + HttpStatus.getStatusText(statuscode)
+                                        + ")."); // NOI18N
                         }
 
-                        final String content = new String(IOUtils.toByteArray(response.getEntity().getContent()));
-
-                        response.close();
-
-                        throw new BadHttpStatusCodeException(postMethod.getRequestUri(),
+                        throw new BadHttpStatusCodeException(postMethod.getURI().toString(),
                             statuscode,
-                            response.getReasonPhrase(),
-                            content); // NOI18N
+                            HttpStatus.getStatusText(statuscode),
+                            postMethod.getResponseBodyAsString()); // NOI18N
                     }
                 }
             } catch (BindException e) {
@@ -564,78 +491,64 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     }
 
     /**
-     * Returns a configured HttpClient with (if set) proxy settings.
+     * DOCUMENT ME!
      *
-     * @param   url          DOCUMENT ME!
-     * @param   credentials  DOCUMENT ME!
+     * @param   url  DOCUMENT ME!
      *
-     * @return  configured HttpClient
+     * @return  DOCUMENT ME!
      */
-    protected CloseableHttpClient getSecurityEnabledHttpClient(final URL url,
-            final UsernamePasswordCredentials credentials) {
+    protected HttpClient getSecurityEnabledHttpClient(final URL url) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("getSecurityEnabledHttpClient"); // NOI18N
         }
+        final HttpClient client = getConfiguredHttpClient();
+        client.getParams().setParameter(CredentialsProvider.PROVIDER, new CredentialsProvider() {
 
-        final PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+                @Override
+                public Credentials getCredentials(final AuthScheme scheme,
+                        final String host,
+                        final int port,
+                        final boolean proxy) throws CredentialsNotAvailableException {
+                    return null;
+                }
+            });
 
-//        connManager.setDefaultMaxPerRoute(MAX_HOST_CONNECTIONS);
-//        connManager.setMaxTotal(MAX_HOST_CONNECTIONS * 2);
+        if (connectionTimeout >= 0) {
+            client.getHttpConnectionManager().getParams().setConnectionTimeout(connectionTimeout);
+        }
+        if (soTimeout >= 0) {
+            client.getHttpConnectionManager().getParams().setSoTimeout(soTimeout);
+        }
+        return client;
+    }
 
-        final RequestConfig.Builder requestConfig = RequestConfig.custom();
+    /**
+     * Returns a configured HttpClient with (if set) proxy settings.
+     *
+     * @return  configured HttpClient
+     */
+    protected HttpClient getConfiguredHttpClient() {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("getConfiguredHttpClient"); // NOI18N
+        }
 
-        final BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-
+        final MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+        final HttpClient client = new HttpClient(connectionManager);
         if ((proxy != null) && proxy.isEnabled()) {
-            final HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort());
+            client.getHostConfiguration().setProxy(proxy.getHost(), proxy.getPort());
 
-            requestConfig.setProxy(proxyHost);
-
-            // Proxy-Authentifizierung
+            // proxy needs authentication
             if ((proxy.getUsername() != null) && (proxy.getPassword() != null)) {
-                credsProvider.setCredentials(
-                    new AuthScope(proxy.getHost(), proxy.getPort()),
-                    new NTCredentials(
-                        proxy.getUsername(),
-                        proxy.getPassword().toCharArray(),
-                        null,
-                        proxy.getDomain()));
+                final AuthScope authscope = new AuthScope(proxy.getHost(), proxy.getPort());
+                final Credentials credentials = new NTCredentials(proxy.getUsername(),
+                        proxy.getPassword(),
+                        "", // NOI18N
+                        (proxy.getDomain() == null) ? "" : proxy.getDomain());
+                client.getState().setProxyCredentials(authscope, credentials);
             }
         }
 
-        if (connectionTimeout >= 0) {
-            requestConfig.setConnectTimeout(
-                Timeout.ofMilliseconds(connectionTimeout));
-        }
-
-        if (soTimeout >= 0) {
-            requestConfig.setResponseTimeout(
-                Timeout.ofMilliseconds(soTimeout));
-        }
-
-        if (credentials != null) {
-            final List<CredentialsProvider> providers = new ArrayList<>();
-            final BasicCredentialsProvider customCredsProvider = new BasicCredentialsProvider();
-
-            customCredsProvider.setCredentials(new AuthScope(null, -1), credentials); // = AuthScope.ANY
-
-            providers.add(credsProvider);
-            providers.add(customCredsProvider);
-
-            final ChainedCredentialsProvider chainedProvider = new ChainedCredentialsProvider(providers);
-
-            return HttpClients.custom()
-                        .setConnectionManager(connManager)
-                        .setDefaultCredentialsProvider(chainedProvider)
-                        .setDefaultRequestConfig(requestConfig.build())
-                        .build();
-        } else {
-            return HttpClients.custom()
-                        .setConnectionManager(connManager)
-                        .setDefaultCredentialsProvider(credsProvider)
-                        .setDefaultRequestConfig(requestConfig.build())
-                        .build();
-        }
+        return client;
     }
 
     @Override
@@ -705,101 +618,5 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             }
         }
         return urlAccessible;
-    }
-
-    //~ Inner Classes ----------------------------------------------------------
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @version  $Revision$, $Date$
-     */
-    public static class Part {
-
-        //~ Instance fields ----------------------------------------------------
-
-        private final String name;
-        private final Object content;
-        private final PartType type;
-
-        //~ Constructors -------------------------------------------------------
-
-        /**
-         * Creates a new Part object.
-         *
-         * @param  name     DOCUMENT ME!
-         * @param  content  DOCUMENT ME!
-         * @param  type     DOCUMENT ME!
-         */
-        public Part(final String name, final Object content, final PartType type) {
-            this.name = name;
-            this.content = content;
-            this.type = type;
-        }
-
-        //~ Methods ------------------------------------------------------------
-
-        /**
-         * DOCUMENT ME!
-         *
-         * @return  DOCUMENT ME!
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * DOCUMENT ME!
-         *
-         * @return  DOCUMENT ME!
-         */
-        public Object getContent() {
-            return content;
-        }
-
-        /**
-         * DOCUMENT ME!
-         *
-         * @return  DOCUMENT ME!
-         */
-        public PartType getType() {
-            return type;
-        }
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @version  $Revision$, $Date$
-     */
-    public static class ResponseInputStream extends FilterInputStream {
-
-        //~ Instance fields ----------------------------------------------------
-
-        private final CloseableHttpResponse response;
-
-        //~ Constructors -------------------------------------------------------
-
-        /**
-         * Creates a new ResponseInputStream object.
-         *
-         * @param  in        DOCUMENT ME!
-         * @param  response  DOCUMENT ME!
-         */
-        public ResponseInputStream(final InputStream in, final CloseableHttpResponse response) {
-            super(in);
-            this.response = response;
-        }
-
-        //~ Methods ------------------------------------------------------------
-
-        @Override
-        public void close() throws IOException {
-            try {
-                super.close();
-            } finally {
-                response.close();
-            }
-        }
     }
 }

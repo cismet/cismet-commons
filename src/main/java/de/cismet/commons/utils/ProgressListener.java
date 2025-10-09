@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.utils;
 
 import java.util.EventListener;
@@ -16,7 +16,6 @@ import java.util.EventListener;
  * @version  1.0
  */
 public interface ProgressListener extends EventListener {
-
     //~ Methods ----------------------------------------------------------------
 
     /**

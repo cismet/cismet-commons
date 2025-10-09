@@ -1,17 +1,15 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.capabilities;
 
-import org.apache.log4j.Logger;
-
-import java.net.MalformedURLException;
-
 import de.cismet.tools.CalculationCache;
+import java.net.MalformedURLException;
+import org.apache.log4j.Logger;
 
 /**
  * DOCUMENT ME!
@@ -81,9 +79,9 @@ public abstract class AbstractVersionNegotiator {
 
         if (olderVersionFound) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Older version found " + currentVersion);     // NOI18N
+                logger.debug("Older version found " + currentVersion); // NOI18N
             }
-            if (link.toLowerCase().indexOf("?") != -1) {                   // NOI18N
+            if (link.toLowerCase().indexOf("?") != -1) { // NOI18N
                 link = link.substring(0, link.toLowerCase().indexOf("?")); // NOI18N
             }
 
@@ -156,7 +154,7 @@ public abstract class AbstractVersionNegotiator {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("send request = " + link);          // NOI18N
+            logger.debug("send request = " + link); // NOI18N
             logger.debug("start version = " + startVersion); // NOI18N
         }
         document = readStringFromlink(link);
@@ -169,12 +167,21 @@ public abstract class AbstractVersionNegotiator {
         }
 
         if (!isVersionSupported(currentVersion)) {
-            logger.error("The client does not support the version of the received Getcapabilities document." // NOI18N
-                        + "\nLink: " + link + "\nresponse version " + currentVersion);              // NOI18N
+            logger.error(
+                "The client does not support the version of the received Getcapabilities document." + // NOI18N
+                "\nLink: " +
+                link +
+                "\nresponse version " +
+                currentVersion
+            ); // NOI18N
         } else {
             if (logger.isDebugEnabled()) {
-                logger.debug("Version negotation successfully. \nLink: "                            // NOI18N
-                            + link + "\nresponse version " + currentVersion);                       // NOI18N
+                logger.debug(
+                    "Version negotation successfully. \nLink: " + // NOI18N
+                    link +
+                    "\nresponse version " +
+                    currentVersion
+                ); // NOI18N
             }
         }
 
@@ -194,7 +201,7 @@ public abstract class AbstractVersionNegotiator {
         if (link.toLowerCase().indexOf(VERSION_STRING) != -1) {
             version = link.substring(link.toLowerCase().indexOf(VERSION_STRING) + VERSION_STRING.length() + 1);
 
-            if (version.indexOf("&") != -1) {                         // NOI18N
+            if (version.indexOf("&") != -1) { // NOI18N
                 version = version.substring(0, version.indexOf("&")); // NOI18N
             }
         }
@@ -231,18 +238,22 @@ public abstract class AbstractVersionNegotiator {
         int startIndexOfVersion = -1;
         String endCharacter = "\"";
 
-        if (document.indexOf("?>") != -1) {                                                                   // NOI18N
+        if (document.indexOf("?>") != -1) { // NOI18N
             if (document.indexOf(VERSION_STRING + "=\"", document.indexOf("?>")) == -1) {
-                startIndexOfVersion = document.indexOf(VERSION_STRING + "='", document.indexOf("?>"))         // NOI18N
-                            + VERSION_STRING.length() + 2;                                                    // NOI18N
+                startIndexOfVersion =
+                    document.indexOf(VERSION_STRING + "='", document.indexOf("?>")) + // NOI18N
+                    VERSION_STRING.length() +
+                    2; // NOI18N
                 endCharacter = "'";
             } else {
-                startIndexOfVersion = document.indexOf(VERSION_STRING + "=\"", document.indexOf("?>"))        // NOI18N
-                            + VERSION_STRING.length() + 2;                                                    // NOI18N
+                startIndexOfVersion =
+                    document.indexOf(VERSION_STRING + "=\"", document.indexOf("?>")) + // NOI18N
+                    VERSION_STRING.length() +
+                    2; // NOI18N
             }
         } else {
             if (document.indexOf(VERSION_STRING + "=\"") == -1) {
-                startIndexOfVersion = document.indexOf(VERSION_STRING + "='") + VERSION_STRING.length() + 2;  // NOI18N
+                startIndexOfVersion = document.indexOf(VERSION_STRING + "='") + VERSION_STRING.length() + 2; // NOI18N
                 endCharacter = "'";
             } else {
                 startIndexOfVersion = document.indexOf(VERSION_STRING + "=\"") + VERSION_STRING.length() + 2; // NOI18N
@@ -255,7 +266,7 @@ public abstract class AbstractVersionNegotiator {
             documentVersion = document.substring(startIndexOfVersion, endIndexOfVersion);
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("version of received GetCapabilities document: " + documentVersion);  // NOI18N
+            logger.debug("version of received GetCapabilities document: " + documentVersion); // NOI18N
         }
         return documentVersion;
     }

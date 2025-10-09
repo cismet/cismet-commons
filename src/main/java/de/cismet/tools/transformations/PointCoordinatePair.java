@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,7 +13,6 @@
 package de.cismet.tools.transformations;
 
 import com.vividsolutions.jts.geom.Coordinate;
-
 import java.awt.Point;
 
 /**
@@ -34,8 +33,7 @@ public class PointCoordinatePair {
     /**
      * Creates a new PointCoordinatePair object.
      */
-    public PointCoordinatePair() {
-    }
+    public PointCoordinatePair() {}
 
     /**
      * Creates a new PointCoordinatePair object.
@@ -52,8 +50,10 @@ public class PointCoordinatePair {
 
     @Override
     public Object clone() {
-        return new PointCoordinatePair((getPoint() != null) ? (Point)getPoint().clone() : null,
-                (getCoordinate() != null) ? (Coordinate)getCoordinate().clone() : null);
+        return new PointCoordinatePair(
+            (getPoint() != null) ? (Point) getPoint().clone() : null,
+            (getCoordinate() != null) ? (Coordinate) getCoordinate().clone() : null
+        );
     }
 
     /**

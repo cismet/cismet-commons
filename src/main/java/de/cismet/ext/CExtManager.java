@@ -1,18 +1,16 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.ext;
-
-import org.apache.log4j.Logger;
-
-import org.openide.util.Lookup;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.apache.log4j.Logger;
+import org.openide.util.Lookup;
 
 /**
  * Global extension manager implementation that can provide extension implementations of any type. The behavior is
@@ -44,8 +42,7 @@ public class CExtManager {
     /**
      * Singleton.
      */
-    private CExtManager() {
-    }
+    private CExtManager() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -84,9 +81,10 @@ public class CExtManager {
 
                 if (extensions == null) {
                     LOG.warn(
-                        "illegal CExtProvider implementation, CExtProvider.provideExtensions(CExtContext) returned " // NOI18N
-                                + "null, ignoring provider: "                                                        // NOI18N
-                                + provider);
+                        "illegal CExtProvider implementation, CExtProvider.provideExtensions(CExtContext) returned " + // NOI18N
+                        "null, ignoring provider: " + // NOI18N
+                        provider
+                    );
                 } else {
                     result.addAll(extensions);
                 }
@@ -119,9 +117,10 @@ public class CExtManager {
 
                 if (extensions == null) {
                     LOG.warn(
-                        "illegal CExtProvider implementation, CExtProvider.provideExtensions(CExtContext) returned " // NOI18N
-                                + "null, ignoring provider: "                                                        // NOI18N
-                                + provider);
+                        "illegal CExtProvider implementation, CExtProvider.provideExtensions(CExtContext) returned " + // NOI18N
+                        "null, ignoring provider: " + // NOI18N
+                        provider
+                    );
                 } else if (extensions.size() >= 1) {
                     return extensions.iterator().next();
                 }
@@ -149,7 +148,6 @@ public class CExtManager {
         /**
          * No instances needed.
          */
-        private LazyInitialiser() {
-        }
+        private LazyInitialiser() {}
     }
 }

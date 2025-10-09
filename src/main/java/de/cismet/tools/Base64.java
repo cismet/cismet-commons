@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
 /**
@@ -20,15 +20,73 @@ public final class Base64 {
     //J-
     private static final byte[] BASE64CODE = new byte[] {
         // A-Z
-        0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F,
-        0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A,
+        0x41,
+        0x42,
+        0x43,
+        0x44,
+        0x45,
+        0x46,
+        0x47,
+        0x48,
+        0x49,
+        0x4A,
+        0x4B,
+        0x4C,
+        0x4D,
+        0x4E,
+        0x4F,
+        0x50,
+        0x51,
+        0x52,
+        0x53,
+        0x54,
+        0x55,
+        0x56,
+        0x57,
+        0x58,
+        0x59,
+        0x5A,
         // a-z
-        0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F,
-        0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A,
+        0x61,
+        0x62,
+        0x63,
+        0x64,
+        0x65,
+        0x66,
+        0x67,
+        0x68,
+        0x69,
+        0x6A,
+        0x6B,
+        0x6C,
+        0x6D,
+        0x6E,
+        0x6F,
+        0x70,
+        0x71,
+        0x72,
+        0x73,
+        0x74,
+        0x75,
+        0x76,
+        0x77,
+        0x78,
+        0x79,
+        0x7A,
         // 0-9
-        0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+        0x30,
+        0x31,
+        0x32,
+        0x33,
+        0x34,
+        0x35,
+        0x36,
+        0x37,
+        0x38,
+        0x39,
         // + /
-        0x2B, 0x2F
+        0x2B,
+        0x2F,
     };
     //J+
 
@@ -43,8 +101,7 @@ public final class Base64 {
     /**
      * Creates a new Base64 object.
      */
-    private Base64() {
-    }
+    private Base64() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -77,9 +134,10 @@ public final class Base64 {
         final byte[] base64 = new byte[(byteStringPadded.length / 3) * 4];
         int k = 0;
         for (int i = 0; i < byteStringPadded.length; i += 3) {
-            final int j = ((byteStringPadded[i] & 0xFF) << 16)
-                        + ((byteStringPadded[i + 1] & 0xFF) << 8)
-                        + (byteStringPadded[i + 2] & 0xFF);
+            final int j =
+                ((byteStringPadded[i] & 0xFF) << 16) +
+                ((byteStringPadded[i + 1] & 0xFF) << 8) +
+                (byteStringPadded[i + 2] & 0xFF);
 
             if (wipeInput) {
                 byteStringPadded[i] = PasswordEncrypter.getWipe();
@@ -167,17 +225,19 @@ public final class Base64 {
 
         if ((strippedBr.length % 4) != 0) {
             throw new IllegalArgumentException(
-                "incorrectly encoded string, must be multible of four when CR LF is stripped: " // NOI18N
-                        + strippedBr.length);
+                "incorrectly encoded string, must be multible of four when CR LF is stripped: " + // NOI18N
+                strippedBr.length
+            );
         }
 
         final byte[] decoded = new byte[((strippedBr.length / 4) * 3) - padding];
         int k = 0;
         for (int i = 0; i < strippedBr.length; i += 4) {
-            final int j = ((indexOf(strippedBr[i]) & 0x3F) << 18)
-                        + ((indexOf(strippedBr[i + 1]) & 0x3F) << 12)
-                        + ((indexOf(strippedBr[i + 2]) & 0x3F) << 6)
-                        + (indexOf(strippedBr[i + 3]) & 0x3F);
+            final int j =
+                ((indexOf(strippedBr[i]) & 0x3F) << 18) +
+                ((indexOf(strippedBr[i + 1]) & 0x3F) << 12) +
+                ((indexOf(strippedBr[i + 2]) & 0x3F) << 6) +
+                (indexOf(strippedBr[i + 3]) & 0x3F);
 
             if (wipeInput) {
                 strippedBr[i] = PasswordEncrypter.getWipe();
@@ -186,12 +246,12 @@ public final class Base64 {
                 strippedBr[i + 3] = PasswordEncrypter.getWipe();
             }
 
-            decoded[k++] = (byte)((j >> 16) & 0xFF);
+            decoded[k++] = (byte) ((j >> 16) & 0xFF);
             if ((i < (strippedBr.length - 4)) || (padding < 2)) {
-                decoded[k++] = (byte)((j >> 8) & 0xFF);
+                decoded[k++] = (byte) ((j >> 8) & 0xFF);
             }
             if ((i < (strippedBr.length - 4)) || (padding < 1)) {
-                decoded[k++] = (byte)(j & 0xFF);
+                decoded[k++] = (byte) (j & 0xFF);
             }
         }
 

@@ -1,24 +1,22 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.capabilities;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 
 import de.cismet.tools.CalculationCache;
 import de.cismet.tools.Calculator;
 import de.cismet.tools.TimeoutThread;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Caches the result of capability requests.
@@ -115,7 +113,7 @@ public class SimpleCapabilitiesCache extends CalculationCache<String, String> {
             InputStream is = null;
 
             try {
-                final StringBuilder sb = new StringBuilder("");                       // NOI18N
+                final StringBuilder sb = new StringBuilder(""); // NOI18N
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("send Getcapabilities request to the service: " + url); // NOI18N
                 }
@@ -133,7 +131,7 @@ public class SimpleCapabilitiesCache extends CalculationCache<String, String> {
                             con.addRequestProperty("authorization", "Basic " + basicAuthenticationToken);
                         }
                         if (con instanceof HttpURLConnection) {
-                            final HttpURLConnection http = (HttpURLConnection)con;
+                            final HttpURLConnection http = (HttpURLConnection) con;
                             if ((http.getResponseCode() == 301) || (http.getResponseCode() == 308)) {
                                 con = new URL(http.getHeaderField("Location")).openConnection();
                             }
@@ -141,8 +139,7 @@ public class SimpleCapabilitiesCache extends CalculationCache<String, String> {
                         is = con.getInputStream();
                     } catch (IOException e) {
                         if (e.getMessage().contains("401")) {
-                            if ((basicAuthorizationTokens == null)
-                                        || (attempt >= basicAuthorizationTokens.length)) {
+                            if ((basicAuthorizationTokens == null) || (attempt >= basicAuthorizationTokens.length)) {
                                 exception = e;
                                 return;
                             } else {
@@ -198,7 +195,6 @@ public class SimpleCapabilitiesCache extends CalculationCache<String, String> {
         /**
          * Creates a new LazyInitialiser object.
          */
-        private LazyInitialiser() {
-        }
+        private LazyInitialiser() {}
     }
 }

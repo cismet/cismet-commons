@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.utils;
 
 /**
@@ -21,26 +21,66 @@ public final class StringUtils {
     //J-
     /** All the java keywords + 'true', 'false' 'null' literals **/
     public static final String[] KEYWORDS = {
-        "abstract", "continue", "for",        "new" ,      "switch",        // NOI18N
-        "assert",   "default",  "goto",       "package",   "synchronized",  // NOI18N
-        "boolean",  "do",       "if",         "private",   "this",          // NOI18N
-        "break",    "double",   "implements", "protected", "throw",         // NOI18N
-        "byte",     "else",     "import",     "public",    "throws",        // NOI18N
-        "case",     "enum",     "instanceof", "return",    "transient",     // NOI18N
-        "catch",    "extends",  "int",        "short",     "try",           // NOI18N
-        "char",     "final",    "interface",  "static",    "void",          // NOI18N
-        "class",    "finally",  "long",       "strictfp",  "volatile",      // NOI18N
-        "const",    "float",    "native",     "super",     "while",         // NOI18N
-
+        "abstract",
+        "continue",
+        "for",
+        "new",
+        "switch", // NOI18N
+        "assert",
+        "default",
+        "goto",
+        "package",
+        "synchronized", // NOI18N
+        "boolean",
+        "do",
+        "if",
+        "private",
+        "this", // NOI18N
+        "break",
+        "double",
+        "implements",
+        "protected",
+        "throw", // NOI18N
+        "byte",
+        "else",
+        "import",
+        "public",
+        "throws", // NOI18N
+        "case",
+        "enum",
+        "instanceof",
+        "return",
+        "transient", // NOI18N
+        "catch",
+        "extends",
+        "int",
+        "short",
+        "try", // NOI18N
+        "char",
+        "final",
+        "interface",
+        "static",
+        "void", // NOI18N
+        "class",
+        "finally",
+        "long",
+        "strictfp",
+        "volatile", // NOI18N
+        "const",
+        "float",
+        "native",
+        "super",
+        "while", // NOI18N
         // although this are no keywords but literals they are forbidden in identifiers, too
-        "true", "false", "null"                                             // NOI18N
+        "true",
+        "false",
+        "null", // NOI18N
     }; //J+
 
     /**
      * Creates a new instance of StringUtils.
      */
-    private StringUtils() {
-    }
+    private StringUtils() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -113,8 +153,8 @@ public final class StringUtils {
         //J-  trim leading and trailing illegal characters
         int begin = 0;
         int end = pakkage.length() - 1;
-        for(; begin < end  && !Character.isJavaIdentifierStart(pakkage.charAt(begin)) ; ++begin) {}
-        for(; end >= begin && !Character.isJavaIdentifierPart(pakkage.charAt(end))    ; --end)   {} //J+
+        for (; begin < end && !Character.isJavaIdentifierStart(pakkage.charAt(begin)); ++begin) {}
+        for (; end >= begin && !Character.isJavaIdentifierPart(pakkage.charAt(end)); --end) {} //J+
 
         final String trimmed = pakkage.substring(begin, end + 1);
 

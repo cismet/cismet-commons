@@ -1,15 +1,14 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
-import org.apache.log4j.Logger;
-
 import java.util.*;
+import org.apache.log4j.Logger;
 
 /**
  * Calculates values and cached it for a given time period.
@@ -82,12 +81,11 @@ public class CalculationCache<KEY extends Object, VALUE extends Object> {
                     if (result != null) {
                         cache.put(key, result);
                         final TimerTask tt = new TimerTask() {
-
-                                @Override
-                                public void run() {
-                                    cache.remove(key);
-                                }
-                            };
+                            @Override
+                            public void run() {
+                                cache.remove(key);
+                            }
+                        };
 
                         t.schedule(tt, timeToCacheResults);
                     }
@@ -98,12 +96,11 @@ public class CalculationCache<KEY extends Object, VALUE extends Object> {
                         exceptionCache.put(key, ex);
 
                         final TimerTask tt = new TimerTask() {
-
-                                @Override
-                                public void run() {
-                                    exceptionCache.remove(key);
-                                }
-                            };
+                            @Override
+                            public void run() {
+                                exceptionCache.remove(key);
+                            }
+                        };
 
                         t.schedule(tt, timeToCacheExceptions);
                     }
