@@ -1,15 +1,14 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.ref;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,7 +59,6 @@ public final class TimedSoftReference<T> extends SoftReference<T> {
      */
     public TimedSoftReference(final T referent, final ReferenceQueue<? super T> q, final long purgeAfterIdleTime) {
         super(referent, q);
-
         this.purgeAfterIdleTime = purgeAfterIdleTime;
 
         reschedule();

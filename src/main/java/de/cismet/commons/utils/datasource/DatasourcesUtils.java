@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,24 +12,19 @@
  */
 package de.cismet.commons.utils.datasource;
 
-import org.apache.log4j.Logger;
-
-import org.jdom.Element;
-
+import de.cismet.commons.capabilities.SimpleCapabilitiesCache;
+import de.cismet.commons.wms.capabilities.Layer;
+import de.cismet.commons.wms.capabilities.WMSCapabilities;
+import de.cismet.commons.wms.capabilities.WMSCapabilitiesFactory;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
-
-import de.cismet.commons.capabilities.SimpleCapabilitiesCache;
-
-import de.cismet.commons.wms.capabilities.Layer;
-import de.cismet.commons.wms.capabilities.WMSCapabilities;
-import de.cismet.commons.wms.capabilities.WMSCapabilitiesFactory;
+import org.apache.log4j.Logger;
+import org.jdom.Element;
 
 /**
  * DOCUMENT ME!
@@ -54,14 +49,17 @@ public class DatasourcesUtils {
      * @param  converter                 DOCUMENT ME!
      * @param  file                      DOCUMENT ME!
      */
-    public static void createLayerListHeadless(final Element serverElement,
-            final Element clientElement,
-            final String[] basicAuthorizationTokens,
-            final DatasourcesPojoConverter converter,
-            final File file) {
+    public static void createLayerListHeadless(
+        final Element serverElement,
+        final Element clientElement,
+        final String[] basicAuthorizationTokens,
+        final DatasourcesPojoConverter converter,
+        final File file
+    ) {
         final CapabilitiesListTreeNode node = createCapabilitiesListTreeNode(
-                null,
-                serverElement.getChild("cismapCapabilitiesPreferences"));
+            null,
+            serverElement.getChild("cismapCapabilitiesPreferences")
+        );
 
         if (file != null) {
             BufferedWriter bw = null;
@@ -92,18 +90,20 @@ public class DatasourcesUtils {
      *
      * @return  CapabilitiesList-Knoten
      */
-    private static CapabilitiesListTreeNode createCapabilitiesListTreeNode(final String nodetitle,
-            final Element element) {
+    private static CapabilitiesListTreeNode createCapabilitiesListTreeNode(
+        final String nodetitle,
+        final Element element
+    ) {
         final CapabilitiesListTreeNode node = new CapabilitiesListTreeNode();
         int listCounter = 0;
 
         node.setTitle(nodetitle);
 
         final TreeMap<Integer, CapabilityLink> capabilitiesList = new TreeMap<Integer, CapabilityLink>();
-        for (final Element elem : (List<Element>)element.getChildren("capabilitiesList")) { // NOI18N
+        for (final Element elem : (List<Element>) element.getChildren("capabilitiesList")) { // NOI18N
             try {
-                final String type = elem.getAttribute("type").getValue();                   // NOI18N
-                final String title = elem.getAttribute("titlestring").getValue();           // NOI18N
+                final String type = elem.getAttribute("type").getValue(); // NOI18N
+                final String title = elem.getAttribute("titlestring").getValue(); // NOI18N
 
                 if (type.equals("MENU")) {
                     // Unterknoten erzeugen
@@ -111,9 +111,8 @@ public class DatasourcesUtils {
                 } else {
                     // CapabilitiesList-Eintrag erzeugen
                     final String link = elem.getTextTrim();
-                    final String subparent = elem.getAttributeValue("subparent");  // NOI18N
-                    capabilitiesList.put(new Integer(listCounter++),
-                        new CapabilityLink(type, link, title, subparent));
+                    final String subparent = elem.getAttributeValue("subparent"); // NOI18N
+                    capabilitiesList.put(new Integer(listCounter++), new CapabilityLink(type, link, title, subparent));
                 }
             } catch (Throwable t) {
                 LOG.warn("Error while reading the CapabilityListPreferences.", t); // NOI18N
@@ -135,8 +134,10 @@ public class DatasourcesUtils {
      *
      * @return  DOCUMENT ME!
      */
-    private static DatasourcesPojo createDataSources(final CapabilitiesListTreeNode node,
-            final String[] basicAuthorizationTokens) {
+    private static DatasourcesPojo createDataSources(
+        final CapabilitiesListTreeNode node,
+        final String[] basicAuthorizationTokens
+    ) {
         final DatasourcesPojo datasource = new DatasourcesPojo();
 
         datasource.addService(createServicePojo(node, basicAuthorizationTokens));
@@ -152,8 +153,10 @@ public class DatasourcesUtils {
      *
      * @return  DOCUMENT ME!
      */
-    private static ServicePojo createServicePojo(final CapabilitiesListTreeNode node,
-            final String[] basicAuthorizationTokens) {
+    private static ServicePojo createServicePojo(
+        final CapabilitiesListTreeNode node,
+        final String[] basicAuthorizationTokens
+    ) {
         final ServicePojo service = new ServicePojo();
         service.setName(node.getTitle());
 
@@ -184,12 +187,12 @@ public class DatasourcesUtils {
      * @param  service                   DOCUMENT ME!
      * @param  basicAuthorizationTokens  DOCUMENT ME!
      */
-    private static void addLayers(final ServicePojo service,
-            final String[] basicAuthorizationTokens) {
+    private static void addLayers(final ServicePojo service, final String[] basicAuthorizationTokens) {
         if (service.getType().equalsIgnoreCase("OGC-WMS") || service.getUrl().toLowerCase().contains("service=wms")) {
             try {
-                final WMSCapabilitiesFactory capFact = new WMSCapabilitiesFactory(SimpleCapabilitiesCache.getInstance(
-                            basicAuthorizationTokens));
+                final WMSCapabilitiesFactory capFact = new WMSCapabilitiesFactory(
+                    SimpleCapabilitiesCache.getInstance(basicAuthorizationTokens)
+                );
                 final WMSCapabilities cap = capFact.createCapabilities(service.getUrl());
                 Layer l = cap.getLayer();
                 service.setAbstractText(cap.getService().getAbstract());
@@ -278,8 +281,7 @@ public class DatasourcesUtils {
         /**
          * Erzeugt einen CapabilitiesList-Knoten.
          */
-        public CapabilitiesListTreeNode() {
-        }
+        public CapabilitiesListTreeNode() {}
 
         //~ Methods ------------------------------------------------------------
 
@@ -316,7 +318,7 @@ public class DatasourcesUtils {
          * @return  Liste der Unterknoten
          */
         public List<CapabilitiesListTreeNode> getSubnodes() {
-            return (List<CapabilitiesListTreeNode>)subnodes.clone();
+            return (List<CapabilitiesListTreeNode>) subnodes.clone();
         }
 
         /**

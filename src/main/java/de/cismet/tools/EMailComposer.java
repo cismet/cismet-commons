@@ -1,30 +1,26 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package de.cismet.tools;
 
-import org.apache.log4j.Logger;
-
 import java.awt.Desktop;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * EMailComposer launches the mail composing window of the user default mail client with the following message fields:
@@ -87,11 +83,13 @@ public class EMailComposer {
      * @param  cc       DOCUMENT ME!
      * @param  bcc      DOCUMENT ME!
      */
-    public EMailComposer(final String subject,
-            final String body,
-            final List<String> to,
-            final List<String> cc,
-            final List<String> bcc) {
+    public EMailComposer(
+        final String subject,
+        final String body,
+        final List<String> to,
+        final List<String> cc,
+        final List<String> bcc
+    ) {
         this.subject = subject;
         this.body = body;
         this.to = to;

@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.ext;
 
 import java.util.HashMap;
@@ -55,7 +55,6 @@ public class CExtContext {
      */
     public CExtContext(final String key, final Object value) {
         this();
-
         propertyBag.put(key, value);
     }
 

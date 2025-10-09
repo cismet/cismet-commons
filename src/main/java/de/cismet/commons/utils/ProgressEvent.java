@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.utils;
 
 import java.util.EventObject;
@@ -25,10 +25,14 @@ public final class ProgressEvent extends EventObject {
      * @version  1.0
      */
     public enum State {
-
         //~ Enum constants -----------------------------------------------------
 
-        STARTED, PROGRESSING, FINISHED, BROKEN, CANCELED, UNKNOWN
+        STARTED,
+        PROGRESSING,
+        FINISHED,
+        BROKEN,
+        CANCELED,
+        UNKNOWN,
     }
 
     //~ Instance fields --------------------------------------------------------
@@ -89,13 +93,14 @@ public final class ProgressEvent extends EventObject {
      * @param  maxSteps  the current maxsteps of 0 if it is isIndeterminate
      * @param  message   the message to indicate what this event is all about, usually localised
      */
-    public ProgressEvent(final Object source,
-            final State state,
-            final int step,
-            final int maxSteps,
-            final String message) {
+    public ProgressEvent(
+        final Object source,
+        final State state,
+        final int step,
+        final int maxSteps,
+        final String message
+    ) {
         super(source);
-
         this.state = state;
         this.step = step;
         this.maxSteps = maxSteps;

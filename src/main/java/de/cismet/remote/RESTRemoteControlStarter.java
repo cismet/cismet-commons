@@ -1,23 +1,20 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.remote;
 
 import com.sun.jersey.spi.container.servlet.ServletContainer;
-
+import java.util.*;
 import org.apache.log4j.Logger;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-
-import java.util.*;
 
 /**
  * Utility class for starting all RESTRemoteControlMethod implementations available in the classpath.
@@ -36,8 +33,7 @@ public class RESTRemoteControlStarter {
     /**
      * Avoids Creation of a new RestRemoteControlStarter object.
      */
-    private RESTRemoteControlStarter() {
-    }
+    private RESTRemoteControlStarter() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -62,10 +58,12 @@ public class RESTRemoteControlStarter {
      *
      * @throws  Exception  throws Exeption if anything went wrong
      */
-    public static void initSecureRestRemoteControlMethods(final int defaultPort,
-            final String keystore,
-            final String storePasswd,
-            final String keyPasswd) throws Exception {
+    public static void initSecureRestRemoteControlMethods(
+        final int defaultPort,
+        final String keystore,
+        final String storePasswd,
+        final String keyPasswd
+    ) throws Exception {
         initRestRemoteControlMethods(defaultPort, true, keystore, storePasswd, keyPasswd);
     }
 
@@ -81,11 +79,13 @@ public class RESTRemoteControlStarter {
      * @throws  Exception         throws Exeption if anything went wrong
      * @throws  RuntimeException  DOCUMENT ME!
      */
-    private static void initRestRemoteControlMethods(final int defaultPort,
-            final boolean secure,
-            final String keystore,
-            final String storePasswd,
-            final String keyPasswd) throws Exception {
+    private static void initRestRemoteControlMethods(
+        final int defaultPort,
+        final boolean secure,
+        final String keystore,
+        final String storePasswd,
+        final String keyPasswd
+    ) throws Exception {
         RESTRemoteControlMethodRegistry.gatherRemoteMethods(defaultPort);
 
         int count = 0;
@@ -97,7 +97,7 @@ public class RESTRemoteControlStarter {
             if (secure && (keystore != null) && (storePasswd != null) && (keyPasswd != null)) {
                 try {
                     final SslContextFactory.Server ssl = new SslContextFactory.Server();
-//                    ssl.setMaxIdleTime(30000);
+                    //                    ssl.setMaxIdleTime(30000);
                     ssl.setKeyStorePath(keystore);
                     ssl.setKeyStorePassword(storePasswd);
                     ssl.setKeyManagerPassword(keyPasswd);
@@ -115,14 +115,16 @@ public class RESTRemoteControlStarter {
             jerseyServlet.setInitOrder(0);
             jerseyServlet.setInitParameter(
                 "javax.ws.rs.Application",
-                RESTRemoteControlMethodsApplication.class.getName());
+                RESTRemoteControlMethodsApplication.class.getName()
+            );
 
             jerseyServlet.setInitParameter(RESTRemoteControlMethodsApplication.PROP_PORT, String.valueOf(port));
 
             final ServletContextHandler context = new ServletContextHandler(
-                    server,
-                    "/",
-                    ServletContextHandler.SESSIONS);
+                server,
+                "/",
+                ServletContextHandler.SESSIONS
+            );
             context.addServlet(jerseyServlet, "/*");
 
             server.start();

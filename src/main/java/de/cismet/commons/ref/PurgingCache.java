@@ -1,17 +1,15 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.ref;
 
-import org.apache.log4j.Logger;
-
+import de.cismet.tools.Calculator;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,8 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import de.cismet.tools.Calculator;
+import org.apache.log4j.Logger;
 
 /**
  * This class provides a simple key-value cache. The cache makes use of {@link TimedSoftReference}s to store the values
@@ -99,9 +96,11 @@ public final class PurgingCache<K, V> {
      * @see    #setKeyPurgeInterval(long)
      * @see    #setValuePurgeInterval(long)
      */
-    public PurgingCache(final Calculator<K, V> initialiser,
-            final long keyPurgeInterval,
-            final long valuePurgeInterval) {
+    public PurgingCache(
+        final Calculator<K, V> initialiser,
+        final long keyPurgeInterval,
+        final long valuePurgeInterval
+    ) {
         this(initialiser, keyPurgeInterval, valuePurgeInterval, false);
     }
 
@@ -120,10 +119,12 @@ public final class PurgingCache<K, V> {
      * @see    #setValuePurgeInterval(long)
      * @see    #setCacheNullValues(boolean)
      */
-    public PurgingCache(final Calculator<K, V> initialiser,
-            final long keyPurgeInterval,
-            final long valuePurgeInterval,
-            final boolean cacheNullValues) {
+    public PurgingCache(
+        final Calculator<K, V> initialiser,
+        final long keyPurgeInterval,
+        final long valuePurgeInterval,
+        final boolean cacheNullValues
+    ) {
         this.initialiser = initialiser;
 
         cache = new HashMap<K, SoftReference>();
@@ -209,7 +210,7 @@ public final class PurgingCache<K, V> {
                 }
             }
 
-            return (value instanceof NullValue) ? null : (V)value;
+            return (value instanceof NullValue) ? null : (V) value;
         } finally {
             lock.unlock();
         }
@@ -248,8 +249,8 @@ public final class PurgingCache<K, V> {
             if (keyPurgeInterval > 0) {
                 this.keyPurgeInterval = keyPurgeInterval;
 
-                purgeTask = new TimerTask() {
-
+                purgeTask =
+                    new TimerTask() {
                         @Override
                         public void run() {
                             purgeCache();
@@ -363,6 +364,5 @@ public final class PurgingCache<K, V> {
      *
      * @version  1.0
      */
-    private static final class NullValue {
-    }
+    private static final class NullValue {}
 }

@@ -1,16 +1,32 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package de.cismet.commons.security.handler;
 
+import de.cismet.commons.security.AccessHandler;
+import de.cismet.commons.security.AccessHandler.ACCESS_HANDLER_TYPES;
+import de.cismet.commons.security.AccessHandler.ACCESS_METHODS;
+import de.cismet.commons.security.exceptions.BadHttpStatusCodeException;
+import de.cismet.commons.security.exceptions.CannotReadFromURLException;
+import de.cismet.netutil.Proxy;
+import de.cismet.netutil.ProxyHandler;
+import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.BindException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -32,27 +48,6 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.Reader;
-
-import java.net.BindException;
-import java.net.URL;
-
-import java.util.HashMap;
-import java.util.Map.Entry;
-
-import de.cismet.commons.security.AccessHandler;
-import de.cismet.commons.security.AccessHandler.ACCESS_HANDLER_TYPES;
-import de.cismet.commons.security.AccessHandler.ACCESS_METHODS;
-import de.cismet.commons.security.exceptions.BadHttpStatusCodeException;
-import de.cismet.commons.security.exceptions.CannotReadFromURLException;
-
-import de.cismet.netutil.Proxy;
-import de.cismet.netutil.ProxyHandler;
-
 /**
  * The SimpleHTTPAccessHandler is a HTTPAccessHandler that uses no Credential Provider. It can therefore be used only
  * for resources with no authentication
@@ -65,9 +60,9 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     //~ Static fields/initializers ---------------------------------------------
 
     public static ACCESS_METHODS[] SUPPORTED_ACCESS_METHODS = new ACCESS_METHODS[] {
-            ACCESS_METHODS.GET_REQUEST,
-            ACCESS_METHODS.POST_REQUEST
-        };
+        ACCESS_METHODS.GET_REQUEST,
+        ACCESS_METHODS.POST_REQUEST,
+    };
     public static final ACCESS_HANDLER_TYPES ACCESS_HANDLER_TYPE = ACCESS_HANDLER_TYPES.HTTP;
     private static final String USER_AGENT_HEADER_KEY = "User-Agent";
 
@@ -122,10 +117,12 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     //~ Methods ----------------------------------------------------------------
 
     @Override
-    public InputStream doRequest(final URL url,
-            final Reader requestParameter,
-            final ACCESS_METHODS method,
-            final HashMap<String, String> options) throws Exception {
+    public InputStream doRequest(
+        final URL url,
+        final Reader requestParameter,
+        final ACCESS_METHODS method,
+        final HashMap<String, String> options
+    ) throws Exception {
         return doRequest(url, requestParameter, method, options, null);
     }
 
@@ -142,11 +139,13 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
      *
      * @throws  Exception  DOCUMENT ME!
      */
-    public InputStream doRequest(final URL url,
-            final Reader requestParameter,
-            final ACCESS_METHODS method,
-            final HashMap<String, String> options,
-            final UsernamePasswordCredentials credentials) throws Exception {
+    public InputStream doRequest(
+        final URL url,
+        final Reader requestParameter,
+        final ACCESS_METHODS method,
+        final HashMap<String, String> options,
+        final UsernamePasswordCredentials credentials
+    ) throws Exception {
         return doRequest(url, requestParameter, "text/xml", method, options, credentials);
     }
 
@@ -164,12 +163,14 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
      *
      * @throws  Exception  DOCUMENT ME!
      */
-    public InputStream doRequest(final URL url,
-            final Reader requestParameter,
-            final String requestHeader,
-            final ACCESS_METHODS method,
-            final HashMap<String, String> options,
-            final UsernamePasswordCredentials credentials) throws Exception {
+    public InputStream doRequest(
+        final URL url,
+        final Reader requestParameter,
+        final String requestHeader,
+        final ACCESS_METHODS method,
+        final HashMap<String, String> options,
+        final UsernamePasswordCredentials credentials
+    ) throws Exception {
         return doRequest(url, requestParameter, requestHeader, method, options, credentials, false);
     }
 
@@ -188,13 +189,15 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
      *
      * @throws  Exception  DOCUMENT ME!
      */
-    public InputStream doRequest(final URL url,
-            final Reader requestParameter,
-            final String requestHeader,
-            final ACCESS_METHODS method,
-            final HashMap<String, String> options,
-            final UsernamePasswordCredentials credentials,
-            final boolean withHeaders) throws Exception {
+    public InputStream doRequest(
+        final URL url,
+        final Reader requestParameter,
+        final String requestHeader,
+        final ACCESS_METHODS method,
+        final HashMap<String, String> options,
+        final UsernamePasswordCredentials credentials,
+        final boolean withHeaders
+    ) throws Exception {
         final HttpClient client = getSecurityEnabledHttpClient(url);
         final StringBuilder parameter = new StringBuilder();
 
@@ -213,68 +216,82 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
 
         switch (method) {
             case POST_REQUEST_NO_TUNNEL:
-            case POST_REQUEST: {
-                httpMethod = new PostMethod(url.toString());
-                ((PostMethod)httpMethod).setRequestEntity(new StringRequestEntity(
-                        parameter.toString(),
-                        requestHeader,
-                        "UTF-8"));                                                          // NOI18N
-                break;
-            }
+            case POST_REQUEST:
+                {
+                    httpMethod = new PostMethod(url.toString());
+                    ((PostMethod) httpMethod).setRequestEntity(
+                            new StringRequestEntity(parameter.toString(), requestHeader, "UTF-8")
+                        ); // NOI18N
+                    break;
+                }
             case GET_REQUEST_NO_TUNNEL:
-            case GET_REQUEST: {
-                if (parameter.length() > 0) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("HTTP GET: '" + url.toString() + "?" + parameter + "'."); // NOI18N
-                    }
+            case GET_REQUEST:
+                {
+                    if (parameter.length() > 0) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("HTTP GET: '" + url.toString() + "?" + parameter + "'."); // NOI18N
+                        }
 
-                    httpMethod = new GetMethod(url.toString() + "?" + parameter);                  // NOI18N
-                } else {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("No parameters specified. HTTP GET: '" + url.toString() + "'."); // NOI18N
-                    }
+                        httpMethod = new GetMethod(url.toString() + "?" + parameter); // NOI18N
+                    } else {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("No parameters specified. HTTP GET: '" + url.toString() + "'."); // NOI18N
+                        }
 
-                    httpMethod = new GetMethod(url.toString());
+                        httpMethod = new GetMethod(url.toString());
+                    }
+                    break;
                 }
-                break;
-            }
             case HEAD_REQUEST_NO_TUNNEL:
-            case HEAD_REQUEST: {
-                if (parameter.length() > 0) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("HTTP HEAD: '" + url.toString() + "?" + parameter + "'."); // NOI18N
-                    }
+            case HEAD_REQUEST:
+                {
+                    if (parameter.length() > 0) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("HTTP HEAD: '" + url.toString() + "?" + parameter + "'."); // NOI18N
+                        }
 
-                    httpMethod = new HeadMethod(url.toString() + "?" + parameter);                  // NOI18N
-                } else {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("No parameters specified. HTTP HEAD: '" + url.toString() + "'."); // NOI18N
-                    }
+                        httpMethod = new HeadMethod(url.toString() + "?" + parameter); // NOI18N
+                    } else {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("No parameters specified. HTTP HEAD: '" + url.toString() + "'."); // NOI18N
+                        }
 
-                    httpMethod = new HeadMethod(url.toString());
+                        httpMethod = new HeadMethod(url.toString());
+                    }
+                    break;
                 }
-                break;
-            }
-            default: {
-                if (parameter.length() > 0) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("No method specified, switching to '" + ACCESS_METHODS.GET_REQUEST
-                                    + "'. URI used: '"
-                                    + url.toString() + "?" + parameter + "'."); // NOI18N
-                    }
+            default:
+                {
+                    if (parameter.length() > 0) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(
+                                "No method specified, switching to '" +
+                                ACCESS_METHODS.GET_REQUEST +
+                                "'. URI used: '" +
+                                url.toString() +
+                                "?" +
+                                parameter +
+                                "'."
+                            ); // NOI18N
+                        }
 
-                    // httpMethod = new PostMethod(url.toString()); ((PostMethod) httpMethod).setRequestEntity(new
-                    // StringRequestEntity(parameter.toString(), "text/xml", "UTF-8"));
-                    httpMethod = new GetMethod(url.toString() + "?" + parameter);                         // NOI18N
-                } else {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("No method specified, switching to '" + ACCESS_METHODS.GET_REQUEST
-                                    + "'. No parameters specified. URI used: '" + url.toString() + "'."); // NOI18N
-                    }
+                        // httpMethod = new PostMethod(url.toString()); ((PostMethod) httpMethod).setRequestEntity(new
+                        // StringRequestEntity(parameter.toString(), "text/xml", "UTF-8"));
+                        httpMethod = new GetMethod(url.toString() + "?" + parameter); // NOI18N
+                    } else {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(
+                                "No method specified, switching to '" +
+                                ACCESS_METHODS.GET_REQUEST +
+                                "'. No parameters specified. URI used: '" +
+                                url.toString() +
+                                "'."
+                            ); // NOI18N
+                        }
 
-                    httpMethod = new GetMethod(url.toString());
+                        httpMethod = new GetMethod(url.toString());
+                    }
                 }
-            }
         }
 
         if (credentials != null) {
@@ -294,68 +311,82 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
 
                 final int statuscode = client.executeMethod(httpMethod);
                 switch (statuscode) {
-                    case (HttpStatus.SC_UNAUTHORIZED): {
-                        if (LOG.isInfoEnabled()) {
-                            LOG.info("HTTP status code from server: SC_UNAUTHORIZED (" + HttpStatus.SC_UNAUTHORIZED
-                                        + ")."); // NOI18N
+                    case (HttpStatus.SC_UNAUTHORIZED):
+                        {
+                            if (LOG.isInfoEnabled()) {
+                                LOG.info(
+                                    "HTTP status code from server: SC_UNAUTHORIZED (" +
+                                    HttpStatus.SC_UNAUTHORIZED +
+                                    ")."
+                                ); // NOI18N
+                            }
+
+                            throw new CannotReadFromURLException("You are not authorized to access this URL."); // NOI18N
                         }
+                    case (HttpStatus.SC_OK):
+                        {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("HTTP status code from server: OK."); // NOI18N
+                            }
+                            if (
+                                (method == ACCESS_METHODS.HEAD_REQUEST) ||
+                                (method == ACCESS_METHODS.HEAD_REQUEST_NO_TUNNEL)
+                            ) {
+                                // returning the HTTP Header as InputStream, because some valid InputStream has to be
+                                // returned. The HTTP body can not be returned because it does not exist for HEAD requests.
+                                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                final ObjectOutputStream oos = new ObjectOutputStream(baos);
 
-                        throw new CannotReadFromURLException("You are not authorized to access this URL."); // NOI18N
-                    }
-                    case (HttpStatus.SC_OK): {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("HTTP status code from server: OK.");                                 // NOI18N
-                        }
-                        if ((method == ACCESS_METHODS.HEAD_REQUEST)
-                                    || (method == ACCESS_METHODS.HEAD_REQUEST_NO_TUNNEL)) {
-                            // returning the HTTP Header as InputStream, because some valid InputStream has to be
-                            // returned. The HTTP body can not be returned because it does not exist for HEAD requests.
-                            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            final ObjectOutputStream oos = new ObjectOutputStream(baos);
+                                oos.writeObject(httpMethod.getResponseHeaders());
 
-                            oos.writeObject(httpMethod.getResponseHeaders());
+                                oos.flush();
+                                oos.close();
 
-                            oos.flush();
-                            oos.close();
-
-                            final InputStream is = new ByteArrayInputStream(baos.toByteArray());
-                            baos.close();
-                            return is;
-                        } else {
-                            if (withHeaders) {
-                                String contentType = "";
-                                final InputStream is = httpMethod.getResponseBodyAsStream();
-
-                                for (final Header h : httpMethod.getResponseHeaders()) {
-                                    if (h.getName().equalsIgnoreCase("Content-Type")) {
-                                        contentType = h.getValue();
-                                    }
-                                }
-
-                                final ByteArrayOutputStream result = new ByteArrayOutputStream();
-
-                                result.write(contentType.getBytes());
-                                result.write("\n".getBytes("utf-8"));
-                                result.write(IOUtils.toByteArray(is));
-
-                                return new ByteArrayInputStream(result.toByteArray());
+                                final InputStream is = new ByteArrayInputStream(baos.toByteArray());
+                                baos.close();
+                                return is;
                             } else {
-                                return new BufferedInputStream(httpMethod.getResponseBodyAsStream());
+                                if (withHeaders) {
+                                    String contentType = "";
+                                    final InputStream is = httpMethod.getResponseBodyAsStream();
+
+                                    for (final Header h : httpMethod.getResponseHeaders()) {
+                                        if (h.getName().equalsIgnoreCase("Content-Type")) {
+                                            contentType = h.getValue();
+                                        }
+                                    }
+
+                                    final ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+                                    result.write(contentType.getBytes());
+                                    result.write("\n".getBytes("utf-8"));
+                                    result.write(IOUtils.toByteArray(is));
+
+                                    return new ByteArrayInputStream(result.toByteArray());
+                                } else {
+                                    return new BufferedInputStream(httpMethod.getResponseBodyAsStream());
+                                }
                             }
                         }
-                    }
-                    default: {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Unhandled HTTP status code: " + statuscode + " ("
-                                        + HttpStatus.getStatusText(statuscode)
-                                        + ")"); // NOI18N
-                        }
+                    default:
+                        {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(
+                                    "Unhandled HTTP status code: " +
+                                    statuscode +
+                                    " (" +
+                                    HttpStatus.getStatusText(statuscode) +
+                                    ")"
+                                ); // NOI18N
+                            }
 
-                        throw new BadHttpStatusCodeException(httpMethod.getURI().toString(),
-                            statuscode,
-                            HttpStatus.getStatusText(statuscode),
-                            httpMethod.getResponseBodyAsString()); // NOI18N
-                    }
+                            throw new BadHttpStatusCodeException(
+                                httpMethod.getURI().toString(),
+                                statuscode,
+                                HttpStatus.getStatusText(statuscode),
+                                httpMethod.getResponseBodyAsString()
+                            ); // NOI18N
+                        }
                 }
             } catch (BindException e) {
                 if (LOG.isDebugEnabled()) {
@@ -364,13 +395,15 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
                 Thread.sleep(50);
             }
         }
-//        throw new RuntimeException("Should never happen");
+        //        throw new RuntimeException("Should never happen");
     }
 
     @Override
-    public InputStream doRequest(final URL url,
-            final InputStream requestParameter,
-            final HashMap<String, String> requestHeader) throws Exception {
+    public InputStream doRequest(
+        final URL url,
+        final InputStream requestParameter,
+        final HashMap<String, String> requestHeader
+    ) throws Exception {
         final PostMethod postMethod = new PostMethod(url.toString());
         postMethod.setRequestEntity(new InputStreamRequestEntity(requestParameter));
         return doRequest(url, postMethod, requestHeader);
@@ -387,9 +420,11 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
      *
      * @throws  Exception  DOCUMENT ME!
      */
-    public InputStream doMultipartRequest(final URL url,
-            final Part[] parts,
-            final HashMap<String, String> requestHeader) throws Exception {
+    public InputStream doMultipartRequest(
+        final URL url,
+        final Part[] parts,
+        final HashMap<String, String> requestHeader
+    ) throws Exception {
         final PostMethod postMethod = new PostMethod(url.toString());
         final MultipartRequestEntity requestEntity = new MultipartRequestEntity(parts, postMethod.getParams());
         postMethod.addRequestHeader("Content-Type", requestEntity.getContentType());
@@ -413,9 +448,11 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
      *
      * @throws  Exception  DOCUMENT ME!
      */
-    private InputStream doRequest(final URL url,
-            final PostMethod postMethod,
-            final HashMap<String, String> requestHeader) throws Exception {
+    private InputStream doRequest(
+        final URL url,
+        final PostMethod postMethod,
+        final HashMap<String, String> requestHeader
+    ) throws Exception {
         final HttpClient client = getSecurityEnabledHttpClient(url);
         boolean hasUserAgent = false;
 
@@ -438,33 +475,45 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
 
                 final int statuscode = client.executeMethod(postMethod);
                 switch (statuscode) {
-                    case (HttpStatus.SC_UNAUTHORIZED): {
-                        if (LOG.isInfoEnabled()) {
-                            LOG.info("HTTP status code from server: SC_UNAUTHORIZED (" + HttpStatus.SC_UNAUTHORIZED
-                                        + ")."); // NOI18N
-                        }
+                    case (HttpStatus.SC_UNAUTHORIZED):
+                        {
+                            if (LOG.isInfoEnabled()) {
+                                LOG.info(
+                                    "HTTP status code from server: SC_UNAUTHORIZED (" +
+                                    HttpStatus.SC_UNAUTHORIZED +
+                                    ")."
+                                ); // NOI18N
+                            }
 
-                        throw new CannotReadFromURLException("You are not authorized to access this URL."); // NOI18N
-                    }
-                    case (HttpStatus.SC_OK): {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("HTTP status code from server: OK.");                                 // NOI18N
+                            throw new CannotReadFromURLException("You are not authorized to access this URL."); // NOI18N
                         }
+                    case (HttpStatus.SC_OK):
+                        {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("HTTP status code from server: OK."); // NOI18N
+                            }
 
-                        return new BufferedInputStream(postMethod.getResponseBodyAsStream());
-                    }
-                    default: {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Unhandled HTTP status code: " + statuscode + " ("
-                                        + HttpStatus.getStatusText(statuscode)
-                                        + ")."); // NOI18N
+                            return new BufferedInputStream(postMethod.getResponseBodyAsStream());
                         }
+                    default:
+                        {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(
+                                    "Unhandled HTTP status code: " +
+                                    statuscode +
+                                    " (" +
+                                    HttpStatus.getStatusText(statuscode) +
+                                    ")."
+                                ); // NOI18N
+                            }
 
-                        throw new BadHttpStatusCodeException(postMethod.getURI().toString(),
-                            statuscode,
-                            HttpStatus.getStatusText(statuscode),
-                            postMethod.getResponseBodyAsString()); // NOI18N
-                    }
+                            throw new BadHttpStatusCodeException(
+                                postMethod.getURI().toString(),
+                                statuscode,
+                                HttpStatus.getStatusText(statuscode),
+                                postMethod.getResponseBodyAsString()
+                            ); // NOI18N
+                        }
                 }
             } catch (BindException e) {
                 if (LOG.isDebugEnabled()) {
@@ -502,16 +551,22 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             LOG.debug("getSecurityEnabledHttpClient"); // NOI18N
         }
         final HttpClient client = getConfiguredHttpClient();
-        client.getParams().setParameter(CredentialsProvider.PROVIDER, new CredentialsProvider() {
-
-                @Override
-                public Credentials getCredentials(final AuthScheme scheme,
+        client
+            .getParams()
+            .setParameter(
+                CredentialsProvider.PROVIDER,
+                new CredentialsProvider() {
+                    @Override
+                    public Credentials getCredentials(
+                        final AuthScheme scheme,
                         final String host,
                         final int port,
-                        final boolean proxy) throws CredentialsNotAvailableException {
-                    return null;
+                        final boolean proxy
+                    ) throws CredentialsNotAvailableException {
+                        return null;
+                    }
                 }
-            });
+            );
 
         if (connectionTimeout >= 0) {
             client.getHttpConnectionManager().getParams().setConnectionTimeout(connectionTimeout);
@@ -540,10 +595,12 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             // proxy needs authentication
             if ((proxy.getUsername() != null) && (proxy.getPassword() != null)) {
                 final AuthScope authscope = new AuthScope(proxy.getHost(), proxy.getPort());
-                final Credentials credentials = new NTCredentials(proxy.getUsername(),
-                        proxy.getPassword(),
-                        "", // NOI18N
-                        (proxy.getDomain() == null) ? "" : proxy.getDomain());
+                final Credentials credentials = new NTCredentials(
+                    proxy.getUsername(),
+                    proxy.getPassword(),
+                    "", // NOI18N
+                    (proxy.getDomain() == null) ? "" : proxy.getDomain()
+                );
                 client.getState().setProxyCredentials(authscope, credentials);
             }
         }
@@ -554,37 +611,37 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     @Override
     public InputStream doRequest(final URL url) throws Exception {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("URL: " + url + "... trying to retrieve parameters automatically by HTTP_GET");       // NOI18N
+            LOG.debug("URL: " + url + "... trying to retrieve parameters automatically by HTTP_GET"); // NOI18N
         }
         URL serviceURL;
         String requestParameter;
         try {
             final String urlString = url.toString();
             if (urlString.indexOf('?') != -1) {
-                serviceURL = new URL(urlString.substring(0, urlString.indexOf('?')));                       // NOI18N
+                serviceURL = new URL(urlString.substring(0, urlString.indexOf('?'))); // NOI18N
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("service URL: " + serviceURL);                                                // NOI18N
+                    LOG.debug("service URL: " + serviceURL); // NOI18N
                 }
-                if ((urlString.indexOf('?') + 1) < urlString.length()) {                                    // NOI18N
+                if ((urlString.indexOf('?') + 1) < urlString.length()) { // NOI18N
                     requestParameter = urlString.substring(urlString.indexOf('?') + 1, urlString.length()); // NOI18N
-                    if (requestParameter.toLowerCase().contains("service=wss")) {                           // NOI18N
+                    if (requestParameter.toLowerCase().contains("service=wss")) { // NOI18N
                         // TODO muss auch wfs fähig sein
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug("query default WMS");                       // NOI18N
+                            LOG.debug("query default WMS"); // NOI18N
                         }
                         requestParameter = "REQUEST=GetCapabilities&service=WMS"; // NOI18N
                     }
                 } else {
-                    requestParameter = "";                                        // NOI18N
+                    requestParameter = ""; // NOI18N
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("requestParameter: " + requestParameter);               // NOI18N
+                    LOG.debug("requestParameter: " + requestParameter); // NOI18N
                 }
             } else {
                 LOG.warn("Not able to parse requestparameter (no ?) trying without"); // NOI18N
                 serviceURL = url;
-                requestParameter = "";                                                // NOI18N
+                requestParameter = ""; // NOI18N
             }
         } catch (Exception ex) {
             // final String errorMessage = "Exception während dem bestimmen der Request Parameter";
@@ -604,9 +661,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
             urlAccessible = inputStream != null;
         } catch (final Exception ex) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("An exception occurred while opening URL '" + url.toExternalForm()
-                            + "'.",
-                    ex);
+                LOG.debug("An exception occurred while opening URL '" + url.toExternalForm() + "'.", ex);
             }
         } finally {
             if (inputStream != null) {

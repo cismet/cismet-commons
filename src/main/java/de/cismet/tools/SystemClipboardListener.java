@@ -1,18 +1,17 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
-
-import org.apache.log4j.Logger;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
+import org.apache.log4j.Logger;
 
 /**
  * DOCUMENT ME!
@@ -91,6 +90,5 @@ public class SystemClipboardListener implements ClipboardOwner {
      *
      * @param  contents  DOCUMENT ME!
      */
-    protected void processContents(final Transferable contents) {
-    }
+    protected void processContents(final Transferable contents) {}
 }

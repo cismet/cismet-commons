@@ -1,19 +1,19 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.ref;
+
+import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * DOCUMENT ME!
@@ -31,8 +31,7 @@ public class TimedSoftReferenceTest {
      * @throws  Exception  DOCUMENT ME!
      */
     @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+    public static void setUpClass() throws Exception {}
 
     /**
      * DOCUMENT ME!
@@ -40,22 +39,19 @@ public class TimedSoftReferenceTest {
      * @throws  Exception  DOCUMENT ME!
      */
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     /**
      * DOCUMENT ME!
      */
     @Before
-    public void setUp() {
-    }
+    public void setUp() {}
 
     /**
      * DOCUMENT ME!
      */
     @After
-    public void tearDown() {
-    }
+    public void tearDown() {}
 
     /**
      * DOCUMENT ME!

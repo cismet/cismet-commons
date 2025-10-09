@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * NumberStringComparator.java
  *
@@ -50,8 +50,7 @@ public class NumberStringComparator implements java.util.Comparator {
     /**
      * Creates a new instance of NumberStringComparator.
      */
-    public NumberStringComparator() {
-    }
+    public NumberStringComparator() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -71,13 +70,11 @@ public class NumberStringComparator implements java.util.Comparator {
         Double d2 = null;
         try {
             d1 = new Double(s1.trim());
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         try {
             d2 = new Double(s2.trim());
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         if ((d1 == null) && (d2 == null)) {
             if (s1.length() > s2.length()) {
@@ -99,7 +96,7 @@ public class NumberStringComparator implements java.util.Comparator {
             } else {
                 return 1;
             }
-        } else /*if (d1!=null&&d2!=null)*/ {
+        } else /*if (d1!=null&&d2!=null)*/{
             return d1.compareTo(d2);
         }
     }

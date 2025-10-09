@@ -1,17 +1,16 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.Locale;
-
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * DOCUMENT ME!
@@ -32,8 +31,7 @@ public class JnlpToolsTest {
     /**
      * Creates a new JnlpToolsTest object.
      */
-    public JnlpToolsTest() {
-    }
+    public JnlpToolsTest() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -57,7 +55,7 @@ public class JnlpToolsTest {
         JnlpTools.adjustDefaultLocale();
         assertEquals(def, Locale.getDefault());
         Locale.setDefault(def);
-        
+
         final String defL = def.getLanguage();
         final String defC = def.getCountry();
         final String defV = def.getVariant();

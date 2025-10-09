@@ -1,16 +1,14 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.concurrency;
 
-import org.apache.log4j.Logger;
-
+import de.cismet.tools.configuration.ShutdownHook;
 import java.lang.Thread.UncaughtExceptionHandler;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -21,8 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor.AbortPolicy;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
-
-import de.cismet.tools.configuration.ShutdownHook;
+import org.apache.log4j.Logger;
 
 /**
  * Utility class that provides some concurrency tools that should be used when concurrency shall take place within
@@ -64,10 +61,12 @@ public final class CismetConcurrency implements ShutdownHook {
         final ThreadGroup parent = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
 
         this.threadGroup = new ThreadGroup(parent, group);
-        this.defaultExecutor = CismetExecutors.newCachedLimitedThreadPool(
+        this.defaultExecutor =
+            CismetExecutors.newCachedLimitedThreadPool(
                 30,
                 createThreadFactory("default"), // NOI18N
-                new LoggingAbortPolicy());
+                new LoggingAbortPolicy()
+            );
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -173,13 +172,15 @@ public final class CismetConcurrency implements ShutdownHook {
         try {
             if (!defaultExecutor.awaitTermination(20, TimeUnit.SECONDS)) {
                 LOG.warn(
-                    "the default executor could not be terminated within 20 seconds, thus there may be locked tasks that prevent a proper application shutdown"); // NOI18N
+                    "the default executor could not be terminated within 20 seconds, thus there may be locked tasks that prevent a proper application shutdown"
+                ); // NOI18N
             }
         } catch (final InterruptedException ex) {
             if (!defaultExecutor.isTerminated()) {
                 LOG.warn(
-                    "could not await termination of default executor, there may still be tasks running, that prevent the application to properly shutdown",       // NOI18N
-                    ex);
+                    "could not await termination of default executor, there may still be tasks running, that prevent the application to properly shutdown", // NOI18N
+                    ex
+                );
             }
         }
     }
@@ -222,9 +223,11 @@ public final class CismetConcurrency implements ShutdownHook {
          * @param  prefix       the prefix for every thread's name created by this factory
          * @param  excHandler   the {@link UncaughtExceptionHandler} for every thread created by this factory
          */
-        public CismetThreadFactory(final ThreadGroup threadGroup,
-                final String prefix,
-                final Thread.UncaughtExceptionHandler excHandler) {
+        public CismetThreadFactory(
+            final ThreadGroup threadGroup,
+            final String prefix,
+            final Thread.UncaughtExceptionHandler excHandler
+        ) {
             this.threadGroup = threadGroup;
             this.prefix = prefix + "-pool-" + POOL_NUMBER.getAndIncrement() + "-thread-"; // NOI18N
             this.createCount = new AtomicInteger(1);

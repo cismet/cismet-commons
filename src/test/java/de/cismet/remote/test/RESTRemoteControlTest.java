@@ -9,6 +9,8 @@
  */
 package de.cismet.remote.test;
 
+import static org.junit.Assert.*;
+
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
@@ -30,8 +32,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 import org.openide.util.Lookup;
 
 /**
@@ -41,7 +41,6 @@ import org.openide.util.Lookup;
  * @version $Revision$, $Date$
  */
 public class RESTRemoteControlTest {
-
     static {
         Logger.getRootLogger().setLevel(Level.INFO);
         BasicConfigurator.configure();
@@ -51,9 +50,8 @@ public class RESTRemoteControlTest {
     /**
      * Creates a new ProxyTest object.
      */
-    public RESTRemoteControlTest() {
+    public RESTRemoteControlTest() {}
 
-    }
     //~ Methods ----------------------------------------------------------------
 
     /**
@@ -63,15 +61,21 @@ public class RESTRemoteControlTest {
      */
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.out.println(">>> javax.xml.parsers.DocumentBuilderFactory: "
-                + System.getProperty("javax.xml.parsers.DocumentBuilderFactory"));
+        System.out.println(
+            ">>> javax.xml.parsers.DocumentBuilderFactory: " +
+            System.getProperty("javax.xml.parsers.DocumentBuilderFactory")
+        );
 
         System.out.println("RESTRemoteControlTest ===================================");
         RESTRemoteControlStarter.initRestRemoteControlMethods(31337);
-        assertFalse("at least one RESTRemoteControlMethod in Lookup registered",
-                Lookup.getDefault().lookupResult(RESTRemoteControlMethod.class).allItems().isEmpty());
-        assertFalse("RESTRemoteControlMethodRegistry hasMethodsInformation",
-                RESTRemoteControlMethodRegistry.getMethodPorts().isEmpty());
+        assertFalse(
+            "at least one RESTRemoteControlMethod in Lookup registered",
+            Lookup.getDefault().lookupResult(RESTRemoteControlMethod.class).allItems().isEmpty()
+        );
+        assertFalse(
+            "RESTRemoteControlMethodRegistry hasMethodsInformation",
+            RESTRemoteControlMethodRegistry.getMethodPorts().isEmpty()
+        );
     }
 
     /**
@@ -80,8 +84,7 @@ public class RESTRemoteControlTest {
      * @throws Exception DOCUMENT ME!
      */
     @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+    public static void tearDownClass() throws Exception {}
 
     /**
      * DOCUMENT ME!
@@ -89,16 +92,13 @@ public class RESTRemoteControlTest {
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
-
-    }
+    public void setUp() throws Exception {}
 
     /**
      * DOCUMENT ME!
      */
     @After
-    public void tearDown() {
-    }
+    public void tearDown() {}
 
     /**
      * DOCUMENT ME!
@@ -127,11 +127,9 @@ public class RESTRemoteControlTest {
 
         final Client client = Client.create();
 
-        final WebResource webResource = client
-                .resource("http://127.0.0.1:31337/simpleJsonRemoteMethod");
+        final WebResource webResource = client.resource("http://127.0.0.1:31337/simpleJsonRemoteMethod");
 
-        final ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON)
-                .get(ClientResponse.class);
+        final ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 
         assertEquals(200, response.getStatus());
 
@@ -143,16 +141,12 @@ public class RESTRemoteControlTest {
         assertEquals("[1,2,3,4,5,6,7,8,9]", output);
 
         final ObjectMapper mapper = new ObjectMapper();
-        final JavaType type = mapper.getTypeFactory().
-                constructCollectionType(
-                        ArrayList.class,
-                        Integer.class);
+        final JavaType type = mapper.getTypeFactory().constructCollectionType(ArrayList.class, Integer.class);
 
         final Object returnObject = mapper.readValue(output, type);
         assertTrue(returnObject.getClass().isAssignableFrom(ArrayList.class));
 
         assertEquals(5, ((ArrayList<Integer>) returnObject).get(4).intValue());
-
     }
 
     @Test
@@ -161,11 +155,9 @@ public class RESTRemoteControlTest {
 
         final Client client = Client.create();
 
-        final WebResource webResource = client
-                .resource("http://127.0.0.1:31338/jsonRemoteMethod");
+        final WebResource webResource = client.resource("http://127.0.0.1:31338/jsonRemoteMethod");
 
-        final ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON)
-                .get(ClientResponse.class);
+        final ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 
         assertEquals(200, response.getStatus());
 
@@ -182,20 +174,20 @@ public class RESTRemoteControlTest {
 
         final Client client = Client.create();
 
-        final WebResource webResource = client
-                .resource("http://127.0.0.1:31338/xmlRemoteMethod");
+        final WebResource webResource = client.resource("http://127.0.0.1:31338/xmlRemoteMethod");
 
-        ClientResponse response = webResource.accept(MediaType.APPLICATION_XML)
-                .get(ClientResponse.class);
+        ClientResponse response = webResource.accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
         assertEquals(200, response.getStatus());
 
         String outputString = response.getEntity(String.class);
         System.out.println(outputString);
 
-        assertEquals("<RemoteMethodBean><string>String</string><dbl>31.337</dbl><boolValue>true</boolValue></RemoteMethodBean>", outputString);
+        assertEquals(
+            "<RemoteMethodBean><string>String</string><dbl>31.337</dbl><boolValue>true</boolValue></RemoteMethodBean>",
+            outputString
+        );
 
-        response = webResource.accept(MediaType.APPLICATION_XML)
-                .get(ClientResponse.class);
+        response = webResource.accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
         assertEquals(200, response.getStatus());
         RemoteMethodBean outputBean = response.getEntity(RemoteMethodBean.class);
         assertEquals("String", outputBean.getString());

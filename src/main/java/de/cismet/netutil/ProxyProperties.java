@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,9 +12,8 @@
  */
 package de.cismet.netutil;
 
-import org.apache.log4j.Logger;
-
 import java.util.Properties;
+import org.apache.log4j.Logger;
 
 /**
  * DOCUMENT ME!
@@ -159,6 +158,7 @@ public class ProxyProperties extends Properties {
             return remove(PROXY_DOMAIN);
         }
     }
+
     /**
      * DOCUMENT ME!
      *

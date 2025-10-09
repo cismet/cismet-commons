@@ -1,15 +1,14 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
-import org.openide.util.NbBundle;
-
 import java.util.concurrent.TimeoutException;
+import org.openide.util.NbBundle;
 
 /**
  * Execute code that will be interrupted after a given time.
@@ -38,8 +37,7 @@ public abstract class TimeoutThread<T extends Object> implements Runnable {
     /**
      * Creates a new TimeoutThread object.
      */
-    public TimeoutThread() {
-    }
+    public TimeoutThread() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -65,9 +63,9 @@ public abstract class TimeoutThread<T extends Object> implements Runnable {
 
         if (t.isAlive()) {
             t.interrupt();
-            throw new TimeoutException(NbBundle.getMessage(
-                    TimeoutThread.class,
-                    "TimeoutThread.start().timelimitExceeded"));
+            throw new TimeoutException(
+                NbBundle.getMessage(TimeoutThread.class, "TimeoutThread.start().timelimitExceeded")
+            );
         } else if (exception != null) {
             throw exception;
         } else {

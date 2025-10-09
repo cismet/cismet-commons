@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  *  Copyright (C) 2010 therter
  *
@@ -23,27 +23,20 @@
  */
 package de.cismet.commons.wms.capabilities.deegree;
 
+import de.cismet.commons.capabilities.Service;
+import de.cismet.commons.wms.capabilities.Layer;
+import de.cismet.commons.wms.capabilities.Request;
+import de.cismet.commons.wms.capabilities.WMSCapabilities;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 import org.apache.log4j.Logger;
-
 import org.deegree.framework.xml.XMLFragment;
 import org.deegree.ogcwebservices.getcapabilities.InvalidCapabilitiesException;
 import org.deegree.ogcwebservices.wms.capabilities.WMSCapabilitiesDocument;
 import org.deegree.ogcwebservices.wms.capabilities.WMSCapabilitiesDocument_1_3_0;
-
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.net.URL;
-
-import java.util.List;
-
-import de.cismet.commons.capabilities.Service;
-
-import de.cismet.commons.wms.capabilities.Layer;
-import de.cismet.commons.wms.capabilities.Request;
-import de.cismet.commons.wms.capabilities.WMSCapabilities;
 
 /**
  * DOCUMENT ME!
@@ -76,7 +69,7 @@ public class DeegreeWMSCapabilities implements WMSCapabilities {
      * @throws  SAXException                  DOCUMENT ME!
      */
     public DeegreeWMSCapabilities(final InputStream in, final String nameID, final String version)
-            throws InvalidCapabilitiesException, IOException, SAXException {
+        throws InvalidCapabilitiesException, IOException, SAXException {
         String urlString = nameID;
         WMSCapabilitiesDocument parser;
 
@@ -91,7 +84,7 @@ public class DeegreeWMSCapabilities implements WMSCapabilities {
         }
         this.url = new URL(urlString);
         parser.load(in, XMLFragment.DEFAULT_URL);
-        cap = (org.deegree.ogcwebservices.wms.capabilities.WMSCapabilities)parser.parseCapabilities();
+        cap = (org.deegree.ogcwebservices.wms.capabilities.WMSCapabilities) parser.parseCapabilities();
     }
 
     //~ Methods ----------------------------------------------------------------

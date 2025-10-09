@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * Slightly modified version of the com.ibatis.common.jdbc.ScriptRunner class
  * from the iBATIS Apache project. Only removed dependency on Resource class
@@ -31,13 +31,11 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.io.Reader;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import java.util.ArrayList;
 
 /**
@@ -263,9 +261,9 @@ public class ScriptRunner {
             }
 
             if (command.length() != 0) {
-                throw new SQLException("Command:\n"
-                            + command
-                            + "\nhas not been executed. Have you forgot to set a final " + this.delimiter);
+                throw new SQLException(
+                    "Command:\n" + command + "\nhas not been executed. Have you forgot to set a final " + this.delimiter
+                );
             }
 
             if (!autoCommit) {

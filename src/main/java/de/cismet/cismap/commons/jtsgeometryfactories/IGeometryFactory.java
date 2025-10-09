@@ -1,14 +1,13 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.cismap.commons.jtsgeometryfactories;
 
 import com.vividsolutions.jts.geom.Geometry;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -19,7 +18,6 @@ import java.sql.SQLException;
  * @version  $Revision$, $Date$
  */
 public interface IGeometryFactory {
-
     //~ Methods ----------------------------------------------------------------
 
     /**

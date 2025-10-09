@@ -1,20 +1,15 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.classloading;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.File;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,12 +17,15 @@ import java.util.Set;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-
-import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * DOCUMENT ME!
@@ -47,8 +45,7 @@ public class ClassPathInfoTest {
     /**
      * Creates a new ClassPathInfoTest object.
      */
-    public ClassPathInfoTest() {
-    }
+    public ClassPathInfoTest() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -59,50 +56,51 @@ public class ClassPathInfoTest {
      */
     @BeforeClass
     public static void setUpClass() throws Exception {
-        org.apache.logging.log4j.core.LoggerContext ctx = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+        org.apache.logging.log4j.core.LoggerContext ctx = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(
+            false
+        );
         Configuration config = ctx.getConfiguration();
-        
+
         LoggerConfig rootLoggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
         TEST_APPENDER.start();
         rootLoggerConfig.addAppender(TEST_APPENDER, null, null);
         rootLoggerConfig.setLevel(Level.DEBUG);
-        
+
         ctx.updateLoggers();
         CLASSPATH = System.getProperty(CP_PROP);
     }
-    
+
     private static final TestAppender TEST_APPENDER = new TestAppender("test");
-    
+
     private static final class TestAppender extends AbstractAppender {
-        
+
         private final transient Set<AppenderListener> listeners = new HashSet<AppenderListener>();
-        
+
         protected TestAppender(String name) {
             super(name, null, PatternLayout.createDefaultLayout(), false);
-        }        
-        
-        public void addAppenderListener(final AppenderListener l){
-            synchronized(listeners){
+        }
+
+        public void addAppenderListener(final AppenderListener l) {
+            synchronized (listeners) {
                 listeners.add(l);
             }
         }
-        
-        public void removeAppenderListener(final AppenderListener l){
-            synchronized(listeners){
+
+        public void removeAppenderListener(final AppenderListener l) {
+            synchronized (listeners) {
                 listeners.remove(l);
             }
         }
 
         @Override
-        public void append(LogEvent event)
-        {
+        public void append(LogEvent event) {
             final Iterator<AppenderListener> it;
-            
-            synchronized(listeners){
+
+            synchronized (listeners) {
                 it = new HashSet<AppenderListener>(listeners).iterator();
             }
-            
-            while(it.hasNext()){
+
+            while (it.hasNext()) {
                 it.next().loggingEvent(event);
             }
         }
@@ -126,15 +124,13 @@ public class ClassPathInfoTest {
      * DOCUMENT ME!
      */
     @Before
-    public void setUp() {
-    }
+    public void setUp() {}
 
     /**
      * DOCUMENT ME!
      */
     @After
-    public void tearDown() {
-    }
+    public void tearDown() {}
 
     /**
      * DOCUMENT ME!
@@ -216,18 +212,22 @@ public class ClassPathInfoTest {
         Collection<String> packages = cpi.getAllPackages();
 
         for (final String pakkage : packages) {
-            if (!("de.cismet.cismap.commons.jtsgeometryfactories".equals(pakkage)
-                            || "de.cismet.ext".equals(pakkage)
-                            || "de.cismet.math.delaunytriangulation".equals(pakkage)
-                            || "de.cismet.math.geometry".equals(pakkage)
-                            || "de.cismet.netutil".equals(pakkage)
-                            || "de.cismet.netutil.tunnel".equals(pakkage)
-                            || "de.cismet.remote".equals(pakkage)
-                            || "de.cismet.tools".equals(pakkage)
-                            || "de.cismet.tools.collections".equals(pakkage)
-                            || "de.cismet.tools.configuration".equals(pakkage)
-                            || "de.cismet.veto".equals(pakkage)
-                            || "Sirius.util.collections".equals(pakkage))) {
+            if (
+                !(
+                    "de.cismet.cismap.commons.jtsgeometryfactories".equals(pakkage) ||
+                    "de.cismet.ext".equals(pakkage) ||
+                    "de.cismet.math.delaunytriangulation".equals(pakkage) ||
+                    "de.cismet.math.geometry".equals(pakkage) ||
+                    "de.cismet.netutil".equals(pakkage) ||
+                    "de.cismet.netutil.tunnel".equals(pakkage) ||
+                    "de.cismet.remote".equals(pakkage) ||
+                    "de.cismet.tools".equals(pakkage) ||
+                    "de.cismet.tools.collections".equals(pakkage) ||
+                    "de.cismet.tools.configuration".equals(pakkage) ||
+                    "de.cismet.veto".equals(pakkage) ||
+                    "Sirius.util.collections".equals(pakkage)
+                )
+            ) {
                 fail("wrong package: " + pakkage);
             }
         }
@@ -239,92 +239,106 @@ public class ClassPathInfoTest {
         packages = cpi.getAllPackages();
 
         for (final String pakkage : packages) {
-            if (!("de.cismet.cismap.commons.jtsgeometryfactories".equals(pakkage)
-                            || "de.cismet.ext".equals(pakkage)
-                            || "de.cismet.math.delaunytriangulation".equals(pakkage)
-                            || "de.cismet.math.geometry".equals(pakkage)
-                            || "de.cismet.netutil".equals(pakkage)
-                            || "de.cismet.netutil.tunnel".equals(pakkage)
-                            || "de.cismet.remote".equals(pakkage)
-                            || "de.cismet.tools".equals(pakkage)
-                            || "de.cismet.tools.collections".equals(pakkage)
-                            || "de.cismet.tools.configuration".equals(pakkage)
-                            || "de.cismet.veto".equals(pakkage)
-                            || "Sirius.util.collections".equals(pakkage)
-                            || "org.apache.commons.httpclient.contrib.ssl".equals(pakkage)
-                            || "net.environmatics.acs.accessor".equals(pakkage)
-                            || "net.environmatics.acs.accessor.interfaces".equals(pakkage)
-                            || "net.environmatics.acs.accessor.methods".equals(pakkage)
-                            || "net.environmatics.acs.accessor.obsolete".equals(pakkage)
-                            || "net.environmatics.acs.accessor.utils".equals(pakkage)
-                            || "net.environmatics.acs.exceptions".equals(pakkage)
-                            || "changes".equals(pakkage))) {
+            if (
+                !(
+                    "de.cismet.cismap.commons.jtsgeometryfactories".equals(pakkage) ||
+                    "de.cismet.ext".equals(pakkage) ||
+                    "de.cismet.math.delaunytriangulation".equals(pakkage) ||
+                    "de.cismet.math.geometry".equals(pakkage) ||
+                    "de.cismet.netutil".equals(pakkage) ||
+                    "de.cismet.netutil.tunnel".equals(pakkage) ||
+                    "de.cismet.remote".equals(pakkage) ||
+                    "de.cismet.tools".equals(pakkage) ||
+                    "de.cismet.tools.collections".equals(pakkage) ||
+                    "de.cismet.tools.configuration".equals(pakkage) ||
+                    "de.cismet.veto".equals(pakkage) ||
+                    "Sirius.util.collections".equals(pakkage) ||
+                    "org.apache.commons.httpclient.contrib.ssl".equals(pakkage) ||
+                    "net.environmatics.acs.accessor".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.interfaces".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.methods".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.obsolete".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.utils".equals(pakkage) ||
+                    "net.environmatics.acs.exceptions".equals(pakkage) ||
+                    "changes".equals(pakkage)
+                )
+            ) {
                 fail("wrong package: " + pakkage);
             }
         }
 
         System.setProperty(
             CP_PROP,
-            jar1.getAbsolutePath()
-                    + File.pathSeparator
-                    + jar2.getAbsolutePath()
-                    + File.pathSeparator
-                    + jar2.getAbsolutePath());
+            jar1.getAbsolutePath() +
+            File.pathSeparator +
+            jar2.getAbsolutePath() +
+            File.pathSeparator +
+            jar2.getAbsolutePath()
+        );
         cpi.scan(true);
 
         packages = cpi.getAllPackages();
 
         for (final String pakkage : packages) {
-            if (!("de.cismet.cismap.commons.jtsgeometryfactories".equals(pakkage)
-                            || "de.cismet.ext".equals(pakkage)
-                            || "de.cismet.math.delaunytriangulation".equals(pakkage)
-                            || "de.cismet.math.geometry".equals(pakkage)
-                            || "de.cismet.netutil".equals(pakkage)
-                            || "de.cismet.netutil.tunnel".equals(pakkage)
-                            || "de.cismet.remote".equals(pakkage)
-                            || "de.cismet.tools".equals(pakkage)
-                            || "de.cismet.tools.collections".equals(pakkage)
-                            || "de.cismet.tools.configuration".equals(pakkage)
-                            || "de.cismet.veto".equals(pakkage)
-                            || "Sirius.util.collections".equals(pakkage)
-                            || "org.apache.commons.httpclient.contrib.ssl".equals(pakkage)
-                            || "net.environmatics.acs.accessor".equals(pakkage)
-                            || "net.environmatics.acs.accessor.interfaces".equals(pakkage)
-                            || "net.environmatics.acs.accessor.methods".equals(pakkage)
-                            || "net.environmatics.acs.accessor.obsolete".equals(pakkage)
-                            || "net.environmatics.acs.accessor.utils".equals(pakkage)
-                            || "net.environmatics.acs.exceptions".equals(pakkage)
-                            || "changes".equals(pakkage))) {
+            if (
+                !(
+                    "de.cismet.cismap.commons.jtsgeometryfactories".equals(pakkage) ||
+                    "de.cismet.ext".equals(pakkage) ||
+                    "de.cismet.math.delaunytriangulation".equals(pakkage) ||
+                    "de.cismet.math.geometry".equals(pakkage) ||
+                    "de.cismet.netutil".equals(pakkage) ||
+                    "de.cismet.netutil.tunnel".equals(pakkage) ||
+                    "de.cismet.remote".equals(pakkage) ||
+                    "de.cismet.tools".equals(pakkage) ||
+                    "de.cismet.tools.collections".equals(pakkage) ||
+                    "de.cismet.tools.configuration".equals(pakkage) ||
+                    "de.cismet.veto".equals(pakkage) ||
+                    "Sirius.util.collections".equals(pakkage) ||
+                    "org.apache.commons.httpclient.contrib.ssl".equals(pakkage) ||
+                    "net.environmatics.acs.accessor".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.interfaces".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.methods".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.obsolete".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.utils".equals(pakkage) ||
+                    "net.environmatics.acs.exceptions".equals(pakkage) ||
+                    "changes".equals(pakkage)
+                )
+            ) {
                 fail("wrong package: " + pakkage);
             }
         }
-        
+
         final File jar3 = new File("src/test/resources/de/cismet/commons/classloading/wss-bean-1.0-copy.jar");
         System.setProperty(
             CP_PROP,
-            jar1.getAbsolutePath()
-                    + File.pathSeparator
-                    + jar2.getAbsolutePath()
-                    + File.pathSeparator
-                    + jar3.getAbsolutePath());
+            jar1.getAbsolutePath() +
+            File.pathSeparator +
+            jar2.getAbsolutePath() +
+            File.pathSeparator +
+            jar3.getAbsolutePath()
+        );
         class DoublePackageAppenderListener implements TestAppender.AppenderListener {
 
             private int count = 0;
-            
-            int getCount(){
+
+            int getCount() {
                 return count;
             }
-            
+
             @Override
-            public void loggingEvent(LogEvent event)
-            {
-                if(event.getLevel() == Level.WARN && ((String)event.getMessage().getFormattedMessage()).startsWith("multiple origins for package: [package=")){
+            public void loggingEvent(LogEvent event) {
+                if (
+                    event.getLevel() == Level.WARN &&
+                    ((String) event.getMessage().getFormattedMessage()).startsWith(
+                            "multiple origins for package: [package="
+                        )
+                ) {
                     ++count;
                     System.out.println(event.getMessage());
                 }
             }
         }
-        
+
         final DoublePackageAppenderListener l = new DoublePackageAppenderListener();
         TEST_APPENDER.addAppenderListener(l);
         cpi.scan(true);
@@ -333,30 +347,34 @@ public class ClassPathInfoTest {
         packages = cpi.getAllPackages();
 
         for (final String pakkage : packages) {
-            if (!("de.cismet.cismap.commons.jtsgeometryfactories".equals(pakkage)
-                            || "de.cismet.ext".equals(pakkage)
-                            || "de.cismet.math.delaunytriangulation".equals(pakkage)
-                            || "de.cismet.math.geometry".equals(pakkage)
-                            || "de.cismet.netutil".equals(pakkage)
-                            || "de.cismet.netutil.tunnel".equals(pakkage)
-                            || "de.cismet.remote".equals(pakkage)
-                            || "de.cismet.tools".equals(pakkage)
-                            || "de.cismet.tools.collections".equals(pakkage)
-                            || "de.cismet.tools.configuration".equals(pakkage)
-                            || "de.cismet.veto".equals(pakkage)
-                            || "Sirius.util.collections".equals(pakkage)
-                            || "org.apache.commons.httpclient.contrib.ssl".equals(pakkage)
-                            || "net.environmatics.acs.accessor".equals(pakkage)
-                            || "net.environmatics.acs.accessor.interfaces".equals(pakkage)
-                            || "net.environmatics.acs.accessor.methods".equals(pakkage)
-                            || "net.environmatics.acs.accessor.obsolete".equals(pakkage)
-                            || "net.environmatics.acs.accessor.utils".equals(pakkage)
-                            || "net.environmatics.acs.exceptions".equals(pakkage)
-                            || "changes".equals(pakkage))) {
+            if (
+                !(
+                    "de.cismet.cismap.commons.jtsgeometryfactories".equals(pakkage) ||
+                    "de.cismet.ext".equals(pakkage) ||
+                    "de.cismet.math.delaunytriangulation".equals(pakkage) ||
+                    "de.cismet.math.geometry".equals(pakkage) ||
+                    "de.cismet.netutil".equals(pakkage) ||
+                    "de.cismet.netutil.tunnel".equals(pakkage) ||
+                    "de.cismet.remote".equals(pakkage) ||
+                    "de.cismet.tools".equals(pakkage) ||
+                    "de.cismet.tools.collections".equals(pakkage) ||
+                    "de.cismet.tools.configuration".equals(pakkage) ||
+                    "de.cismet.veto".equals(pakkage) ||
+                    "Sirius.util.collections".equals(pakkage) ||
+                    "org.apache.commons.httpclient.contrib.ssl".equals(pakkage) ||
+                    "net.environmatics.acs.accessor".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.interfaces".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.methods".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.obsolete".equals(pakkage) ||
+                    "net.environmatics.acs.accessor.utils".equals(pakkage) ||
+                    "net.environmatics.acs.exceptions".equals(pakkage) ||
+                    "changes".equals(pakkage)
+                )
+            ) {
                 fail("wrong package: " + pakkage);
             }
         }
-        
+
         assertEquals(8, l.getCount());
     }
 
@@ -364,6 +382,5 @@ public class ClassPathInfoTest {
      * DOCUMENT ME!
      */
     @Test
-    public void testGetResources() {
-    }
+    public void testGetResources() {}
 }

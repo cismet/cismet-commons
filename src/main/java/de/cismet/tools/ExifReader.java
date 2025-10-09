@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -20,15 +20,12 @@ import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
-
 import java.io.File;
 import java.io.IOException;
-
 import java.util.Date;
 
 /**
@@ -47,10 +44,11 @@ public class ExifReader {
      * @version  $Revision$, $Date$
      */
     public static enum Mirrored {
-
         //~ Enum constants -----------------------------------------------------
 
-        NONE, HORIZONTAL, VERTICAL
+        NONE,
+        HORIZONTAL,
+        VERTICAL,
     }
 
     //~ Instance fields --------------------------------------------------------
@@ -85,9 +83,13 @@ public class ExifReader {
         if (gpsDirectory != null) {
             if ((gpsDirectory.getGeoLocation() != null) && !gpsDirectory.getGeoLocation().isZero()) {
                 final GeometryFactory factory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
-                p = factory.createPoint(new Coordinate(
+                p =
+                    factory.createPoint(
+                        new Coordinate(
                             gpsDirectory.getGeoLocation().getLongitude(),
-                            gpsDirectory.getGeoLocation().getLatitude()));
+                            gpsDirectory.getGeoLocation().getLatitude()
+                        )
+                    );
             }
         }
 
@@ -212,44 +214,52 @@ public class ExifReader {
 
         if (orientation != null) {
             switch (orientation) {
-                case 1: {
-                    // Horizontal / normal
-                    angle = 0.0;
-                    break;
-                }
-                case 2: {
-                    // Mirror horizontal
-                    break;
-                }
-                case 3: {
-                    // Rotate 180
-                    angle = 180.0;
-                    break;
-                }
-                case 4: {
-                    // Mirror vertical
-                    break;
-                }
-                case 5: {
-                    // Mirror horizontal and rotate 270 CW (clockwise)
-                    angle = 270.0;
-                    break;
-                }
-                case 6: {
-                    // Rotate 90 CW
-                    angle = 90.0;
-                    break;
-                }
-                case 7: {
-                    // Mirror horizontal and rotate 90 CW (clockwise)
-                    angle = 90.0;
-                    break;
-                }
-                case 8: {
-                    // Rotate 270 CW (clockwise)
-                    angle = 270.0;
-                    break;
-                }
+                case 1:
+                    {
+                        // Horizontal / normal
+                        angle = 0.0;
+                        break;
+                    }
+                case 2:
+                    {
+                        // Mirror horizontal
+                        break;
+                    }
+                case 3:
+                    {
+                        // Rotate 180
+                        angle = 180.0;
+                        break;
+                    }
+                case 4:
+                    {
+                        // Mirror vertical
+                        break;
+                    }
+                case 5:
+                    {
+                        // Mirror horizontal and rotate 270 CW (clockwise)
+                        angle = 270.0;
+                        break;
+                    }
+                case 6:
+                    {
+                        // Rotate 90 CW
+                        angle = 90.0;
+                        break;
+                    }
+                case 7:
+                    {
+                        // Mirror horizontal and rotate 90 CW (clockwise)
+                        angle = 90.0;
+                        break;
+                    }
+                case 8:
+                    {
+                        // Rotate 270 CW (clockwise)
+                        angle = 270.0;
+                        break;
+                    }
             }
         }
 
@@ -267,26 +277,30 @@ public class ExifReader {
 
         if (orientation != null) {
             switch (orientation) {
-                case 2: {
-                    // Mirror horizontal
-                    mirrored = Mirrored.HORIZONTAL;
-                    break;
-                }
-                case 4: {
-                    // Mirror vertical
-                    mirrored = Mirrored.VERTICAL;
-                    break;
-                }
-                case 5: {
-                    // Mirror horizontal and rotate 270 CW (clockwise)
-                    mirrored = Mirrored.HORIZONTAL;
-                    break;
-                }
-                case 7: {
-                    // Mirror horizontal and rotate 90 CW (clockwise)
-                    mirrored = Mirrored.HORIZONTAL;
-                    break;
-                }
+                case 2:
+                    {
+                        // Mirror horizontal
+                        mirrored = Mirrored.HORIZONTAL;
+                        break;
+                    }
+                case 4:
+                    {
+                        // Mirror vertical
+                        mirrored = Mirrored.VERTICAL;
+                        break;
+                    }
+                case 5:
+                    {
+                        // Mirror horizontal and rotate 270 CW (clockwise)
+                        mirrored = Mirrored.HORIZONTAL;
+                        break;
+                    }
+                case 7:
+                    {
+                        // Mirror horizontal and rotate 90 CW (clockwise)
+                        mirrored = Mirrored.HORIZONTAL;
+                        break;
+                    }
             }
         }
 

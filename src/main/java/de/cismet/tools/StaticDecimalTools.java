@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
 /**
@@ -29,6 +29,7 @@ public class StaticDecimalTools {
     public static String round(final double d) {
         return round("0.00", d); // NOI18N
     }
+
     /**
      * Rounds the Doubles to a specified Form.
      *
@@ -38,10 +39,10 @@ public class StaticDecimalTools {
      * @return  the rounded <code>Double</code>
      */
     public static String round(final String pattern, final double d) {
-        final double dd = ((double)(Math.round(d * 100))) / 100;
+        final double dd = ((double) (Math.round(d * 100))) / 100;
         final java.text.DecimalFormat myFormatter = new java.text.DecimalFormat(pattern);
         final java.text.DecimalFormatSymbols symbols = new java.text.DecimalFormatSymbols();
-        symbols.setDecimalSeparator('.');  // NOI18N
+        symbols.setDecimalSeparator('.'); // NOI18N
         symbols.setGroupingSeparator('.'); // NOI18N
         myFormatter.setDecimalFormatSymbols(symbols);
         return myFormatter.format(d);

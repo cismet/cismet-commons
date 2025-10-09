@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
 /*
@@ -42,13 +42,10 @@ package de.cismet.tools;
 
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.util.*;
-
+import de.cismet.cismap.commons.jtsgeometryfactories.CoordinateM;
 import java.io.*;
-
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-
-import de.cismet.cismap.commons.jtsgeometryfactories.CoordinateM;
 
 /**
  * Writes the Well-Known Text representation of a {@link Geometry}. The Well-Known Text format is defined in the OGC <A
@@ -86,8 +83,7 @@ public class WKTWriter4D {
     /**
      * Creates a new WKTWriter with default settings.
      */
-    public WKTWriter4D() {
-    }
+    public WKTWriter4D() {}
 
     /**
      * Creates a writer that writes {@link Geometry}s with the given output dimension (2 or 3). If the specified output
@@ -171,8 +167,7 @@ public class WKTWriter4D {
         // specify decimal separator explicitly to avoid problems in other locales
         final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
-        final String fmtString = "0" + ((decimalPlaces > 0) ? "." : "")
-                    + stringOfChar('#', decimalPlaces);
+        final String fmtString = "0" + ((decimalPlaces > 0) ? "." : "") + stringOfChar('#', decimalPlaces);
         return new DecimalFormat(fmtString, symbols);
     }
 
@@ -271,6 +266,7 @@ public class WKTWriter4D {
         }
         return sw.toString();
     }
+
     /**
      * Same as <code>write</code>, but with newlines and spaces to make the well-known text more readable.
      *
@@ -282,6 +278,7 @@ public class WKTWriter4D {
     public void writeFormatted(final Geometry geometry, final Writer writer) throws IOException {
         writeFormatted(geometry, true, writer);
     }
+
     /**
      * Converts a <code>Geometry</code> to its Well-known Text representation.
      *
@@ -292,7 +289,7 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void writeFormatted(final Geometry geometry, final boolean useFormatting, final Writer writer)
-            throws IOException {
+        throws IOException {
         this.useFormatting = useFormatting;
         formatter = createFormatter(geometry.getPrecisionModel());
         appendGeometryTaggedText(geometry, 0, writer);
@@ -308,29 +305,28 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void appendGeometryTaggedText(final Geometry geometry, final int level, final Writer writer)
-            throws IOException {
+        throws IOException {
         indent(level, writer);
 
         if (geometry instanceof Point) {
-            final Point point = (Point)geometry;
+            final Point point = (Point) geometry;
             appendPointTaggedText(point.getCoordinate(), level, writer, point.getPrecisionModel());
         } else if (geometry instanceof LinearRing) {
-            appendLinearRingTaggedText((LinearRing)geometry, level, writer);
+            appendLinearRingTaggedText((LinearRing) geometry, level, writer);
         } else if (geometry instanceof LineString) {
-            appendLineStringTaggedText((LineString)geometry, level, writer);
+            appendLineStringTaggedText((LineString) geometry, level, writer);
         } else if (geometry instanceof Polygon) {
-            appendPolygonTaggedText((Polygon)geometry, level, writer);
+            appendPolygonTaggedText((Polygon) geometry, level, writer);
         } else if (geometry instanceof MultiPoint) {
-            appendMultiPointTaggedText((MultiPoint)geometry, level, writer);
+            appendMultiPointTaggedText((MultiPoint) geometry, level, writer);
         } else if (geometry instanceof MultiLineString) {
-            appendMultiLineStringTaggedText((MultiLineString)geometry, level, writer);
+            appendMultiLineStringTaggedText((MultiLineString) geometry, level, writer);
         } else if (geometry instanceof MultiPolygon) {
-            appendMultiPolygonTaggedText((MultiPolygon)geometry, level, writer);
+            appendMultiPolygonTaggedText((MultiPolygon) geometry, level, writer);
         } else if (geometry instanceof GeometryCollection) {
-            appendGeometryCollectionTaggedText((GeometryCollection)geometry, level, writer);
+            appendGeometryCollectionTaggedText((GeometryCollection) geometry, level, writer);
         } else {
-            Assert.shouldNeverReachHere("Unsupported Geometry implementation:"
-                        + geometry.getClass());
+            Assert.shouldNeverReachHere("Unsupported Geometry implementation:" + geometry.getClass());
         }
     }
 
@@ -345,10 +341,12 @@ public class WKTWriter4D {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private void appendPointTaggedText(final Coordinate coordinate,
-            final int level,
-            final Writer writer,
-            final PrecisionModel precisionModel) throws IOException {
+    private void appendPointTaggedText(
+        final Coordinate coordinate,
+        final int level,
+        final Writer writer,
+        final PrecisionModel precisionModel
+    ) throws IOException {
         writer.write("POINT ");
         appendPointText(coordinate, level, writer, precisionModel);
     }
@@ -363,7 +361,7 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void appendLineStringTaggedText(final LineString lineString, final int level, final Writer writer)
-            throws IOException {
+        throws IOException {
         writer.write("LINESTRING ");
         appendLineStringText(lineString, level, false, writer);
     }
@@ -378,7 +376,7 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void appendLinearRingTaggedText(final LinearRing linearRing, final int level, final Writer writer)
-            throws IOException {
+        throws IOException {
         writer.write("LINEARRING ");
         appendLineStringText(linearRing, level, false, writer);
     }
@@ -393,7 +391,7 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void appendPolygonTaggedText(final Polygon polygon, final int level, final Writer writer)
-            throws IOException {
+        throws IOException {
         writer.write("POLYGON ");
         appendPolygonText(polygon, level, false, writer);
     }
@@ -408,7 +406,7 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void appendMultiPointTaggedText(final MultiPoint multipoint, final int level, final Writer writer)
-            throws IOException {
+        throws IOException {
         writer.write("MULTIPOINT ");
         appendMultiPointText(multipoint, level, writer);
     }
@@ -423,9 +421,11 @@ public class WKTWriter4D {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private void appendMultiLineStringTaggedText(final MultiLineString multiLineString,
-            final int level,
-            final Writer writer) throws IOException {
+    private void appendMultiLineStringTaggedText(
+        final MultiLineString multiLineString,
+        final int level,
+        final Writer writer
+    ) throws IOException {
         writer.write("MULTILINESTRING ");
         appendMultiLineStringText(multiLineString, level, false, writer);
     }
@@ -440,7 +440,7 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void appendMultiPolygonTaggedText(final MultiPolygon multiPolygon, final int level, final Writer writer)
-            throws IOException {
+        throws IOException {
         writer.write("MULTIPOLYGON ");
         appendMultiPolygonText(multiPolygon, level, writer);
     }
@@ -455,9 +455,11 @@ public class WKTWriter4D {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private void appendGeometryCollectionTaggedText(final GeometryCollection geometryCollection,
-            final int level,
-            final Writer writer) throws IOException {
+    private void appendGeometryCollectionTaggedText(
+        final GeometryCollection geometryCollection,
+        final int level,
+        final Writer writer
+    ) throws IOException {
         writer.write("GEOMETRYCOLLECTION ");
         appendGeometryCollectionText(geometryCollection, level, writer);
     }
@@ -473,10 +475,12 @@ public class WKTWriter4D {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private void appendPointText(final Coordinate coordinate,
-            final int level,
-            final Writer writer,
-            final PrecisionModel precisionModel) throws IOException {
+    private void appendPointText(
+        final Coordinate coordinate,
+        final int level,
+        final Writer writer,
+        final PrecisionModel precisionModel
+    ) throws IOException {
         if (coordinate == null) {
             writer.write("EMPTY");
         } else {
@@ -522,7 +526,7 @@ public class WKTWriter4D {
         }
         if ((outputDimension >= 4) && (coordinate instanceof CoordinateM)) {
             writer.write(" ");
-            writer.write(writeNumber(((CoordinateM)coordinate).m));
+            writer.write(writeNumber(((CoordinateM) coordinate).m));
         }
     }
 
@@ -547,10 +551,12 @@ public class WKTWriter4D {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private void appendSequenceText(final CoordinateSequence seq,
-            final int level,
-            final boolean doIndent,
-            final Writer writer) throws IOException {
+    private void appendSequenceText(
+        final CoordinateSequence seq,
+        final int level,
+        final boolean doIndent,
+        final Writer writer
+    ) throws IOException {
         if (seq.size() == 0) {
             writer.write("EMPTY");
         } else {
@@ -561,8 +567,7 @@ public class WKTWriter4D {
             for (int i = 0; i < seq.size(); i++) {
                 if (i > 0) {
                     writer.write(", ");
-                    if ((coordsPerLine > 0)
-                                && ((i % coordsPerLine) == 0)) {
+                    if ((coordsPerLine > 0) && ((i % coordsPerLine) == 0)) {
                         indent(level + 1, writer);
                     }
                 }
@@ -582,10 +587,12 @@ public class WKTWriter4D {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private void appendLineStringText(final LineString lineString,
-            final int level,
-            final boolean doIndent,
-            final Writer writer) throws IOException {
+    private void appendLineStringText(
+        final LineString lineString,
+        final int level,
+        final boolean doIndent,
+        final Writer writer
+    ) throws IOException {
         if (lineString.isEmpty()) {
             writer.write("EMPTY");
         } else {
@@ -596,8 +603,7 @@ public class WKTWriter4D {
             for (int i = 0; i < lineString.getNumPoints(); i++) {
                 if (i > 0) {
                     writer.write(", ");
-                    if ((coordsPerLine > 0)
-                                && ((i % coordsPerLine) == 0)) {
+                    if ((coordsPerLine > 0) && ((i % coordsPerLine) == 0)) {
                         indent(level + 1, writer);
                     }
                 }
@@ -617,10 +623,12 @@ public class WKTWriter4D {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private void appendPolygonText(final Polygon polygon,
-            final int level,
-            final boolean indentFirst,
-            final Writer writer) throws IOException {
+    private void appendPolygonText(
+        final Polygon polygon,
+        final int level,
+        final boolean indentFirst,
+        final Writer writer
+    ) throws IOException {
         if (polygon.isEmpty()) {
             writer.write("EMPTY");
         } else {
@@ -647,7 +655,7 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void appendMultiPointText(final MultiPoint multiPoint, final int level, final Writer writer)
-            throws IOException {
+        throws IOException {
         if (multiPoint.isEmpty()) {
             writer.write("EMPTY");
         } else {
@@ -658,7 +666,7 @@ public class WKTWriter4D {
                     indentCoords(i, level + 1, writer);
                 }
                 writer.write("(");
-                appendCoordinate(((Point)multiPoint.getGeometryN(i)).getCoordinate(), writer);
+                appendCoordinate(((Point) multiPoint.getGeometryN(i)).getCoordinate(), writer);
                 writer.write(")");
             }
             writer.write(")");
@@ -675,10 +683,12 @@ public class WKTWriter4D {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private void appendMultiLineStringText(final MultiLineString multiLineString,
-            final int level,
-            final boolean indentFirst,
-            final Writer writer) throws IOException {
+    private void appendMultiLineStringText(
+        final MultiLineString multiLineString,
+        final int level,
+        final boolean indentFirst,
+        final Writer writer
+    ) throws IOException {
         if (multiLineString.isEmpty()) {
             writer.write("EMPTY");
         } else {
@@ -691,7 +701,7 @@ public class WKTWriter4D {
                     level2 = level + 1;
                     doIndent = true;
                 }
-                appendLineStringText((LineString)multiLineString.getGeometryN(i), level2, doIndent, writer);
+                appendLineStringText((LineString) multiLineString.getGeometryN(i), level2, doIndent, writer);
             }
             writer.write(")");
         }
@@ -707,7 +717,7 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void appendMultiPolygonText(final MultiPolygon multiPolygon, final int level, final Writer writer)
-            throws IOException {
+        throws IOException {
         if (multiPolygon.isEmpty()) {
             writer.write("EMPTY");
         } else {
@@ -720,7 +730,7 @@ public class WKTWriter4D {
                     level2 = level + 1;
                     doIndent = true;
                 }
-                appendPolygonText((Polygon)multiPolygon.getGeometryN(i), level2, doIndent, writer);
+                appendPolygonText((Polygon) multiPolygon.getGeometryN(i), level2, doIndent, writer);
             }
             writer.write(")");
         }
@@ -736,9 +746,11 @@ public class WKTWriter4D {
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    private void appendGeometryCollectionText(final GeometryCollection geometryCollection,
-            final int level,
-            final Writer writer) throws IOException {
+    private void appendGeometryCollectionText(
+        final GeometryCollection geometryCollection,
+        final int level,
+        final Writer writer
+    ) throws IOException {
         if (geometryCollection.isEmpty()) {
             writer.write("EMPTY");
         } else {
@@ -765,8 +777,7 @@ public class WKTWriter4D {
      * @throws  IOException  DOCUMENT ME!
      */
     private void indentCoords(final int coordIndex, final int level, final Writer writer) throws IOException {
-        if ((coordsPerLine <= 0)
-                    || ((coordIndex % coordsPerLine) != 0)) {
+        if ((coordsPerLine <= 0) || ((coordIndex % coordsPerLine) != 0)) {
             return;
         }
         indent(level, writer);

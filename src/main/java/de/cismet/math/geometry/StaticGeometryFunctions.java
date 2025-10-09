@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.math.geometry;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -12,7 +12,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
@@ -41,7 +40,7 @@ public class StaticGeometryFunctions {
         final double minX = Math.min(lineStart.getX(), lineEnd.getX());
         final double maxY = Math.max(lineStart.getY(), lineEnd.getY());
         final double minY = Math.min(lineStart.getY(), lineEnd.getY());
-        if (lineStart.getY() == lineEnd.getY()) {        // Steigung 0
+        if (lineStart.getY() == lineEnd.getY()) { // Steigung 0
             if (trigger.getX() > maxX) {
                 return new Point2D.Double(maxX, lineStart.getY());
             } else if (trigger.getX() < minX) {
@@ -57,11 +56,11 @@ public class StaticGeometryFunctions {
             } else {
                 return new Point2D.Double(lineStart.getX(), trigger.getY());
             }
-        } else {                                         // Steigung kein Extremfall
+        } else { // Steigung kein Extremfall
             final double m = (lineStart.getY() - lineEnd.getY()) / (lineStart.getX() - lineEnd.getX());
             final double mOrth = (-1.0) / m;
-            double x = (trigger.getY() - (mOrth * trigger.getX()) - (lineStart.getY() - (m * lineStart.getX())))
-                        / (m - mOrth);
+            double x =
+                (trigger.getY() - (mOrth * trigger.getX()) - (lineStart.getY() - (m * lineStart.getX()))) / (m - mOrth);
             double y = ((mOrth * x) + trigger.getY()) - (mOrth * trigger.getX());
             if (x > maxX) {
                 x = maxX;
@@ -154,11 +153,11 @@ public class StaticGeometryFunctions {
         final GeometryFactory factory = g.getFactory();
 
         if (g.getGeometryType().equalsIgnoreCase("point")) {
-            return factory.createMultiPoint(new Point[] { (Point)g });
+            return factory.createMultiPoint(new Point[] { (Point) g });
         } else if (g.getGeometryType().equalsIgnoreCase("linestring")) {
-            return factory.createMultiLineString(new LineString[] { (LineString)g });
+            return factory.createMultiLineString(new LineString[] { (LineString) g });
         } else if (g.getGeometryType().equalsIgnoreCase("polygon")) {
-            return factory.createMultiPolygon(new Polygon[] { (Polygon)g });
+            return factory.createMultiPolygon(new Polygon[] { (Polygon) g });
         }
 
         return g;

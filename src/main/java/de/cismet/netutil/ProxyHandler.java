@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,18 +12,14 @@
  */
 package de.cismet.netutil;
 
-import org.apache.log4j.Logger;
-
-import org.openide.util.Lookup;
-
+import de.cismet.tools.PasswordEncrypter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.JOptionPane;
-
-import de.cismet.tools.PasswordEncrypter;
+import org.apache.log4j.Logger;
+import org.openide.util.Lookup;
 
 /**
  * DOCUMENT ME!
@@ -45,10 +41,10 @@ public class ProxyHandler {
      * @version  $Revision$, $Date$
      */
     public enum Mode {
-
         //~ Enum constants -----------------------------------------------------
 
-        MANUAL, PRECONFIGURED
+        MANUAL,
+        PRECONFIGURED,
     }
 
     //~ Instance fields --------------------------------------------------------
@@ -113,11 +109,13 @@ public class ProxyHandler {
      * @param  password  DOCUMENT ME!
      * @param  domain    DOCUMENT ME!
      */
-    public void addHostCredentials(final String host,
-            final int port,
-            final String user,
-            final String password,
-            final String domain) {
+    public void addHostCredentials(
+        final String host,
+        final int port,
+        final String user,
+        final String password,
+        final String domain
+    ) {
         final Proxy proxy = getProxy();
         hostCrendentials.put(getHostCredentialsKey(host, port), getHostCredentialsValue(user, password, domain));
         fireProxyChanged(getMode(), getMode(), proxy, getProxy());
@@ -213,7 +211,9 @@ public class ProxyHandler {
                 proxyProperties.getProxyExcludedHosts(),
                 proxyProperties.getProxyUsername(),
                 proxyProperties.getProxyPassword(),
-                proxyProperties.getProxyDomain()) : null;
+                proxyProperties.getProxyDomain()
+            )
+            : null;
         setPreconfiguredProxy(preconfiguredProxy);
         if ((preconfiguredProxy != null) && preconfiguredProxy.isValid()) {
             if (!getManualProxy().isValid()) {
@@ -240,7 +240,7 @@ public class ProxyHandler {
         try {
             if (args.length == 1) {
                 final String arg = args[0];
-                if ("-c".equals(arg) || "--clear".equals(arg)) {        // NOI18N
+                if ("-c".equals(arg) || "--clear".equals(arg)) { // NOI18N
                     ProxyHandler.getInstance().clear();
                     showMessage("Proxy information cleared", false);
                 } else if ("-p".equals(arg) || "--print".equals(arg)) { // NOI18N
@@ -282,7 +282,8 @@ public class ProxyHandler {
                 null,
                 message,
                 error ? "Error" : "Information", // NOI18N
-                error ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE);
+                error ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE
+            );
         } else {
             if (error) {
                 System.err.println("\n" + message + "\n"); // NOI18N
@@ -296,10 +297,12 @@ public class ProxyHandler {
      * print usage.
      */
     private static void printUsage() {
-        showMessage("Supported parameters are:\n\n"                  // NOI18N
-                    + "-c --clear\t\tremoves all proxy settings\n"   // NOI18N
-                    + "-p --print\t\tprints out the proxy settings", // NOI18N
-            true);
+        showMessage(
+            "Supported parameters are:\n\n" + // NOI18N
+            "-c --clear\t\tremoves all proxy settings\n" + // NOI18N
+            "-p --print\t\tprints out the proxy settings", // NOI18N
+            true
+        );
     }
 
     /**
@@ -353,13 +356,15 @@ public class ProxyHandler {
             final String domain = properties.getProxyDomain();
             final String excludedHosts = properties.getProxyExcludedHosts();
 
-            final Proxy proxy = new Proxy((enabled != null) ? enabled : false,
-                    host,
-                    port,
-                    excludedHosts,
-                    username,
-                    (password != null) ? PasswordEncrypter.decryptString(password) : null,
-                    domain);
+            final Proxy proxy = new Proxy(
+                (enabled != null) ? enabled : false,
+                host,
+                port,
+                excludedHosts,
+                username,
+                (password != null) ? PasswordEncrypter.decryptString(password) : null,
+                domain
+            );
             if (proxy.isValid()) {
                 setManualProxy(proxy);
             }
@@ -411,10 +416,12 @@ public class ProxyHandler {
      * @param  oldProxy  DOCUMENT ME!
      * @param  newProxy  DOCUMENT ME!
      */
-    protected void fireProxyChanged(final ProxyHandler.Mode oldMode,
-            final ProxyHandler.Mode newMode,
-            final Proxy oldProxy,
-            final Proxy newProxy) {
+    protected void fireProxyChanged(
+        final ProxyHandler.Mode oldMode,
+        final ProxyHandler.Mode newMode,
+        final Proxy oldProxy,
+        final Proxy newProxy
+    ) {
         final Event event = new Event(Event.Type.PROXY_CHANGED);
         event.setOldMode(oldMode);
         event.setNewMode(newMode);
@@ -474,17 +481,20 @@ public class ProxyHandler {
         final Proxy proxy;
         if (mode != null) {
             switch (mode) {
-                case MANUAL: {
-                    proxy = manualProxy;
-                }
-                break;
-                case PRECONFIGURED: {
-                    proxy = preconfiguredProxy;
-                }
-                break;
-                default: {
-                    proxy = null;
-                }
+                case MANUAL:
+                    {
+                        proxy = manualProxy;
+                    }
+                    break;
+                case PRECONFIGURED:
+                    {
+                        proxy = preconfiguredProxy;
+                    }
+                    break;
+                default:
+                    {
+                        proxy = null;
+                    }
             }
         } else {
             proxy = null;
@@ -497,13 +507,15 @@ public class ProxyHandler {
                     final String username = split[0];
                     final String password = split[1];
                     final String domain = split[2];
-                    return new Proxy(proxy.isEnabled(),
-                            proxy.getHost(),
-                            proxy.getPort(),
-                            proxy.getExcludedHosts(),
-                            username,
-                            password,
-                            domain);
+                    return new Proxy(
+                        proxy.isEnabled(),
+                        proxy.getHost(),
+                        proxy.getPort(),
+                        proxy.getExcludedHosts(),
+                        username,
+                        password,
+                        domain
+                    );
                 } else {
                     LOG.warn("credentials have not 3 parts");
                 }
@@ -542,7 +554,6 @@ public class ProxyHandler {
      * @version  $Revision$, $Date$
      */
     public interface Listener {
-
         //~ Methods ------------------------------------------------------------
 
         /**
@@ -596,8 +607,7 @@ public class ProxyHandler {
         /**
          * Creates a new LazyInitialiser object.
          */
-        private LazyInitialiser() {
-        }
+        private LazyInitialiser() {}
     }
 
     /**
@@ -615,10 +625,9 @@ public class ProxyHandler {
          * @version  $Revision$, $Date$
          */
         public enum Type {
-
             //~ Enum constants -------------------------------------------------
 
-            PROXY_CHANGED
+            PROXY_CHANGED,
         }
 
         //~ Instance fields ----------------------------------------------------

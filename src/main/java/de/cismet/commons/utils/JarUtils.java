@@ -1,40 +1,34 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.utils;
-
-import org.apache.log4j.Logger;
-
-import org.openide.util.Exceptions;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
 import java.net.URI;
-
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
-
 import java.security.KeyStore;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import org.apache.log4j.Logger;
+import org.openide.util.Exceptions;
 
 /**
  * DOCUMENT ME!
@@ -140,10 +134,12 @@ public class JarUtils {
      *
      * @throws  IllegalArgumentException  DOCUMENT ME!
      */
-    public static boolean isSigned(final File toSign,
-            final String keystorePath,
-            final String keystorePass,
-            final String alias) {
+    public static boolean isSigned(
+        final File toSign,
+        final String keystorePath,
+        final String keystorePass,
+        final String alias
+    ) {
         if (toSign == null) {
             throw new IllegalArgumentException("toSign file must not be null"); // NOI18N
         }
@@ -153,8 +149,7 @@ public class JarUtils {
         }
 
         if ((keystorePass == null) || (keystorePath == null)) {
-            LOG.warn(
-                "Cannot verify signature because either keystorePath or keystorePass is null"); // NOI18N
+            LOG.warn("Cannot verify signature because either keystorePath or keystorePass is null"); // NOI18N
 
             return false;
         }
@@ -199,15 +194,27 @@ public class JarUtils {
                                 break;
                             } catch (final Exception e) {
                                 if (LOG.isDebugEnabled()) {
-                                    LOG.debug("certificate of entry cannot be verified: " // NOI18N
-                                                + cert + " | entry: " + entry + " | toSign: " + toSign, // NOI18N
-                                        e);
+                                    LOG.debug(
+                                        "certificate of entry cannot be verified: " + // NOI18N
+                                        cert +
+                                        " | entry: " +
+                                        entry +
+                                        " | toSign: " +
+                                        toSign, // NOI18N
+                                        e
+                                    );
                                 }
                             }
                         } else {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug("skipping non-cismet cert: " + cert + " | entry: " + entry // NOI18N
-                                            + " | toSign: " + toSign);              // NOI18N
+                                LOG.debug(
+                                    "skipping non-cismet cert: " +
+                                    cert +
+                                    " | entry: " +
+                                    entry + // NOI18N
+                                    " | toSign: " +
+                                    toSign
+                                ); // NOI18N
                             }
                         }
                     }

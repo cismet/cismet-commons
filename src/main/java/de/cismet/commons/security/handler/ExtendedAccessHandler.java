@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,11 +12,9 @@
  */
 package de.cismet.commons.security.handler;
 
-import java.io.InputStream;
-
-import java.net.URL;
-
 import de.cismet.commons.security.AccessHandler;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * DOCUMENT ME!
@@ -25,7 +23,6 @@ import de.cismet.commons.security.AccessHandler;
  * @version  $Revision$, $Date$
  */
 public interface ExtendedAccessHandler extends AccessHandler {
-
     //~ Methods ----------------------------------------------------------------
 
     /**

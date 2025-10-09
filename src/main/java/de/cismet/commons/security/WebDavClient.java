@@ -1,12 +1,20 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.security;
 
+import de.cismet.netutil.Proxy;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
@@ -30,18 +38,6 @@ import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 import org.apache.jackrabbit.webdav.client.methods.PutMethod;
 import org.apache.log4j.Logger;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.net.MalformedURLException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import de.cismet.netutil.Proxy;
 
 /**
  * Communicates with a web dav server.
@@ -133,10 +129,7 @@ public class WebDavClient {
 
         if ((username != null) && (password != null)) {
             if (useNTAuth) {
-                final Credentials credentials = new NTCredentials(username,
-                        password,
-                        "",
-                        "");
+                final Credentials credentials = new NTCredentials(username, password, "", "");
                 client.getState().setCredentials(AuthScope.ANY, credentials);
             } else {
                 final Credentials creds = new UsernamePasswordCredentials(username, password);
@@ -152,10 +145,12 @@ public class WebDavClient {
 
             if (proxy.getUsername() != null) {
                 final AuthScope scope = new AuthScope(proxy.getHost(), proxy.getPort());
-                final Credentials credentials = new NTCredentials(proxy.getUsername(),
-                        proxy.getPassword(),
-                        "",
-                        proxy.getDomain());
+                final Credentials credentials = new NTCredentials(
+                    proxy.getUsername(),
+                    proxy.getPassword(),
+                    "",
+                    proxy.getDomain()
+                );
                 client.getState().setProxyCredentials(scope, credentials);
             }
         }
@@ -214,9 +209,11 @@ public class WebDavClient {
      * @throws  IOException            DOCUMENT ME!
      * @throws  HttpException          DOCUMENT ME!
      */
-    public InputStream getInputStream(final String path,
-            final Map<String, String> responseHeaders,
-            final Map<String, Object> statusValues) throws MalformedURLException, IOException, HttpException {
+    public InputStream getInputStream(
+        final String path,
+        final Map<String, String> responseHeaders,
+        final Map<String, Object> statusValues
+    ) throws MalformedURLException, IOException, HttpException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("get: " + path);
@@ -254,10 +251,12 @@ public class WebDavClient {
      * @throws  IOException            DOCUMENT ME!
      * @throws  HttpException          DOCUMENT ME!
      */
-    public InputStream getInputStream(final String path,
-            final Map<String, String> requestHeaders,
-            final Map<String, String> responseHeaders,
-            final Map<String, Object> statusValues) throws MalformedURLException, IOException, HttpException {
+    public InputStream getInputStream(
+        final String path,
+        final Map<String, String> requestHeaders,
+        final Map<String, String> responseHeaders,
+        final Map<String, Object> statusValues
+    ) throws MalformedURLException, IOException, HttpException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("get: " + path);
@@ -341,9 +340,8 @@ public class WebDavClient {
      * @throws  IOException            DOCUMENT ME!
      * @throws  HttpException          DOCUMENT ME!
      */
-    public int put(final String path, final InputStream input) throws MalformedURLException,
-        IOException,
-        HttpException {
+    public int put(final String path, final InputStream input)
+        throws MalformedURLException, IOException, HttpException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("put: " + path);

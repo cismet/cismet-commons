@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,11 +12,9 @@
  */
 package de.cismet.connectioncontext;
 
-import java.io.Serializable;
-
-import java.util.HashMap;
-
 import de.cismet.tools.StaticDebuggingTools;
+import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * DOCUMENT ME!
@@ -29,7 +27,8 @@ public abstract class AbstractConnectionContext implements Serializable {
     //~ Static fields/initializers ---------------------------------------------
 
     private static final transient boolean LOG_FULL_STACKTRACE = StaticDebuggingTools.checkHomeForFile(
-            "fullStackTraceConnectionContext");
+        "fullStackTraceConnectionContext"
+    );
 
     public static String FIELD__CONTEXT_NAME = "contextName";
     public static final String FIELD__CLIENT_IP = "ClientIp";
@@ -43,11 +42,21 @@ public abstract class AbstractConnectionContext implements Serializable {
      * @version  $Revision$, $Date$
      */
     public enum Category {
-
         //~ Enum constants -----------------------------------------------------
 
-        EDITOR, RENDERER, CATALOGUE, OPTIONS, ACTION, SEARCH, LEGACY, STARTUP, OTHER, STATIC, INSTANCE, DUMMY,
-        DEPRECATED
+        EDITOR,
+        RENDERER,
+        CATALOGUE,
+        OPTIONS,
+        ACTION,
+        SEARCH,
+        LEGACY,
+        STARTUP,
+        OTHER,
+        STATIC,
+        INSTANCE,
+        DUMMY,
+        DEPRECATED,
     }
 
     //~ Instance fields --------------------------------------------------------

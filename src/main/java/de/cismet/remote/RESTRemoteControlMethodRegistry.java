@@ -1,15 +1,14 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.remote;
 
-import org.openide.util.Lookup;
-
 import java.util.*;
+import org.openide.util.Lookup;
 
 /**
  * RESTRemoteControlMethodRegistry Class.
@@ -23,16 +22,14 @@ public final class RESTRemoteControlMethodRegistry {
 
     private static final Integer DEFAULT_PORT_INDICATOR = Integer.valueOf(-1);
 
-    private static final Map<Integer, List<RESTRemoteControlMethod>> portMapping =
-        new HashMap<Integer, List<RESTRemoteControlMethod>>();
+    private static final Map<Integer, List<RESTRemoteControlMethod>> portMapping = new HashMap<Integer, List<RESTRemoteControlMethod>>();
 
     //~ Constructors -----------------------------------------------------------
 
     /**
      * Creates a new RESTRemoteControlMethodRegistry object.
      */
-    private RESTRemoteControlMethodRegistry() {
-    }
+    private RESTRemoteControlMethodRegistry() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -46,8 +43,10 @@ public final class RESTRemoteControlMethodRegistry {
      */
     public static synchronized void gatherRemoteMethods(final int defaultPort) {
         if (!portMapping.isEmpty()) {
-            throw new IllegalStateException("RESTRemoteControlMethods have already been collected. "
-                        + "Call RESTRemoteControlMethodRegistry.clear() to enable new gathering");
+            throw new IllegalStateException(
+                "RESTRemoteControlMethods have already been collected. " +
+                "Call RESTRemoteControlMethodRegistry.clear() to enable new gathering"
+            );
         }
 
         final Lookup lookUp = Lookup.getDefault();

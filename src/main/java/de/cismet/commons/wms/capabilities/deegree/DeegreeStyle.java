@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  *  Copyright (C) 2010 therter
  *
@@ -22,13 +22,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package de.cismet.commons.wms.capabilities.deegree;
+
+import de.cismet.commons.wms.capabilities.Style;
+import java.net.URL;
 //import org.deegree.services.wms.capabilities.LegendURL;
 
 import org.deegree.ogcwebservices.wms.capabilities.LegendURL;
-
-import java.net.URL;
-
-import de.cismet.commons.wms.capabilities.Style;
 
 /**
  * DOCUMENT ME!

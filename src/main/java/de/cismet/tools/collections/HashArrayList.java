@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools.collections;
 
 import java.util.ArrayList;
@@ -31,8 +31,7 @@ public class HashArrayList<E> extends ArrayList<E> {
     /**
      * Creates a new HashArrayList object.
      */
-    public HashArrayList() {
-    }
+    public HashArrayList() {}
 
     /**
      * Creates a new HashArrayList object from a specified <code>Collection</code>.
@@ -163,7 +162,7 @@ public class HashArrayList<E> extends ArrayList<E> {
      */
     @Override
     public boolean contains(final Object o) {
-//        return containsMarkerSet.contains(o);
+        //        return containsMarkerSet.contains(o);
         return super.contains(o);
     }
 

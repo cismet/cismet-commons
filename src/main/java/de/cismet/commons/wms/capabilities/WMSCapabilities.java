@@ -1,17 +1,15 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.wms.capabilities;
 
-import java.net.URL;
-
-import java.util.List;
-
 import de.cismet.commons.capabilities.Service;
+import java.net.URL;
+import java.util.List;
 
 /**
  * The WMSCapabilities interface represents a WMS GetCaapabilities response document. This interface should be used to
@@ -21,7 +19,6 @@ import de.cismet.commons.capabilities.Service;
  * @version  $Revision$, $Date$
  */
 public interface WMSCapabilities {
-
     //~ Methods ----------------------------------------------------------------
 
     /**

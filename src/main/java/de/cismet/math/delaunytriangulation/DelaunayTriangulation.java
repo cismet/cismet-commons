@@ -1,11 +1,12 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.math.delaunytriangulation;
+
 /*
  * Copyright (c) 2005 by L. Paul Chew.
  *
@@ -82,7 +83,7 @@ public class DelaunayTriangulation extends Triangulation<Pnt> {
         // Try a directed walk (this works fine in 2D, but can fail in 3D)
         final Set<Simplex<Pnt>> visited = new HashSet<Simplex<Pnt>>();
         while (triangle != null) {
-            if (visited.contains(triangle)) {                           // This should never happen
+            if (visited.contains(triangle)) { // This should never happen
                 System.out.println("Warning: Caught in a locate loop"); // NOI18N
                 break;
             }
@@ -177,9 +178,9 @@ public class DelaunayTriangulation extends Triangulation<Pnt> {
      */
     public static void main(final String[] args) {
         final Simplex<Pnt> tri = new Simplex<Pnt>(new Pnt(-10, 10), new Pnt(10, 10), new Pnt(0, -10));
-        System.out.println("Triangle created: " + tri);                                    // NOI18N
+        System.out.println("Triangle created: " + tri); // NOI18N
         final DelaunayTriangulation dt = new DelaunayTriangulation(tri);
-        System.out.println("DelaunayTriangulation created: " + dt);                        // NOI18N
+        System.out.println("DelaunayTriangulation created: " + dt); // NOI18N
         dt.delaunayPlace(new Pnt(0, 0));
         dt.delaunayPlace(new Pnt(1, 0));
         dt.delaunayPlace(new Pnt(0, 1));

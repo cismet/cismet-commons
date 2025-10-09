@@ -1,14 +1,13 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.concurrency;
 
 import java.lang.Thread.UncaughtExceptionHandler;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
@@ -137,17 +136,20 @@ public final class CismetExecutors {
      *
      * @see     ThreadPoolExecutor
      */
-    public static ExecutorService newCachedLimitedThreadPool(final int maxThreads,
-            final ThreadFactory threadFactory,
-            final RejectedExecutionHandler rejectHandler) {
+    public static ExecutorService newCachedLimitedThreadPool(
+        final int maxThreads,
+        final ThreadFactory threadFactory,
+        final RejectedExecutionHandler rejectHandler
+    ) {
         final UEHThreadPoolExecutor e = new UEHThreadPoolExecutor(
-                maxThreads,
-                maxThreads,
-                180, // shrink in size after 3 minutes again
-                TimeUnit.SECONDS,
-                new ArrayBlockingQueue<Runnable>((maxThreads + 1) * 2 / 3, true),
-                threadFactory,
-                (rejectHandler == null) ? new AbortPolicy() : rejectHandler);
+            maxThreads,
+            maxThreads,
+            180, // shrink in size after 3 minutes again
+            TimeUnit.SECONDS,
+            new ArrayBlockingQueue<Runnable>((maxThreads + 1) * 2 / 3, true),
+            threadFactory,
+            (rejectHandler == null) ? new AbortPolicy() : rejectHandler
+        );
         e.allowCoreThreadTimeOut(true);
 
         return e;
@@ -158,12 +160,13 @@ public final class CismetExecutors {
      */
     public static ExecutorService newFixedThreadPool(final int nThreads) {
         return new UEHThreadPoolExecutor(
-                nThreads,
-                nThreads,
-                0L,
-                TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                Executors.defaultThreadFactory());
+            nThreads,
+            nThreads,
+            0L,
+            TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(),
+            Executors.defaultThreadFactory()
+        );
     }
 
     /**
@@ -171,38 +174,45 @@ public final class CismetExecutors {
      */
     public static ExecutorService newFixedThreadPool(final int nThreads, final ThreadFactory threadFactory) {
         return new UEHThreadPoolExecutor(
-                nThreads,
-                nThreads,
-                0L,
-                TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                threadFactory);
+            nThreads,
+            nThreads,
+            0L,
+            TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(),
+            threadFactory
+        );
     }
 
     /**
      * @see  Executors#newSingleThreadExecutor()
      */
     public static ExecutorService newSingleThreadExecutor() {
-        return new DelegatedExecutorService(new UEHThreadPoolExecutor(
-                    1,
-                    1,
-                    0L,
-                    TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>(),
-                    Executors.defaultThreadFactory()));
+        return new DelegatedExecutorService(
+            new UEHThreadPoolExecutor(
+                1,
+                1,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                Executors.defaultThreadFactory()
+            )
+        );
     }
 
     /**
      * @see  Executors#newSingleThreadExecutor(java.util.concurrent.ThreadFactory)
      */
     public static ExecutorService newSingleThreadExecutor(final ThreadFactory threadFactory) {
-        return new DelegatedExecutorService(new UEHThreadPoolExecutor(
-                    1,
-                    1,
-                    0L,
-                    TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>(),
-                    threadFactory));
+        return new DelegatedExecutorService(
+            new UEHThreadPoolExecutor(
+                1,
+                1,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                threadFactory
+            )
+        );
     }
 
     /**
@@ -210,12 +220,13 @@ public final class CismetExecutors {
      */
     public static ExecutorService newCachedThreadPool() {
         return new UEHThreadPoolExecutor(
-                0,
-                Integer.MAX_VALUE,
-                60L,
-                TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>(),
-                Executors.defaultThreadFactory());
+            0,
+            Integer.MAX_VALUE,
+            60L,
+            TimeUnit.SECONDS,
+            new SynchronousQueue<Runnable>(),
+            Executors.defaultThreadFactory()
+        );
     }
 
     /**
@@ -223,12 +234,13 @@ public final class CismetExecutors {
      */
     public static ExecutorService newCachedThreadPool(final ThreadFactory threadFactory) {
         return new UEHThreadPoolExecutor(
-                0,
-                Integer.MAX_VALUE,
-                60L,
-                TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>(),
-                threadFactory);
+            0,
+            Integer.MAX_VALUE,
+            60L,
+            TimeUnit.SECONDS,
+            new SynchronousQueue<Runnable>(),
+            threadFactory
+        );
     }
 
     //~ Inner Classes ----------------------------------------------------------
@@ -313,21 +325,23 @@ public final class CismetExecutors {
         }
 
         @Override
-        public <T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> arg0,
-                final long arg1,
-                final TimeUnit arg2) throws InterruptedException {
+        public <T> List<Future<T>> invokeAll(
+            final Collection<? extends Callable<T>> arg0,
+            final long arg1,
+            final TimeUnit arg2
+        ) throws InterruptedException {
             return e.invokeAll(arg0, arg1, arg2);
         }
 
         @Override
-        public <T> T invokeAny(final Collection<? extends Callable<T>> arg0) throws InterruptedException,
-            ExecutionException {
+        public <T> T invokeAny(final Collection<? extends Callable<T>> arg0)
+            throws InterruptedException, ExecutionException {
             return e.invokeAny(arg0);
         }
 
         @Override
         public <T> T invokeAny(final Collection<? extends Callable<T>> arg0, final long arg1, final TimeUnit arg2)
-                throws InterruptedException, ExecutionException, TimeoutException {
+            throws InterruptedException, ExecutionException, TimeoutException {
             return e.invokeAny(arg0, arg1, arg2);
         }
     }
@@ -348,12 +362,14 @@ public final class CismetExecutors {
          * @see  ThreadPoolExecutor#ThreadPoolExecutor(int, int, long, java.util.concurrent.TimeUnit,
          *       java.util.concurrent.BlockingQueue, java.util.concurrent.ThreadFactory)
          */
-        public UEHThreadPoolExecutor(final int corePoolSize,
-                final int maximumPoolSize,
-                final long keepAliveTime,
-                final TimeUnit unit,
-                final BlockingQueue<Runnable> workQueue,
-                final ThreadFactory threadFactory) {
+        public UEHThreadPoolExecutor(
+            final int corePoolSize,
+            final int maximumPoolSize,
+            final long keepAliveTime,
+            final TimeUnit unit,
+            final BlockingQueue<Runnable> workQueue,
+            final ThreadFactory threadFactory
+        ) {
             this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, new AbortPolicy());
         }
 
@@ -362,13 +378,15 @@ public final class CismetExecutors {
          *       java.util.concurrent.BlockingQueue, java.util.concurrent.ThreadFactory,
          *       java.util.concurrent.RejectedExecutionHandler)
          */
-        public UEHThreadPoolExecutor(final int corePoolSize,
-                final int maximumPoolSize,
-                final long keepAliveTime,
-                final TimeUnit unit,
-                final BlockingQueue<Runnable> workQueue,
-                final ThreadFactory threadFactory,
-                final RejectedExecutionHandler rejectHandler) {
+        public UEHThreadPoolExecutor(
+            final int corePoolSize,
+            final int maximumPoolSize,
+            final long keepAliveTime,
+            final TimeUnit unit,
+            final BlockingQueue<Runnable> workQueue,
+            final ThreadFactory threadFactory,
+            final RejectedExecutionHandler rejectHandler
+        ) {
             super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, rejectHandler);
         }
 
@@ -379,8 +397,8 @@ public final class CismetExecutors {
             if ((t == null) && (r instanceof Future)) {
                 Throwable thrown = null;
                 try {
-                    if (!((Future)r).isCancelled()) {
-                        ((Future)r).get();
+                    if (!((Future) r).isCancelled()) {
+                        ((Future) r).get();
                     }
                 } catch (final InterruptedException ex) {
                     Thread.currentThread().interrupt();
@@ -397,8 +415,7 @@ public final class CismetExecutors {
                     if (handler == null) {
                         final Thread.UncaughtExceptionHandler groupHandler = thread.getThreadGroup();
                         if (groupHandler == null) {
-                            final Thread.UncaughtExceptionHandler defHandler = Thread
-                                        .getDefaultUncaughtExceptionHandler();
+                            final Thread.UncaughtExceptionHandler defHandler = Thread.getDefaultUncaughtExceptionHandler();
                             if (defHandler != null) {
                                 defHandler.uncaughtException(thread, thrown);
                             }

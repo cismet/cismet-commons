@@ -1,19 +1,16 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.netutil;
 
-import java.io.Serializable;
-
-import java.net.URL;
-
-import java.util.regex.Pattern;
-
 import de.cismet.tools.WildcardUtils;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.regex.Pattern;
 
 /**
  * Class that provides Proxy Usage.
@@ -55,13 +52,14 @@ public final class Proxy implements Serializable {
      * @param  domain         DOCUMENT ME!
      */
     public Proxy(
-            final boolean enabled,
-            final String host,
-            final int port,
-            final String excludedHosts,
-            final String username,
-            final String password,
-            final String domain) {
+        final boolean enabled,
+        final String host,
+        final int port,
+        final String excludedHosts,
+        final String username,
+        final String password,
+        final String domain
+    ) {
         setEnabled(enabled);
         setHost(host);
         setPort(port);
@@ -136,21 +134,23 @@ public final class Proxy implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format(""
-                        + "Enabled: %s\n"
-                        + "Host: %s\n"
-                        + "Port: %d\n"
-                        + "ExcludedHosts: %s\n"
-                        + "Username: %s\n"
-                        + "Password: %s\n"
-                        + "Domain: %s\n",
-                enabled,
-                host,
-                port,
-                excludedHosts,
-                username,
-                ((password == null) ? null : "<invisible>"),
-                domain);
+        return String.format(
+            "" +
+            "Enabled: %s\n" +
+            "Host: %s\n" +
+            "Port: %d\n" +
+            "ExcludedHosts: %s\n" +
+            "Username: %s\n" +
+            "Password: %s\n" +
+            "Domain: %s\n",
+            enabled,
+            host,
+            port,
+            excludedHosts,
+            username,
+            ((password == null) ? null : "<invisible>"),
+            domain
+        );
     }
 
     /**
@@ -248,9 +248,14 @@ public final class Proxy implements Serializable {
      * @return  DOCUMENT ME!
      */
     public boolean isFullCredentials() {
-        return (getUsername() != null) && !getUsername().trim().isEmpty()
-                    && (getPassword() != null) && !getPassword().trim().isEmpty()
-                    && (getDomain() != null) && !getDomain().trim().isEmpty();
+        return (
+            (getUsername() != null) &&
+            !getUsername().trim().isEmpty() &&
+            (getPassword() != null) &&
+            !getPassword().trim().isEmpty() &&
+            (getDomain() != null) &&
+            !getDomain().trim().isEmpty()
+        );
     }
 
     /**
@@ -270,8 +275,7 @@ public final class Proxy implements Serializable {
         String host = hostOrUrl.trim();
         try {
             host = new URL(host).getHost();
-        } catch (final Exception ex) {
-        }
+        } catch (final Exception ex) {}
         if (excludedHosts != null) {
             for (final String excludedHost : excludedHosts.split(Pattern.quote("|"))) {
                 if (WildcardUtils.testForMatch(host, excludedHost.trim())) {

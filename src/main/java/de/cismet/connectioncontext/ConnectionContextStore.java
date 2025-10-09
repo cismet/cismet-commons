@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -19,7 +19,6 @@ package de.cismet.connectioncontext;
  * @version  $Revision$, $Date$
  */
 public interface ConnectionContextStore extends ConnectionContextProvider {
-
     //~ Methods ----------------------------------------------------------------
 
     /**
@@ -28,6 +27,7 @@ public interface ConnectionContextStore extends ConnectionContextProvider {
      * @param  connectionContext  DOCUMENT ME!
      */
     void initWithConnectionContext(ConnectionContext connectionContext);
+
     @Override
     ConnectionContext getConnectionContext();
 }

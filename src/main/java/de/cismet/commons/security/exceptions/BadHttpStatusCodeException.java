@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.security.exceptions;
 
 /**
@@ -28,7 +28,6 @@ public class BadHttpStatusCodeException extends Exception {
      */
     public BadHttpStatusCodeException() {
         super();
-
         requestedURI = "";
         statuscode = Integer.MIN_VALUE;
         response = "";
@@ -42,12 +41,13 @@ public class BadHttpStatusCodeException extends Exception {
      * @param  message       DOCUMENT ME!
      * @param  response      DOCUMENT ME!
      */
-    public BadHttpStatusCodeException(final String requestedURI,
-            final int statuscode,
-            final String message,
-            final String response) {
+    public BadHttpStatusCodeException(
+        final String requestedURI,
+        final int statuscode,
+        final String message,
+        final String response
+    ) {
         super(message + "(" + statuscode + ")\n[" + requestedURI + "]");
-
         this.requestedURI = requestedURI;
         this.statuscode = statuscode;
         this.response = response;

@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools.configuration;
 
 import org.jdom.Element;
@@ -16,7 +16,6 @@ import org.jdom.Element;
  * @version  $Revision$, $Date$
  */
 public interface Configurable {
-
     //~ Methods ----------------------------------------------------------------
 
     /**

@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -15,7 +15,6 @@ package de.cismet.tools.transformations;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.util.AffineTransformation;
 import com.vividsolutions.jts.geom.util.AffineTransformationBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,17 +39,18 @@ public class TransformationTools {
         final List<AffineTransformation> transforms = new ArrayList<>();
         if (completePairs.length >= 3) {
             for (final Object[] arr : getCombinations(completePairs, 3)) {
-                final PointCoordinatePair pair0 = (PointCoordinatePair)arr[0];
-                final PointCoordinatePair pair1 = (PointCoordinatePair)arr[1];
-                final PointCoordinatePair pair2 = (PointCoordinatePair)arr[2];
+                final PointCoordinatePair pair0 = (PointCoordinatePair) arr[0];
+                final PointCoordinatePair pair1 = (PointCoordinatePair) arr[1];
+                final PointCoordinatePair pair2 = (PointCoordinatePair) arr[2];
 
                 final AffineTransformationBuilder builder = new AffineTransformationBuilder(
-                        new Coordinate(pair0.getPoint().getX(), pair0.getPoint().getY()),
-                        new Coordinate(pair1.getPoint().getX(), pair1.getPoint().getY()),
-                        new Coordinate(pair2.getPoint().getX(), pair2.getPoint().getY()),
-                        pair0.getCoordinate(),
-                        pair1.getCoordinate(),
-                        pair2.getCoordinate());
+                    new Coordinate(pair0.getPoint().getX(), pair0.getPoint().getY()),
+                    new Coordinate(pair1.getPoint().getX(), pair1.getPoint().getY()),
+                    new Coordinate(pair2.getPoint().getX(), pair2.getPoint().getY()),
+                    pair0.getCoordinate(),
+                    pair1.getCoordinate(),
+                    pair2.getCoordinate()
+                );
 
                 final AffineTransformation transform = builder.getTransformation();
                 if (transform != null) {
@@ -112,7 +112,7 @@ public class TransformationTools {
                     index--;
                 }
                 if (index >= 0) {
-                    indices[index]++;                         // increment this item
+                    indices[index]++; // increment this item
                     for (++index; index < setSize; index++) { // fill up remaining items
                         indices[index] = indices[index - 1] + 1;
                     }

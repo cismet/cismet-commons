@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.commons.utils;
 
 /**
@@ -20,8 +20,7 @@ public final class StackUtils {
     /**
      * Creates a new StackUtils object.
      */
-    private StackUtils() {
-    }
+    private StackUtils() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -36,7 +35,7 @@ public final class StackUtils {
      * @see     #getMethodName(boolean, boolean, java.lang.Object[])
      */
     public static String getMethodName() {
-        return doGetMethodName(false, false, (Object[])null);
+        return doGetMethodName(false, false, (Object[]) null);
     }
 
     /**
@@ -89,9 +88,11 @@ public final class StackUtils {
      *
      * @return  the name of the method that calls this method
      */
-    public static String getMethodName(final boolean canonicalName,
-            final boolean printValues,
-            final Object... paramInstances) {
+    public static String getMethodName(
+        final boolean canonicalName,
+        final boolean printValues,
+        final Object... paramInstances
+    ) {
         return doGetMethodName(canonicalName, printValues, paramInstances);
     }
 
@@ -105,9 +106,11 @@ public final class StackUtils {
      *
      * @return  DOCUMENT ME!
      */
-    private static String doGetMethodName(final boolean canonicalName,
-            final boolean printValues,
-            final Object... paramInstances) {
+    private static String doGetMethodName(
+        final boolean canonicalName,
+        final boolean printValues,
+        final Object... paramInstances
+    ) {
         final StringBuilder sb = new StringBuilder(Thread.currentThread().getStackTrace()[3].getMethodName());
 
         sb.append('(');
@@ -169,16 +172,18 @@ public final class StackUtils {
      * @throws  IllegalArgumentException  if at least one argument is <code>null</code>
      */
     public static boolean equals(
-            final StackTraceElement[] ste1,
-            final StackTraceElement[] ste2,
-            final boolean lineNumbers) {
+        final StackTraceElement[] ste1,
+        final StackTraceElement[] ste2,
+        final boolean lineNumbers
+    ) {
         if ((ste1 == null) || (ste2 == null)) {
             throw new IllegalArgumentException(
-                "equality check only allowed for non-null objects: ste1=" // NOI18N
-                        + ste1
-                        + "||"                                            // NOI18N
-                        + "ste2="                                         // NOI18N
-                        + ste2);
+                "equality check only allowed for non-null objects: ste1=" + // NOI18N
+                ste1 +
+                "||" + // NOI18N
+                "ste2=" + // NOI18N
+                ste2
+            );
         }
         if (ste1.length != ste2.length) {
             return false;
@@ -207,22 +212,23 @@ public final class StackUtils {
      * @throws  IllegalArgumentException  if any of the arguments is <code>null</code>
      */
     public static boolean equals(
-            final StackTraceElement ste1,
-            final StackTraceElement ste2,
-            final boolean lineNumbers) {
+        final StackTraceElement ste1,
+        final StackTraceElement ste2,
+        final boolean lineNumbers
+    ) {
         if ((ste1 == null) || (ste2 == null)) {
             throw new IllegalArgumentException(
-                "equality check only allowed for non-null objects: ste1=" // NOI18N
-                        + ste1
-                        + "||"                                            // NOI18N
-                        + "ste2="                                         // NOI18N
-                        + ste2);
+                "equality check only allowed for non-null objects: ste1=" + // NOI18N
+                ste1 +
+                "||" + // NOI18N
+                "ste2=" + // NOI18N
+                ste2
+            );
         }
         if (lineNumbers) {
             return ste1.equals(ste2);
         }
-        if (ste1.getMethodName().equals(ste2.getMethodName())
-                    && ste1.getClassName().equals(ste2.getClassName())) {
+        if (ste1.getMethodName().equals(ste2.getMethodName()) && ste1.getClassName().equals(ste2.getClassName())) {
             final String fn1 = ste1.getFileName();
             final String fn2 = ste2.getFileName();
             if (((fn1 == null) && (fn2 != null)) || ((fn1 != null) && (fn2 == null))) {

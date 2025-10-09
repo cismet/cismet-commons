@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
 import java.lang.reflect.Method;
@@ -23,8 +23,7 @@ public final class Equals {
     /**
      * Creates a new Equals object.
      */
-    private Equals() {
-    }
+    private Equals() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -40,7 +39,7 @@ public final class Equals {
      * @see     #beanDeepEqual(java.lang.Object, java.lang.Object, java.lang.String[])
      */
     public static boolean beanDeepEqual(final Object o, final Object o2) {
-        return beanDeepEqual(o, o2, (String[])null);
+        return beanDeepEqual(o, o2, (String[]) null);
     }
 
     /**
@@ -70,7 +69,7 @@ public final class Equals {
             for (final Method m : methods) {
                 if (isBeanGetter(m) && ((ignoreOps == null) || !contains(m.getName(), ignoreOps))) {
                     try {
-                        if (!nullEqual(m.invoke(o, (Object[])null), m.invoke(o2, (Object[])null))) {
+                        if (!nullEqual(m.invoke(o, (Object[]) null), m.invoke(o2, (Object[]) null))) {
                             return false;
                         }
                     } catch (Exception ex) {
@@ -130,15 +129,25 @@ public final class Equals {
 
         try {
             //J-
-            return Modifier.isPublic(modifiers)
-                    && m.getParameterTypes().length == 0
-                    && !Modifier.isNative(modifiers)
-                    && !Modifier.isStatic(modifiers)
-                    && ((name.startsWith("get")
-                            && m.getDeclaringClass().getDeclaredField(Character.toLowerCase(name.charAt(3)) + name.substring(4)) != null)
-                        || (m.getReturnType().equals(Boolean.class) || m.getReturnType().equals(boolean.class))
-                            && name.startsWith("is")
-                            && m.getDeclaringClass().getDeclaredField(Character.toLowerCase(name.charAt(2)) + name.substring(3)) != null);
+            return (
+                Modifier.isPublic(modifiers) &&
+                m.getParameterTypes().length == 0 &&
+                !Modifier.isNative(modifiers) &&
+                !Modifier.isStatic(modifiers) &&
+                (
+                    (
+                        name.startsWith("get") &&
+                        m
+                            .getDeclaringClass()
+                            .getDeclaredField(Character.toLowerCase(name.charAt(3)) + name.substring(4)) !=
+                        null
+                    ) ||
+                    (m.getReturnType().equals(Boolean.class) || m.getReturnType().equals(boolean.class)) &&
+                    name.startsWith("is") &&
+                    m.getDeclaringClass().getDeclaredField(Character.toLowerCase(name.charAt(2)) + name.substring(3)) !=
+                    null
+                )
+            );
             //J+
         } catch (final NoSuchFieldException e) {
             return false;

@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -13,9 +13,7 @@ package de.cismet.commons.security;
 
 import java.io.InputStream;
 import java.io.Reader;
-
 import java.net.URL;
-
 import java.util.HashMap;
 
 /**
@@ -25,7 +23,6 @@ import java.util.HashMap;
  * @version  $Revision$, $Date$
  */
 public interface AccessHandler {
-
     //~ Enums ------------------------------------------------------------------
 
     /**
@@ -34,21 +31,29 @@ public interface AccessHandler {
      * @version  $Revision$, $Date$
      */
     public static enum ACCESS_METHODS {
-
         //~ Enum constants -----------------------------------------------------
 
-        POST_REQUEST, GET_REQUEST, POST_REQUEST_NO_TUNNEL, GET_REQUEST_NO_TUNNEL, HEAD_REQUEST, HEAD_REQUEST_NO_TUNNEL
+        POST_REQUEST,
+        GET_REQUEST,
+        POST_REQUEST_NO_TUNNEL,
+        GET_REQUEST_NO_TUNNEL,
+        HEAD_REQUEST,
+        HEAD_REQUEST_NO_TUNNEL,
     }
+
     /**
      * todo ein handler könnte mehr als einen Typ verarbeiten.
      *
      * @version  $Revision$, $Date$
      */
     public enum ACCESS_HANDLER_TYPES {
-
         //~ Enum constants -----------------------------------------------------
 
-        WSS, HTTP, SOAP, SANY, FTP
+        WSS,
+        HTTP,
+        SOAP,
+        SANY,
+        FTP,
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -79,10 +84,12 @@ public interface AccessHandler {
      *
      * @throws  Exception  DOCUMENT ME!
      */
-    InputStream doRequest(URL url,
-            Reader requestParameter,
-            AccessHandler.ACCESS_METHODS method,
-            HashMap<String, String> options) throws Exception;
+    InputStream doRequest(
+        URL url,
+        Reader requestParameter,
+        AccessHandler.ACCESS_METHODS method,
+        HashMap<String, String> options
+    ) throws Exception;
 
     /**
      * Send binary data in a POST request.
@@ -95,6 +102,5 @@ public interface AccessHandler {
      *
      * @throws  Exception  DOCUMENT ME!
      */
-    InputStream doRequest(URL url,
-            InputStream requestParameter, HashMap<String, String> options) throws Exception;
+    InputStream doRequest(URL url, InputStream requestParameter, HashMap<String, String> options) throws Exception;
 }

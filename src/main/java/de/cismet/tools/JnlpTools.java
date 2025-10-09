@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 package de.cismet.tools;
 
 import java.util.Locale;
@@ -22,8 +22,7 @@ public final class JnlpTools {
     /**
      * Creates a new JnlpTools object.
      */
-    private JnlpTools() {
-    }
+    private JnlpTools() {}
 
     //~ Methods ----------------------------------------------------------------
 
@@ -59,7 +58,7 @@ public final class JnlpTools {
         final String defaultCountry = defaultLocale.getCountry();
         final String defaultVariant = defaultLocale.getVariant();
 
-        final String lang = System.getProperty("user.language", "");   // NOI18N
+        final String lang = System.getProperty("user.language", ""); // NOI18N
         final String country = System.getProperty("user.country", ""); // NOI18N
         final String variant = System.getProperty("user.variant", ""); // NOI18N
 

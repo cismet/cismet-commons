@@ -1,10 +1,10 @@
 /***************************************************
-*
-* cismet GmbH, Saarbruecken, Germany
-*
-*              ... and it just works.
-*
-****************************************************/
+ *
+ * cismet GmbH, Saarbruecken, Germany
+ *
+ *              ... and it just works.
+ *
+ ****************************************************/
 /*
  *  Copyright (C) 2010 therter
  *
@@ -23,16 +23,13 @@
  */
 package de.cismet.commons.wms.capabilities.deegree;
 
-import org.deegree.owscommon_new.HTTP;
-
+import de.cismet.commons.wms.capabilities.Operation;
+import de.cismet.commons.wms.capabilities.Parameter;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import de.cismet.commons.wms.capabilities.Operation;
-import de.cismet.commons.wms.capabilities.Parameter;
+import org.deegree.owscommon_new.HTTP;
 
 /**
  * DOCUMENT ME!
@@ -80,7 +77,7 @@ public class DeegreeOperation implements Operation {
         final Object o = op.getDCP().get(0);
 
         if (o instanceof HTTP) {
-            final HTTP http = (HTTP)o;
+            final HTTP http = (HTTP) o;
             List<URL> urlList;
 
             if (get) {
