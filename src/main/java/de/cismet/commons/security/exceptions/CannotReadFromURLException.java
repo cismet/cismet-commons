@@ -15,13 +15,15 @@
  */
 package de.cismet.commons.security.exceptions;
 
+import java.io.IOException;
+
 /**
  * DOCUMENT ME!
  *
  * @author   Sebastian
  * @version  $Revision$, $Date$
  */
-public class CannotReadFromURLException extends Exception {
+public class CannotReadFromURLException extends IOException {
 
     //~ Constructors -----------------------------------------------------------
 

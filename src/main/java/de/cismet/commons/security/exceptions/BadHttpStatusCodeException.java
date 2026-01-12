@@ -7,13 +7,15 @@
 ****************************************************/
 package de.cismet.commons.security.exceptions;
 
+import java.io.IOException;
+
 /**
  * DOCUMENT ME!
  *
  * @author   Sebastian
  * @version  $Revision$, $Date$
  */
-public class BadHttpStatusCodeException extends Exception {
+public class BadHttpStatusCodeException extends IOException {
 
     //~ Instance fields --------------------------------------------------------
 

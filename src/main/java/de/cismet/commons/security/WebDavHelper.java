@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 import java.util.Iterator;
@@ -135,13 +136,14 @@ public class WebDavHelper {
      *
      * @return  DOCUMENT ME!
      *
-     * @throws  IOException  DOCUMENT ME!
+     * @throws  IOException         DOCUMENT ME!
+     * @throws  URISyntaxException  DOCUMENT ME!
      */
     public static int uploadFileToWebDAVWithPreemptiveAuth(final String fileName,
             final File toUpload,
             final String webDavDirectory,
             final WebDavClient webDavClient,
-            final Component parent) throws IOException {
+            final Component parent) throws IOException, URISyntaxException {
         return webDavClient.put(webDavDirectory + encodeURL(fileName), toUpload);
     }
 
@@ -268,12 +270,13 @@ public class WebDavHelper {
      *
      * @return  DOCUMENT ME!
      *
-     * @throws  IOException  DOCUMENT ME!
+     * @throws  IOException         DOCUMENT ME!
+     * @throws  URISyntaxException  DOCUMENT ME!
      */
     public static BufferedImage downloadImageFromWebDAV(final String fileName,
             final String webDavDirectory,
             final WebDavClient webDavClient,
-            final Component parent) throws IOException {
+            final Component parent) throws IOException, URISyntaxException {
         return downloadImageFromWebDAV(fileName, webDavDirectory, webDavClient, parent, null);
     }
 
@@ -288,13 +291,14 @@ public class WebDavHelper {
      *
      * @return  DOCUMENT ME!
      *
-     * @throws  IOException  DOCUMENT ME!
+     * @throws  IOException         DOCUMENT ME!
+     * @throws  URISyntaxException  DOCUMENT ME!
      */
     public static BufferedImage downloadImageFromWebDAV(final String fileName,
             final String webDavDirectory,
             final WebDavClient webDavClient,
             final Component parent,
-            final IIOReadProgressListener progressListener) throws IOException {
+            final IIOReadProgressListener progressListener) throws IOException, URISyntaxException {
         final String encodedFileName = WebDavHelper.encodeURL(fileName);
         final InputStream iStream = webDavClient.getInputStream(webDavDirectory
                         + encodedFileName);

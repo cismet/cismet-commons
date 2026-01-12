@@ -7,35 +7,42 @@
 ****************************************************/
 package de.cismet.commons.security;
 
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.NTCredentials;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthPolicy;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.FileRequestEntity;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.HeadMethod;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.apache.jackrabbit.webdav.client.methods.DavMethod;
-import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
-import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
-import org.apache.jackrabbit.webdav.client.methods.PutMethod;
+import org.apache.hc.client5.http.auth.AuthCache;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.NTCredentials;
+import org.apache.hc.client5.http.auth.StandardAuthScheme;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.auth.BasicAuthCache;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.auth.BasicScheme;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.protocol.HttpClientContext;
+import org.apache.hc.client5.http.utils.URIUtils;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.io.entity.FileEntity;
+import org.apache.hc.core5.http.io.entity.InputStreamEntity;
+import org.apache.hc.core5.util.Timeout;
 import org.apache.log4j.Logger;
 
 import java.io.File;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +67,7 @@ public class WebDavClient {
 
     private String username;
     private String password;
-    private HttpClient client = null;
+    private CloseableHttpClient client = null;
     private String currentHost = null;
     private Proxy proxy = null;
     private boolean useNTAuth;
@@ -114,52 +121,111 @@ public class WebDavClient {
         if (log.isDebugEnabled()) {
             log.debug("initialise WebDavClient");
         }
-        final HostConfiguration hostConfig = new HostConfiguration();
-        hostConfig.setHost(host);
-        final HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-        final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-        params.setMaxConnectionsPerHost(hostConfig, MAX_HOST_CONNECTIONS);
-        params.setConnectionTimeout(connectionTimeout);
-        connectionManager.setParams(params);
-        client = new HttpClient(connectionManager);
-        client.setHostConfiguration(hostConfig);
-        final List authPrefs = new ArrayList();
-        authPrefs.add(AuthPolicy.DIGEST);
-        authPrefs.add(AuthPolicy.BASIC);
+
+        final PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+
+        connManager.setDefaultMaxPerRoute(MAX_HOST_CONNECTIONS);
+        connManager.setMaxTotal(MAX_HOST_CONNECTIONS * 2);
+
+        final RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
+                    .setConnectTimeout(Timeout.ofMilliseconds(connectionTimeout))
+                    .setResponseTimeout(Timeout.ofSeconds(60));
+
+        final List<String> authSchemes = new ArrayList<>();
+        authSchemes.add(StandardAuthScheme.DIGEST);
+        authSchemes.add(StandardAuthScheme.BASIC);
         if (useNTAuth) {
-            authPrefs.add(AuthPolicy.NTLM);
+            authSchemes.add(StandardAuthScheme.NTLM);
         }
-        client.getParams().setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
+        requestConfigBuilder.setTargetPreferredAuthSchemes(authSchemes);
+
+        final BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
 
         if ((username != null) && (password != null)) {
             if (useNTAuth) {
-                final Credentials credentials = new NTCredentials(username,
-                        password,
-                        "",
-                        "");
-                client.getState().setCredentials(AuthScope.ANY, credentials);
+                credsProvider.setCredentials(
+                    new AuthScope(null, -1),
+                    new NTCredentials(
+                        username,
+                        password.toCharArray(),
+                        null,
+                        null));
             } else {
-                final Credentials creds = new UsernamePasswordCredentials(username, password);
-                client.getState().setCredentials(AuthScope.ANY, creds);
+                credsProvider.setCredentials(
+                    new AuthScope(null, -1),
+                    new UsernamePasswordCredentials(
+                        username,
+                        password.toCharArray()));
             }
         }
 
         if ((proxy != null) && proxy.isValid() && proxy.isEnabled()) {
-            if (log.isDebugEnabled()) {
-                log.debug("use proxy");
-            }
-            client.getHostConfiguration().setProxy(proxy.getHost(), proxy.getPort());
+            final HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort());
+
+            requestConfigBuilder.setProxy(proxyHost);
 
             if (proxy.getUsername() != null) {
-                final AuthScope scope = new AuthScope(proxy.getHost(), proxy.getPort());
-                final Credentials credentials = new NTCredentials(proxy.getUsername(),
-                        proxy.getPassword(),
-                        "",
-                        proxy.getDomain());
-                client.getState().setProxyCredentials(scope, credentials);
+                credsProvider.setCredentials(
+                    new AuthScope(proxy.getHost(), proxy.getPort()),
+                    new NTCredentials(
+                        proxy.getUsername(),
+                        proxy.getPassword().toCharArray(),
+                        null,
+                        proxy.getDomain()));
             }
         }
+
+        client = HttpClients.custom().setConnectionManager(connManager).setDefaultCredentialsProvider(credsProvider)
+                    .setDefaultRequestConfig(requestConfigBuilder.build())
+                    .build();
+
         currentHost = host;
+
+//        final HostConfiguration hostConfig = new HostConfiguration();
+//        hostConfig.setHost(host);
+//        final HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+//        final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+//        params.setMaxConnectionsPerHost(hostConfig, MAX_HOST_CONNECTIONS);
+//        params.setConnectionTimeout(connectionTimeout);
+//        connectionManager.setParams(params);
+//        client = new HttpClient(connectionManager);
+//        client.setHostConfiguration(hostConfig);
+//        final List authPrefs = new ArrayList();
+//        authPrefs.add(AuthPolicy.DIGEST);
+//        authPrefs.add(AuthPolicy.BASIC);
+//        if (useNTAuth) {
+//            authPrefs.add(AuthPolicy.NTLM);
+//        }
+//        client.getParams().setParameter(AuthPolicy.AUTH_SCHEME_PRIORITY, authPrefs);
+//
+//        if ((username != null) && (password != null)) {
+//            if (useNTAuth) {
+//                final Credentials credentials = new NTCredentials(username, password, "", "");
+//                client.getState().setCredentials(AuthScope.ANY, credentials);
+//            } else {
+//                final Credentials creds = new UsernamePasswordCredentials(username, password);
+//                client.getState().setCredentials(AuthScope.ANY, creds);
+//            }
+//        }
+//
+//        if ((proxy != null) && proxy.isValid() && proxy.isEnabled()) {
+//            if (log.isDebugEnabled()) {
+//                log.debug("use proxy");
+//            }
+//            client.getHostConfiguration().setProxy(proxy.getHost(), proxy.getPort());
+//
+//            if (proxy.getUsername() != null) {
+//                final AuthScope scope = new AuthScope(proxy.getHost(), proxy.getPort());
+//                final Credentials credentials = new NTCredentials(
+//                    proxy.getUsername(),
+//                    proxy.getPassword(),
+//                    "",
+//                    proxy.getDomain()
+//                );
+//                client.getState().setProxyCredentials(scope, credentials);
+//            }
+//        }
+//        currentHost = host;
     }
 
     /**
@@ -171,18 +237,18 @@ public class WebDavClient {
      *
      * @throws  MalformedURLException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
-     * @throws  HttpException          DOCUMENT ME!
      */
-    public int delete(final String path) throws MalformedURLException, IOException, HttpException {
+    public int delete(final String path) throws MalformedURLException, IOException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("delete: " + path);
         }
-        final DavMethod put = new DeleteMethod(path);
-        final int responseCode = client.executeMethod(put);
 
-        put.releaseConnection();
-        return responseCode;
+        final HttpDelete delete = new HttpDelete(path);
+
+        try(final CloseableHttpResponse response = client.execute(delete)) {
+            return response.getCode();
+        }
     }
 
     /**
@@ -194,9 +260,9 @@ public class WebDavClient {
      *
      * @throws  MalformedURLException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
-     * @throws  HttpException          DOCUMENT ME!
+     * @throws  URISyntaxException     DOCUMENT ME!
      */
-    public InputStream getInputStream(final String path) throws MalformedURLException, IOException, HttpException {
+    public InputStream getInputStream(final String path) throws MalformedURLException, IOException, URISyntaxException {
         return getInputStream(path, null, null);
     }
 
@@ -212,31 +278,40 @@ public class WebDavClient {
      *
      * @throws  MalformedURLException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
-     * @throws  HttpException          DOCUMENT ME!
+     * @throws  URISyntaxException     DOCUMENT ME!
      */
-    public InputStream getInputStream(final String path,
+    public InputStream getInputStream(
+            final String path,
             final Map<String, String> responseHeaders,
-            final Map<String, Object> statusValues) throws MalformedURLException, IOException, HttpException {
+            final Map<String, Object> statusValues) throws MalformedURLException, IOException, URISyntaxException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("get: " + path);
         }
-        final GetMethod get = new GetMethod(path);
-        client.executeMethod(get);
 
+        final HttpGet get = new HttpGet(new URI(path));
+
+        final CloseableHttpResponse response = client.execute(get);
+
+        // Response-Header
         if (responseHeaders != null) {
-            for (final Header h : get.getResponseHeaders()) {
+            for (final Header h : response.getHeaders()) {
                 responseHeaders.put(h.getName(), h.getValue());
             }
         }
 
+        // Statuswerte
         if (statusValues != null) {
-            statusValues.put("code", get.getStatusCode());
-            statusValues.put("line", get.getStatusLine());
-            statusValues.put("text", get.getStatusText());
+            statusValues.put("code", response.getCode());
+            statusValues.put("line", response.getReasonPhrase());
+            statusValues.put("text", response.getReasonPhrase());
         }
 
-        return get.getResponseBodyAsStream();
+        // ⚠️ WICHTIG:
+        // Stream schließen schließt auch die Response
+        return new ResponseInputStream(
+                response.getEntity().getContent(),
+                response);
     }
 
     /**
@@ -252,41 +327,70 @@ public class WebDavClient {
      *
      * @throws  MalformedURLException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
-     * @throws  HttpException          DOCUMENT ME!
+     * @throws  URISyntaxException     DOCUMENT ME!
      */
-    public InputStream getInputStream(final String path,
+    public InputStream getInputStream(
+            final String path,
             final Map<String, String> requestHeaders,
             final Map<String, String> responseHeaders,
-            final Map<String, Object> statusValues) throws MalformedURLException, IOException, HttpException {
+            final Map<String, Object> statusValues) throws MalformedURLException, IOException, URISyntaxException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("get: " + path);
         }
-        final GetMethod get = new GetMethod(path);
-        final HttpClientParams params = new HttpClientParams();
-        params.setAuthenticationPreemptive(true);
 
-        if ((requestHeaders != null) && !requestHeaders.isEmpty()) {
-            for (final String key : requestHeaders.keySet()) {
-                params.setParameter(key, requestHeaders);
+        final HttpGet get = new HttpGet(new URI(path));
+
+        // Request-Header
+        if (requestHeaders != null) {
+            for (final Map.Entry<String, String> e : requestHeaders.entrySet()) {
+                get.addHeader(e.getKey(), e.getValue());
             }
         }
-        client.setParams(params);
-        client.executeMethod(get);
 
+        // Preemptive Auth (wie früher setAuthenticationPreemptive(true))
+        final HttpClientContext context = createPreemptiveAuthContext(new URI(path));
+
+        final CloseableHttpResponse response = client.execute(get, context);
+
+        // Response-Header
         if (responseHeaders != null) {
-            for (final Header h : get.getResponseHeaders()) {
+            for (final Header h : response.getHeaders()) {
                 responseHeaders.put(h.getName(), h.getValue());
             }
         }
 
+        // Statuswerte
         if (statusValues != null) {
-            statusValues.put("code", get.getStatusCode());
-            statusValues.put("line", get.getStatusLine());
-            statusValues.put("text", get.getStatusText());
+            statusValues.put("code", response.getCode());
+            statusValues.put("line", response.getReasonPhrase());
+            statusValues.put("text", response.getReasonPhrase());
         }
 
-        return get.getResponseBodyAsStream();
+        // ⚠️ WICHTIG:
+        // Stream schließen schließt auch die Response
+        return new ResponseInputStream(
+                response.getEntity().getContent(),
+                response);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   uri  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private HttpClientContext createPreemptiveAuthContext(final URI uri) {
+        final HttpHost targetHost = URIUtils.extractHost(uri);
+
+        final AuthCache authCache = new BasicAuthCache();
+        authCache.put(targetHost, new BasicScheme());
+
+        final HttpClientContext context = HttpClientContext.create();
+        context.setAuthCache(authCache);
+
+        return context;
     }
 
     /**
@@ -300,12 +404,17 @@ public class WebDavClient {
      */
     public int mkCol(final String url) throws IOException {
         lazyInitialise(url);
-        final MkColMethod mkcol = new MkColMethod(url);
 
         try {
-            return client.executeMethod(mkcol);
-        } finally {
-            mkcol.releaseConnection();
+            final HttpMkCol mkcol = new HttpMkCol(new URI(url));
+
+            try(final CloseableHttpResponse response = client.execute(mkcol)) {
+                return response.getCode();
+            }
+        } catch (URISyntaxException e) {
+            log.error("Wrong uri syntax", e);
+
+            return 500;
         }
     }
 
@@ -320,12 +429,10 @@ public class WebDavClient {
      */
     public int getStatusCode(final String url) throws IOException {
         lazyInitialise(url);
-        final HeadMethod head = new HeadMethod(url);
+        final HttpHead head = new HttpHead(url);
 
-        try {
-            return client.executeMethod(head);
-        } finally {
-            head.releaseConnection();
+        try(final CloseableHttpResponse response = client.execute(head)) {
+            return response.getCode();
         }
     }
 
@@ -339,22 +446,20 @@ public class WebDavClient {
      *
      * @throws  MalformedURLException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
-     * @throws  HttpException          DOCUMENT ME!
      */
-    public int put(final String path, final InputStream input) throws MalformedURLException,
-        IOException,
-        HttpException {
+    public int put(final String path, final InputStream input) throws MalformedURLException, IOException {
         lazyInitialise(path);
+
         if (log.isDebugEnabled()) {
             log.debug("put: " + path);
         }
-        final PutMethod put = new PutMethod(path);
-        final RequestEntity requestEntity = new InputStreamRequestEntity(input);
 
-        put.setRequestEntity(requestEntity);
-        final int responseCode = client.executeMethod(put);
-        put.releaseConnection();
-        return responseCode;
+        final HttpPut put = new HttpPut(path);
+        put.setEntity(new InputStreamEntity(input, ContentType.APPLICATION_OCTET_STREAM));
+
+        try(final CloseableHttpResponse response = client.execute(put)) {
+            return response.getCode();
+        }
     }
 
     /**
@@ -368,24 +473,25 @@ public class WebDavClient {
      *
      * @throws  MalformedURLException  DOCUMENT ME!
      * @throws  IOException            DOCUMENT ME!
-     * @throws  HttpException          DOCUMENT ME!
+     * @throws  URISyntaxException     DOCUMENT ME!
      */
-    public int put(final String path, final File input) throws MalformedURLException, IOException, HttpException {
+    public int put(final String path, final File input) throws MalformedURLException, IOException, URISyntaxException {
         lazyInitialise(path);
         if (log.isDebugEnabled()) {
             log.debug("put: " + path);
         }
-        final PutMethod put = new PutMethod(path);
 
-        final FileRequestEntity requestEntity = new FileRequestEntity(input, "application/octet-stream");
-        put.setRequestEntity(requestEntity);
-        client.getParams().setAuthenticationPreemptive(true);
+        final HttpPut put = new HttpPut(path);
+        put.setEntity(new FileEntity(input, ContentType.APPLICATION_OCTET_STREAM));
 
-        final int responseCode = client.executeMethod(put);
-        put.releaseConnection();
-        client.getParams().setAuthenticationPreemptive(false);
+        final HttpHost targetHost = URIUtils.extractHost(new URI(path));
 
-        return responseCode;
+        final AuthCache authCache = new BasicAuthCache();
+        authCache.put(targetHost, new BasicScheme());
+
+        try(final CloseableHttpResponse response = client.execute(put)) {
+            return response.getCode();
+        }
     }
 
     /**
@@ -416,6 +522,67 @@ public class WebDavClient {
         // initialises the Httpclient if it is not initialised, yet, or the host was changed
         if ((client == null) || ((currentHost != null) && !currentHost.equals(host))) {
             init(host);
+        }
+    }
+
+    //~ Inner Classes ----------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private static class HttpMkCol extends HttpUriRequestBase {
+
+        //~ Static fields/initializers -----------------------------------------
+
+        public static final String METHOD_NAME = "MKCOL";
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new HttpMkCol object.
+         *
+         * @param  uri  DOCUMENT ME!
+         */
+        public HttpMkCol(final URI uri) {
+            super(METHOD_NAME, uri);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    public static class ResponseInputStream extends FilterInputStream {
+
+        //~ Instance fields ----------------------------------------------------
+
+        private final CloseableHttpResponse response;
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new ResponseInputStream object.
+         *
+         * @param  in        DOCUMENT ME!
+         * @param  response  DOCUMENT ME!
+         */
+        public ResponseInputStream(final InputStream in, final CloseableHttpResponse response) {
+            super(in);
+            this.response = response;
+        }
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public void close() throws IOException {
+            try {
+                super.close();
+            } finally {
+                response.close();
+            }
         }
     }
 }
