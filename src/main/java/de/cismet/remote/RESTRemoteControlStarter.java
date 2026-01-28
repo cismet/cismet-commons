@@ -7,7 +7,7 @@
  ****************************************************/
 package de.cismet.remote;
 
-import com.sun.jersey.spi.container.servlet.ServletContainer;
+
 import java.util.*;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
@@ -15,6 +15,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
  * Utility class for starting all RESTRemoteControlMethod implementations available in the classpath.
@@ -80,55 +81,62 @@ public class RESTRemoteControlStarter {
      * @throws  RuntimeException  DOCUMENT ME!
      */
     private static void initRestRemoteControlMethods(
-        final int defaultPort,
-        final boolean secure,
-        final String keystore,
-        final String storePasswd,
-        final String keyPasswd
+            final int defaultPort,
+            final boolean secure,
+            final String keystore,
+            final String storePasswd,
+            final String keyPasswd
     ) throws Exception {
         RESTRemoteControlMethodRegistry.gatherRemoteMethods(defaultPort);
 
         int count = 0;
         final Set<Integer> methodPorts = RESTRemoteControlMethodRegistry.getMethodPorts();
+
         for (final Integer port : methodPorts) {
             final Server server = new Server();
-            ServerConnector con = new ServerConnector(server); // unverschluesselte Verbindung!!!
+            ServerConnector con;
 
             if (secure && (keystore != null) && (storePasswd != null) && (keyPasswd != null)) {
                 try {
                     final SslContextFactory.Server ssl = new SslContextFactory.Server();
-                    //                    ssl.setMaxIdleTime(30000);
                     ssl.setKeyStorePath(keystore);
                     ssl.setKeyStorePassword(storePasswd);
                     ssl.setKeyManagerPassword(keyPasswd);
-                    con = new ServerConnector(server, ssl);
-                } catch (final Exception e) {
-                    final String message = "cannot initialise SSL connector"; // NOI18N
-                    LOG.error(message, e);
-                    throw new RuntimeException(message, e);
-                }
-            }
-            con.setPort(port);
 
+                    con = new ServerConnector(server, ssl);
+                } catch (Exception e) {
+                    final String msg = "cannot initialise SSL connector";
+                    LOG.error(msg, e);
+                    throw new RuntimeException(msg, e);
+                }
+            } else {
+                con = new ServerConnector(server);
+            }
+
+            con.setPort(port);
             server.addConnector(con);
-            final ServletHolder jerseyServlet = new ServletHolder(ServletContainer.class);
+
+            // Jersey Servlet
+            final ServletHolder jerseyServlet = new ServletHolder(new ServletContainer());
             jerseyServlet.setInitOrder(0);
+
+            RESTRemoteControlMethodsApplication.setPort(port);
+            
             jerseyServlet.setInitParameter(
-                "javax.ws.rs.Application",
-                RESTRemoteControlMethodsApplication.class.getName()
+                    "jakarta.ws.rs.Application",
+                    RESTRemoteControlMethodsApplication.class.getName()
             );
 
             jerseyServlet.setInitParameter(RESTRemoteControlMethodsApplication.PROP_PORT, String.valueOf(port));
 
             final ServletContextHandler context = new ServletContextHandler(
-                server,
-                "/",
-                ServletContextHandler.SESSIONS
+                    server, 
+                    "/", 
+                    ServletContextHandler.SESSIONS
             );
             context.addServlet(jerseyServlet, "/*");
 
             server.start();
-            // jettyServer.join();
             LOG.info("JETTY Server startet at port " + port);
 
             count++;

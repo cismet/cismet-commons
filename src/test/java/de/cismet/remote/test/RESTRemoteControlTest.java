@@ -13,9 +13,10 @@ import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Response;
 import de.cismet.commons.security.WebDavClient;
 import de.cismet.remote.RESTRemoteControlMethod;
 import de.cismet.remote.RESTRemoteControlMethodRegistry;
@@ -23,7 +24,7 @@ import de.cismet.remote.RESTRemoteControlStarter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -125,15 +126,15 @@ public class RESTRemoteControlTest {
     public void test020SimpleJsonRemoteMethod() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
 
-        final Client client = Client.create();
+        final Client client = ClientBuilder.newClient();
 
-        final WebResource webResource = client.resource("http://127.0.0.1:31337/simpleJsonRemoteMethod");
+        final WebTarget target = client.target("http://127.0.0.1:31337/simpleJsonRemoteMethod");
 
-        final ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+        final Response response = target.request(MediaType.APPLICATION_JSON).get();
 
         assertEquals(200, response.getStatus());
 
-        String output = response.getEntity(String.class);
+        String output = response.readEntity(String.class);
 
         System.out.println("Output from Server .... \n");
         System.out.println(output);
@@ -153,15 +154,15 @@ public class RESTRemoteControlTest {
     public void test030JsonRemoteMethod() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
 
-        final Client client = Client.create();
+        final Client client = ClientBuilder.newClient();
 
-        final WebResource webResource = client.resource("http://127.0.0.1:31338/jsonRemoteMethod");
+        final WebTarget target = client.target("http://127.0.0.1:31338/jsonRemoteMethod");
 
-        final ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+        final Response response = target.request(MediaType.APPLICATION_JSON).get();
 
         assertEquals(200, response.getStatus());
 
-        final RemoteMethodBean output = response.getEntity(RemoteMethodBean.class);
+        final RemoteMethodBean output = response.readEntity(RemoteMethodBean.class);
 
         assertEquals("String", output.getString());
         assertEquals(31.337d, output.getDbl(), 0.0d);
@@ -172,24 +173,24 @@ public class RESTRemoteControlTest {
     public void test040XmlRemoteMethod() throws Exception {
         System.out.println("TEST " + getCurrentMethodName());
 
-        final Client client = Client.create();
-
-        final WebResource webResource = client.resource("http://127.0.0.1:31338/xmlRemoteMethod");
-
-        ClientResponse response = webResource.accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        final Client client = ClientBuilder.newClient();
+        
+        final WebTarget target = client.target("http://127.0.0.1:31338/xmlRemoteMethod");
+        
+        Response response = target.request(MediaType.APPLICATION_XML).get();
         assertEquals(200, response.getStatus());
 
-        String outputString = response.getEntity(String.class);
+        String outputString = response.readEntity(String.class);
         System.out.println(outputString);
-
+        
         assertEquals(
-            "<RemoteMethodBean><string>String</string><dbl>31.337</dbl><boolValue>true</boolValue></RemoteMethodBean>",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><remoteMethodBean><boolValue>true</boolValue><dbl>31.337</dbl><string>String</string></remoteMethodBean>",
             outputString
         );
 
-        response = webResource.accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
+        response = target.request(MediaType.APPLICATION_XML).get();
         assertEquals(200, response.getStatus());
-        RemoteMethodBean outputBean = response.getEntity(RemoteMethodBean.class);
+        RemoteMethodBean outputBean = response.readEntity(RemoteMethodBean.class);
         assertEquals("String", outputBean.getString());
         assertEquals(31.337d, outputBean.getDbl(), 0.0d);
         assertEquals(true, outputBean.isBoolValue());

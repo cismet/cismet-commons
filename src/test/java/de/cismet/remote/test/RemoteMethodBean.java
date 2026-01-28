@@ -1,9 +1,12 @@
 package de.cismet.remote.test;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author pd
  */
+@XmlRootElement
 public class RemoteMethodBean {
 
     private String string = "String";

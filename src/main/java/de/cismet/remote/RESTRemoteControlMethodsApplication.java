@@ -7,13 +7,10 @@
  ****************************************************/
 package de.cismet.remote;
 
-import com.sun.jersey.api.core.ResourceConfig;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
+import jakarta.ws.rs.ApplicationPath;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.jackson.JacksonFeature;
 
 /**
  * RESTRemoteControlMethodsApplication.
@@ -22,18 +19,16 @@ import javax.ws.rs.core.Context;
  * @version  $Revision$, $Date$
  */
 @ApplicationPath("/")
-public class RESTRemoteControlMethodsApplication extends Application {
+public class RESTRemoteControlMethodsApplication extends ResourceConfig {
 
     //~ Static fields/initializers ---------------------------------------------
 
     public static final String PROP_PORT = "de.cismet.remote.port";
+    public static Integer PORT = null;
 
-    //~ Instance fields --------------------------------------------------------
-
-    @Context
-    ResourceConfig rc;
-
-    private final HashSet<Class<?>> clazzes;
+    public static void setPort(final int port) {
+        PORT = port;
+    }
 
     //~ Constructors -----------------------------------------------------------
 
@@ -41,7 +36,12 @@ public class RESTRemoteControlMethodsApplication extends Application {
      * Creates a new CustomizedClassesApplication object.
      */
     public RESTRemoteControlMethodsApplication() {
-        this.clazzes = new HashSet<Class<?>>();
+        collectServiceClasses();
+        
+        //register json
+        register(JacksonFeature.class);
+        
+        //register xml will be registered automatically
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -51,14 +51,13 @@ public class RESTRemoteControlMethodsApplication extends Application {
      *
      * @param  portAsString  portasString
      */
-    private void collectServiceClasses(final String portAsString) {
-        if (this.clazzes.isEmpty()) {
-            final int port = Integer.parseInt(portAsString);
-            final List<RESTRemoteControlMethod> methods = RESTRemoteControlMethodRegistry.getMethodsForPort(port);
+    private void collectServiceClasses() {
+        final String portAsString = PORT.toString();
+        final int port = Integer.parseInt(portAsString);
+        final List<RESTRemoteControlMethod> methods = RESTRemoteControlMethodRegistry.getMethodsForPort(port);
 
-            for (final RESTRemoteControlMethod m : methods) {
-                this.clazzes.add(m.getClass());
-            }
+        for (final RESTRemoteControlMethod m : methods) {
+            this.register(m.getClass());
         }
     }
 
@@ -67,9 +66,9 @@ public class RESTRemoteControlMethodsApplication extends Application {
      *
      * @return  class
      */
-    @Override
-    public synchronized Set<Class<?>> getClasses() {
-        this.collectServiceClasses((String) rc.getProperty(PROP_PORT));
-        return this.clazzes;
-    }
+//    @Override
+//    public synchronized Set<Class<?>> getClasses() {
+//        this.collectServiceClasses((String) rc.getProperty(PROP_PORT));
+//        return this.clazzes;
+//    }
 }
