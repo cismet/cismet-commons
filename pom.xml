@@ -47,7 +47,7 @@
             <dependency>
                 <groupId>de.cismet</groupId>
                 <artifactId>cismet-ext-bom</artifactId>
-                <version>10.2-SNAPSHOT</version>
+                <version>10.1.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -173,6 +173,10 @@
             <artifactId>jersey-media-jaxb</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.toolchain</groupId>
+            <artifactId>jetty-jakarta-servlet-api</artifactId>
+        </dependency>
         <!-- END: managed dependencies -->
         
         <!-- BEGIN: unmanaged dependencies -->
@@ -180,11 +184,6 @@
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
             <version>3.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.toolchain</groupId>
-            <artifactId>jetty-jakarta-servlet-api</artifactId>
-            <version>5.0.2</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge</groupId>
