@@ -7,17 +7,13 @@
 ****************************************************/
 package de.cismet.commons.utils;
 
-import com.sun.media.jai.codec.FileSeekableStream;
-import com.sun.media.jai.codec.ImageCodec;
-import com.sun.media.jai.codec.ImageDecoder;
-import com.sun.media.jai.codec.MemoryCacheSeekableStream;
-import com.sun.media.jai.codec.SeekableStream;
+import org.apache.commons.io.IOUtils;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.awt.image.SampleModel;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,18 +21,17 @@ import java.lang.ref.SoftReference;
 
 import java.net.URL;
 
-import javax.media.jai.RenderedImageAdapter;
+import java.util.Iterator;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 import de.cismet.commons.security.handler.ExtendedAccessHandler;
 import de.cismet.commons.security.handler.SimpleHttpAccessHandler;
 
 /**
- * FIXME: This class seems to use an outdated Version of JAI.
- *
- * <p>java.lang.NoClassDefFoundError: com/sun/image/codec/jpeg/JPEGCodec java.lang.NoClassDefFoundError:
- * com/sun/image/codec/jpeg/ImageFormatException</p>
- *
- * <p>See #62</p>
+ * DOCUMENT ME!
  *
  * @version  $Revision$, $Date$
  */
@@ -51,14 +46,17 @@ public class MultiPagePictureReader {
 
     //~ Instance fields --------------------------------------------------------
 
-    private final ImageDecoder decoder;
     private final String pathOfImage;
     private final int pageCount;
     private final SoftReference<BufferedImage>[] cache;
     private final boolean caching;
     private final boolean checkHeapSize;
-    private final SeekableStream stream;
     private final String codec;
+    private final ImageReader reader;
+    private ImageInputStream iis;
+    private File imageFile = null;
+    private ByteArrayInputStream bais = null;
+    private InputStream stream;
 
     //~ Constructors -----------------------------------------------------------
 
@@ -166,15 +164,19 @@ public class MultiPagePictureReader {
         this.caching = caching;
         this.checkHeapSize = checkHeapSize;
 
-        stream = new FileSeekableStream(imageFile);
-        decoder = ImageCodec.createImageDecoder(codec, stream, null);
+        iis = ImageIO.createImageInputStream(imageFile);
+        this.imageFile = imageFile;
 
-        pageCount = decoder.getNumPages();
+        final Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+        reader = readers.next();
+        reader.setInput(iis);
+
+        pageCount = reader.getNumImages(true);
 
         if (this.caching) {
             cache = new SoftReference[pageCount];
             for (int i = 0; i < cache.length; ++i) {
-                cache[i] = new SoftReference<BufferedImage>(null);
+                cache[i] = new SoftReference<>(null);
             }
         } else {
             cache = null;
@@ -212,15 +214,19 @@ public class MultiPagePictureReader {
         this.checkHeapSize = checkHeapSize;
 
         try {
-            stream = new MemoryCacheSeekableStream(extendedAccessHandler.doRequest(imageURL));
+            final InputStream stream = extendedAccessHandler.doRequest(imageURL);
+            final byte[] inputBytes = IOUtils.toByteArray(stream);
+            stream.close();
+            bais = new ByteArrayInputStream(inputBytes);
+            iis = ImageIO.createImageInputStream(bais);
+            final Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+            reader = readers.next();
+            reader.setInput(iis);
+
+            pageCount = reader.getNumImages(true);
         } catch (final Exception ex) {
             throw new IOException("Could not open '" + imageURL.toExternalForm() + "'.", ex);
         }
-
-        // FIXME: Don't use com.sun classes directly
-        decoder = ImageCodec.createImageDecoder(codec, stream, null);
-
-        pageCount = decoder.getNumPages();
 
         if (this.caching) {
             cache = new SoftReference[pageCount];
@@ -235,17 +241,35 @@ public class MultiPagePictureReader {
     //~ Methods ----------------------------------------------------------------
 
     /**
-     * DOCUMENT ME!
+     * This is not thread safe.
      *
      * @return  DOCUMENT ME!
      */
     public InputStream getInputStream() {
         try {
-            stream.reset();
-        } catch (IOException ex) {
-            LOG.fatal(ex, ex);
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (Exception e) {
+                    LOG.error("Cannot close Stream", e);
+                }
+            }
+
+            if (imageFile != null) {
+                stream = new FileInputStream(imageFile);
+
+                return stream;
+            } else if (bais != null) {
+                bais.reset();
+                stream = bais;
+
+                return stream;
+            }
+        } catch (Exception e) {
+            LOG.error("Error while retrieving stream", e);
         }
-        return stream;
+
+        return null;
     }
 
     /**
@@ -328,36 +352,27 @@ public class MultiPagePictureReader {
             return result;
         }
 
-        int size = 0;
-        final long freeMemory = Runtime.getRuntime().freeMemory() / MB;
+        final long freeMemory = (Runtime.getRuntime().maxMemory()
+                        - (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())) / MB;
 
-        final RenderedImage renderImage = decoder.decodeAsRenderedImage(page);
-        final RenderedImageAdapter imageAdapter = new RenderedImageAdapter(renderImage);
-        final SampleModel sampleModel = renderImage.getSampleModel();
+        final int width = reader.getWidth(page);
+        final int height = reader.getHeight(page);
+
+        long estimatedSize = (long)width * height * 4;
+        estimatedSize = estimatedSize / MB;
 
         if (checkHeapSize) {
-            if (sampleModel != null) {
-                final int[] sampleSize = sampleModel.getSampleSize();
-                for (int i = 0; i < sampleSize.length; i++) {
-                    size += sampleSize[i];
-                }
-
-                size *= sampleModel.getWidth() * sampleModel.getHeight();
-            } else {
-                // Assume 8 bits per pixel and 4 bands.
-                size = 32;
-                size *= renderImage.getWidth() * renderImage.getHeight();
+            if (estimatedSize > freeMemory) {
+                LOG.warn("Not enough memory for image page " + page);
+                return null;
             }
-
-            // size is image size in bits, so we make MB out of it.
-            size = size / (8 * MB);
         }
 
-        if (checkHeapSize && (size > freeMemory)) {
+        if (checkHeapSize && (estimatedSize > freeMemory)) {
             LOG.warn("Couldn't read page '" + page + "' from image '" + pathOfImage
                         + "', since there's no memory left.");
         } else {
-            result = imageAdapter.getAsBufferedImage();
+            result = reader.read(page);
         }
 
         if (caching) {
@@ -381,9 +396,12 @@ public class MultiPagePictureReader {
      */
     public final void close() {
         try {
-            decoder.getInputStream().close();
+            if (stream != null) {
+                stream.close();
+            }
         } catch (IOException ex) {
             LOG.warn(ex, ex);
         }
+        reader.dispose();
     }
 }
