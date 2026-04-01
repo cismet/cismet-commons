@@ -13,7 +13,7 @@
 
     <groupId>de.cismet.commons</groupId>
     <artifactId>cismet-commons</artifactId>
-    <version>9.0.6</version>
+    <version>9.0.7</version>
     <packaging>jar</packaging>
     
     <properties>
@@ -27,7 +27,7 @@
         <connection>https://github.com/cismet/cismet-commons.git</connection>
         <developerConnection>scm:git:git@github.com:cismet/cismet-commons.git</developerConnection>
         <url>https://github.com/cismet/cismet-commons</url>
-        <tag>v9.0.6</tag>
+        <tag>v9.0.7</tag>
     </scm>
     
     <ciManagement>
@@ -145,14 +145,6 @@
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
         </dependency>
-        <dependency>
-            <groupId>jai</groupId>
-            <artifactId>jai-codec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jai</groupId>
-            <artifactId>jai-core</artifactId>
-        </dependency>
         <!-- set to compile since it's needed during build -->
         <dependency>
             <groupId>net.postgis</groupId>
@@ -197,9 +189,16 @@
             WARNING: Proprietary imageio library!
         -->
         <dependency>
-            <groupId>jai</groupId>
-            <artifactId>jai-imageio</artifactId>
-            <scope>runtime</scope>
+          <groupId>com.twelvemonkeys.imageio</groupId>
+          <artifactId>imageio-tiff</artifactId>
+          <version>3.13.1</version>
+          <scope>runtime</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.twelvemonkeys.imageio</groupId>
+          <artifactId>imageio-jpeg</artifactId>
+          <version>3.13.1</version>
+          <scope>runtime</scope>
         </dependency>
         <!-- END: runtime dependencies -->
         
