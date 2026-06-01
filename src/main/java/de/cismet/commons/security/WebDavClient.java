@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,8 +144,18 @@ public class WebDavClient {
                 client.getState().setCredentials(AuthScope.ANY, creds);
             }
         }
+        URL hostUrl = null;
 
-        if ((proxy != null) && proxy.isValid() && proxy.isEnabled()) {
+        try {
+            if (host != null) {
+                hostUrl = new URL(host);
+            }
+        } catch (MalformedURLException e) {
+            // do not use the url for the proxy configuration
+        }
+
+        if ((proxy != null) && proxy.isValid() && proxy.isEnabled()
+                    && proxy.isEnabledFor((hostUrl != null) ? hostUrl.getHost() : null)) {
             if (log.isDebugEnabled()) {
                 log.debug("use proxy");
             }
