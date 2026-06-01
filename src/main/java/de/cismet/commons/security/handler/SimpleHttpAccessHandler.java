@@ -501,7 +501,7 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
         if (LOG.isDebugEnabled()) {
             LOG.debug("getSecurityEnabledHttpClient"); // NOI18N
         }
-        final HttpClient client = getConfiguredHttpClient();
+        final HttpClient client = getConfiguredHttpClient(url);
         client.getParams().setParameter(CredentialsProvider.PROVIDER, new CredentialsProvider() {
 
                 @Override
@@ -525,16 +525,20 @@ public class SimpleHttpAccessHandler extends AbstractAccessHandler implements Ex
     /**
      * Returns a configured HttpClient with (if set) proxy settings.
      *
+     * @param   url  DOCUMENT ME!
+     *
      * @return  configured HttpClient
      */
-    protected HttpClient getConfiguredHttpClient() {
+    protected HttpClient getConfiguredHttpClient(final URL url) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("getConfiguredHttpClient"); // NOI18N
         }
 
         final MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
         final HttpClient client = new HttpClient(connectionManager);
-        if ((proxy != null) && proxy.isEnabled()) {
+
+        if (((proxy != null) && (proxy.getHost() != null) && (proxy.getPort() > 0)
+                        && proxy.isValid() && proxy.isEnabledFor((url != null) ? url.getHost() : null))) {
             client.getHostConfiguration().setProxy(proxy.getHost(), proxy.getPort());
 
             // proxy needs authentication
