@@ -12,9 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+
+import java.util.HashMap;
+
+import de.cismet.commons.security.AccessHandler;
+import de.cismet.commons.security.handler.SimpleHttpAccessHandler;
 
 import de.cismet.tools.CalculationCache;
 import de.cismet.tools.Calculator;
@@ -95,7 +98,8 @@ public class SimpleCapabilitiesCache extends CalculationCache<String, String> {
 
         //~ Instance fields ----------------------------------------------------
 
-        private String url;
+        private final String url;
+        private final String parameter;
 
         //~ Constructors -------------------------------------------------------
 
@@ -105,7 +109,13 @@ public class SimpleCapabilitiesCache extends CalculationCache<String, String> {
          * @param  url  DOCUMENT ME!
          */
         public TimeoutHttpRequester(final String url) {
-            this.url = url;
+            if (url.contains("?")) {
+                this.url = url.substring(0, url.indexOf("?"));
+                parameter = url.substring(url.indexOf("?") + 1);
+            } else {
+                this.url = url;
+                parameter = "";
+            }
         }
 
         //~ Methods ------------------------------------------------------------
@@ -128,17 +138,21 @@ public class SimpleCapabilitiesCache extends CalculationCache<String, String> {
                 do {
                     try {
                         finished = true;
-                        URLConnection con = getCapURL.openConnection();
+                        final SimpleHttpAccessHandler simpleAccesshandler = new SimpleHttpAccessHandler();
+
                         if (basicAuthenticationToken != null) {
-                            con.addRequestProperty("authorization", "Basic " + basicAuthenticationToken);
+                            final HashMap<String, String> map = new HashMap<>();
+                            map.put("authorization", "Basic " + basicAuthenticationToken);
+
+                            is = simpleAccesshandler.doRequest(
+                                    getCapURL,
+                                    null,
+                                    AccessHandler.ACCESS_METHODS.GET_REQUEST,
+                                    map);
+                        } else {
+                            final URL CompleteUrl = (parameter.equals("") ? getCapURL : new URL(url + "?" + parameter));
+                            is = simpleAccesshandler.doRequest(CompleteUrl);
                         }
-                        if (con instanceof HttpURLConnection) {
-                            final HttpURLConnection http = (HttpURLConnection)con;
-                            if ((http.getResponseCode() == 301) || (http.getResponseCode() == 308)) {
-                                con = new URL(http.getHeaderField("Location")).openConnection();
-                            }
-                        }
-                        is = con.getInputStream();
                     } catch (IOException e) {
                         if (e.getMessage().contains("401")) {
                             if ((basicAuthorizationTokens == null)
