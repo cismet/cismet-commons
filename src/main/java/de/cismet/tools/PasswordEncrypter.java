@@ -23,6 +23,8 @@ import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.nio.charset.StandardCharsets;
+
 import java.security.SecureRandom;
 
 import java.util.ArrayList;
@@ -31,8 +33,10 @@ import java.util.List;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -64,6 +68,14 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     private static final char[] PE_SALT_PROP = "PasswordEncrypter.salt".toCharArray();           // NOI18N
 
     private static final SecureRandom RANDOM = new SecureRandom();
+
+    private static final char[] AES_PREFIX = "aes::".toCharArray();                        // NOI18N
+    private static final String AES_CIPHER = "AES/GCM/NoPadding";                          // NOI18N
+    private static final int AES_IV_LENGTH = 12;
+    private static final int AES_TAG_LENGTH = 128;
+    private static final int AES_KEY_LENGTH = 32;
+    private static final String AES_KEY_ENV = "PASSWORDENCRYPTER_AESKEY";                  // NOI18N
+    private static final char[] PE_AESKEY_PROP = "PasswordEncrypter.aesKey".toCharArray(); // NOI18N
 
     //~ Instance fields --------------------------------------------------------
 
@@ -297,13 +309,45 @@ public class PasswordEncrypter extends javax.swing.JFrame {
     }                                                                                                //GEN-LAST:event_cmdGoActionPerformed
 
     /**
-     * main program.
+     * main program. Without arguments, the gui will be started. With the argument <code>--generate-aes-key</code> a new
+     * AES key will be printed and with the argument <code>--encrypt-aes</code> a password will be read from the console
+     * and printed AES encrypted.
      *
      * @param   args  the command line arguments
      *
      * @throws  Exception  throws Exeption if anything went wrong
      */
     public static void main(final String[] args) throws Exception {
+        if ((args.length > 0) && "--generate-aes-key".equals(args[0])) { // NOI18N
+            final char[] key = generateAesKey();
+            System.out.println(key);
+            wipe(key);
+
+            return;
+        } else if ((args.length > 0) && "--encrypt-aes".equals(args[0])) { // NOI18N
+            final java.io.Console console = System.console();
+
+            if (console == null) {
+                System.err.println("no console available"); // NOI18N
+                System.exit(1);
+            }
+
+            final char[] p1 = console.readPassword("Password: ");        // NOI18N
+            final char[] p2 = console.readPassword("Repeat password: "); // NOI18N
+
+            if ((p1 == null) || (p2 == null) || !java.util.Arrays.equals(p1, p2)) {
+                System.err.println("passwords do not match"); // NOI18N
+                System.exit(1);
+            }
+
+            wipe(p2);
+            final char[] enc = encryptAes(p1, true);
+            System.out.println(enc);
+            wipe(enc);
+
+            return;
+        }
+
         java.awt.EventQueue.invokeLater(new Runnable() {
 
                 @Override
@@ -522,6 +566,268 @@ public class PasswordEncrypter extends javax.swing.JFrame {
         } else {
             return string;
         }
+    }
+
+    /**
+     * Checks whether the given string was encrypted by {@link #encryptAes(char[], boolean)}.
+     *
+     * @param   string  the string to check
+     *
+     * @return  <code>true</code>, if the string starts with the AES prefix
+     */
+    public static boolean isAesEncrypted(final char[] string) {
+        if ((string == null) || (string.length < AES_PREFIX.length)) {
+            return false;
+        }
+
+        for (int i = 0; i < AES_PREFIX.length; ++i) {
+            if (string[i] != AES_PREFIX[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Encrypts a given string using AES in GCM mode, that can be decrypted using {@link #decryptAes(char[], boolean)}.
+     * Every encryption uses a new random initialisation vector, so encrypting the same string twice results in two
+     * different encrypted strings. The result has the format <code>aes::&lt;base64(iv + ciphertext + tag)&gt;</code>.
+     * The caller is responsible for wiping the returned result himself. The given array can automatically be wiped by
+     * passing <code>true</code> to the <code>wipeInput</code> parameter.<br/>
+     * <br/>
+     * <b>IMPORTANT: This operation requires an AES key with 128, 192 or 256 bit (base64 encoded). The key is read from
+     * the environment variable <code>PASSWORDENCRYPTER_AESKEY</code> or, if it is not set, from the property <code>
+     * PasswordEncrypter.aesKey</code> of the <code>PasswordEncrypter.properties</code> file, that must be located on
+     * the classpath within the package <code>de.cismet.tools</code>. A new key can be created with
+     * {@link #generateAesKey()}.</b>
+     *
+     * @param   string     the string to encrypt
+     * @param   wipeInput  whether to wipe the input array or not
+     *
+     * @return  the encrypted string in a <code>char[]</code> or <code>null</code> if the given array is <code>
+     *          null</code>
+     *
+     * @throws  PasswordEncrypterException  if an error occurs during encryption, e.g. the AES key cannot be found
+     */
+    public static char[] encryptAes(final char[] string, final boolean wipeInput) throws PasswordEncrypterException {
+        if (string == null) {
+            LOG.warn("received null array, returning null"); // NOI18N
+
+            return null;
+        }
+
+        final byte[] bytes = bytesFromChars(string, wipeInput);
+        final byte[] iv = new byte[AES_IV_LENGTH];
+        RANDOM.nextBytes(iv);
+
+        final byte[] enc;
+        try {
+            enc = applyAesCipher(bytes, iv, Cipher.ENCRYPT_MODE);
+        } finally {
+            wipe(bytes);
+        }
+
+        final byte[] ivAndEnc = new byte[iv.length + enc.length];
+        System.arraycopy(iv, 0, ivAndEnc, 0, iv.length);
+        System.arraycopy(enc, 0, ivAndEnc, iv.length, enc.length);
+        wipe(enc);
+
+        final byte[] base64 = java.util.Base64.getEncoder().encode(ivAndEnc);
+        wipe(ivAndEnc);
+
+        final char[] ret = new char[AES_PREFIX.length + base64.length];
+        System.arraycopy(AES_PREFIX, 0, ret, 0, AES_PREFIX.length);
+        for (int i = 0; i < base64.length; ++i) {
+            ret[AES_PREFIX.length + i] = (char)base64[i];
+            base64[i] = getWipe();
+        }
+
+        return ret;
+    }
+
+    /**
+     * Decrypts a given string that was created by {@link #encryptAes(char[], boolean)}. The caller is responsible for
+     * wiping the returned result himself. The given array can automatically be wiped by passing <code>true</code> to
+     * the <code>wipeInput</code> parameter. See {@link #encryptAes(char[], boolean)} for the required AES key.
+     *
+     * @param   string     the string to decrypt
+     * @param   wipeInput  whether to wipe the input array or not
+     *
+     * @return  the decrypted string in a <code>char[]</code> or <code>null</code> if the given array is <code>
+     *          null</code> or the given string itself, if the string does not start with the AES prefix
+     *
+     * @throws  PasswordEncrypterException  if an error occurs during decryption, e.g. the AES key cannot be found, the
+     *                                      string is not correctly encoded or was manipulated
+     */
+    public static char[] decryptAes(final char[] string, final boolean wipeInput) throws PasswordEncrypterException {
+        if (string == null) {
+            LOG.warn("received null array, returning null"); // NOI18N
+
+            return null;
+        }
+
+        if (!isAesEncrypted(string)) {
+            return string;
+        }
+
+        final byte[] base64 = new byte[string.length - AES_PREFIX.length];
+        for (int i = 0; i < base64.length; ++i) {
+            base64[i] = (byte)string[AES_PREFIX.length + i];
+        }
+
+        if (wipeInput) {
+            wipe(string);
+        }
+
+        final byte[] ivAndEnc;
+        try {
+            ivAndEnc = java.util.Base64.getDecoder().decode(base64);
+        } catch (final IllegalArgumentException ex) {
+            final String message = "cannot decrypt string: not correctly base64 encoded"; // NOI18N
+            LOG.error(message, ex);
+            throw new PasswordEncrypterException(message, ex);
+        } finally {
+            wipe(base64);
+        }
+
+        if (ivAndEnc.length < (AES_IV_LENGTH + (AES_TAG_LENGTH / 8))) {
+            final String message = "cannot decrypt string: too short"; // NOI18N
+            LOG.error(message);
+            throw new PasswordEncrypterException(message);
+        }
+
+        final byte[] iv = new byte[AES_IV_LENGTH];
+        final byte[] enc = new byte[ivAndEnc.length - AES_IV_LENGTH];
+        System.arraycopy(ivAndEnc, 0, iv, 0, iv.length);
+        System.arraycopy(ivAndEnc, iv.length, enc, 0, enc.length);
+        wipe(ivAndEnc);
+
+        final byte[] res;
+        try {
+            res = applyAesCipher(enc, iv, Cipher.DECRYPT_MODE);
+        } finally {
+            wipe(enc);
+        }
+
+        return charsFromBytes(res, true);
+    }
+
+    /**
+     * Generates a new random AES key with 256 bit, that can be used as value of the environment variable <code>
+     * PASSWORDENCRYPTER_AESKEY</code> or of the property <code>PasswordEncrypter.aesKey</code>.
+     *
+     * @return  the base64 encoded key
+     */
+    public static char[] generateAesKey() {
+        final byte[] key = new byte[AES_KEY_LENGTH];
+        RANDOM.nextBytes(key);
+
+        final byte[] base64 = java.util.Base64.getEncoder().encode(key);
+        wipe(key);
+
+        final char[] ret = new char[base64.length];
+        for (int i = 0; i < base64.length; ++i) {
+            ret[i] = (char)base64[i];
+            base64[i] = getWipe();
+        }
+
+        return ret;
+    }
+
+    /**
+     * Applies the AES/GCM cipher.
+     *
+     * @param   bytes  the data to encrypt or decrypt
+     * @param   iv     the initialisation vector
+     * @param   mode   {@link Cipher#ENCRYPT_MODE} or {@link Cipher#DECRYPT_MODE}
+     *
+     * @return  the result of the cipher
+     *
+     * @throws  PasswordEncrypterException  if the key cannot be read or the cipher fails
+     */
+    private static byte[] applyAesCipher(final byte[] bytes, final byte[] iv, final int mode)
+            throws PasswordEncrypterException {
+        final byte[] key = getAesKey();
+        try {
+            final Cipher cipher = Cipher.getInstance(AES_CIPHER);
+            cipher.init(mode, new SecretKeySpec(key, "AES"), new GCMParameterSpec(AES_TAG_LENGTH, iv)); // NOI18N
+
+            return cipher.doFinal(bytes);
+        } catch (final Exception ex) {
+            final String message = "cannot process string with AES: mode=" + mode; // NOI18N
+            LOG.error(message, ex);
+            throw new PasswordEncrypterException(message, ex);
+        } finally {
+            wipe(key);
+        }
+    }
+
+    /**
+     * Reads the AES key from the environment variable <code>PASSWORDENCRYPTER_AESKEY</code> or, if it is not set, from
+     * the property <code>PasswordEncrypter.aesKey</code> of the <code>PasswordEncrypter.properties</code>.
+     *
+     * @return  the decoded AES key
+     *
+     * @throws  PasswordEncrypterException  if the key cannot be found or has an invalid length
+     */
+    private static byte[] getAesKey() throws PasswordEncrypterException {
+        byte[] base64 = null;
+        final String envKey = System.getenv(AES_KEY_ENV);
+
+        if ((envKey != null) && !envKey.trim().isEmpty()) {
+            base64 = envKey.trim().getBytes(StandardCharsets.US_ASCII);
+        } else {
+            try(final InputStream peStream = PasswordEncrypter.class.getResourceAsStream(
+                                "PasswordEncrypter.properties")) {         // NOI18N
+                if (peStream != null) {
+                    base64 = safeRead(peStream, PE_AESKEY_PROP);
+                }
+            } catch (final IOException ex) {
+                LOG.warn("cannot close PasswordEncrypter properties", ex); // NOI18N
+            }
+        }
+
+        if (base64 == null) {
+            final String message = "AES key not found. Set the environment variable " + AES_KEY_ENV // NOI18N
+                        + " or the property " + String.valueOf(PE_AESKEY_PROP)                      // NOI18N
+                        + " in the PasswordEncrypter properties";                                   // NOI18N
+            LOG.error(message);
+            throw new PasswordEncrypterException(message);
+        }
+
+        // strip whitespaces, e.g. a CR of a properties file with windows line endings
+        int end = base64.length;
+        while ((end > 0) && Character.isWhitespace(base64[end - 1])) {
+            end--;
+        }
+        int start = 0;
+        while ((start < end) && Character.isWhitespace(base64[start])) {
+            start++;
+        }
+        final byte[] trimmed = new byte[end - start];
+        System.arraycopy(base64, start, trimmed, 0, trimmed.length);
+        wipe(base64);
+
+        final byte[] key;
+        try {
+            key = java.util.Base64.getDecoder().decode(trimmed);
+        } catch (final IllegalArgumentException ex) {
+            final String message = "AES key is not correctly base64 encoded"; // NOI18N
+            LOG.error(message, ex);
+            throw new PasswordEncrypterException(message, ex);
+        } finally {
+            wipe(trimmed);
+        }
+
+        if ((key.length != 16) && (key.length != 24) && (key.length != 32)) {
+            wipe(key);
+            final String message = "AES key must have 128, 192 or 256 bit, but has " + (key.length * 8); // NOI18N
+            LOG.error(message);
+            throw new PasswordEncrypterException(message);
+        }
+
+        return key;
     }
 
     /**

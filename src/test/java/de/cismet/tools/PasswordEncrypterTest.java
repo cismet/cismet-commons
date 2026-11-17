@@ -103,6 +103,87 @@ public class PasswordEncrypterTest {
     }
 
     /**
+     * Test of encryptAes and decryptAes methods, of class PasswordEncrypter.
+     */
+    @Test
+    public void testEncryptDecryptAes() {
+        System.out.println("TEST " + getCurrentMethodName());
+
+        assertNull(PasswordEncrypter.encryptAes(null, true));
+        assertNull(PasswordEncrypter.decryptAes(null, true));
+
+        for (final String pwd : new String[] { "", "a", "abc", "9320weSÜF43", "/u24$3wer&ßdg\\2394r", "€漢字🙂" }) {
+            final char[] enc = PasswordEncrypter.encryptAes(pwd.toCharArray(), true);
+            assertTrue(PasswordEncrypter.isAesEncrypted(enc));
+            assertTrue(String.valueOf(enc).startsWith("aes::"));
+            assertEquals(pwd, String.valueOf(PasswordEncrypter.decryptAes(enc, false)));
+        }
+
+        // a new iv is used for every encryption
+        final String enc1 = String.valueOf(PasswordEncrypter.encryptAes("abc".toCharArray(), false));
+        final String enc2 = String.valueOf(PasswordEncrypter.encryptAes("abc".toCharArray(), false));
+        assertFalse(enc1.equals(enc2));
+
+        // the input will be wiped
+        final char[] enc = enc1.toCharArray();
+        PasswordEncrypter.decryptAes(enc, true);
+        assertFalse(enc1.equals(String.valueOf(enc)));
+
+        // strings without the aes prefix are returned unchanged
+        assertEquals("abc", String.valueOf(PasswordEncrypter.decryptAes("abc".toCharArray(), false)));
+        assertEquals("{abc}", String.valueOf(PasswordEncrypter.decryptAes("{abc}".toCharArray(), false)));
+        assertFalse(PasswordEncrypter.isAesEncrypted("aes:".toCharArray()));
+        assertFalse(PasswordEncrypter.isAesEncrypted(null));
+    }
+
+    /**
+     * Test of decryptAes method with manipulated input, of class PasswordEncrypter.
+     */
+    @Test
+    public void testDecryptAesManipulated() {
+        System.out.println("TEST " + getCurrentMethodName());
+
+        final char[] enc = PasswordEncrypter.encryptAes("abc".toCharArray(), false);
+        // change one character of the base64 part
+        final int pos = enc.length - 3;
+        enc[pos] = (enc[pos] == 'A') ? 'B' : 'A';
+
+        try {
+            PasswordEncrypter.decryptAes(enc, false);
+            fail("manipulated string must not be decrypted");
+        } catch (final PasswordEncrypterException ex) {
+            // expected
+        }
+
+        try {
+            PasswordEncrypter.decryptAes("aes::no-base64!".toCharArray(), false);
+            fail("invalid base64 must not be decrypted");
+        } catch (final PasswordEncrypterException ex) {
+            // expected
+        }
+
+        try {
+            PasswordEncrypter.decryptAes("aes::YWJj".toCharArray(), false);
+            fail("too short string must not be decrypted");
+        } catch (final PasswordEncrypterException ex) {
+            // expected
+        }
+    }
+
+    /**
+     * Test of generateAesKey method, of class PasswordEncrypter.
+     */
+    @Test
+    public void testGenerateAesKey() {
+        System.out.println("TEST " + getCurrentMethodName());
+
+        final char[] key1 = PasswordEncrypter.generateAesKey();
+        final char[] key2 = PasswordEncrypter.generateAesKey();
+        assertEquals(32, java.util.Base64.getDecoder().decode(String.valueOf(key1)).length);
+        assertFalse(String.valueOf(key1).equals(String.valueOf(key2)));
+    }
+
+    /**
      * Test of encrypt method, of class PasswordEncrypter.
      */
     @Test

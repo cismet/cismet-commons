@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 
 import java.net.URL;
 
@@ -145,16 +146,16 @@ public class SimpleCapabilitiesCache extends CalculationCache<String, String> {
                             map.put("authorization", "Basic " + basicAuthenticationToken);
 
                             is = simpleAccesshandler.doRequest(
-                                    getCapURL,
-                                    null,
+                                    new URL(url),
+                                    new StringReader(parameter),
                                     AccessHandler.ACCESS_METHODS.GET_REQUEST,
                                     map);
                         } else {
                             final URL CompleteUrl = (parameter.equals("") ? getCapURL : new URL(url + "?" + parameter));
                             is = simpleAccesshandler.doRequest(CompleteUrl);
                         }
-                    } catch (IOException e) {
-                        if (e.getMessage().contains("401")) {
+                    } catch (Exception e) {
+                        if ((e.getMessage() != null) && e.getMessage().contains("not authorized")) {
                             if ((basicAuthorizationTokens == null)
                                         || (attempt >= basicAuthorizationTokens.length)) {
                                 exception = e;

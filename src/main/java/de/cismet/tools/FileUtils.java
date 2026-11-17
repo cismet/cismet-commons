@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * FileUtils Class.
@@ -439,6 +441,45 @@ public final class FileUtils {
                         bos.close();
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * put the given directory to the given zip file.
+     *
+     * @param   directory  DOCUMENT ME!
+     * @param   zipFile    DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    public static void zipDirectory(final File directory, final File zipFile) throws IOException {
+        try(final FileOutputStream fos = new FileOutputStream(zipFile);
+                    final ZipOutputStream zos = new ZipOutputStream(fos)) {
+            final File[] files = directory.listFiles();
+
+            if (files == null) {
+                return;
+            }
+
+            final byte[] buffer = new byte[8192];
+
+            for (final File file : files) {
+                if (!file.isFile()) {
+                    continue;
+                }
+
+                final ZipEntry entry = new ZipEntry(file.getName());
+                zos.putNextEntry(entry);
+
+                try(final FileInputStream fis = new FileInputStream(file)) {
+                    int len;
+                    while ((len = fis.read(buffer)) != -1) {
+                        zos.write(buffer, 0, len);
+                    }
+                }
+
+                zos.closeEntry();
             }
         }
     }
