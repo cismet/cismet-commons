@@ -144,8 +144,9 @@ public class PasswordEncrypterTest {
         System.out.println("TEST " + getCurrentMethodName());
 
         final char[] enc = PasswordEncrypter.encryptAes("abc".toCharArray(), false);
-        // change one character of the base64 part
-        final int pos = enc.length - 3;
+        // change one character of the base64 part (not in the last quartet, whose
+        // trailing bits may be ignored by the base64 decoder)
+        final int pos = enc.length / 2;
         enc[pos] = (enc[pos] == 'A') ? 'B' : 'A';
 
         try {
